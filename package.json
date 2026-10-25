@@ -1,0 +1,11 @@
+{
+  "name": "heat-index",
+  "version": "1.0.0",
+  "description": "A scanner of crypto markets: Heat of three horizons, trend, patterns, best trades, a push server. One HTML file, no build.",
+  "private": true,
+  "scripts": {
+    "start": "node server/heat-server.js",
+    "test": "node tests/smoke.js"
+  },
+  "engines": { "node": ">=18" }
+}

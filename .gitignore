@@ -1,0 +1,6 @@
+node_modules/
+.env
+*.log
+heat-state.json
+.DS_Store
+_site/
