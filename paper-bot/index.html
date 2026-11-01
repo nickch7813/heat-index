@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16181d">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/ch.css">
+<script src="../assets/ch.js" data-tool="bot"></script>
+<title>Paper trading bot</title>
+<style>
+:root{
+  --bg:#E9F1EF;--surface:#FFFFFF;--surface2:#F3F8F6;--line:#CFE0DC;--text:#0D2226;--muted:#4C6B66;
+  --gain:#07875A;--loss:#C23B2B;--amber:#9A6400;--gain-bg:rgba(7,135,90,.1);--loss-bg:rgba(194,59,43,.1);
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D2226;--surface:#12313A;--surface2:#0F2A31;--line:#1E4650;--text:#E6F0ED;--muted:#8FB0AA;
+  --gain:#4FE0A0;--loss:#FF7B6B;--amber:#F3B33D;--gain-bg:rgba(79,224,160,.12);--loss-bg:rgba(255,123,107,.12);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D2226;--surface:#12313A;--surface2:#0F2A31;--line:#1E4650;--text:#E6F0ED;--muted:#8FB0AA;
+  --gain:#4FE0A0;--loss:#FF7B6B;--amber:#F3B33D;--gain-bg:rgba(79,224,160,.12);--loss-bg:rgba(255,123,107,.12);color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;max-width:1180px;margin:0 auto;padding:16px 18px 4px}
+.brand{font-family:Unbounded,Manrope,sans-serif;font-weight:500;font-size:15px}
+.brand small{display:block;font-family:Manrope,sans-serif;font-size:12px;color:var(--muted);font-weight:500}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface)}
+.seg button{border:none;background:none;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--text);color:var(--bg)}
+.ghost{background:none;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13px}
+main{max-width:1180px;margin:0 auto;padding:8px 14px 24px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"hero" "st" "pf" "jr" "sc"}
+@media (min-width:960px){main{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);grid-template-areas:"hero jr" "st jr" "pf jr" "pf sc";align-items:start}}
+.hero{grid-area:hero;background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px 18px 16px}
+#st{grid-area:st}#pf{grid-area:pf}#jr{grid-area:jr}#sc{grid-area:sc}
+.lbl{color:var(--muted);font-size:13px;font-weight:500}
+.eqrow{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:2px}
+.eq{font-family:Unbounded,Manrope,sans-serif;font-weight:700;font-size:clamp(38px,9vw,60px);letter-spacing:-.02em;line-height:1.05}
+.ccy{font-family:Unbounded,Manrope,sans-serif;font-size:16px;color:var(--muted)}
+.pnl{font-weight:600;margin-top:4px}
+.up{color:var(--gain)}.down{color:var(--loss)}
+canvas#chart{display:block;width:100%;height:150px;margin:14px 0 8px}
+.split{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:6px 0 0;padding:12px 0 0;border-top:1px solid var(--line)}
+.split div dt{color:var(--muted);font-size:12px}.split div dd{margin:0;font-weight:700;font-size:15px}
+@media (max-width:420px){.split{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.status{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.dot.on{background:var(--gain);box-shadow:0 0 0 4px var(--gain-bg)}.dot.warn{background:var(--amber)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{border-radius:12px;padding:10px 14px;font-weight:600;background:var(--surface2);border:1px solid var(--line)}
+.btn.main{background:var(--text);color:var(--bg);border-color:var(--text)}
+.btn:disabled{opacity:.5;cursor:default}
+.thought{margin:14px 0 0;padding:12px 14px;border-radius:14px;background:var(--surface2);font-size:14px;border-left:3px solid var(--amber);min-height:46px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 16px 16px}
+.card h2{margin:2px 0 12px}
+.row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;align-items:center;margin-bottom:10px}
+@media (max-width:480px){.row{grid-template-columns:minmax(0,1fr);gap:6px}}
+.row>div:first-child{color:var(--muted);font-size:13px;font-weight:600}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts button{border:1px solid var(--line);background:var(--surface2);border-radius:10px;padding:6px 11px;font-size:13px;font-weight:600}
+.opts button small{color:var(--muted);font-weight:500;margin-left:4px}
+.opts button[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.opts button[aria-pressed="true"] small{color:var(--bg);opacity:.75}
+.note{margin:6px 0 0;font-size:13px;color:var(--muted)}
+h2{font-family:Unbounded,Manrope,sans-serif;font-weight:500;font-size:18px;margin:6px 4px 10px}
+.sub{color:var(--muted);font-size:13px;margin:-6px 4px 10px}
+.empty{color:var(--muted);padding:18px;border:1px dashed var(--line);border-radius:14px;text-align:center;font-size:14px}
+.pos{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.pos .r1{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.pos .r1 .l{display:flex;align-items:center;gap:8px}
+.coin{font-weight:700;font-size:17px}
+.pos .meta{color:var(--muted);font-size:13px;margin-top:2px}
+.range{position:relative;height:6px;border-radius:3px;margin:16px 0 6px;background:linear-gradient(90deg,var(--loss-bg),var(--surface2) 40%,var(--gain-bg))}
+.range i{position:absolute;top:-5px;width:4px;height:16px;border-radius:2px;background:var(--text);transform:translateX(-2px)}
+.range b{position:absolute;top:-3px;width:2px;height:12px;background:var(--muted)}
+.rl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.trade{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.trade .r1{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tag{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.tag.buy{background:var(--gain-bg);color:var(--gain)}.tag.sell{background:var(--loss-bg);color:var(--loss)}
+.tag.neutral{background:var(--surface2);color:var(--muted);border:1px solid var(--line)}
+.time{margin-left:auto;color:var(--muted);font-size:12px}
+.sum{margin:8px 0 0}
+details{margin-top:8px}
+summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--muted);list-style:none;padding:4px 0}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";display:inline-block;width:16px}
+details[open]>summary::before{content:"−"}
+.legend{font-size:12px;color:var(--muted);margin:2px 0 0}
+.fac{display:grid;grid-template-columns:40px 1fr;gap:4px 8px;font-size:14px;margin:6px 0 4px}
+.fac .p{font-weight:700;text-align:right}
+.lines{margin:6px 0 0;padding-left:18px;font-size:14px}.lines li{margin:3px 0}
+.scrow{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:6px}
+.scrow summary{display:grid;grid-template-columns:24px 84px minmax(0,1fr) 44px;align-items:center;gap:8px;color:var(--text);font-weight:600}
+.scrow summary::before{display:none}
+.rank{color:var(--muted);font-size:12px}
+.bar{position:relative;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.bar::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line)}
+.bar span{position:absolute;top:0;bottom:0;border-radius:4px}
+.score{text-align:right}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{font-size:12px;padding:3px 8px;border-radius:999px;background:var(--surface2);border:1px solid var(--line)}
+.chip.g{color:var(--gain);border-color:var(--gain)}.chip.r{color:var(--loss);border-color:var(--loss)}
+.held{display:block;font-size:11px;color:var(--amber);font-weight:600}
+.more{display:block;width:100%;margin-top:4px}
+footer{max-width:1180px;margin:0 auto;padding:0 18px 28px;color:var(--muted);font-size:12px}
+</style>
+<style id="ch-skin">
+body.ch-skin{background:var(--ch-bg);color:var(--ch-tx)}
+body.ch-skin :is(h1){font-size:20px!important;font-weight:500!important;letter-spacing:0!important;line-height:1.25!important}
+body.ch-skin :is(h2){font-weight:500!important;letter-spacing:0!important}
+body.ch-skin :is(h3){font-weight:500!important}
+body.ch-skin b, body.ch-skin strong{font-weight:600}
+body.ch-skin ::placeholder{color:var(--ch-t3)}
+
+html:root:root{--bg:var(--ch-bg);--surface:var(--ch-bg);--surface2:var(--ch-s1);--line:var(--ch-bd);--text:var(--ch-tx);--muted:var(--ch-t2);--gain:var(--ch-up);--loss:var(--ch-dn);--amber:var(--ch-warn);--gain-bg:var(--ch-upb);--loss-bg:var(--ch-dnb);--ch-w:1180px}
+body.ch-skin .top{padding-top:12px}
+body.ch-skin .brand{font-size:20px;font-weight:500}
+body.ch-skin .brand small{font-size:12px;font-weight:400}
+body.ch-skin :is(.hero,.card,.pos,.trade,.scrow){border-width:0.5px;border-radius:12px}
+body.ch-skin .hero{padding:16px 16px 14px}
+body.ch-skin :is(.eq,.ccy){font-family:inherit!important}
+body.ch-skin .eq{font-weight:600;font-size:clamp(32px,8vw,48px)}
+body.ch-skin h2{font-size:16px!important;margin:6px 2px 10px}
+body.ch-skin .seg{border:0.5px solid var(--ch-bd2);background:none;border-radius:8px;padding:0;overflow:hidden}
+body.ch-skin .seg button{border-radius:0;padding:5px 11px;font-weight:400}
+body.ch-skin .seg button[aria-pressed="true"]{background:var(--ch-acb);color:var(--ch-act);font-weight:500}
+body.ch-skin :is(.ghost,.btn,.opts button){background:none;border:0.5px solid var(--ch-bd2);border-radius:14px;color:var(--ch-t2);font-weight:400;font-size:13px;padding:5px 12px}
+body.ch-skin .btn.main{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+body.ch-skin .opts button[aria-pressed="true"]{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+body.ch-skin .opts button[aria-pressed="true"] small{color:var(--ch-act)}
+body.ch-skin .thought{border-radius:10px;border-left-color:var(--ch-ac)}
+body.ch-skin .coin{font-weight:500;font-size:15px}
+body.ch-skin .tag{font-weight:500;border-radius:6px}
+body.ch-skin .chip{border-width:0.5px}
+body.ch-skin .empty{border-width:0.5px;border-radius:12px}
+body.ch-skin .scrow .ch-links{margin:10px 0 2px}
+body.ch-skin footer#footer{padding-bottom:6px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span data-i="brand"></span><small id="brandSub"></small></div>
+  <div class="tools">
+    <div class="seg" role="group" id="exSeg"><button type="button" data-ex="binance">Binance</button><button type="button" data-ex="bybit">Bybit</button></div>
+    <div class="seg" role="group" id="langSeg"><button type="button" data-lang="uk">УКР</button><button type="button" data-lang="ru">РУС</button><button type="button" data-lang="en">ENG</button></div>
+    <button class="ghost" id="themeBtn" type="button" data-i="theme"></button>
+  </div>
+</header>
+
+<main>
+  <section class="hero" aria-live="polite">
+    <div class="lbl" data-i="eqLabel"></div>
+    <div class="eqrow"><span class="eq" id="eq">1 000,00</span><span class="ccy">USDT</span></div>
+    <div class="pnl" id="pnl"></div>
+    <canvas id="chart"></canvas>
+    <dl class="split">
+      <div><dt data-i="cash"></dt><dd id="cash">—</dd></div>
+      <div><dt data-i="inv"></dt><dd id="inv">—</dd></div>
+      <div><dt data-i="closed"></dt><dd id="ntr">—</dd></div>
+      <div><dt data-i="winners"></dt><dd id="wr">—</dd></div>
+    </dl>
+    <div class="status"><span class="dot" id="dot"></span><span id="status"></span></div>
+    <div class="controls">
+      <button class="btn main" id="runBtn" type="button"></button>
+      <button class="btn" id="scanBtn" type="button" data-i="scanNow"></button>
+      <button class="btn" id="resetBtn" type="button" data-i="reset"></button>
+    </div>
+    <p class="thought" id="thought"></p>
+  </section>
+
+  <section id="st" class="card">
+    <h2 data-i="stTitle"></h2>
+    <div class="row"><div data-i="mktL"></div>
+      <div class="opts" id="mktOpts"><button type="button" data-mkt="spot"><span data-i="spot"></span></button><button type="button" data-mkt="futures"><span data-i="futures"></span></button></div></div>
+    <div class="row"><div data-i="tfL"></div>
+      <div class="opts" id="tfOpts">
+        <button type="button" data-tf="scalp"><span data-i="tf_scalp"></span><small>5m</small></button>
+        <button type="button" data-tf="intra"><span data-i="tf_intra"></span><small>15m</small></button>
+        <button type="button" data-tf="swing"><span data-i="tf_swing"></span><small>1h</small></button>
+        <button type="button" data-tf="pos"><span data-i="tf_pos"></span><small>4h</small></button>
+      </div></div>
+    <div class="row fut"><div data-i="levL"></div>
+      <div class="opts" id="levOpts"><button type="button" data-lev="1">×1</button><button type="button" data-lev="2">×2</button><button type="button" data-lev="3">×3</button><button type="button" data-lev="5">×5</button><button type="button" data-lev="10">×10</button></div></div>
+    <div class="row fut"><div data-i="dirL"></div>
+      <div class="opts" id="dirOpts"><button type="button" data-dir="both"><span data-i="dir_both"></span></button><button type="button" data-dir="long"><span data-i="dir_long"></span></button><button type="button" data-dir="short"><span data-i="dir_short"></span></button></div></div>
+    <p class="note" id="stNote"></p>
+  </section>
+
+  <section id="pf"><h2 data-i="portfolio"></h2><div id="positions"></div></section>
+
+  <section id="jr">
+    <h2 data-i="journal"></h2>
+    <p class="sub" data-i="journalSub"></p>
+    <div id="trades"></div>
+  </section>
+
+  <section id="sc">
+    <h2 data-i="whatSees"></h2>
+    <p class="sub" id="scsub"></p>
+    <div id="scan"></div>
+  </section>
+</main>
+<footer id="footer"></footer>
+
+<script>
+"use strict";
+/* ===================== Мови ===================== */
+const tfOf = v => v.tf || ({s:"1h",m:"4h",l:"1d"})[v.h];
+const sc = s => (s>0?"+":s<0?"−":"") + Math.abs(s);
+const I18N = {
+uk:{
+  loc:"uk-UA", brand:"Бот-трейдер", brandSub:v=>`віртуальний рахунок: ${v.mkt} ${v.ex}, ${v.tf}`, theme:"Змінити тему",
+  exLabel:"Біржа", langLabel:"Мова", eqLabel:"Баланс рахунку зараз", fromStart:v=>`${sgn(v.d)} USDT (${pc(v.p)}) від старту`,
+  chartAria:"Графік балансу", chartStart:"старт 1000", cash:"Вільні USDT", inv:"У позиціях", closed:"Закрито угод", winners:"Прибуткових",
+  pause:"Поставити на паузу", run:"Запустити бота", scanNow:"Сканувати зараз", reset:"Почати з 1000 USDT",
+  confirmReset:v=>`Скинути рахунок (${v.mkt} ${v.ex}) і почати знову з 1000 USDT? Відкриті позиції буде анульовано.`,
+  stTitle:"Стратегія", mktL:"Ринок", spot:"Спот", futures:"Ф’ючерси", mktSpot:"спот", mktFut:"ф’ючерси",
+  tfL:"Таймфрейм", tf_scalp:"Скальпінг", tf_intra:"Інтрадей", tf_swing:"Свінг", tf_pos:"Позиційний",
+  levL:"Плече", dirL:"Напрямок", dir_both:"Лонг і шорт", dir_long:"Тільки лонг", dir_short:"Тільки шорт",
+  noteSpot:v=>`На споті бот лише купує монети (лонг). Шорт і плече доступні в режимі ф’ючерсів. Аналіз на ${v.b}, ${v.m} і ${v.h}, скан кожні ${v.s}. Спот і ф’ючерси мають окремі рахунки по 1000 USDT.`,
+  noteFut:v=>`Безстрокові ф’ючерси USDT-M: лонг і шорт із плечем, фандинг кожні 8 год, комісія ${v.fee}%. Аналіз на ${v.b}, ${v.m} і ${v.h}, скан кожні ${v.s}. Нове плече діє для наступних угод. Окремий рахунок 1000 USDT.`,
+  sec:"с", portfolio:"Портфель", journal:"Журнал угод", journalSub:"Кожна угода з поясненням: чому ця монета, чому цей напрямок і чому така сума",
+  whatSees:"Що бачить бот", scanSub:"Оцінка монет за всіма індикаторами, від −100 до +100",
+  scanSubFull:v=>`${v.n} найліквідніших пар до USDT на ${v.ex}, скан о ${tm(v.t)}. Сигнал від ±${v.th}, закриття при розвороті оцінки до ∓${v.sell}`,
+  emptyPos:v=>`Позицій немає, усі ${usd(v.cash)} USDT вільні. Бот купить, щойно оцінка монети перевищить +${v.th}.`,
+  emptyPosF:v=>`Позицій немає. Бот відкриє лонг при оцінці від +${v.th} або шорт від −${v.th}.`,
+  emptyTrades:"Угод ще немає. Перший скан ринку займає близько хвилини.", emptyScan:"Дані з’являться після першого скану.",
+  buy:"Купівля", sell:"Продаж", openLong:"Лонг", openShort:"Шорт", closeLong:"Закрито лонг", closeShort:"Закрито шорт",
+  whyCoin:v=>`Чому саме ${v.base}`, whyCoinS:v=>`Чому шорт ${v.base}`, whySize:"Чому на таку суму", details:"Деталі угоди",
+  facLegend:"Плюс означає аргумент за цю угоду, мінус означає аргумент проти",
+  showAll:v=>`Показати всі угоди (${v.n})`, showLess:"Показати менше", inPf:"у портфелі",
+  chipHeat:v=>`Перегрів ${v.tf}`, trendUp:"Тренд угору", trendDown:"Тренд униз", sigLong:"Сигнал: лонг", sigShort:"Сигнал: шорт",
+  chipFund:v=>`Фандинг ${pc(v.fr,3)}`, noSignal:"Жоден індикатор не дає сигналу",
+  posMeta:v=>`${qf(v.qty)} ${v.base} на ${usd(v.val)} USDT. Вхід ${px(v.entry)}, зараз ${px(v.now)}. Тримаю ${dur(v.held)}, оцінка ${sc(v.score)}`,
+  posMetaF:v=>`Маржа ${usd(v.margin)} USDT, обсяг ${usd(v.notional)} USDT. Вхід ${px(v.entry)}, зараз ${px(v.now)}, ліквідація ≈ ${px(v.liq)}. Тримаю ${dur(v.held)}, оцінка ${sc(v.score)}`,
+  stopL:v=>`Стоп ${px(v.p)}${v.be?" (беззбиток)":""}`, target:v=>`Ціль ${px(v.p)}`, rangeAria:"Ціна між стопом і ціллю",
+  footer:v=>`Симуляція: угоди віртуальні, реальні гроші не задіяні, ціни й дані беруться з публічного API ${v.ex}. Кожна біржа й кожен ринок мають окремий віртуальний рахунок. Ф’ючерси з плечем можуть швидко знищити депозит. Це не фінансова порада.`,
+  uMin:"хв", uH:"год", uD:"дн",
+  sPaused:"На паузі.", sTrading:"Торгує.", sLive:"Ціни онлайн.", sPoll:"Ціни оновлюються кожні 15 с.", sScanning:"Сканую ринок…",
+  sNext:v=>`Наступний скан через ${v.t}`, sLast:v=>`, останній о ${tm(v.t)}`,
+  pTickers:v=>`Отримую список монет ${v.ex}…`, pCalc:v=>`Рахую індикатори: ${v.i} із ${v.n} монет…`, pBook:"Дивлюсь, що роблять кити в стакані…", wake:"Бот прокидається…",
+  hn_s:"короткий", hn_m:"середній", hn_l:"довгий",
+  heatStrong:v=>`Індекс перегріву (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: сильна перепроданість, зелена зона`,
+  heatCheap:v=>`Індекс перегріву (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: монета дешевша за звичне`,
+  heatHot:v=>`Індекс перегріву (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: червона зона, перегрів`,
+  heatWarm:v=>`Індекс перегріву (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: монета вже розігріта`,
+  conf:v=>`Збіг сигналів: перепроданість одночасно на ${v.n} горизонтах із 3, сигнал підтверджено`,
+  confHot:v=>`Збіг сигналів: перегрів одночасно на ${v.n} горизонтах із 3`,
+  allHot:"Перегрів одночасно на всіх трьох горизонтах",
+  rsi1hLow:v=>`RSI ${v.tf||"1h"} = ${r0(v.v)}: перепроданість`, rsi1hHigh:v=>`RSI ${v.tf||"1h"} = ${r0(v.v)}: перекупленість`,
+  rsi1dLow:v=>`RSI ${v.tf||"1d"} = ${r0(v.v)}: на старшому таймфреймі монета дешева`, rsi1dHigh:v=>`RSI ${v.tf||"1d"} = ${r0(v.v)}: перегрів на старшому таймфреймі`,
+  volUp:v=>`Сплеск об’єму: остання свічка ${v.tf||"1h"} в ${num(v.r)} раза більша за середню, свічка зелена, заходять покупці`,
+  volDown:v=>`Сплеск об’єму в ${num(v.r)} раза на червоній свічці ${v.tf||"1h"}: тиснуть продавці`,
+  young:v=>`Монета надто молода для тренду на ${v.tf||"1d"} (менше 50 свічок історії)`,
+  trendUpD:v=>`Трендовий фільтр: ціна вище EMA50 на графіку ${v.tf||"1d"} (${pc(v.d,1)}), висхідний тренд`,
+  trendDownD:v=>`Трендовий фільтр: ціна нижче EMA50 на графіку ${v.tf||"1d"} (${pc(v.d,1)}), низхідний тренд`,
+  emaUp:v=>`На графіку ${v.tf||"1h"} EMA20 вище EMA50: короткий тренд угору`, emaDown:v=>`На графіку ${v.tf||"1h"} EMA20 нижче EMA50: короткий тренд униз`,
+  fomo:v=>`За добу вже ${pc(v.ch,1)}: не доганяю ракету`, knife:v=>`За добу ${pc(v.ch,1)}: ловити падаючий ніж ризиковано`,
+  knifeShort:v=>`За добу ${pc(v.ch,1)}: шортити після такого падіння запізно, високий ризик відскоку`,
+  ewCorr:v=>`Хвилі Еліотта: після імпульсу вгору ${pc(v.imp,1)} іде корекція на ${r0(v.r*100)}% (зона Фібоначчі 38–79%), мінімум вище попереднього і ціна вже відскакує. Схоже на кінець хвилі 2 або 4 перед новим рухом угору`,
+  ewNew:v=>`Хвилі Еліотта: корекція на ${r0(v.r*100)}% завершилась вищим мінімумом, почалась нова імпульсна хвиля (ціна ще нижче попереднього піку ${px(v.peak)})`,
+  ewExt:v=>`Хвилі Еліотта: поточна хвиля вгору в ${num(v.ratio)} раза довша за попередню після серії вищих піків. Схоже на розширену 5-ту хвилю, після якої часто буває розворот`,
+  ewDown:"Хвилі Еліотта: три нижчі піки поспіль, структура низхідна, імпульс угору не підтверджено",
+  ewCorrS:v=>`Хвилі Еліотта: після імпульсу вниз ${pc(v.imp,1)} іде відскок на ${r0(v.r*100)}% (зона Фібоначчі 38–79%), максимум нижче попереднього і ціна вже розвертається вниз. Схоже на кінець корекції перед новим падінням`,
+  ewNewS:v=>`Хвилі Еліотта: відскок на ${r0(v.r*100)}% завершився нижчим максимумом, почалась нова імпульсна хвиля вниз (ціна ще вище попереднього мінімуму ${px(v.peak)})`,
+  ewExtS:v=>`Хвилі Еліотта: поточна хвиля вниз у ${num(v.ratio)} раза довша за попередню після серії нижчих мінімумів. Схоже на розширену 5-ту хвилю падіння, після якої часто буває відскок`,
+  ewUpS:"Хвилі Еліотта: три вищі мінімуми поспіль, структура висхідна",
+  fundNeg:v=>`Фандинг ф’ючерсів ${pc(v.fr,3)}: шорти переплачують, ліквідації шортів можуть підштовхнути ціну вгору`,
+  fundPos:v=>`Фандинг ф’ючерсів ${pc(v.fr,3)}: лонги перегріті, ризик каскаду ліквідацій лонгів`,
+  whaleBid:v=>`Кити в стакані: заявок на покупку в ${num(v.r)} раза більше, ніж на продаж, ціну підпирають`,
+  whaleAsk:v=>`Кити в стакані: продавців у ${num(v.r)} раза більше, ніж покупців`,
+  wallBid:v=>`Стінка на покупку ${usd(v.val)} USDT на ${px(v.price)} (${pc(v.d,1)}): підтримка знизу`,
+  wallAsk:v=>`Стінка на продаж ${usd(v.val)} USDT на ${px(v.price)} (${pc(v.d,1)}): обмежує ріст`,
+  why:v=>`Оцінка ${sc(v.score)} при порозі ${(v.dir||1)>0?"+":"−"}${v.th}: ${(v.dir||1)>0?"бичачий":"ведмежий"} сигнал. ${v.rank===1?"Найсильніший":"№"+v.rank} серед ${v.n} монет у цьому скані.`,
+  szBase:v=>`${v.fut?"Маржа: базово":"Базово"} 5% капіталу + ${num(v.extra*100)}% за силу сигналу = ${num(v.pct*100)}% від ${usd(v.eq)} USDT`,
+  szLev:v=>`Плече ×${v.lev}: обсяг позиції дорівнює маржі × ${v.lev}`,
+  szLevCut:v=>`Плече зменшено з ×${v.from} до ×${v.to}: стоп (${pc(v.d,1)} від входу) має бути значно ближче за ціну ліквідації`,
+  szLimRisk:"Суму зменшено: ліміт ризику 2% капіталу на угоду, стоп широкий, тому беру менше",
+  szLimCash:"Суму зменшено: залишок вільних коштів (резерв 10% рахунку не чіпаю)",
+  szTotal:v=>v.fut?`Підсумок: ${v.dir>0?"лонг":"шорт"} ${qf(v.qty)} ${v.base} по ${px(v.price)}, маржа ${usd(v.margin)} USDT (${num(v.pctEq*100)}% рахунку), обсяг ${usd(v.notional)} USDT`
+    :`Підсумок: ${usd(v.size)} USDT (${num(v.pctEq*100)}% рахунку), куплено ${qf(v.qty)} ${v.base} по ${px(v.price)}`,
+  szStop:v=>`Стоп-лосс 2×ATR${v.tf?" ("+v.tf+")":""}: ${px(v.stop)} (${pc(-(v.dir||1)*v.d,1)}). Якщо спрацює, втрата ≈ ${usd(v.risk)} USDT, це ${num(v.riskPct*100,2)}% рахунку`,
+  szLiq:v=>`Ціна ліквідації ≈ ${px(v.liq)} (${pc(v.d,1)}), стоп спрацює значно раніше`,
+  szTarget:v=>`Ціль: ${px(v.tp)} (${pc(v.d,1)}), прибуток до ризику 1,5 : 1. Після руху на 1,5 ATR у мій бік стоп переходить у беззбиток`,
+  szFee:v=>`Комісія ${v.ex} ${num((v.rate||0.001)*100,3)}%: ${usd(v.fee)} USDT`,
+  szFund:v=>`Фандинг зараз ${pc(v.fr,4)}: ${v.pay>0?"сплачуватиму":"отримуватиму"} ≈ ${usd(Math.abs(v.pay))} USDT кожні 8 год`,
+  rStop:"Спрацював стоп-лосс", rBE:"Стоп у беззбитку", rTarget:"Досягнуто ціль", rFlip:"Індикатори розвернулись", rIdle:"Позиція простоює", rLiq:"Ліквідація",
+  dStop:v=>`Ціна дійшла до ${px(v.stop)} (2×ATR проти позиції). Сценарій не спрацював, виходжу із запланованою втратою, щоб не втратити більше.`,
+  dBE:v=>`Ціна повернулась до стопу ${px(v.stop)}, який раніше перенесено в беззбиток. Прибуток зафіксовано, хай і невеликий.`,
+  dTarget:v=>`Ціна дійшла до цілі ${px(v.tp)} (3×ATR у мій бік), фіксую прибуток.`,
+  dFlip:v=>`Оцінка змінилась до ${sc(v.score)} (поріг закриття ${sc(v.th)}). Головне: ${v.F.map(ftxt).join("; ")}.`,
+  dIdle:"Занадто довго без помітного прибутку для цього таймфрейму, звільняю гроші під сильніші сигнали.",
+  dLiq:v=>`Ціна дійшла до ціни ліквідації ${px(v.liq)} раніше, ніж спрацював стоп (різкий стрибок). Маржу втрачено.`,
+  dEntryExit:v=>`Вхід ${px(v.e)}, вихід ${px(v.x)}, тримав ${dur(v.held)}`, dGot:v=>`Отримано ${usd(v.v)} USDT після комісії ${usd(v.fee)} USDT`,
+  dFut:v=>`Плече ×${v.lev}, маржа ${usd(v.margin)} USDT, результат ${pc(v.roe)} від маржі`,
+  dCosts:v=>`Комісії ${usd(v.fees)} USDT, фандинг ${sgn(-v.fund)} USDT`,
+  lBuy:v=>`Купив ${v.base} на ${usd(v.size)} USDT: оцінка ${sc(v.score)}, індикаторів «за»: ${v.n}`,
+  lOpen:v=>`Відкрив ${v.dir>0?"лонг":"шорт"} ${v.base} ×${v.lev}: обсяг ${usd(v.notional)} USDT, маржа ${usd(v.margin)}, оцінка ${sc(v.score)}`,
+  lSell:v=>`Продав ${v.base}: ${T(v.reason).toLowerCase()}, результат ${sgn(v.pnl)} USDT (${pc(v.pct)})`,
+  lClose:v=>`Закрив ${v.dir>0?"лонг":"шорт"} ${v.base}: ${T(v.reason).toLowerCase()}, результат ${sgn(v.pnl)} USDT (${pc(v.pct)} від маржі)`,
+  lBE:v=>`${v.base}: ціна пройшла 1,5 ATR у мій бік, переніс стоп у беззбиток (${px(v.stop)})`,
+  lNoCash:v=>`${v.base}: сильний сигнал (${sc(v.score)}), але вільних коштів замало для нової позиції`,
+  lMax:v=>`${v.base} має оцінку ${sc(v.score)}, але вже ${v.max} позицій, більше не відкриваю`,
+  lTrend:v=>`${v.base} має оцінку ${sc(v.score)}, але тренд униз, трендовий фільтр забороняє лонг`,
+  lTrendS:v=>`${v.base} має оцінку ${sc(v.score)}, але тренд угору, трендовий фільтр забороняє шорт`,
+  lWait:v=>`Скан завершено: найсильніший сигнал у ${v.base} (${sc(v.score)}), поріг ±${v.th}. Чекаю кращого моменту`,
+  lPausedScan:"Скан завершено. Бот на паузі, угоди не відкриваю",
+  lFund:v=>`Фандинг по ${v.n} позиціях: ${sgn(-v.total)} USDT`,
+  lErr:v=>`Не вдалося отримати дані ${v.ex}: ${v.msg}. Спробую на наступному скані`,
+  lRun:"Бота запущено", lPause:"Бота поставлено на паузу: ціни оновлюються, нових угод не буде", lReset:"Рахунок скинуто: 1000 USDT"
+},
+ru:{
+  loc:"ru-RU", brand:"Бот-трейдер", brandSub:v=>`виртуальный счёт: ${v.mkt} ${v.ex}, ${v.tf}`, theme:"Сменить тему",
+  exLabel:"Биржа", langLabel:"Язык", eqLabel:"Баланс счёта сейчас", fromStart:v=>`${sgn(v.d)} USDT (${pc(v.p)}) от старта`,
+  chartAria:"График баланса", chartStart:"старт 1000", cash:"Свободные USDT", inv:"В позициях", closed:"Закрыто сделок", winners:"Прибыльных",
+  pause:"Поставить на паузу", run:"Запустить бота", scanNow:"Сканировать сейчас", reset:"Начать с 1000 USDT",
+  confirmReset:v=>`Сбросить счёт (${v.mkt} ${v.ex}) и начать заново с 1000 USDT? Открытые позиции будут аннулированы.`,
+  stTitle:"Стратегия", mktL:"Рынок", spot:"Спот", futures:"Фьючерсы", mktSpot:"спот", mktFut:"фьючерсы",
+  tfL:"Таймфрейм", tf_scalp:"Скальпинг", tf_intra:"Интрадей", tf_swing:"Свинг", tf_pos:"Позиционный",
+  levL:"Плечо", dirL:"Направление", dir_both:"Лонг и шорт", dir_long:"Только лонг", dir_short:"Только шорт",
+  noteSpot:v=>`На споте бот только покупает монеты (лонг). Шорт и плечо доступны в режиме фьючерсов. Анализ на ${v.b}, ${v.m} и ${v.h}, скан каждые ${v.s}. У спота и фьючерсов отдельные счета по 1000 USDT.`,
+  noteFut:v=>`Бессрочные фьючерсы USDT-M: лонг и шорт с плечом, фандинг каждые 8 ч, комиссия ${v.fee}%. Анализ на ${v.b}, ${v.m} и ${v.h}, скан каждые ${v.s}. Новое плечо действует для следующих сделок. Отдельный счёт 1000 USDT.`,
+  sec:"с", portfolio:"Портфель", journal:"Журнал сделок", journalSub:"Каждая сделка с объяснением: почему эта монета, почему это направление и почему такая сумма",
+  whatSees:"Что видит бот", scanSub:"Оценка монет по всем индикаторам, от −100 до +100",
+  scanSubFull:v=>`${v.n} самых ликвидных пар к USDT на ${v.ex}, скан в ${tm(v.t)}. Сигнал от ±${v.th}, закрытие при развороте оценки до ∓${v.sell}`,
+  emptyPos:v=>`Позиций нет, все ${usd(v.cash)} USDT свободны. Бот купит, как только оценка монеты превысит +${v.th}.`,
+  emptyPosF:v=>`Позиций нет. Бот откроет лонг при оценке от +${v.th} или шорт от −${v.th}.`,
+  emptyTrades:"Сделок пока нет. Первый скан рынка занимает около минуты.", emptyScan:"Данные появятся после первого скана.",
+  buy:"Покупка", sell:"Продажа", openLong:"Лонг", openShort:"Шорт", closeLong:"Закрыт лонг", closeShort:"Закрыт шорт",
+  whyCoin:v=>`Почему именно ${v.base}`, whyCoinS:v=>`Почему шорт ${v.base}`, whySize:"Почему на такую сумму", details:"Детали сделки",
+  facLegend:"Плюс означает аргумент за эту сделку, минус означает аргумент против",
+  showAll:v=>`Показать все сделки (${v.n})`, showLess:"Показать меньше", inPf:"в портфеле",
+  chipHeat:v=>`Перегрев ${v.tf}`, trendUp:"Тренд вверх", trendDown:"Тренд вниз", sigLong:"Сигнал: лонг", sigShort:"Сигнал: шорт",
+  chipFund:v=>`Фандинг ${pc(v.fr,3)}`, noSignal:"Ни один индикатор не даёт сигнала",
+  posMeta:v=>`${qf(v.qty)} ${v.base} на ${usd(v.val)} USDT. Вход ${px(v.entry)}, сейчас ${px(v.now)}. Держу ${dur(v.held)}, оценка ${sc(v.score)}`,
+  posMetaF:v=>`Маржа ${usd(v.margin)} USDT, объём ${usd(v.notional)} USDT. Вход ${px(v.entry)}, сейчас ${px(v.now)}, ликвидация ≈ ${px(v.liq)}. Держу ${dur(v.held)}, оценка ${sc(v.score)}`,
+  stopL:v=>`Стоп ${px(v.p)}${v.be?" (безубыток)":""}`, target:v=>`Цель ${px(v.p)}`, rangeAria:"Цена между стопом и целью",
+  footer:v=>`Симуляция: сделки виртуальные, реальные деньги не задействованы, цены и данные берутся из публичного API ${v.ex}. У каждой биржи и каждого рынка отдельный виртуальный счёт. Фьючерсы с плечом могут быстро уничтожить депозит. Это не финансовый совет.`,
+  uMin:"мин", uH:"ч", uD:"дн",
+  sPaused:"На паузе.", sTrading:"Торгует.", sLive:"Цены онлайн.", sPoll:"Цены обновляются каждые 15 с.", sScanning:"Сканирую рынок…",
+  sNext:v=>`Следующий скан через ${v.t}`, sLast:v=>`, последний в ${tm(v.t)}`,
+  pTickers:v=>`Получаю список монет ${v.ex}…`, pCalc:v=>`Считаю индикаторы: ${v.i} из ${v.n} монет…`, pBook:"Смотрю, что делают киты в стакане…", wake:"Бот просыпается…",
+  hn_s:"короткий", hn_m:"средний", hn_l:"длинный",
+  heatStrong:v=>`Индекс перегрева (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: сильная перепроданность, зелёная зона`,
+  heatCheap:v=>`Индекс перегрева (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: монета дешевле обычного`,
+  heatHot:v=>`Индекс перегрева (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: красная зона, перегрев`,
+  heatWarm:v=>`Индекс перегрева (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: монета уже разогрета`,
+  conf:v=>`Совпадение сигналов: перепроданность сразу на ${v.n} горизонтах из 3, сигнал подтверждён`,
+  confHot:v=>`Совпадение сигналов: перегрев сразу на ${v.n} горизонтах из 3`,
+  allHot:"Перегрев одновременно на всех трёх горизонтах",
+  rsi1hLow:v=>`RSI ${v.tf||"1h"} = ${r0(v.v)}: перепроданность`, rsi1hHigh:v=>`RSI ${v.tf||"1h"} = ${r0(v.v)}: перекупленность`,
+  rsi1dLow:v=>`RSI ${v.tf||"1d"} = ${r0(v.v)}: на старшем таймфрейме монета дешёвая`, rsi1dHigh:v=>`RSI ${v.tf||"1d"} = ${r0(v.v)}: перегрев на старшем таймфрейме`,
+  volUp:v=>`Всплеск объёма: последняя свеча ${v.tf||"1h"} в ${num(v.r)} раза больше средней, свеча зелёная, заходят покупатели`,
+  volDown:v=>`Всплеск объёма в ${num(v.r)} раза на красной свече ${v.tf||"1h"}: давят продавцы`,
+  young:v=>`Монета слишком молодая для тренда на ${v.tf||"1d"} (меньше 50 свечей истории)`,
+  trendUpD:v=>`Трендовый фильтр: цена выше EMA50 на графике ${v.tf||"1d"} (${pc(v.d,1)}), восходящий тренд`,
+  trendDownD:v=>`Трендовый фильтр: цена ниже EMA50 на графике ${v.tf||"1d"} (${pc(v.d,1)}), нисходящий тренд`,
+  emaUp:v=>`На графике ${v.tf||"1h"} EMA20 выше EMA50: короткий тренд вверх`, emaDown:v=>`На графике ${v.tf||"1h"} EMA20 ниже EMA50: короткий тренд вниз`,
+  fomo:v=>`За сутки уже ${pc(v.ch,1)}: не догоняю ракету`, knife:v=>`За сутки ${pc(v.ch,1)}: ловить падающий нож рискованно`,
+  knifeShort:v=>`За сутки ${pc(v.ch,1)}: шортить после такого падения поздно, высокий риск отскока`,
+  ewCorr:v=>`Волны Эллиотта: после импульса вверх ${pc(v.imp,1)} идёт коррекция на ${r0(v.r*100)}% (зона Фибоначчи 38–79%), минимум выше предыдущего, и цена уже отскакивает. Похоже на конец волны 2 или 4 перед новым движением вверх`,
+  ewNew:v=>`Волны Эллиотта: коррекция на ${r0(v.r*100)}% завершилась более высоким минимумом, началась новая импульсная волна (цена ещё ниже предыдущего пика ${px(v.peak)})`,
+  ewExt:v=>`Волны Эллиотта: текущая волна вверх в ${num(v.ratio)} раза длиннее предыдущей после серии более высоких пиков. Похоже на растянутую 5-ю волну, после которой часто бывает разворот`,
+  ewDown:"Волны Эллиотта: три понижающихся пика подряд, структура нисходящая, импульс вверх не подтверждён",
+  ewCorrS:v=>`Волны Эллиотта: после импульса вниз ${pc(v.imp,1)} идёт отскок на ${r0(v.r*100)}% (зона Фибоначчи 38–79%), максимум ниже предыдущего, и цена уже разворачивается вниз. Похоже на конец коррекции перед новым падением`,
+  ewNewS:v=>`Волны Эллиотта: отскок на ${r0(v.r*100)}% завершился более низким максимумом, началась новая импульсная волна вниз (цена ещё выше предыдущего минимума ${px(v.peak)})`,
+  ewExtS:v=>`Волны Эллиотта: текущая волна вниз в ${num(v.ratio)} раза длиннее предыдущей после серии более низких минимумов. Похоже на растянутую 5-ю волну падения, после которой часто бывает отскок`,
+  ewUpS:"Волны Эллиотта: три повышающихся минимума подряд, структура восходящая",
+  fundNeg:v=>`Фандинг фьючерсов ${pc(v.fr,3)}: шорты переплачивают, ликвидации шортов могут подтолкнуть цену вверх`,
+  fundPos:v=>`Фандинг фьючерсов ${pc(v.fr,3)}: лонги перегреты, риск каскада ликвидаций лонгов`,
+  whaleBid:v=>`Киты в стакане: заявок на покупку в ${num(v.r)} раза больше, чем на продажу, цену подпирают`,
+  whaleAsk:v=>`Киты в стакане: продавцов в ${num(v.r)} раза больше, чем покупателей`,
+  wallBid:v=>`Стена на покупку ${usd(v.val)} USDT на ${px(v.price)} (${pc(v.d,1)}): поддержка снизу`,
+  wallAsk:v=>`Стена на продажу ${usd(v.val)} USDT на ${px(v.price)} (${pc(v.d,1)}): ограничивает рост`,
+  why:v=>`Оценка ${sc(v.score)} при пороге ${(v.dir||1)>0?"+":"−"}${v.th}: ${(v.dir||1)>0?"бычий":"медвежий"} сигнал. ${v.rank===1?"Самый сильный":"№"+v.rank} среди ${v.n} монет в этом скане.`,
+  szBase:v=>`${v.fut?"Маржа: базово":"Базово"} 5% капитала + ${num(v.extra*100)}% за силу сигнала = ${num(v.pct*100)}% от ${usd(v.eq)} USDT`,
+  szLev:v=>`Плечо ×${v.lev}: объём позиции равен марже × ${v.lev}`,
+  szLevCut:v=>`Плечо уменьшено с ×${v.from} до ×${v.to}: стоп (${pc(v.d,1)} от входа) должен быть заметно ближе цены ликвидации`,
+  szLimRisk:"Сумма уменьшена: лимит риска 2% капитала на сделку, стоп широкий, поэтому беру меньше",
+  szLimCash:"Сумма уменьшена: остаток свободных средств (резерв 10% счёта не трогаю)",
+  szTotal:v=>v.fut?`Итог: ${v.dir>0?"лонг":"шорт"} ${qf(v.qty)} ${v.base} по ${px(v.price)}, маржа ${usd(v.margin)} USDT (${num(v.pctEq*100)}% счёта), объём ${usd(v.notional)} USDT`
+    :`Итог: ${usd(v.size)} USDT (${num(v.pctEq*100)}% счёта), куплено ${qf(v.qty)} ${v.base} по ${px(v.price)}`,
+  szStop:v=>`Стоп-лосс 2×ATR${v.tf?" ("+v.tf+")":""}: ${px(v.stop)} (${pc(-(v.dir||1)*v.d,1)}). Если сработает, потеря ≈ ${usd(v.risk)} USDT, это ${num(v.riskPct*100,2)}% счёта`,
+  szLiq:v=>`Цена ликвидации ≈ ${px(v.liq)} (${pc(v.d,1)}), стоп сработает значительно раньше`,
+  szTarget:v=>`Цель: ${px(v.tp)} (${pc(v.d,1)}), прибыль к риску 1,5 : 1. После движения на 1,5 ATR в мою сторону стоп переносится в безубыток`,
+  szFee:v=>`Комиссия ${v.ex} ${num((v.rate||0.001)*100,3)}%: ${usd(v.fee)} USDT`,
+  szFund:v=>`Фандинг сейчас ${pc(v.fr,4)}: ${v.pay>0?"буду платить":"буду получать"} ≈ ${usd(Math.abs(v.pay))} USDT каждые 8 ч`,
+  rStop:"Сработал стоп-лосс", rBE:"Стоп в безубытке", rTarget:"Цель достигнута", rFlip:"Индикаторы развернулись", rIdle:"Позиция простаивает", rLiq:"Ликвидация",
+  dStop:v=>`Цена дошла до ${px(v.stop)} (2×ATR против позиции). Сценарий не сработал, выхожу с запланированным убытком, чтобы не потерять больше.`,
+  dBE:v=>`Цена вернулась к стопу ${px(v.stop)}, ранее перенесённому в безубыток. Прибыль зафиксирована, пусть и небольшая.`,
+  dTarget:v=>`Цена дошла до цели ${px(v.tp)} (3×ATR в мою сторону), фиксирую прибыль.`,
+  dFlip:v=>`Оценка изменилась до ${sc(v.score)} (порог закрытия ${sc(v.th)}). Главное: ${v.F.map(ftxt).join("; ")}.`,
+  dIdle:"Слишком долго без заметной прибыли для этого таймфрейма, освобождаю деньги под более сильные сигналы.",
+  dLiq:v=>`Цена дошла до цены ликвидации ${px(v.liq)} раньше, чем сработал стоп (резкий скачок). Маржа потеряна.`,
+  dEntryExit:v=>`Вход ${px(v.e)}, выход ${px(v.x)}, держал ${dur(v.held)}`, dGot:v=>`Получено ${usd(v.v)} USDT после комиссии ${usd(v.fee)} USDT`,
+  dFut:v=>`Плечо ×${v.lev}, маржа ${usd(v.margin)} USDT, результат ${pc(v.roe)} от маржи`,
+  dCosts:v=>`Комиссии ${usd(v.fees)} USDT, фандинг ${sgn(-v.fund)} USDT`,
+  lBuy:v=>`Купил ${v.base} на ${usd(v.size)} USDT: оценка ${sc(v.score)}, индикаторов «за»: ${v.n}`,
+  lOpen:v=>`Открыл ${v.dir>0?"лонг":"шорт"} ${v.base} ×${v.lev}: объём ${usd(v.notional)} USDT, маржа ${usd(v.margin)}, оценка ${sc(v.score)}`,
+  lSell:v=>`Продал ${v.base}: ${T(v.reason).toLowerCase()}, результат ${sgn(v.pnl)} USDT (${pc(v.pct)})`,
+  lClose:v=>`Закрыл ${v.dir>0?"лонг":"шорт"} ${v.base}: ${T(v.reason).toLowerCase()}, результат ${sgn(v.pnl)} USDT (${pc(v.pct)} от маржи)`,
+  lBE:v=>`${v.base}: цена прошла 1,5 ATR в мою сторону, перенёс стоп в безубыток (${px(v.stop)})`,
+  lNoCash:v=>`${v.base}: сильный сигнал (${sc(v.score)}), но свободных средств мало для новой позиции`,
+  lMax:v=>`У ${v.base} оценка ${sc(v.score)}, но уже ${v.max} позиций, больше не открываю`,
+  lTrend:v=>`У ${v.base} оценка ${sc(v.score)}, но тренд вниз, трендовый фильтр запрещает лонг`,
+  lTrendS:v=>`У ${v.base} оценка ${sc(v.score)}, но тренд вверх, трендовый фильтр запрещает шорт`,
+  lWait:v=>`Скан завершён: самый сильный сигнал у ${v.base} (${sc(v.score)}), порог ±${v.th}. Жду лучшего момента`,
+  lPausedScan:"Скан завершён. Бот на паузе, сделки не открываю",
+  lFund:v=>`Фандинг по ${v.n} позициям: ${sgn(-v.total)} USDT`,
+  lErr:v=>`Не удалось получить данные ${v.ex}: ${v.msg}. Попробую на следующем скане`,
+  lRun:"Бот запущен", lPause:"Бот на паузе: цены обновляются, новых сделок не будет", lReset:"Счёт сброшен: 1000 USDT"
+},
+en:{
+  loc:"en-US", brand:"Trading bot", brandSub:v=>`paper account: ${v.ex} ${v.mkt}, ${v.tf}`, theme:"Switch theme",
+  exLabel:"Exchange", langLabel:"Language", eqLabel:"Account balance now", fromStart:v=>`${sgn(v.d)} USDT (${pc(v.p)}) since start`,
+  chartAria:"Balance chart", chartStart:"start 1000", cash:"Free USDT", inv:"In positions", closed:"Closed trades", winners:"Profitable",
+  pause:"Pause the bot", run:"Start the bot", scanNow:"Scan now", reset:"Restart from 1000 USDT",
+  confirmReset:v=>`Reset the ${v.ex} ${v.mkt} account and start over from 1000 USDT? Open positions will be discarded.`,
+  stTitle:"Strategy", mktL:"Market", spot:"Spot", futures:"Futures", mktSpot:"spot", mktFut:"futures",
+  tfL:"Timeframe", tf_scalp:"Scalping", tf_intra:"Intraday", tf_swing:"Swing", tf_pos:"Position",
+  levL:"Leverage", dirL:"Direction", dir_both:"Long and short", dir_long:"Long only", dir_short:"Short only",
+  noteSpot:v=>`On spot the bot only buys coins (long). Shorts and leverage are available in futures mode. Analysis on ${v.b}, ${v.m} and ${v.h}, scan every ${v.s}. Spot and futures have separate 1000 USDT accounts.`,
+  noteFut:v=>`USDT-M perpetual futures: long and short with leverage, funding every 8 h, ${v.fee}% fee. Analysis on ${v.b}, ${v.m} and ${v.h}, scan every ${v.s}. New leverage applies to the next trades. Separate 1000 USDT account.`,
+  sec:"s", portfolio:"Portfolio", journal:"Trade journal", journalSub:"Every trade explained: why this coin, why this direction and why this amount",
+  whatSees:"What the bot sees", scanSub:"Coins scored on all indicators, from −100 to +100",
+  scanSubFull:v=>`${v.n} most liquid USDT pairs on ${v.ex}, scanned at ${tm(v.t)}. Signal from ±${v.th}, positions close when the score flips to ∓${v.sell}`,
+  emptyPos:v=>`No positions, all ${usd(v.cash)} USDT is free. The bot buys as soon as a coin scores above +${v.th}.`,
+  emptyPosF:v=>`No positions. The bot opens a long at a score of +${v.th} or higher, or a short at −${v.th} or lower.`,
+  emptyTrades:"No trades yet. The first market scan takes about a minute.", emptyScan:"Data will appear after the first scan.",
+  buy:"Buy", sell:"Sell", openLong:"Long", openShort:"Short", closeLong:"Long closed", closeShort:"Short closed",
+  whyCoin:v=>`Why ${v.base}`, whyCoinS:v=>`Why short ${v.base}`, whySize:"Why this amount", details:"Trade details",
+  facLegend:"Plus is an argument for this trade, minus is an argument against it",
+  showAll:v=>`Show all trades (${v.n})`, showLess:"Show less", inPf:"held",
+  chipHeat:v=>`Heat ${v.tf}`, trendUp:"Uptrend", trendDown:"Downtrend", sigLong:"Signal: long", sigShort:"Signal: short",
+  chipFund:v=>`Funding ${pc(v.fr,3)}`, noSignal:"No indicator gives a signal",
+  posMeta:v=>`${qf(v.qty)} ${v.base} worth ${usd(v.val)} USDT. Entry ${px(v.entry)}, now ${px(v.now)}. Held ${dur(v.held)}, score ${sc(v.score)}`,
+  posMetaF:v=>`Margin ${usd(v.margin)} USDT, size ${usd(v.notional)} USDT. Entry ${px(v.entry)}, now ${px(v.now)}, liquidation ≈ ${px(v.liq)}. Held ${dur(v.held)}, score ${sc(v.score)}`,
+  stopL:v=>`Stop ${px(v.p)}${v.be?" (breakeven)":""}`, target:v=>`Target ${px(v.p)}`, rangeAria:"Price between stop and target",
+  footer:v=>`Simulation: trades are virtual, no real money is involved, prices and data come from the public ${v.ex} API. Each exchange and market has its own paper account. Leveraged futures can wipe out a deposit fast. This is not financial advice.`,
+  uMin:"min", uH:"h", uD:"d",
+  sPaused:"Paused.", sTrading:"Trading.", sLive:"Live prices.", sPoll:"Prices update every 15 s.", sScanning:"Scanning the market…",
+  sNext:v=>`Next scan in ${v.t}`, sLast:v=>`, last at ${tm(v.t)}`,
+  pTickers:v=>`Fetching the ${v.ex} coin list…`, pCalc:v=>`Calculating indicators: ${v.i} of ${v.n} coins…`, pBook:"Checking what whales are doing in the order book…", wake:"The bot is waking up…",
+  hn_s:"short", hn_m:"medium", hn_l:"long",
+  heatStrong:v=>`Heat index (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: deeply oversold, green zone`,
+  heatCheap:v=>`Heat index (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: cheaper than usual`,
+  heatHot:v=>`Heat index (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: red zone, overheated`,
+  heatWarm:v=>`Heat index (${T("hn_"+v.h)}, ${tfOf(v)}) = ${r0(v.val)}: already warming up`,
+  conf:v=>`Signal confluence: oversold on ${v.n} of 3 timeframes at once, signal confirmed`,
+  confHot:v=>`Signal confluence: overheated on ${v.n} of 3 timeframes at once`,
+  allHot:"Overheated on all three timeframes at once",
+  rsi1hLow:v=>`RSI ${v.tf||"1h"} = ${r0(v.v)}: oversold`, rsi1hHigh:v=>`RSI ${v.tf||"1h"} = ${r0(v.v)}: overbought`,
+  rsi1dLow:v=>`RSI ${v.tf||"1d"} = ${r0(v.v)}: cheap on the higher timeframe`, rsi1dHigh:v=>`RSI ${v.tf||"1d"} = ${r0(v.v)}: overheated on the higher timeframe`,
+  volUp:v=>`Volume spike: the last ${v.tf||"1h"} candle is ${num(v.r)}× the average and green, buyers are stepping in`,
+  volDown:v=>`Volume spike of ${num(v.r)}× on a red ${v.tf||"1h"} candle: sellers are pushing`,
+  young:v=>`Coin is too new for a ${v.tf||"1d"} trend (fewer than 50 candles of history)`,
+  trendUpD:v=>`Trend filter: price is above EMA50 on the ${v.tf||"1d"} chart (${pc(v.d,1)}), uptrend`,
+  trendDownD:v=>`Trend filter: price is below EMA50 on the ${v.tf||"1d"} chart (${pc(v.d,1)}), downtrend`,
+  emaUp:v=>`On the ${v.tf||"1h"} chart EMA20 is above EMA50: short-term uptrend`, emaDown:v=>`On the ${v.tf||"1h"} chart EMA20 is below EMA50: short-term downtrend`,
+  fomo:v=>`Already ${pc(v.ch,1)} in 24h: not chasing the rocket`, knife:v=>`${pc(v.ch,1)} in 24h: catching a falling knife is risky`,
+  knifeShort:v=>`${pc(v.ch,1)} in 24h: too late to short after such a drop, high bounce risk`,
+  ewCorr:v=>`Elliott waves: after an impulse up of ${pc(v.imp,1)} there’s a ${r0(v.r*100)}% pullback (Fibonacci zone 38–79%), the low held above the previous one and price is already bouncing. Looks like the end of wave 2 or 4 before a new move up`,
+  ewNew:v=>`Elliott waves: a ${r0(v.r*100)}% correction ended with a higher low and a new impulse wave has started (price is still below the previous peak at ${px(v.peak)})`,
+  ewExt:v=>`Elliott waves: the current up-wave is ${num(v.ratio)}× longer than the previous one after a series of higher highs. Looks like an extended 5th wave, which is often followed by a reversal`,
+  ewDown:"Elliott waves: three lower highs in a row, the structure is bearish, no upward impulse confirmed",
+  ewCorrS:v=>`Elliott waves: after an impulse down of ${pc(v.imp,1)} there’s a ${r0(v.r*100)}% bounce (Fibonacci zone 38–79%), the high stayed below the previous one and price is already turning down. Looks like the end of a correction before a new drop`,
+  ewNewS:v=>`Elliott waves: a ${r0(v.r*100)}% bounce ended with a lower high and a new impulse wave down has started (price is still above the previous low at ${px(v.peak)})`,
+  ewExtS:v=>`Elliott waves: the current down-wave is ${num(v.ratio)}× longer than the previous one after a series of lower lows. Looks like an extended 5th wave down, which is often followed by a bounce`,
+  ewUpS:"Elliott waves: three higher lows in a row, the structure is bullish",
+  fundNeg:v=>`Futures funding ${pc(v.fr,3)}: shorts are paying up, short liquidations could push the price higher`,
+  fundPos:v=>`Futures funding ${pc(v.fr,3)}: longs are overheated, risk of a long-liquidation cascade`,
+  whaleBid:v=>`Whales in the order book: ${num(v.r)}× more buy orders than sell orders, the price is being supported`,
+  whaleAsk:v=>`Whales in the order book: ${num(v.r)}× more sellers than buyers`,
+  wallBid:v=>`Buy wall of ${usd(v.val)} USDT at ${px(v.price)} (${pc(v.d,1)}): support below`,
+  wallAsk:v=>`Sell wall of ${usd(v.val)} USDT at ${px(v.price)} (${pc(v.d,1)}): caps the upside`,
+  why:v=>`Score ${sc(v.score)}, threshold ${(v.dir||1)>0?"+":"−"}${v.th}: ${(v.dir||1)>0?"bullish":"bearish"} signal. ${v.rank===1?"Strongest":"#"+v.rank} of ${v.n} coins in this scan.`,
+  szBase:v=>`${v.fut?"Margin: base":"Base"} 5% of capital + ${num(v.extra*100)}% for signal strength = ${num(v.pct*100)}% of ${usd(v.eq)} USDT`,
+  szLev:v=>`Leverage ×${v.lev}: position size equals margin × ${v.lev}`,
+  szLevCut:v=>`Leverage cut from ×${v.from} to ×${v.to}: the stop (${pc(v.d,1)} from entry) must sit well inside the liquidation price`,
+  szLimRisk:"Size reduced: 2% risk limit per trade, the stop is wide so I take less",
+  szLimCash:"Size reduced: remaining free cash (I keep a 10% reserve untouched)",
+  szTotal:v=>v.fut?`Total: ${v.dir>0?"long":"short"} ${qf(v.qty)} ${v.base} at ${px(v.price)}, margin ${usd(v.margin)} USDT (${num(v.pctEq*100)}% of the account), size ${usd(v.notional)} USDT`
+    :`Total: ${usd(v.size)} USDT (${num(v.pctEq*100)}% of the account), bought ${qf(v.qty)} ${v.base} at ${px(v.price)}`,
+  szStop:v=>`Stop-loss at 2×ATR${v.tf?" ("+v.tf+")":""}: ${px(v.stop)} (${pc(-(v.dir||1)*v.d,1)}). If hit, the loss is ≈ ${usd(v.risk)} USDT, ${num(v.riskPct*100,2)}% of the account`,
+  szLiq:v=>`Liquidation price ≈ ${px(v.liq)} (${pc(v.d,1)}), the stop triggers well before it`,
+  szTarget:v=>`Target: ${px(v.tp)} (${pc(v.d,1)}), reward to risk 1.5 : 1. After a 1.5 ATR move in my favor the stop goes to breakeven`,
+  szFee:v=>`${v.ex} fee ${num((v.rate||0.001)*100,3)}%: ${usd(v.fee)} USDT`,
+  szFund:v=>`Funding is ${pc(v.fr,4)} now: I’ll ${v.pay>0?"pay":"receive"} ≈ ${usd(Math.abs(v.pay))} USDT every 8 h`,
+  rStop:"Stop-loss hit", rBE:"Breakeven stop", rTarget:"Target reached", rFlip:"Indicators turned", rIdle:"Position is idle", rLiq:"Liquidation",
+  dStop:v=>`Price reached ${px(v.stop)} (2×ATR against the position). The setup failed, exiting with the planned loss to avoid losing more.`,
+  dBE:v=>`Price came back to the ${px(v.stop)} stop, which had been moved to breakeven. A small profit is locked in.`,
+  dTarget:v=>`Price reached the ${px(v.tp)} target (3×ATR in my favor), taking profit.`,
+  dFlip:v=>`Score changed to ${sc(v.score)} (close threshold ${sc(v.th)}). Main reasons: ${v.F.map(ftxt).join("; ")}.`,
+  dIdle:"Too long without meaningful profit for this timeframe, freeing up money for stronger signals.",
+  dLiq:v=>`Price hit the ${px(v.liq)} liquidation price before the stop could trigger (a sharp spike). The margin is lost.`,
+  dEntryExit:v=>`Entry ${px(v.e)}, exit ${px(v.x)}, held for ${dur(v.held)}`, dGot:v=>`Received ${usd(v.v)} USDT after a ${usd(v.fee)} USDT fee`,
+  dFut:v=>`Leverage ×${v.lev}, margin ${usd(v.margin)} USDT, result ${pc(v.roe)} on margin`,
+  dCosts:v=>`Fees ${usd(v.fees)} USDT, funding ${sgn(-v.fund)} USDT`,
+  lBuy:v=>`Bought ${v.base} for ${usd(v.size)} USDT: score ${sc(v.score)}, indicators in favor: ${v.n}`,
+  lOpen:v=>`Opened a ${v.dir>0?"long":"short"} on ${v.base} ×${v.lev}: size ${usd(v.notional)} USDT, margin ${usd(v.margin)}, score ${sc(v.score)}`,
+  lSell:v=>`Sold ${v.base}: ${T(v.reason).toLowerCase()}, result ${sgn(v.pnl)} USDT (${pc(v.pct)})`,
+  lClose:v=>`Closed the ${v.dir>0?"long":"short"} on ${v.base}: ${T(v.reason).toLowerCase()}, result ${sgn(v.pnl)} USDT (${pc(v.pct)} on margin)`,
+  lBE:v=>`${v.base}: price moved 1.5 ATR in my favor, stop moved to breakeven (${px(v.stop)})`,
+  lNoCash:v=>`${v.base}: strong signal (${sc(v.score)}), but not enough free cash for a new position`,
+  lMax:v=>`${v.base} scores ${sc(v.score)}, but there are already ${v.max} positions, not opening more`,
+  lTrend:v=>`${v.base} scores ${sc(v.score)}, but the trend is down, the trend filter blocks a long`,
+  lTrendS:v=>`${v.base} scores ${sc(v.score)}, but the trend is up, the trend filter blocks a short`,
+  lWait:v=>`Scan done: the strongest signal is ${v.base} (${sc(v.score)}), threshold ±${v.th}. Waiting for a better moment`,
+  lPausedScan:"Scan done. The bot is paused, no new trades",
+  lFund:v=>`Funding on ${v.n} positions: ${sgn(-v.total)} USDT`,
+  lErr:v=>`Couldn’t get ${v.ex} data: ${v.msg}. Will retry on the next scan`,
+  lRun:"Bot started", lPause:"Bot paused: prices keep updating, no new trades", lReset:"Account reset: 1000 USDT"
+}};
+let LANG = (()=>{ try{ const s=localStorage.getItem("paperbot.lang"); if(I18N[s]) return s; }catch(e){}
+  const n=(navigator.language||"").slice(0,2); return n==="ru"?"ru":n==="en"?"en":"uk"; })();
+function T(k,v={}){ const e=I18N[LANG][k] ?? I18N.en[k]; return typeof e==="function" ? e(v) : (e ?? k); }
+const ftxt = f => f.k ? T(f.k, f.v||{}) : (f.txt||"");
+
+/* ===================== Форматування ===================== */
+const $ = id => document.getElementById(id);
+const LOC = () => I18N[LANG].loc;
+const nf = (x,d) => x.toLocaleString(LOC(),{minimumFractionDigits:d,maximumFractionDigits:d});
+const usd = x => (x<0?"−":"") + nf(Math.abs(x),2);
+const sgn = x => (x>=0?"+":"−") + nf(Math.abs(x),2);
+const pc = (x,d=2) => (x>=0?"+":"−") + nf(Math.abs(x*100),d) + "%";
+const num = (x,d=1) => nf(x,d);
+const r0 = x => Math.round(x);
+const qf = q => Number(q.toPrecision(6)).toLocaleString(LOC(),{maximumFractionDigits:8});
+function px(p){ if(!isFinite(p)) return "—"; const d=p>=1000?2:p>=1?4:p>=0.01?5:8; return nf(p,d); }
+function tm(t){ const d=new Date(t), n=new Date(); const hm=d.toLocaleTimeString(LOC(),{hour:"2-digit",minute:"2-digit"});
+  return d.toDateString()===n.toDateString()?hm:d.toLocaleDateString(LOC(),{day:"numeric",month:"short"})+", "+hm; }
+function dur(ms){ const m=Math.round(ms/60000); if(m<60) return m+" "+T("uMin"); const h=Math.floor(m/60);
+  return h<48 ? `${h} ${T("uH")} ${m%60} ${T("uMin")}` : `${Math.round(h/24)} ${T("uD")}`; }
+const cls = x => x>=0?"up":"down";
+
+/* ===================== Мережа ===================== */
+async function getJSON(url,ms=12000){
+  const c=new AbortController(), to=setTimeout(()=>c.abort(),ms);
+  try{ const r=await fetch(url,{signal:c.signal}); if(!r.ok) throw new Error("HTTP "+r.status); return await r.json(); }
+  finally{ clearTimeout(to); }
+}
+async function tryHosts(hosts,path){ let err; for(const h of hosts){ try{ return await getJSON(h+path); }catch(e){ err=e; } } throw err; }
+async function pool(items,n,fn){ let i=0; await Promise.all(Array.from({length:n},async()=>{ while(i<items.length){ const it=items[i++]; try{ await fn(it); }catch(e){ if(e.message==="__switched") throw e; } } })); }
+
+/* ===================== Біржі ===================== */
+/* Адаптери повертають однакові дані для споту ("spot") і безстрокових ф'ючерсів USDT-M ("futures"):
+   тикери {sym,price,ch,qv,count}, свічки [t,o,h,l,c,v] від старих до нових, стакан {bids,asks} як [ціна,кількість] */
+const EX = {
+  binance:{
+    name:"Binance", fee:{spot:0.001,futures:0.0005},
+    hosts:m=>m==="spot"?["https://data-api.binance.vision","https://api.binance.com"]:["https://fapi.binance.com"],
+    get(m,p){ return tryHosts(this.hosts(m),(m==="spot"?"/api/v3":"/fapi/v1")+p); },
+    async tickers(m){ return (await this.get(m,"/ticker/24hr")).map(x=>({sym:x.symbol,price:+x.lastPrice,ch:+x.priceChangePercent/100,qv:+x.quoteVolume,count:+x.count})); },
+    async klines(m,sym,tf,limit){ return (await this.get(m,`/klines?symbol=${sym}&interval=${tf}&limit=${limit}`)).map(k=>[+k[0],+k[1],+k[2],+k[3],+k[4],+k[5]]); },
+    async book(m,sym){ const b=await this.get(m,`/depth?symbol=${sym}&limit=100`); return {bids:b.bids.map(x=>[+x[0],+x[1]]),asks:b.asks.map(x=>[+x[0],+x[1]])}; },
+    async funding(){ const r={}; (await getJSON("https://fapi.binance.com/fapi/v1/premiumIndex")).forEach(x=>r[x.symbol]=+x.lastFundingRate); return r; },
+    async prices(m,syms){ const r={}; const q=m==="spot"?"/ticker/price?symbols="+encodeURIComponent(JSON.stringify(syms)):"/ticker/price";
+      (await this.get(m,q)).forEach(x=>{ if(syms.includes(x.symbol)) r[x.symbol]=+x.price; }); return r; },
+    wsUrls:m=>m==="spot"?["wss://data-stream.binance.vision/ws/!miniTicker@arr","wss://stream.binance.com:9443/ws/!miniTicker@arr"]:["wss://fstream.binance.com/ws/!miniTicker@arr"],
+    wsOpen(){}, wsSync(){}, wsPing(){},
+    wsMsg(d){ for(const t of JSON.parse(d)) prices[t.s]=+t.c; }
+  },
+  bybit:{
+    name:"Bybit", fee:{spot:0.001,futures:0.00055},
+    hosts:["https://api.bybit.com","https://api.bytick.com"],
+    cat:m=>m==="spot"?"spot":"linear",
+    iv:{"5m":"5","15m":"15","1h":"60","4h":"240","1d":"D","1w":"W"},
+    async get(p){ const j=await tryHosts(this.hosts,p); if(j.retCode!==0) throw new Error(j.retMsg||"Bybit error"); return j.result; },
+    async tickers(m){ return (await this.get(`/v5/market/tickers?category=${this.cat(m)}`)).list.map(x=>({sym:x.symbol,price:+x.lastPrice,ch:+x.price24hPcnt,qv:+x.turnover24h})); },
+    async klines(m,sym,tf,limit){ return (await this.get(`/v5/market/kline?category=${this.cat(m)}&symbol=${sym}&interval=${this.iv[tf]}&limit=${limit}`)).list.map(k=>[+k[0],+k[1],+k[2],+k[3],+k[4],+k[5]]).reverse(); },
+    async book(m,sym){ const b=await this.get(`/v5/market/orderbook?category=${this.cat(m)}&symbol=${sym}&limit=100`); return {bids:b.b.map(x=>[+x[0],+x[1]]),asks:b.a.map(x=>[+x[0],+x[1]])}; },
+    async funding(){ const r={}; (await this.get("/v5/market/tickers?category=linear")).list.forEach(x=>{ if(x.fundingRate!=="") r[x.symbol]=+x.fundingRate; }); return r; },
+    async prices(m,syms){ const r={}; (await this.get(`/v5/market/tickers?category=${this.cat(m)}`)).list.forEach(x=>{ if(syms.includes(x.symbol)) r[x.symbol]=+x.lastPrice; }); return r; },
+    wsUrls(m){ return [`wss://stream.bybit.com/v5/public/${this.cat(m)}`]; },
+    subs:new Set(),
+    wsOpen(sock){ this.subs=new Set(); this.wsSync(sock); },
+    wsSync(sock){ if(!sock||sock.readyState!==1) return; const need=Object.keys(S.pos).filter(s=>!this.subs.has(s));
+      for(let i=0;i<need.length;i+=10){ const part=need.slice(i,i+10); sock.send(JSON.stringify({op:"subscribe",args:part.map(s=>"tickers."+s)})); part.forEach(s=>this.subs.add(s)); } },
+    wsPing(sock){ if(sock&&sock.readyState===1) sock.send(JSON.stringify({op:"ping"})); },
+    wsMsg(d){ const m=JSON.parse(d); if(m.topic&&m.topic.startsWith("tickers.")&&m.data&&m.data.lastPrice) prices[m.data.symbol]=+m.data.lastPrice; }
+  }
+};
+
+/* ===================== Таймфрейми ===================== */
+/* b = робочий таймфрейм (вхід, ATR, об'єм), m = середній (збирається з b), h = старший (тренд) */
+const TFS = {
+  scalp:{b:"5m", m:"15m",agg:3,h:"1h",scan:60e3, idle:6,  minStop:0.006},
+  intra:{b:"15m",m:"1h", agg:4,h:"4h",scan:120e3,idle:24, minStop:0.01},
+  swing:{b:"1h", m:"4h", agg:4,h:"1d",scan:180e3,idle:72, minStop:0.015},
+  pos:  {b:"4h", m:"1d", agg:6,h:"1w",scan:600e3,idle:336,minStop:0.03}
+};
+
+/* ===================== Налаштування й стан ===================== */
+const START=1000, MAX_POS=6, TH=45, CLOSE_TH=25, TOPN=40, RESERVE=0.10, RISK_MAX=0.02, MMR=0.005, H8=8*3600e3;
+const STABLE=new Set(["USDC","FDUSD","TUSD","BUSD","DAI","USDP","EUR","AEUR","USDE","XUSD","PYUSD","USD1","BFUSD","EURI","USTC","PAXG","XAUT","WBTC","WBETH","BNSOL","USDD","USDR","USDQ","RLUSD"]);
+const fresh = () => ({cash:START,pos:{},trades:[],hist:[{t:Date.now(),eq:START}],log:[],running:true,lastScan:0,scan:[],universe:0,
+  tf:"swing",lev:3,dirMode:"both",lastFund:Math.floor(Date.now()/H8)*H8});
+let EXN = (()=>{ try{ const s=localStorage.getItem("paperbot.ex"); if(EX[s]) return s; }catch(e){} return "binance"; })();
+let MKT = (()=>{ try{ const s=localStorage.getItem("paperbot.mkt"); if(s==="spot"||s==="futures") return s; }catch(e){} return "spot"; })();
+const accKey = () => `paperbot.v3.${EXN}.${MKT}`;
+function loadState(){
+  try{
+    let s=JSON.parse(localStorage.getItem(accKey()));
+    if(!s && MKT==="spot"){ s=JSON.parse(localStorage.getItem("paperbot.v2."+EXN)); if(!s && EXN==="binance") s=JSON.parse(localStorage.getItem("paperbot.v1")); }
+    if(!s || typeof s.cash!=="number") return fresh();
+    const f=fresh(); for(const k of ["tf","lev","dirMode","lastFund"]) if(s[k]===undefined) s[k]=f[k];
+    return s;
+  }catch(e){ return fresh(); }
+}
+function save(){ try{ localStorage.setItem(accKey(),JSON.stringify(S)); }catch(e){} }
+let S = loadState();
+const prices = {};
+const seedPrices = () => { for(const k in prices) delete prices[k]; for(const s in S.pos) prices[s]=S.pos[s].last||S.pos[s].entry; };
+seedPrices();
+const FUT = () => MKT==="futures";
+const TFC = () => TFS[S.tf]||TFS.swing;
+let scanning=false, nextScan=Date.now()+1500, wsOk=false, ws=null, wsIdx=0, dirty=true, heavy=true, progress=null, showAll=false;
+
+/* ===================== Індикатори ===================== */
+function rsi(c,n=14){ if(c.length<n+2) return 50; let g=0,l=0; for(let i=1;i<=n;i++){ const d=c[i]-c[i-1]; d>0?g+=d:l-=d; } g/=n; l/=n;
+  for(let i=n+1;i<c.length;i++){ const d=c[i]-c[i-1]; g=(g*(n-1)+Math.max(d,0))/n; l=(l*(n-1)+Math.max(-d,0))/n; } return l===0?100:100-100/(1+g/l); }
+function ema(c,n){ if(c.length<n) return null; let e=c.slice(0,n).reduce((a,b)=>a+b,0)/n; const k=2/(n+1); for(let i=n;i<c.length;i++) e=c[i]*k+e*(1-k); return e; }
+function stoch(c,h,l,n=14){ if(c.length<n+3) return 50; const ks=[];
+  for(let j=c.length-3;j<c.length;j++){ const hh=Math.max(...h.slice(j-n+1,j+1)), ll=Math.min(...l.slice(j-n+1,j+1)); ks.push(hh===ll?50:(c[j]-ll)/(hh-ll)*100); }
+  return ks.reduce((a,b)=>a+b,0)/3; }
+function atr(h,l,c,n=14){ const tr=[]; for(let i=1;i<c.length;i++) tr.push(Math.max(h[i]-l[i],Math.abs(h[i]-c[i-1]),Math.abs(l[i]-c[i-1]))); const s=tr.slice(-n); return s.reduce((a,b)=>a+b,0)/s.length; }
+function agg(k,n){ const o={c:[],h:[],l:[]}; for(let i=k.length%n;i<k.length;i+=n){ const g=k.slice(i,i+n); o.c.push(g[g.length-1][4]); o.h.push(Math.max(...g.map(x=>x[2]))); o.l.push(Math.min(...g.map(x=>x[3]))); } return o; }
+function zigzag(c,th){ const piv=[]; let tr=0, ext=c[0], ei=0;
+  for(let i=1;i<c.length;i++){ const x=c[i];
+    if(tr===0){ if(x/c[0]-1>=th){tr=1;piv.push({i:0,p:c[0],t:"L"});ext=x;ei=i;} else if(1-x/c[0]>=th){tr=-1;piv.push({i:0,p:c[0],t:"H"});ext=x;ei=i;} }
+    else if(tr===1){ if(x>ext){ext=x;ei=i;} else if(1-x/ext>=th){piv.push({i:ei,p:ext,t:"H"});tr=-1;ext=x;ei=i;} }
+    else { if(x<ext){ext=x;ei=i;} else if(x/ext-1>=th){piv.push({i:ei,p:ext,t:"L"});tr=1;ext=x;ei=i;} } }
+  return {piv,tr,ext}; }
+function elliott(c,ap){
+  const th=Math.min(0.08,Math.max(0.008,ap*3)), {piv:P,tr,ext}=zigzag(c,th), last=c[c.length-1];
+  if(P.length<3) return null; const [a,b,d]=P.slice(-3);
+  if(tr===-1 && P[P.length-1].t==="H"){ const L=P[P.length-2], H=P[P.length-1], r=(H.p-ext)/(H.p-L.p);
+    if(ext>L.p && r>=0.382 && r<=0.786 && last>ext*1.004) return {p:12,k:"ewCorr",v:{imp:H.p/L.p-1,r}}; }
+  if(tr===1 && a.t==="L" && b.t==="H" && d.t==="L"){ const r=(b.p-d.p)/(b.p-a.p);
+    if(d.p>a.p && r>=0.382 && r<=0.786 && last<b.p) return {p:12,k:"ewNew",v:{r,peak:b.p}};
+    const leg1=b.p-a.p, leg2=ext-d.p, hs=P.filter(x=>x.t==="H").slice(-3), rising=hs.length>=2&&hs.every((x,i)=>i===0||x.p>hs[i-1].p);
+    if(rising && leg2>=1.618*leg1 && ext>b.p) return {p:-12,k:"ewExt",v:{ratio:leg2/leg1}}; }
+  if(tr===-1){ const H=P.filter(x=>x.t==="H").slice(-3); if(H.length===3&&H[1].p<H[0].p&&H[2].p<H[1].p) return {p:-8,k:"ewDown",v:{}}; }
+  return null;
+}
+/* Дзеркальний аналіз (1/ціна) знаходить ті самі фігури для падіння */
+function elliottBoth(c,ap){
+  const w=elliott(c,ap); if(w) return w;
+  const m=elliott(c.map(x=>1/x),ap); if(!m) return null;
+  const v={...m.v}; if(v.imp!==undefined) v.imp=1/(1+v.imp)-1; if(v.peak!==undefined) v.peak=1/v.peak;
+  return {p:-m.p,k:{ewCorr:"ewCorrS",ewNew:"ewNewS",ewExt:"ewExtS",ewDown:"ewUpS"}[m.k],v};
+}
+const total = F => Math.max(-100,Math.min(100,Math.round(F.reduce((s,f)=>s+f.p,0))));
+
+function analyze(t,kb,kh,fund,tfc,fut){
+  const sym=t.sym, base=sym.slice(0,-4), price=t.price, ch=t.ch;
+  const c=kb.map(k=>k[4]), h=kb.map(k=>k[2]), l=kb.map(k=>k[3]), vol=kb.map(k=>k[5]), o=kb.map(k=>k[1]);
+  const ch2=kh.map(k=>k[4]), hh=kh.map(k=>k[2]), lh=kh.map(k=>k[3]), km=agg(kb,tfc.agg);
+  const rb=rsi(c), rm=rsi(km.c), rh=rsi(ch2);
+  const heat={s:(stoch(c,h,l)+rb)/2, m:(stoch(km.c,km.h,km.l)+rm)/2, l:(stoch(ch2,hh,lh)+rh)/2};
+  const tfOfH={s:tfc.b,m:tfc.m,l:tfc.h};
+  const A=atr(h,l,c), ap=A/price, F=[], add=(p,k,v={})=>F.push({p,k,v});
+  // 1. Індекс перегріву у трьох горизонтах (симетрично: перепроданість +, перегрів −)
+  for(const [hz,a1,p1,a2,p2] of [["s",15,18,30,10],["m",20,16,35,9],["l",25,12,40,6]]){ const val=heat[hz], v={h:hz,val,tf:tfOfH[hz]};
+    if(val<a1) add(p1,"heatStrong",v); else if(val<a2) add(p2,"heatCheap",v);
+    else if(val>100-a1) add(-p1,"heatHot",v); else if(val>100-a2) add(-p2,"heatWarm",v); }
+  // 2. Збіг сигналів
+  const nCold=(heat.s<35)+(heat.m<35)+(heat.l<40), nHot=(heat.s>65)+(heat.m>65)+(heat.l>60);
+  if(nCold>=2) add(10,"conf",{n:nCold}); else if(nHot>=2) add(-10,"confHot",{n:nHot});
+  // 3. RSI
+  if(rb<30) add(8,"rsi1hLow",{v:rb,tf:tfc.b}); else if(rb>70) add(-8,"rsi1hHigh",{v:rb,tf:tfc.b});
+  if(rh<35) add(6,"rsi1dLow",{v:rh,tf:tfc.h}); else if(rh>65) add(-6,"rsi1dHigh",{v:rh,tf:tfc.h});
+  // 4. Сплеск об'єму на останній закритій свічці
+  const j=vol.length-2, avg=vol.slice(j-24,j).reduce((x,y)=>x+y,0)/24, vr=avg>0?vol[j]/avg:1;
+  if(vr>=2.5) c[j]>o[j] ? add(10,"volUp",{r:vr,tf:tfc.b}) : add(-10,"volDown",{r:vr,tf:tfc.b});
+  // 5. Трендовий фільтр
+  const eH=ema(ch2,50), e20=ema(c,20), e50=ema(c,50); let trend=0;
+  if(eH===null) add(-5,"young",{tf:tfc.h});
+  else if(price>eH){ trend=1; add(10,"trendUpD",{d:price/eH-1,tf:tfc.h}); } else { trend=-1; add(-10,"trendDownD",{d:price/eH-1,tf:tfc.h}); }
+  if(e20&&e50) e20>e50 ? add(5,"emaUp",{tf:tfc.b}) : add(-5,"emaDown",{tf:tfc.b});
+  // 6. FOMO і падаючий ніж
+  if(ch>0.18) add(-10,"fomo",{ch}); else if(ch<-0.18) fut ? add(8,"knifeShort",{ch}) : add(-5,"knife",{ch});
+  // 7. Хвилі Еліотта (в обидва боки)
+  const w=elliottBoth(c,ap); if(w) add(w.p,w.k,w.v);
+  // 8. Фандинг і ліквідації
+  const fr=fund[sym]; if(fr!==undefined){ if(fr<-0.0003) add(7,"fundNeg",{fr}); else if(fr>0.0005) add(-7,"fundPos",{fr}); }
+  const a={sym,base,price,ch,heat,rb,atr:A,trend,fr,F}; a.score=total(F); return a;
+}
+// 9. Кити в стакані
+function applyBook(a,book){
+  const bids=book.bids.map(([p,q])=>[p,p*q]), asks=book.asks.map(([p,q])=>[p,p*q]);
+  const bv=bids.reduce((s,x)=>s+x[1],0), av=asks.reduce((s,x)=>s+x[1],0); if(!bv||!av) return;
+  const imb=bv/av;
+  if(imb>=1.4) a.F.push({p:8,k:"whaleBid",v:{r:imb}}); else if(imb<=0.7) a.F.push({p:-8,k:"whaleAsk",v:{r:1/imb}});
+  const med=arr=>{ const s=arr.map(x=>x[1]).sort((x,y)=>x-y); return s[Math.floor(s.length/2)]||0; };
+  const wb=bids.filter(x=>x[0]>=a.price*0.97).sort((x,y)=>y[1]-x[1])[0], wa=asks.filter(x=>x[0]<=a.price*1.03).sort((x,y)=>y[1]-x[1])[0];
+  if(wb&&wb[1]>med(bids)*8) a.F.push({p:4,k:"wallBid",v:{val:wb[1],price:wb[0],d:wb[0]/a.price-1}});
+  if(wa&&wa[1]>med(asks)*8) a.F.push({p:-4,k:"wallAsk",v:{val:wa[1],price:wa[0],d:wa[0]/a.price-1}});
+  a.score=total(a.F); a.book=true;
+}
+
+/* ===================== Рахунок ===================== */
+/* Позиція: dir 1 = лонг, −1 = шорт. Вартість у балансі = маржа + нереалізований P&L */
+const pv = p => { const x=prices[p.sym]||p.last||p.entry, up=(p.dir||1)*p.qty*(x-p.entry), M=p.margin??p.cost; return {x,up,M,val:M+up}; };
+const invested = () => Object.values(S.pos).reduce((s,p)=>s+pv(p).val,0);
+const equity = () => S.cash+invested();
+const byWeight = F => [...F].sort((x,y)=>Math.abs(y.p)-Math.abs(x.p));
+function log(k,v={}){ S.log.unshift({t:Date.now(),k,v}); S.log.length=Math.min(S.log.length,60); }
+function point(){ S.hist.push({t:Date.now(),eq:equity()}); if(S.hist.length>2000) S.hist.splice(0,S.hist.length-2000); }
+
+function openPos(a,dir,rank,n){
+  const eq=equity(), price=prices[a.sym]||a.price, fut=FUT(), feeR=EX[EXN].fee[MKT], tfc=TFC();
+  const extra=Math.max(0,Math.abs(a.score)-TH)/(100-TH)*0.12, pct=Math.min(0.17,0.05+extra);
+  const stopD=Math.max(2*a.atr/price,tfc.minStop);
+  let lev=fut?S.lev:1, levCut=null;
+  if(fut){ const maxLev=Math.max(1,Math.floor(0.7/stopD)); if(maxLev<lev){ levCut={from:lev,to:maxLev,d:-dir*stopD}; lev=maxLev; } }
+  let margin=eq*pct, notional=margin*lev, lim=null;
+  const riskCap=eq*RISK_MAX/(stopD+2*feeR);
+  if(notional>riskCap){ notional=riskCap; margin=notional/lev; lim="szLimRisk"; }
+  const avail=S.cash-eq*RESERVE;
+  if(margin+notional*feeR>avail){ margin=Math.max(0,avail)/(1+lev*feeR); notional=margin*lev; lim="szLimCash"; }
+  if(margin<10){ log("lNoCash",{base:a.base,score:a.score}); return false; }
+  const fee=notional*feeR, qty=notional/price, stop=price*(1-dir*stopD), tp=price*(1+dir*stopD*1.5);
+  const liq=fut?price*(1-dir*(1/lev-MMR)):null, risk=notional*(stopD+2*feeR);
+  S.cash-=margin+fee;
+  S.pos[a.sym]={sym:a.sym,base:a.base,dir,lev,qty,entry:price,margin,notional,stop,tp,liq,atr:a.atr,t:Date.now(),score:a.score,be:false,last:price,feeIn:fee,fund:0,fr:a.fr??0,tf:S.tf};
+  const sizing=[{k:"szBase",v:{fut,extra,pct,eq}}, fut?{k:"szLev",v:{lev}}:null, levCut?{k:"szLevCut",v:levCut}:null, lim?{k:lim}:null,
+    {k:"szTotal",v:{fut,dir,size:margin,margin,notional,pctEq:margin/eq,qty,base:a.base,price}},
+    {k:"szStop",v:{stop,d:stopD,dir,risk,riskPct:risk/eq,tf:tfc.b}},
+    fut?{k:"szLiq",v:{liq,d:liq/price-1}}:null,
+    {k:"szTarget",v:{tp,d:dir*stopD*1.5}},
+    {k:"szFee",v:{ex:EX[EXN].name,fee,rate:feeR}},
+    fut&&a.fr!==undefined?{k:"szFund",v:{fr:a.fr,pay:notional*a.fr*dir}}:null].filter(Boolean);
+  S.trades.unshift({t:Date.now(),side:"open",mkt:MKT,dir,lev,base:a.base,sym:a.sym,price,qty,value:notional,margin,fee,score:a.score,
+    why:{k:"why",v:{score:a.score,th:TH,rank,n,dir}},F:byWeight(a.F),sizing});
+  fut ? log("lOpen",{dir,base:a.base,lev,notional,margin,score:a.score}) : log("lBuy",{base:a.base,size:margin,score:a.score,n:a.F.filter(f=>f.p>0).length});
+  EX[EXN].wsSync(ws); point(); heavy=true; return true;
+}
+function closePos(sym,reason,detail,atPrice){
+  const p=S.pos[sym]; if(!p) return; const dir=p.dir||1, M=p.margin??p.cost, feeR=EX[EXN].fee[MKT];
+  const x=atPrice ?? (prices[sym]||p.last||p.entry), up=dir*p.qty*(x-p.entry), fee=p.qty*x*feeR;
+  const back=reason==="rLiq"?0:Math.max(0,M+up-fee);
+  S.cash+=back; delete S.pos[sym];
+  const pnl=back-M-(p.feeIn||0)-(p.fund||0), fut=!!p.liq;
+  S.trades.unshift({t:Date.now(),side:"close",mkt:fut?"futures":"spot",dir,lev:p.lev||1,base:p.base,sym,price:x,qty:p.qty,value:back,fee,
+    fees:fee+(p.feeIn||0),fund:p.fund||0,margin:M,pnl,pnlPct:pnl/M,reason,detail,held:Date.now()-p.t,entry:p.entry});
+  if(S.trades.length>300) S.trades.length=300;
+  fut ? log("lClose",{dir,base:p.base,reason,pnl,pct:pnl/M}) : log("lSell",{base:p.base,reason,pnl,pct:pnl/M});
+  point(); heavy=true;
+}
+function checkExits(){
+  if(!S.running) return;
+  for(const s in S.pos){ const p=S.pos[s], x=prices[s]; if(!x) continue; p.last=x; const d=p.dir||1;
+    if(p.liq && (d>0?x<=p.liq:x>=p.liq)) closePos(s,"rLiq",{k:"dLiq",v:{liq:p.liq}},p.liq);
+    else if(d>0?x<=p.stop:x>=p.stop) p.be ? closePos(s,"rBE",{k:"dBE",v:{stop:p.stop}}) : closePos(s,"rStop",{k:"dStop",v:{stop:p.stop}});
+    else if(d>0?x>=p.tp:x<=p.tp) closePos(s,"rTarget",{k:"dTarget",v:{tp:p.tp}});
+    else if(!p.be && d*(x-p.entry)>=1.5*p.atr){ p.stop=d>0?Math.max(p.stop,p.entry*1.003):Math.min(p.stop,p.entry*0.997); p.be=true; log("lBE",{base:p.base,stop:p.stop}); }
+  }
+}
+/* Фандинг кожні 8 годин: лонги платять при додатній ставці, шорти отримують, і навпаки */
+function applyFunding(){
+  const b=Math.floor(Date.now()/H8)*H8; if(!FUT()){ S.lastFund=b; return; } if(b<=S.lastFund) return;
+  S.lastFund=b; let total=0, n=0;
+  for(const s in S.pos){ const p=S.pos[s]; if(!p.liq||!p.fr) continue; const pay=p.qty*(prices[s]||p.entry)*p.fr*(p.dir||1); S.cash-=pay; p.fund=(p.fund||0)+pay; total+=pay; n++; }
+  if(n) log("lFund",{n,total});
+}
+
+/* ===================== Скан ринку ===================== */
+const eligible = t => { if(!t.sym.endsWith("USDT")) return false; const b=t.sym.slice(0,-4);
+  return b.length>0 && !STABLE.has(b) && !/(UP|DOWN|BULL|BEAR|\d[LS])$/.test(b) && t.qv>5e6 && t.price>0 && (t.count===undefined||t.count>1000); };
+const allowLong = () => !FUT() || S.dirMode!=="short";
+const allowShort = () => FUT() && S.dirMode!=="long";
+
+async function scan(){
+  if(scanning) return; scanning=true; heavy=true; render();
+  const ex=EXN, mkt=MKT, A=EX[ex], tfc=TFC(), fut=mkt==="futures";
+  const chk=()=>{ if(ex!==EXN||mkt!==MKT) throw new Error("__switched"); };
+  try{
+    progress={k:"pTickers",v:{ex:A.name}};
+    const tick=await A.tickers(mkt); chk();
+    tick.forEach(t=>{ if(t.price>0) prices[t.sym]=t.price; });
+    const uni=tick.filter(eligible).sort((a,b)=>b.qv-a.qv).slice(0,TOPN);
+    for(const s in S.pos) if(!uni.some(u=>u.sym===s)){ const t=tick.find(x=>x.sym===s); if(t) uni.push(t); }
+    let fund={}; try{ fund=await A.funding(); }catch(e){} chk();
+    const res=[]; let done=0;
+    await pool(uni,4,async t=>{
+      const [kb,kh]=await Promise.all([A.klines(mkt,t.sym,tfc.b,300),A.klines(mkt,t.sym,tfc.h,120)]); chk();
+      if(kb.length>60) res.push(analyze(t,kb,kh,fund,tfc,fut));
+      progress={k:"pCalc",v:{i:++done,n:uni.length}};
+    });
+    chk(); if(!res.length) throw new Error("no data");
+    res.sort((a,b)=>Math.abs(b.score)-Math.abs(a.score));
+    progress={k:"pBook"};
+    await pool(res.filter(a=>Math.abs(a.score)>=25||S.pos[a.sym]).slice(0,10),3,async a=>{ const b=await A.book(mkt,a.sym); chk(); applyBook(a,b); });
+    chk(); res.sort((a,b)=>b.score-a.score);
+    S.scan=res.map(a=>({sym:a.sym,base:a.base,score:a.score,heat:a.heat,rb:a.rb,ch:a.ch,trend:a.trend,fr:a.fr,tf:{b:tfc.b,m:tfc.m,h:tfc.h},F:byWeight(a.F)}));
+    S.universe=res.length; S.lastScan=Date.now();
+    if(S.running){
+      // Закриття за розворотом індикаторів і за простоєм
+      for(const a of res){ const p=S.pos[a.sym]; if(!p) continue; p.score=a.score; if(a.fr!==undefined) p.fr=a.fr; const d=p.dir||1;
+        if(d*a.score<=-CLOSE_TH) closePos(a.sym,"rFlip",{k:"dFlip",v:{score:a.score,th:-d*CLOSE_TH,F:a.F.filter(f=>f.p*d<0).sort((x,y)=>x.p*d-y.p*d).slice(0,3)}});
+        else { const {up,M}=pv(p); if(Date.now()-p.t>(TFS[p.tf]||tfc).idle*3600e3 && up/M<0.005) closePos(a.sym,"rIdle",{k:"dIdle"}); }
+      }
+      // Кандидати на вхід
+      const longs=allowLong()?res.filter(a=>a.score>=TH):[], shorts=allowShort()?[...res].reverse().filter(a=>a.score<=-TH):[];
+      const cand=[...longs.map((a,i)=>({a,dir:1,rank:i+1})),...shorts.map((a,i)=>({a,dir:-1,rank:i+1}))].sort((x,y)=>Math.abs(y.a.score)-Math.abs(x.a.score));
+      let opened=0, skip=null;
+      for(const {a,dir,rank} of cand){
+        if(S.pos[a.sym]) continue;
+        if(Object.keys(S.pos).length>=MAX_POS){ skip=skip||{k:"lMax",v:{base:a.base,score:a.score,max:MAX_POS}}; break; }
+        if(dir>0 && a.trend!==1 && a.score<70){ skip=skip||{k:"lTrend",v:{base:a.base,score:a.score}}; continue; }
+        if(dir<0 && a.trend!==-1 && a.score>-70){ skip=skip||{k:"lTrendS",v:{base:a.base,score:a.score}}; continue; }
+        if(openPos(a,dir,rank,res.length)) opened++;
+      }
+      if(!opened){ const best=[...res].sort((x,y)=>Math.abs(y.score)-Math.abs(x.score))[0]; skip ? log(skip.k,skip.v) : log("lWait",{base:best.base,score:best.score,th:TH}); }
+    } else log("lPausedScan");
+  }catch(e){ if(e.message!=="__switched") log("lErr",{ex:A.name,msg:e.name==="AbortError"?"timeout":e.message}); }
+  finally{ scanning=false; progress=null; if(ex===EXN&&mkt===MKT){ nextScan=Date.now()+tfc.scan; save(); } heavy=true; dirty=true; render(); }
+}
+
+/* ===================== Живі ціни ===================== */
+function connectWS(){
+  const A=EX[EXN], urls=A.wsUrls(MKT); let sock;
+  try{ sock=new WebSocket(urls[wsIdx%urls.length]); }catch(e){ wsIdx++; setTimeout(()=>{ if(!ws) connectWS(); },5000); return; }
+  ws=sock;
+  sock.onopen=()=>{ if(ws!==sock) return; wsOk=true; A.wsOpen(sock); dirty=true; };
+  sock.onmessage=e=>{ if(ws!==sock) return; try{ A.wsMsg(e.data); dirty=true; }catch(err){} };
+  sock.onclose=()=>{ if(ws!==sock) return; wsOk=false; wsIdx++; setTimeout(()=>{ if(ws===sock) connectWS(); },5000); };
+  sock.onerror=()=>{ try{ sock.close(); }catch(e){} };
+}
+function reconnectWS(){ const old=ws; ws=null; wsOk=false; wsIdx=0; if(old) try{ old.close(); }catch(e){} connectWS(); }
+async function pollPrices(){
+  const syms=Object.keys(S.pos); if(wsOk||!syms.length) return; const ex=EXN, mkt=MKT;
+  try{ const m=await EX[ex].prices(mkt,syms); if(ex===EXN&&mkt===MKT){ Object.assign(prices,m); dirty=true; } }catch(e){}
+}
+
+/* ===================== Відображення ===================== */
+function drawChart(){
+  const cv=$("chart"), dpr=window.devicePixelRatio||1, w=cv.clientWidth, h=cv.clientHeight; if(!w) return;
+  cv.width=w*dpr; cv.height=h*dpr; const g=cv.getContext("2d"); g.scale(dpr,dpr);
+  const cs=getComputedStyle(document.documentElement), col=n=>cs.getPropertyValue(n).trim();
+  const pts=[...S.hist,{t:Date.now(),eq:equity()}], ys=pts.map(p=>p.eq);
+  let lo=Math.min(START,...ys), hi=Math.max(START,...ys); const pad=Math.max((hi-lo)*0.15,2); lo-=pad; hi+=pad;
+  const t0=pts[0].t, t1=Math.max(pts[pts.length-1].t,t0+1), X=t=>(t-t0)/(t1-t0)*(w-2)+1, Y=v=>h-4-(v-lo)/(hi-lo)*(h-8);
+  g.setLineDash([4,4]); g.strokeStyle=col("--line"); g.lineWidth=1; g.beginPath(); g.moveTo(0,Y(START)); g.lineTo(w,Y(START)); g.stroke(); g.setLineDash([]);
+  g.fillStyle=col("--muted"); g.font="11px Manrope,sans-serif"; g.fillText(T("chartStart"),4,Y(START)-5);
+  const c=equity()>=START?col("--gain"):col("--loss");
+  g.beginPath(); pts.forEach((p,i)=>i?g.lineTo(X(p.t),Y(p.eq)):g.moveTo(X(p.t),Y(p.eq)));
+  g.strokeStyle=c; g.lineWidth=2; g.lineJoin="round"; g.stroke();
+  g.lineTo(X(t1),h); g.lineTo(X(t0),h); g.closePath(); g.globalAlpha=.12; g.fillStyle=c; g.fill(); g.globalAlpha=1;
+  const lp=pts[pts.length-1]; g.beginPath(); g.arc(X(lp.t),Y(lp.eq),3.5,0,7); g.fillStyle=c; g.fill();
+}
+function renderHero(){
+  const eq=equity(), d=eq-START;
+  $("eq").textContent=usd(eq);
+  $("pnl").className="pnl "+cls(d); $("pnl").textContent=T("fromStart",{d,p:d/START});
+  $("cash").textContent=usd(S.cash); $("inv").textContent=usd(invested());
+  const closed=S.trades.filter(t=>t.side==="close"||t.side==="sell"); $("ntr").textContent=closed.length;
+  $("wr").textContent=closed.length?Math.round(closed.filter(t=>t.pnl>0).length/closed.length*100)+"%":"—";
+  const left=Math.max(0,Math.round((nextScan-Date.now())/1000));
+  $("dot").className="dot "+(!S.running?"warn":wsOk?"on":"warn");
+  $("status").textContent=`${T(S.running?"sTrading":"sPaused")} ${T(wsOk?"sLive":"sPoll")} `+
+    (scanning?T("sScanning"):T("sNext",{t:`${Math.floor(left/60)}:${String(left%60).padStart(2,"0")}`}))+(S.lastScan?T("sLast",{t:S.lastScan}):"");
+  $("runBtn").textContent=T(S.running?"pause":"run");
+  $("thought").textContent=progress?T(progress.k,progress.v||{}):S.log[0]?(S.log[0].k?T(S.log[0].k,S.log[0].v||{}):S.log[0].txt):T("wake");
+  drawChart();
+}
+const dirTag = (dir,lev,fut) => fut ? `<span class="tag ${dir>0?"buy":"sell"}">${T(dir>0?"openLong":"openShort")} ×${lev}</span>` : "";
+function renderPositions(){
+  const ps=Object.values(S.pos);
+  if(!ps.length){ $("positions").innerHTML=`<div class="empty">${FUT()?T("emptyPosF",{th:TH}):T("emptyPos",{cash:S.cash,th:TH})}</div>`; return; }
+  $("positions").innerHTML=ps.sort((a,b)=>pv(b).M-pv(a).M).map(p=>{
+    const {x,up,M,val}=pv(p), fee=p.qty*x*EX[EXN].fee[MKT], pnl=up-fee-(p.feeIn||0)-(p.fund||0), fut=!!p.liq;
+    const f=Math.min(1,Math.max(0,(x-p.stop)/(p.tp-p.stop))), fe=(p.entry-p.stop)/(p.tp-p.stop);
+    const meta=fut?T("posMetaF",{margin:M,notional:p.qty*x,entry:p.entry,now:x,liq:p.liq,held:Date.now()-p.t,score:p.score})
+      :T("posMeta",{qty:p.qty,base:p.base,val,entry:p.entry,now:x,held:Date.now()-p.t,score:p.score});
+    return `<div class="pos"><div class="r1"><span class="l"><span class="coin">${p.base}</span>${dirTag(p.dir||1,p.lev||1,fut)}</span><span class="${cls(pnl)}"><b>${sgn(pnl)}</b> (${pc(pnl/M)})</span></div>
+    <div class="meta">${meta}</div>
+    <div class="range" role="img" aria-label="${T("rangeAria")}"><b style="left:${fe*100}%"></b><i style="left:${f*100}%"></i></div>
+    <div class="rl"><span>${T("stopL",{p:p.stop,be:p.be})}</span><span>${T("target",{p:p.tp})}</span></div>${window.CH?CH.links({coin:p.base,q:"USDT",ex:EXN,from:"bot"}):""}</div>`; }).join("");
+}
+const facHTML = (F,dir=1) => F.map(f=>{ const q=f.p*dir; return `<span class="p ${cls(q)}">${q>0?"+":"−"}${Math.abs(q)}</span><span>${ftxt(f)}</span>`; }).join("");
+const tx = x => typeof x==="string" ? x : x ? T(x.k,x.v||{}) : "";
+function renderTrades(){
+  if(!S.trades.length){ $("trades").innerHTML=`<div class="empty">${T("emptyTrades")}</div>`; return; }
+  const list=showAll?S.trades:S.trades.slice(0,12);
+  $("trades").innerHTML=list.map(t=>{
+    const open=t.side==="open"||t.side==="buy", fut=t.mkt==="futures", dir=t.dir||1;
+    if(open){
+      const tag=fut?`<span class="tag ${dir>0?"buy":"sell"}">${T(dir>0?"openLong":"openShort")} ×${t.lev}</span>`:`<span class="tag buy">${T("buy")}</span>`;
+      return `<article class="trade"><div class="r1">${tag}<span class="coin">${t.base}</span><span>${usd(t.value)} USDT</span><span class="time">${tm(t.t)}</span></div>
+      <p class="sum">${tx(t.why)}</p>
+      <details><summary>${dir<0?T("whyCoinS",{base:t.base}):T("whyCoin",{base:t.base})}</summary><p class="legend">${T("facLegend")}</p><div class="fac">${facHTML(t.F,dir)}</div></details>
+      <details><summary>${T("whySize")}</summary><ul class="lines">${t.sizing.map(s=>`<li>${tx(s)}</li>`).join("")}</ul></details>${window.CH?CH.links({coin:t.base,q:"USDT",ex:EXN,from:"bot"}):""}</article>`;
+    }
+    const tag=fut?`<span class="tag neutral">${T(dir>0?"closeLong":"closeShort")}</span>`:`<span class="tag sell">${T("sell")}</span>`;
+    const lines=[T("dEntryExit",{e:t.entry,x:t.price,held:t.held}), fut?T("dFut",{lev:t.lev,margin:t.margin,roe:t.pnlPct}):T("dGot",{v:t.value,fee:t.fee})];
+    if(fut && t.fees!==undefined) lines.push(T("dCosts",{fees:t.fees,fund:t.fund||0}));
+    return `<article class="trade"><div class="r1">${tag}<span class="coin">${t.base}</span><span class="${cls(t.pnl)}"><b>${sgn(t.pnl)} USDT</b> (${pc(t.pnlPct)})</span><span class="time">${tm(t.t)}</span></div>
+      <p class="sum"><b>${I18N[LANG][t.reason]?T(t.reason):t.reason}.</b> ${tx(t.detail)}</p>
+      <details><summary>${T("details")}</summary><ul class="lines">${lines.map(l=>`<li>${l}</li>`).join("")}</ul></details>${window.CH?CH.links({coin:t.base,q:"USDT",ex:EXN,from:"bot"}):""}</article>`;
+  }).join("")+(S.trades.length>12?`<button class="btn more" id="moreBtn" type="button">${showAll?T("showLess"):T("showAll",{n:S.trades.length})}</button>`:"");
+  const mb=$("moreBtn"); if(mb) mb.onclick=()=>{ showAll=!showAll; renderTrades(); };
+}
+const heatChip=(v,name)=>`<span class="chip ${v<35?"g":v>65?"r":""}">${name} ${Math.round(v)}</span>`;
+function renderScan(){
+  if(!S.scan.length){ $("scsub").textContent=T("scanSub"); $("scan").innerHTML=`<div class="empty">${scanning?T("sScanning"):T("emptyScan")}</div>`; return; }
+  $("scsub").textContent=T("scanSubFull",{n:S.universe,ex:EX[EXN].name,t:S.lastScan,th:TH,sell:CLOSE_TH});
+  $("scan").innerHTML=S.scan.slice(0,25).map((a,i)=>{
+    const w=Math.abs(a.score)/2, col=a.score>=0?"var(--gain)":"var(--loss)", tf=a.tf||{b:"1h",m:"4h",h:"1d"}, trend=a.trend??(a.trendUp?1:-1);
+    const sig=a.score>=TH&&allowLong()&&(trend===1||a.score>=70)?`<span class="chip g"><b>${T("sigLong")}</b></span>`
+      :a.score<=-TH&&allowShort()&&(trend===-1||a.score<=-70)?`<span class="chip r"><b>${T("sigShort")}</b></span>`:"";
+    return `<details class="scrow"><summary><span class="rank">${i+1}</span><span>${a.base}${S.pos[a.sym]?`<span class="held">${T("inPf")}</span>`:""}</span>
+    <span class="bar"><span style="${a.score>=0?"left:50%":"right:50%"};width:${w}%;background:${col}"></span></span><span class="score ${cls(a.score)}">${sc(a.score)}</span></summary>
+    <div class="chips">${sig}${heatChip(a.heat.s,T("chipHeat",{tf:tf.b}))}${heatChip(a.heat.m,tf.m)}${heatChip(a.heat.l,tf.h)}<span class="chip">RSI ${tf.b} ${Math.round(a.rb??a.r1)}</span><span class="chip ${a.ch>=0?"g":"r"}">24h ${pc(a.ch,1)}</span><span class="chip ${trend===1?"g":trend===-1?"r":""}">${T(trend===1?"trendUp":"trendDown")}</span>${FUT()&&a.fr!==undefined?`<span class="chip">${T("chipFund",{fr:a.fr})}</span>`:""}</div>
+    <div class="fac">${facHTML(a.F)||`<span></span><span>${T("noSignal")}</span>`}</div>${window.CH?CH.links({coin:a.base,q:"USDT",ex:EXN,from:"bot"}):""}</details>`; }).join("");
+}
+function renderStrategy(){
+  const tfc=TFC(), fut=FUT(), s=tfc.scan/1000, sTxt=s>=60?`${s/60} ${T("uMin")}`:`${s} ${T("sec")}`;
+  const set=(id,attr,val)=>document.querySelectorAll(`#${id} button`).forEach(b=>b.setAttribute("aria-pressed",b.dataset[attr]===String(val)));
+  set("mktOpts","mkt",MKT); set("tfOpts","tf",S.tf); set("levOpts","lev",S.lev); set("dirOpts","dir",S.dirMode);
+  document.querySelectorAll(".row.fut").forEach(r=>r.hidden=!fut);
+  $("stNote").textContent=fut?T("noteFut",{fee:num(EX[EXN].fee.futures*100,3),b:tfc.b,m:tfc.m,h:tfc.h,s:sTxt}):T("noteSpot",{b:tfc.b,m:tfc.m,h:tfc.h,s:sTxt});
+}
+function render(){ renderHero(); renderPositions(); if(heavy){ renderTrades(); renderScan(); renderStrategy(); heavy=false; } }
+
+function applyStatic(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll("[data-i]").forEach(el=>el.textContent=T(el.dataset.i));
+  const ex=EX[EXN].name, mkt=T(FUT()?"mktFut":"mktSpot"), tfc=TFC();
+  document.title=`${T("brand")} ${ex}`;
+  $("brandSub").textContent=T("brandSub",{ex,mkt,tf:`${T("tf_"+S.tf).toLowerCase()} ${tfc.b}`}); $("footer").textContent=T("footer",{ex});
+  $("chart").setAttribute("aria-label",T("chartAria"));
+  $("exSeg").setAttribute("aria-label",T("exLabel")); $("langSeg").setAttribute("aria-label",T("langLabel"));
+  document.querySelectorAll("#exSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.ex===EXN));
+  document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===LANG));
+  heavy=true; render();
+}
+
+/* ===================== Керування ===================== */
+function switchAccount(){
+  S=loadState(); seedPrices(); progress=null; showAll=false; nextScan=Date.now()+300;
+  reconnectWS(); applyStatic();
+}
+$("runBtn").onclick=()=>{ S.running=!S.running; log(S.running?"lRun":"lPause"); save(); render(); };
+$("scanBtn").onclick=()=>scan();
+$("resetBtn").onclick=()=>{ if(!confirm(T("confirmReset",{ex:EX[EXN].name,mkt:T(FUT()?"mktFut":"mktSpot")}))) return;
+  const keep={tf:S.tf,lev:S.lev,dirMode:S.dirMode}; S={...fresh(),...keep}; seedPrices(); log("lReset"); heavy=true; save(); render(); nextScan=Date.now()+500; };
+document.querySelectorAll("#langSeg button").forEach(b=>b.onclick=()=>{ LANG=b.dataset.lang; try{ localStorage.setItem("paperbot.lang",LANG); }catch(e){} applyStatic(); });
+document.querySelectorAll("#exSeg button").forEach(b=>b.onclick=()=>{ if(b.dataset.ex===EXN) return; save(); EXN=b.dataset.ex; try{ localStorage.setItem("paperbot.ex",EXN); }catch(e){} switchAccount(); });
+document.querySelectorAll("#mktOpts button").forEach(b=>b.onclick=()=>{ if(b.dataset.mkt===MKT) return; save(); MKT=b.dataset.mkt; try{ localStorage.setItem("paperbot.mkt",MKT); }catch(e){} switchAccount(); });
+document.querySelectorAll("#tfOpts button").forEach(b=>b.onclick=()=>{ if(b.dataset.tf===S.tf) return; S.tf=b.dataset.tf; S.scan=[]; nextScan=Date.now()+300; save(); applyStatic(); });
+document.querySelectorAll("#levOpts button").forEach(b=>b.onclick=()=>{ S.lev=+b.dataset.lev; save(); heavy=true; render(); });
+document.querySelectorAll("#dirOpts button").forEach(b=>b.onclick=()=>{ S.dirMode=b.dataset.dir; save(); heavy=true; render(); });
+$("themeBtn").onclick=()=>{ const r=document.documentElement, dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme=dark?"light":"dark"; try{ localStorage.setItem("paperbot.theme",r.dataset.theme); }catch(e){} drawChart(); };
+try{ const th=localStorage.getItem("paperbot.theme")||localStorage.getItem("paperbot.v1.theme"); const th2=window.CH?CH.theme(th):th; if(th2) document.documentElement.dataset.theme=th2; }catch(e){}
+addEventListener("resize",drawChart);
+
+/* ===================== Головний цикл ===================== */
+let lastPoint=Date.now(), lastPoll=0, lastPing=Date.now();
+setInterval(()=>{
+  const now=Date.now();
+  if(dirty){ checkExits(); dirty=false; }
+  applyFunding();
+  if(now-lastPoint>60000){ point(); lastPoint=now; save(); }
+  if(now-lastPoll>15000){ lastPoll=now; pollPrices(); }
+  if(now-lastPing>20000){ lastPing=now; EX[EXN].wsPing(ws); EX[EXN].wsSync(ws); }
+  if(now>=nextScan && !scanning) scan();
+  render();
+},1000);
+applyStatic(); connectWS();
+</script>
+<script>
+(function () {
+  if (!window.CH) return;
+  var o = function (n) { return function () { return { name: 'paper-bot-' + n, title: CH.t('bot')[0] + ' · ' + (document.querySelector('#brandSub') || {}).textContent }; }; };
+  CH.cam(document.querySelector('.hero'), function () { return document.querySelector('.hero'); }, { float: true, opts: o('account') });
+  ['pf', 'jr', 'sc'].forEach(function (id) {
+    var sec = document.getElementById(id), h = sec && sec.querySelector('h2'); if (!h) return;
+    h.style.display = 'flex'; h.style.alignItems = 'center'; h.style.gap = '10px';
+    var sp = document.createElement('span'); sp.style.flex = '1'; h.appendChild(sp);
+    CH.cam(h, sec, { opts: o(id === 'pf' ? 'portfolio' : id === 'jr' ? 'journal' : 'scan') });
+  });
+})();
+</script>
+</body>
+</html>

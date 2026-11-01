@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16181d">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/ch.css">
+<script src="../assets/ch.js" data-tool="liq"></script>
+<script>(function(){var c=(new URLSearchParams(location.search).get("coin")||"").toUpperCase().replace(/[^A-Z0-9]/g,"");if(c&&!location.hash)history.replaceState(null,"",location.pathname+"#"+c+(c.endsWith("USDT")?"":"USDT"));})();</script>
+<title>Liquidation Radar</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#10141f; --panel:#161c2a; --raise:#1e2638; --line:#29334b;
+  --text:#e8ecf4; --muted:#8e98ac; --long:#ff6b6b; --short:#3dd6c4;
+  --warn:#ffb547; --focus:#7aa7ff; color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#f2f4f8; --panel:#ffffff; --raise:#eceff5; --line:#d7dde8;
+  --text:#141a26; --muted:#5b6578; --long:#d63a4a; --short:#0c9a88;
+  --warn:#a86400; --focus:#2b5fd9; color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font-family:Onest,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.45;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%}
+.num,td,.stat b{font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:14px 12px 28px}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:200px}
+.brand svg{flex:none}
+.brand h1{font-size:20px;font-weight:700;margin:0;letter-spacing:-.01em}
+.brand p{margin:0;color:var(--muted);font-size:13px}
+.btn{background:var(--raise);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.controls label{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+select,input[type=search]{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+input[type=search]{flex:1;min-width:150px}
+.status{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;min-height:22px;margin-bottom:8px}
+.bar{height:3px;background:var(--line);border-radius:3px;flex:1;max-width:220px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--warn);transition:width .2s}
+.err{background:color-mix(in srgb,var(--long) 14%,var(--panel));border:1px solid var(--long);border-radius:12px;padding:12px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:980px){.grid{grid-template-columns:1fr 300px}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.panel h2{font-size:15px;font-weight:600;margin:0;padding:12px 14px 6px}
+.panel .sub{color:var(--muted);font-size:12.5px;padding:0 14px 10px;margin:0}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:9px 10px;text-align:right;white-space:nowrap;border-top:1px solid var(--line)}
+th{font-weight:500;color:var(--muted);font-size:12.5px;cursor:pointer;user-select:none;border-top:none;position:sticky;top:0;background:var(--panel)}
+th.act{color:var(--text)}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--panel);z-index:1}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--raise)}
+td small{display:block;color:var(--muted);font-size:11.5px}
+.up{color:var(--short)}.dn{color:var(--long)}.mut{color:var(--muted)}
+.coin b{font-weight:600}
+.tug{display:inline-flex;align-items:center;gap:8px}
+.tug .t{position:relative;width:84px;height:8px;background:var(--raise);border-radius:4px;overflow:hidden}
+.tug .t::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--line)}
+.tug .l,.tug .s{position:absolute;top:0;bottom:0}
+.tug .l{right:50%;background:var(--long)}
+.tug .s{left:50%;background:var(--short)}
+.tug b{min-width:46px;text-align:right;font-weight:600}
+.feed{list-style:none;margin:0;padding:0 6px 8px;max-height:560px;overflow:auto;font-size:13px}
+.feed li{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:7px 8px;border-top:1px solid var(--line)}
+.feed li span:nth-child(2){text-align:right;font-weight:600}
+.feed li small{color:var(--muted);font-size:11.5px}
+.feed .empty{display:block;color:var(--muted);border:none}
+.sums{display:flex;gap:14px;padding:0 14px 10px;font-size:13px}
+/* detail */
+.dhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.dhead h2{margin:0;font-size:22px;font-weight:700}
+.dhead .px{font-size:18px;font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:none;background:var(--panel);padding:7px 12px;cursor:pointer}
+.seg button.on{background:var(--text);color:var(--bg)}
+.chartbox{padding:4px 8px 8px;position:relative}
+canvas{display:block;width:100%;touch-action:pan-y}
+.tip{min-height:40px;padding:6px 14px 12px;font-size:13px;color:var(--muted)}
+.tip b{color:var(--text);font-weight:600}
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:0 14px 10px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.heatkey{display:inline-block;width:70px;height:8px;border-radius:4px;vertical-align:0;margin-right:5px;
+  background:linear-gradient(90deg,rgba(90,40,140,.6),rgb(200,60,120),rgb(255,150,50),rgb(255,240,120))}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1px;background:var(--line);border-top:1px solid var(--line);border-radius:0 0 14px 14px;overflow:hidden}
+.stat{background:var(--panel);padding:10px 14px}
+.stat span{display:block;color:var(--muted);font-size:12px}
+.stat b{font-size:16px;font-weight:600}
+.stat small{display:block;color:var(--muted);font-size:12px}
+.two{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+@media(min-width:820px){.two{grid-template-columns:1fr 1fr}}
+.risk{padding:0 14px 14px}
+.risk .big{display:flex;gap:18px;margin-bottom:10px}
+.risk .big div{flex:1}
+.risk .big b{font-size:28px;font-weight:700;line-height:1.1}
+.risk .big span{display:block;color:var(--muted);font-size:12.5px}
+.comp{display:grid;grid-template-columns:120px 1fr 1fr;gap:6px 10px;align-items:center;font-size:12.5px}
+.comp .h{color:var(--muted)}
+.meter{height:6px;background:var(--raise);border-radius:3px;overflow:hidden}
+.meter i{display:block;height:100%}
+.ins{margin:0;padding:0 14px 14px 32px}
+.ins li{margin-bottom:8px}
+.tri{display:inline-block;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--long);margin-right:5px;vertical-align:0}
+.pl li{grid-template-columns:1fr auto}
+.pl .tag{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:9px;background:var(--raise);color:var(--muted);margin-left:4px}
+.walls{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 14px 14px;font-size:13px}
+.walls h3{font-size:12.5px;font-weight:500;color:var(--muted);margin:0 0 4px}
+.walls div p{margin:0;padding:4px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:6px}
+footer{color:var(--muted);font-size:12.5px;margin-top:18px;max-width:72ch}
+.hidden{display:none!important}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.toptools{display:flex;gap:8px;align-items:center}
+.toptools select{padding:7px 8px;border-radius:10px}
+.star{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;padding:0 6px 0 0;vertical-align:-1px}
+.star.on{color:var(--warn)}
+.tri.up{border-bottom:none;border-top:9px solid var(--short)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:linear-gradient(90deg,var(--long) 50%,var(--short) 50%)}
+.sigtbl td:first-child,.sigtbl th:first-child{position:static}
+.sigtbl th{cursor:default}
+</style>
+<style id="ch-skin">
+body.ch-skin{background:var(--ch-bg);color:var(--ch-tx)}
+body.ch-skin :is(h1){font-size:20px!important;font-weight:500!important;letter-spacing:0!important;line-height:1.25!important}
+body.ch-skin :is(h2){font-weight:500!important;letter-spacing:0!important}
+body.ch-skin :is(h3){font-weight:500!important}
+body.ch-skin b, body.ch-skin strong{font-weight:600}
+body.ch-skin ::placeholder{color:var(--ch-t3)}
+
+html:root:root{--bg:var(--ch-bg);--panel:var(--ch-bg);--raise:var(--ch-s1);--line:var(--ch-bd);--text:var(--ch-tx);--muted:var(--ch-t2);--long:var(--ch-dn);--short:var(--ch-up);--warn:var(--ch-warn);--focus:var(--ch-acd);--ch-w:1200px}
+body.ch-skin .wrap{padding-top:10px}
+body.ch-skin .brand h1{font-size:20px!important}
+body.ch-skin .panel{border-width:0.5px;border-radius:12px}
+body.ch-skin .btn{background:none;border:0.5px solid var(--ch-bd2);border-radius:14px;padding:4px 12px;font-size:13px;color:var(--ch-t2);min-height:30px}
+body.ch-skin .btn:hover{border-color:var(--ch-t3);color:var(--ch-tx)}
+body.ch-skin .btn.on,body.ch-skin .btn[aria-pressed=true]{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+body.ch-skin .seg{border:0.5px solid var(--ch-bd2);border-radius:8px}
+body.ch-skin .seg button{background:none;color:var(--ch-t2);font-size:13px;padding:5px 11px}
+body.ch-skin .seg button.on{background:var(--ch-acb);color:var(--ch-act);font-weight:500}
+body.ch-skin :is(select,input[type=search]){border-radius:8px;padding:6px 9px;background:var(--ch-bg)}
+body.ch-skin th,body.ch-skin td{border-top-width:0.5px}
+body.ch-skin .err{background:var(--ch-erb);color:var(--ch-ert);border:0.5px solid var(--ch-bd2);border-radius:10px}
+body.ch-skin .stats{background:var(--ch-bd)}
+body.ch-skin .dhead h2{font-weight:500!important}
+body.ch-skin .risk .big b,body.ch-skin .stat b{font-weight:600}
+body.ch-skin .monitorcam{margin-left:auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+        <circle cx="17" cy="17" r="15" fill="none" stroke="currentColor" stroke-opacity=".25"/>
+        <circle cx="17" cy="17" r="9" fill="none" stroke="currentColor" stroke-opacity=".25"/>
+        <path d="M17 17 L17 2 A15 15 0 0 1 31.5 13" fill="#ffb547" fill-opacity=".35"/>
+        <circle cx="25" cy="9" r="2.4" fill="#ff6b6b"/><circle cx="10" cy="24" r="1.8" fill="#3dd6c4"/>
+      </svg>
+      <div><h1 data-i18n="title"></h1><p data-i18n="tagline"></p></div>
+    </div>
+    <div class="toptools">
+      <select id="langSel" aria-label="Language"><option value="uk">UA</option><option value="ru">RU</option><option value="en">EN</option></select>
+      <button class="btn" id="themeBtn" type="button"></button>
+    </div>
+  </div>
+
+  <div id="err" class="err hidden"></div>
+
+  <!-- MONITOR -->
+  <section id="monitor">
+    <div class="controls">
+      <input type="search" id="q" list="symList" data-i18n-ph="searchPh" autocomplete="off">
+      <datalist id="symList"></datalist>
+      <button class="btn" id="favOnly" type="button" data-i18n="favOnly" aria-pressed="false"></button>
+      <label><span data-i18n="coins"></span> <select id="topN"><option>30</option><option>60</option><option>100</option><option>150</option></select></label>
+      <label><span data-i18n="minVol"></span> <select id="minVol">
+        <option value="0" data-i18n="all"></option><option value="5000000">$5M</option><option value="10000000">$10M</option>
+        <option value="20000000">$20M</option><option value="50000000">$50M</option><option value="100000000">$100M</option></select></label>
+      <button class="btn" id="refresh" type="button" data-i18n="refresh"></button>
+    </div>
+    <div class="status"><span id="stat"></span><div class="bar"><i id="prog"></i></div></div>
+    <div class="grid">
+      <div class="panel">
+        <h2 data-i18n="monTitle"></h2>
+        <p class="sub" data-i18n="monSub"></p>
+        <div class="scroll"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+      </div>
+      <div class="panel">
+        <h2 data-i18n="liveTitle"></h2>
+        <div class="sums" id="sums"></div>
+        <ul class="feed" id="feed"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAIL -->
+  <section id="detail" class="hidden">
+    <div class="dhead">
+      <button class="btn" id="back" type="button" data-i18n="back"></button>
+      <h2 id="dSym">—</h2><span class="px" id="dPx"></span><span id="dChg"></span>
+      <button class="btn" id="dFav" type="button"></button>
+      <span style="flex:1"></span>
+      <div class="seg" id="tfSeg"><button data-tf="5m" data-i18n="tf5m"></button><button data-tf="15m" data-i18n="tf15m"></button><button data-tf="1h" data-i18n="tf1h"></button></div>
+      <button class="btn" id="dRefresh" type="button" data-i18n="refresh"></button>
+    </div>
+    <div id="chLinks" style="margin:-4px 0 10px"></div>
+    <div class="status"><span id="dStat"></span></div>
+
+    <div class="panel">
+      <h2 data-i18n="mapTitle"></h2>
+      <p class="sub" data-i18n="mapSub"></p>
+      <div class="chartbox"><canvas id="heat" height="380"></canvas></div>
+      <div class="legend">
+        <span><span class="heatkey"></span><span data-i18n="legDensity"></span></span>
+        <span><i style="background:var(--long)"></i><span data-i18n="legLong"></span></span>
+        <span><i style="background:var(--short)"></i><span data-i18n="legShort"></span></span>
+        <span><span class="tri"></span><span data-i18n="legPanic"></span></span>
+        <span><span class="tri up"></span><span data-i18n="legPanicUp"></span></span>
+        <span><span class="dot"></span><span data-i18n="legSig"></span></span>
+      </div>
+      <div class="tip" id="heatTip"></div>
+      <div class="stats" id="dStats"></div>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <h2 data-i18n="statTitle"></h2>
+      <p class="sub" id="statSub"></p>
+      <div class="scroll"><table class="sigtbl" id="sigTbl"></table></div>
+      <p class="sub" id="statNote" style="padding-top:10px"></p>
+    </div>
+
+    <div class="panel" style="margin-top:12px">
+      <h2 data-i18n="panicTitle"></h2>
+      <p class="sub" data-i18n="panicSub"></p>
+      <ul class="feed pl" id="dPanic"></ul>
+    </div>
+
+    <div class="two">
+      <div class="panel"><h2 data-i18n="riskTitle"></h2><div class="risk" id="dRisk"></div></div>
+      <div class="panel"><h2 data-i18n="insTitle"></h2><ol class="ins" id="dIns"></ol></div>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <h2 data-i18n="oiTitle"></h2>
+        <div class="chartbox"><canvas id="cOI" height="150"></canvas></div>
+        <div class="legend" id="lOI"></div>
+      </div>
+      <div class="panel">
+        <h2 data-i18n="lsTitle"></h2>
+        <div class="chartbox"><canvas id="cLS" height="150"></canvas></div>
+        <div class="legend" id="lLS"></div>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <h2 data-i18n="bookTitle"></h2>
+        <p class="sub" id="bookSum"></p>
+        <div class="walls" id="walls"></div>
+      </div>
+      <div class="panel">
+        <h2 data-i18n="dLiveTitle"></h2>
+        <ul class="feed" id="dFeed"></ul>
+      </div>
+    </div>
+  </section>
+
+  <footer data-i18n="footer"></footer>
+</div>
+
+<script>
+/* Show any script error on the page so problems are visible (also inside Telegram) */
+window.addEventListener('error', e => {
+  const el = document.getElementById('err'); if (!el) return;
+  el.innerHTML = '<b>Script error:</b> ' + (e.message || e) + (e.filename ? ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')' : '');
+  el.classList.remove('hidden');
+});
+</script>
+<script>
+/* Liquidation Radar — shared model (works in the browser and in Node).
+   Browser: <script src="radar-core.js"> → window.RadarCore
+   Node:    const RadarCore = require('./radar-core.js') */
+(function (root) {
+'use strict';
+
+const LEV = [[10, .30], [25, .30], [50, .25], [100, .15]]; // typical leverage and its share
+const MMR = 0.005;                                          // approx. maintenance margin
+const MIN_MOVE = { 3e5: 0.008, 9e5: 0.012, 36e5: 0.02 };    // min candle move for a panic (5m / 15m / 1h)
+const HORIZONS_H = [1, 4, 24];                              // hours to measure what happened after a signal
+const SIGNAL_LEVEL = 60;                                    // squeeze risk that counts as a signal
+
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const c01 = x => clamp(isFinite(x) ? x : 0, 0, 1);
+const pos = x => Math.max(0, x);
+
+// One point per candle: OHLC, volume, taker-buy volume, OI at candle close, long share of accounts
+function buildSeries(kl, oi, ls, per) {
+  const om = new Map(oi.map(x => [+x.timestamp, x]));
+  const lm = new Map(ls.map(x => [+x.timestamp, +x.longAccount]));
+  const out = []; let lastO = null, lastLa = 0.5;
+  for (const k of kl) {
+    const ts = +k[0];
+    const o = om.get(ts + per) || om.get(ts);
+    const la = lm.has(ts + per) ? lm.get(ts + per) : lm.get(ts);
+    if (la != null && isFinite(la)) lastLa = la;
+    if (o) lastO = o;
+    out.push({ t: ts, o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5], tb: +k[9],
+      oi: lastO ? +lastO.sumOpenInterest : null, la: lastLa });
+  }
+  return out;
+}
+
+// Estimated liquidation clusters. New OI is split into longs/shorts and spread across typical leverage.
+// withHist: also record how much was sitting within 3% of price at every candle.
+function liqModel(s, withHist) {
+  const cl = [], near = withHist ? new Array(s.length).fill(null) : null;
+  for (let i = 1; i < s.length; i++) {
+    const b = s[i];
+    for (const c of cl) {
+      if (c.end < 0 && ((c.side === 'L' && b.l <= c.price) || (c.side === 'S' && b.h >= c.price))) c.end = i;
+    }
+    if (s[i].oi != null && s[i - 1].oi != null && s[i - 1].oi > 0) {
+      const d = s[i].oi - s[i - 1].oi;
+      if (d < 0) {
+        const f = s[i].oi / s[i - 1].oi;
+        for (const c of cl) if (c.end < 0) c.usd *= f;
+      } else if (d > 0) {
+        const p = (b.h + b.l + b.c) / 3, n = d * p;
+        for (const [L, w] of LEV) {
+          cl.push({ side: 'L', price: p * (1 - 1 / L + MMR), usd: n * b.la * w, start: i, end: -1 });
+          cl.push({ side: 'S', price: p * (1 + 1 / L - MMR), usd: n * (1 - b.la) * w, start: i, end: -1 });
+        }
+      }
+    }
+    if (withHist) {
+      const P = b.c; let nL = 0, nS = 0;
+      for (const c of cl) {
+        if (c.end >= 0) continue;
+        if (c.side === 'L') { if (c.price >= P * 0.97 && c.price < P) nL += c.usd; }
+        else if (c.price <= P * 1.03 && c.price > P) nS += c.usd;
+      }
+      near[i] = { nL, nS };
+    }
+  }
+  return { cl, near };
+}
+
+function buckets(cl, lo, hi, n) {
+  const step = (hi - lo) / n, L = new Float64Array(n), Sh = new Float64Array(n);
+  for (const c of cl) {
+    if (c.end >= 0 || c.price < lo || c.price >= hi) continue;
+    const k = Math.floor((c.price - lo) / step);
+    (c.side === 'L' ? L : Sh)[k] += c.usd;
+  }
+  return { lo, hi, step, n, L, S: Sh };
+}
+
+function riskScore(fr, lsr, oiChg, nearL, nearS, oiVal) {
+  const fundN = clamp((fr - 0.0001) / 0.0004, -1, 1) || 0;
+  const crowdN = clamp(Math.log(lsr) / Math.log(3), -1, 1) || 0;
+  const buildN = c01(oiChg / 25);
+  const nL = c01(nearL / (oiVal * 0.03)), nS = c01(nearS / (oiVal * 0.03));
+  const parts = {
+    L: { fund: pos(fundN), crowd: pos(crowdN), build: buildN, near: nL },
+    S: { fund: pos(-fundN), crowd: pos(-crowdN), build: buildN, near: nS }
+  };
+  const W = { fund: .28, crowd: .22, build: .20, near: .30 };
+  const sc = o => Math.round(100 * (W.fund * o.fund + W.crowd * o.crowd + W.build * o.build + W.near * o.near));
+  return { parts, longRisk: sc(parts.L), shortRisk: sc(parts.S) };
+}
+
+const oiChangeAt = (s, i, n24) => {
+  const a = s[i].oi, b = s[Math.max(0, i - n24)].oi;
+  return a != null && b ? (a / b - 1) * 100 : 0;
+};
+const fwd = (s, i, h) => s[i + h] ? (s[i + h].c / s[i].c - 1) * 100 : null;
+
+// Panic sells (dir 'D') and panic buys (dir 'U'): sharp move vs. normal range + volume spike + one-sided market orders
+function spikes(s, cl, per, hz) {
+  const LB = 24, out = [], kL = new Map(), kS = new Map();
+  for (const c of cl) if (c.end >= 0) { const m = c.side === 'L' ? kL : kS; m.set(c.end, (m.get(c.end) || 0) + c.usd); }
+  const minMove = MIN_MOVE[per] || 0.01;
+  for (let i = LB; i < s.length; i++) {
+    const b = s[i]; if (!(b.v > 0) || !(b.o > 0)) continue;
+    const win = s.slice(i - LB, i);
+    const vols = win.map(x => x.v).sort((x, y) => x - y), med = vols[LB >> 1];
+    const rng = win.reduce((a, x) => a + (x.h - x.l) / x.c, 0) / LB || 1e-9;
+    const vx = med > 0 ? b.v / med : 0;
+    if (vx < 2.5) continue;
+    const sellSh = isFinite(b.tb) ? 1 - b.tb / b.v : 0.5;
+    const down = (b.o - b.l) / b.o, up = (b.h - b.o) / b.o;
+    const okD = down >= minMove && down / rng >= 2 && sellSh >= 0.55;
+    const okU = up >= minMove && up / rng >= 2 && 1 - sellSh >= 0.55;
+    if (!okD && !okU) continue;
+    const dir = okD && (!okU || down >= up) ? 'D' : 'U';
+    const mv = dir === 'D' ? down : up, flow = dir === 'D' ? sellSh : 1 - sellSh;
+    const prev = s[i - 1];
+    const oiCh = b.oi != null && prev.oi ? (b.oi / prev.oi - 1) * 100 : null;
+    const sc = 0.35 * c01((mv / rng - 2) / 4) + 0.3 * c01((vx - 2.5) / 7.5) + 0.2 * c01((flow - 0.55) / 0.3)
+      + 0.15 * (oiCh != null && oiCh < 0 ? c01(-oiCh / 3) : 0);
+    const ev = { dir, i, iEnd: i, t: b.t, open: b.o, ext: dir === 'D' ? b.l : b.h, close: b.c, vx, flow, oiCh,
+      liq: (dir === 'D' ? kL : kS).get(i) || 0, strength: Math.round(30 + 70 * sc) };
+    const last = out[out.length - 1];
+    if (last && last.dir === dir && last.iEnd >= i - 1) {
+      last.iEnd = i; last.close = b.c; last.vx = Math.max(last.vx, vx); last.flow = Math.max(last.flow, flow);
+      last.ext = dir === 'D' ? Math.min(last.ext, b.l) : Math.max(last.ext, b.h);
+      last.liq += ev.liq; last.strength = Math.max(last.strength, ev.strength);
+      if (oiCh != null) last.oiCh = (last.oiCh || 0) + oiCh;
+    } else out.push(ev);
+  }
+  for (const e of out) {
+    e.move = (e.ext / e.open - 1) * 100;
+    e.back = e.dir === 'D'
+      ? (e.open > e.ext ? (e.close - e.ext) / (e.open - e.ext) : 0)
+      : (e.ext > e.open ? (e.ext - e.close) / (e.ext - e.open) : 0);
+    const o = e.oiCh;
+    e.kind = e.dir === 'D'
+      ? (o != null && o < -0.3 ? 'kindCap' : o != null && o > 0.3 ? 'kindShorts' : 'kindSell')
+      : (o != null && o < -0.3 ? 'kindShortCap' : o != null && o > 0.3 ? 'kindLongs' : 'kindBuy');
+    e.fwd = hz.map(h => fwd(s, e.iEnd, h));
+  }
+  return out;
+}
+
+// What happened after each kind of signal. exp = expected direction (+1 up, -1 down)
+function signalStats(panic, sig) {
+  const groups = [
+    { key: 'sigPS', exp: 1, ev: panic.filter(e => e.dir === 'D') },
+    { key: 'sigPB', exp: -1, ev: panic.filter(e => e.dir === 'U') },
+    { key: 'sigRL', exp: -1, ev: sig.filter(e => e.dir === 'L') },
+    { key: 'sigRS', exp: 1, ev: sig.filter(e => e.dir === 'S') }
+  ];
+  return groups.map(g => {
+    const avg = [0, 1, 2].map(j => {
+      const v = g.ev.map(e => e.fwd[j]).filter(x => x != null);
+      return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+    });
+    const v4 = g.ev.map(e => e.fwd[1]).filter(x => x != null);
+    const hit = v4.length ? v4.filter(x => x * g.exp > 0).length / v4.length * 100 : null;
+    return { key: g.key, n: g.ev.length, nEval: v4.length, avg, hit };
+  });
+}
+
+// opts.frHist: [{t, r}] funding history → enables historical risk signals and statistics
+function analyze(s, fr, per, opts) {
+  opts = opts || {};
+  const withHist = !!opts.frHist;
+  const { cl, near } = liqModel(s, withHist);
+  const n = s.length, P = s[n - 1].c, n24 = Math.round(864e5 / per);
+  const oiChg = oiChangeAt(s, n - 1, n24);
+  const oiVal = (s[n - 1].oi || 0) * P;
+  const la = s[n - 1].la, lsr = la / (1 - la);
+  let nearL = 0, nearS = 0;
+  for (const c of cl) {
+    if (c.end >= 0) continue;
+    if (c.side === 'L' && c.price >= P * 0.97 && c.price < P) nearL += c.usd;
+    if (c.side === 'S' && c.price <= P * 1.03 && c.price > P) nearS += c.usd;
+  }
+  const bk = buckets(cl, P * 0.85, P * 1.15, 120);
+  const mid = i => bk.lo + (i + 0.5) * bk.step;
+  let bL = -1, bS = -1;
+  for (let i = 0; i < bk.n; i++) {
+    if (mid(i) < P && (bL < 0 || bk.L[i] > bk.L[bL])) bL = i;
+    if (mid(i) > P && (bS < 0 || bk.S[i] > bk.S[bS])) bS = i;
+  }
+  const majL = bL >= 0 && bk.L[bL] > 0 ? { price: mid(bL), usd: bk.L[bL], dist: (mid(bL) / P - 1) * 100 } : null;
+  const majS = bS >= 0 && bk.S[bS] > 0 ? { price: mid(bS), usd: bk.S[bS], dist: (mid(bS) / P - 1) * 100 } : null;
+  const { parts, longRisk, shortRisk } = riskScore(fr, lsr, oiChg, nearL, nearS, oiVal);
+  const hz = HORIZONS_H.map(h => Math.max(1, Math.round(h * 36e5 / per)));
+  const panic = spikes(s, cl, per, hz);
+
+  const sig = [];
+  let stats = null;
+  if (withHist) {
+    const fh = opts.frHist.slice().sort((a, b) => a.t - b.t);
+    let k = 0, cur = fh.length ? fh[0].r : fr, prevMax = 0, lastSig = -1e9;
+    const cool = Math.round(4 * 36e5 / per);
+    for (let i = 1; i < n; i++) {
+      while (k < fh.length && fh[k].t <= s[i].t) { cur = fh[k].r; k++; }
+      if (!near[i] || s[i].oi == null) continue;
+      const r = riskScore(cur, s[i].la / (1 - s[i].la), oiChangeAt(s, i, n24), near[i].nL, near[i].nS, s[i].oi * s[i].c);
+      const m = Math.max(r.longRisk, r.shortRisk);
+      if (i >= 24 && m >= SIGNAL_LEVEL && prevMax < SIGNAL_LEVEL && i - lastSig >= cool) {
+        sig.push({ i, t: s[i].t, dir: r.longRisk >= r.shortRisk ? 'L' : 'S', score: m, fwd: hz.map(h => fwd(s, i, h)) });
+        lastSig = i;
+      }
+      prevMax = m;
+    }
+    stats = signalStats(panic, sig);
+  }
+  return { cl, panic, sig, stats, P, oiChg, oiVal, la, lsr, nearL, nearS, majL, majS, parts, longRisk, shortRisk,
+    score: Math.max(longRisk, shortRisk), dir: longRisk >= shortRisk ? 'L' : 'S' };
+}
+
+const RadarCore = { buildSeries, analyze, SIGNAL_LEVEL, HORIZONS_H };
+if (typeof module !== 'undefined' && module.exports) module.exports = RadarCore;
+root.RadarCore = RadarCore;
+})(typeof globalThis !== 'undefined' ? globalThis : this);
+</script>
+<script>
+(() => {
+'use strict';
+/* Optional: your Render server (server.js). Gives full liquidation history since the server started.
+   Example: 'https://liquidation-radar.onrender.com' — leave empty to work without it. */
+const RADAR_SERVER = '';
+
+/* ---------- i18n ---------- */
+const I18N = {
+uk: {
+  title: 'Радар ліквідацій', tagline: 'Binance USDT-M ф’ючерси: де скупчене плече і хто під ризиком',
+  themeLight: 'Світла тема', themeDark: 'Темна тема',
+  searchPh: 'Пошук монети, Enter — відкрити аналіз', coins: 'Монет', minVol: 'Мін. обсяг', all: 'усі', refresh: 'Оновити',
+  favOnly: '★ Обрані', favAdd: 'Додати в обрані', fav: '☆ В обрані', faved: '★ В обраних',
+  monTitle: 'Монітор ризику сквізу',
+  monSub: 'Червоне — ризик проколу вниз (ліквідації лонгів), бірюзове — ризик вистрілу вгору (ліквідації шортів). Натисніть рядок для детального аналізу, ☆ — додати в обрані.',
+  liveTitle: 'Ліквідації наживо', waitFirst: 'Чекаємо на перші ліквідації…',
+  back: '← Монітор', tf5m: '5хв', tf15m: '15хв', tf1h: '1год',
+  mapTitle: 'Карта ліквідацій',
+  mapSub: 'Яскравіші смуги — більше оціненого плеча, яке ліквідується, якщо ціна туди дійде. Смуга обривається там, де ціна її вже зняла. Червоні трикутники під свічками — панік-сейли, бірюзові над свічками — панік-покупки. Точки вгорі — моменти, коли ризик сквізу перетнув 60. Праворуч — сумарно по рівнях. Торкніться графіка, щоб побачити оцінку на рівні.',
+  legDensity: 'щільність ліквідацій', legLong: 'лонги (нижче ціни)', legShort: 'шорти (вище ціни)', legPanic: 'панік-сейл', legPanicUp: 'панік-покупка', legSig: 'сигнал ризику 60+',
+  tipDefault: 'Торкніться або наведіть на графік.',
+  statTitle: 'Чи працюють сигнали на цій монеті',
+  statSub: 'Середня зміна ціни після сигналу на цьому таймфреймі (історія ≈ {span}). «В очікуваному напрямку» — частка випадків, коли через 4 год ціна пішла туди, куди вказував сигнал: після паніки — розворот, після ризику сквізу — рух у бік кластера.',
+  sigPS: 'Панік-сейл → відскок', sigPB: 'Панік-покупка → відкат', sigRL: 'Ризик проколу вниз', sigRS: 'Ризик вистрілу вгору',
+  thSignal: 'Сигнал', thN: 'Випадків', th1: 'через 1 год', th4: 'через 4 год', th24: 'через 24 год', thHit: 'В очікуваному напрямку',
+  statFew: 'Де випадків менше 5, висновки ненадійні. Для довшої історії оберіть таймфрейм 1год. Минулі результати не гарантують майбутніх.',
+  spanD: '{n} дн', spanH: '{n} год',
+  panicTitle: 'Панік-сейли і панік-покупки',
+  panicSub: 'Свічки з різким рухом, сплеском обсягу і перевагою ринкових ордерів в один бік. Падіння разом зі зниженням Open Interest — капітуляція лонгів, ріст зі зниженням OI — капітуляція шортів (short squeeze). Якщо OI росте — у ринок агресивно заходять нові позиції.',
+  riskTitle: 'Ризик сквізу', insTitle: 'Що це означає', oiTitle: 'Open Interest і ціна', lsTitle: 'Співвідношення лонг/шорт',
+  bookTitle: 'Великі заявки в стакані (±3%)', dLiveTitle: 'Ліквідації по монеті наживо',
+  footer: 'Рівні ліквідацій — модель на публічних даних Binance: приріст Open Interest, ціна і частка лонг/шорт акаунтів, розкладені по типових плечах (10x, 25x, 50x, 100x). Біржа не публікує реальні позиції, тому це наближення, а не прогноз. Без сервера потік ліквідацій рахується лише з моменту відкриття сторінки, а Binance віддає не більше однієї події на монету за секунду, тож суми занижені. Не є фінансовою порадою.',
+  err451: '<b>Binance Futures API недоступний з вашої мережі (код {st}).</b> Біржа блокує деякі регіони. Увімкніть VPN або запускайте запити через власний сервер.',
+  errGen: '<b>Не вдалося отримати дані від Binance.</b> {msg}. Перевірте з’єднання і натисніть «Оновити».',
+  long: 'лонг', short: 'шорт', at: 'за {p}', noLiq: 'Поки що ліквідацій немає.',
+  sums: 'За 1 год:', longsV: 'лонги {v}', shortsV: 'шорти {v}',
+  colCoin: 'Монета', colScore: 'Ризик сквізу', colChg: '24 год', colPan: 'Паніка 24 год', colFr: 'Фандинг', colOi: 'OI за 24 год',
+  colLsr: 'Лонг/шорт', colCl: 'Кластер лонгів', colCs: 'Кластер шортів', colLiq: 'Ліквідації 1 год', colVol: 'Обсяг 24 год',
+  scoreTitle: 'Лонги {l} / шорти {s}', calc: 'Рахуємо…', noRows: 'Немає монет під фільтр. Зменште мінімальний обсяг, очистіть пошук або вимкніть «Обрані».',
+  volX: 'обсяг ×{v}', loadingMarket: 'Завантажуємо ринок…', counted: 'Пораховано {a} з {b}', noneLoaded: 'Жодна монета не завантажилась',
+  monDone: '{n} монет · оновлено {t} · автооновлення кожні 5 хв', loadErr: 'Помилка завантаження',
+  building: 'Будуємо карту ліквідацій…', noCandles: 'Немає свічок для {s}', detDone: 'Оновлено {t} · {n} свічок по {tf} · автооновлення кожні 2 хв',
+  minAgo: '{n} хв тому', hAgo: '{n} год тому', dAgo: '{n} дн тому',
+  kindCap: 'капітуляція лонгів', kindShorts: 'агресивні шорти', kindSell: 'тиск продавців',
+  kindShortCap: 'капітуляція шортів', kindLongs: 'агресивні лонги', kindBuy: 'тиск покупців',
+  tipPanicD: '<b class="dn">Панік-сейл {d}</b>: {mv}, обсяг ×{vx}, ринкові продажі {fl}%, {kind}.<br>',
+  tipPanicU: '<b class="up">Панік-покупка {d}</b>: {mv}, обсяг ×{vx}, ринкові покупки {fl}%, {kind}.<br>',
+  tipDown: 'Якщо ціна впаде до <b>{p}</b> ({d}), за оцінкою ліквідується ≈ <b class="dn">{c}</b> лонгів. На цьому рівні: {lv}.',
+  tipUp: 'Якщо ціна виросте до <b>{p}</b> ({d}), за оцінкою ліквідується ≈ <b class="up">{c}</b> шортів. На цьому рівні: {lv}.',
+  noData: 'немає даних',
+  insLong: 'Підвищений ризик проколу вниз (long squeeze): <b>{v}/100</b>.', insLongCl: ' Найбільший кластер ліквідацій лонгів ≈ {p} ({d}), оцінка {u}.',
+  insShort: 'Підвищений ризик вистрілу вгору (short squeeze): <b>{v}/100</b>.', insShortCl: ' Найбільший кластер ліквідацій шортів ≈ {p} ({d}), оцінка {u}.',
+  insBal: 'Сильного перекосу немає: натовп відносно збалансований або великі кластери далеко від ціни.',
+  insPanicD: 'Щойно був панік-сейл: {d} на обсязі ×{vx} ({kind}).', insBackD: ' Падіння вже здебільшого відкупили — продавці вичерпались, принаймні на цей момент.', insNoBackD: ' Відкупу поки немає — тиск продавців ще не вичерпаний.',
+  insPanicU: 'Щойно була панік-покупка: {d} на обсязі ×{vx} ({kind}).', insBackU: ' Ріст уже здебільшого віддали — покупці видихнулися.', insNoBackU: ' Ріст утримується — покупці ще контролюють ринок.',
+  insHist: 'На цій монеті після сигналу «{s}» ціна через 4 год у середньому {v}, в очікуваному напрямку — {h}% випадків ({n}).',
+  insOiUp: 'Open Interest виріс на {v} за добу при спокійній ціні — набирається плече. Такий набір часто розряджається різким рухом.',
+  insOiDown: 'Open Interest впав на {v} за добу — частину плеча вже закрито або вибито, тиск ліквідацій слабший.',
+  insFrHigh: 'Фандинг {v} — лонги переплачують шортам, натовп перегрітий у лонг.', insFrNeg: 'Від’ємний фандинг {v} — перекіс у шорти, ґрунт для short squeeze.',
+  insCascade: 'За останню годину пройшло ліквідацій на {v} — каскад уже відбувся, частина кластера знята.',
+  insBookDown: 'Стакан знизу помітно тонший за верхній — ціну легше протиснути вниз до кластерів лонгів.',
+  insBookUp: 'Стакан зверху помітно тонший за нижній — ціні легше дійти до кластерів шортів.',
+  insProtect: 'Для власного захисту: не ставте стоп і рівень ліквідації одразу за великим кластером — ціна найчастіше тягнеться саме туди. Коли ризик сквізу вище 60, зменшуйте плече.',
+  stFund: 'Фандинг', stFundSub: 'до виплати {h} год {m} хв', stOi: 'Open Interest', stOiSub: 'за 24 год {v}',
+  stLsr: 'Лонг/шорт, акаунти', stLsrSub: '{v}% акаунтів у лонгах', stTop: 'Топ-трейдери, позиції', stTopSub: 'лонг/шорт за обсягом',
+  stTaker: 'Агресивні покупки/продажі', stTakerSub: 'середнє за 12 свічок', stLiq: 'Ліквідації за 1 год', stLiqSub: 'шорти {v}',
+  stBook: 'Стакан ±2%', stBookSub: 'купівля / продаж {v}', stVol: 'Обсяг 24 год',
+  rDown: 'прокол вниз, ліквідації лонгів', rUp: 'вистріл вгору, ліквідації шортів', rLongs: 'лонги', rShorts: 'шорти',
+  compFund: 'Фандинг', compCrowd: 'Перекіс натовпу', compBuild: 'Набір OI', compNear: 'Кластер у межах 3%',
+  lgPrice: 'Ціна', lgOi: 'Open Interest', lgPanics: 'панік-рухи', lgAcc: 'Акаунти', lgTop: 'Топ-трейдери',
+  bookSum: 'У межах ±1%: купівля <b class="up">{b}</b>, продаж <b class="dn">{a}</b>. Великі заявки можуть бути зняті в будь-який момент.',
+  bookNone: 'Стакан не завантажився.', wallBuy: 'Купівля (підтримка)', wallSell: 'Продаж (опір)',
+  pOver: ' за {n} свічки', tagBack: 'відкупили', tagBackU: 'віддали', pVol: 'обсяг ×{v}', pSell: 'продажі {v}%', pBuy: 'покупки {v}%',
+  pKnockL: 'знято ≈ {v} лонгів', pKnockS: 'знято ≈ {v} шортів', pRecovD: 'відкуп {v}% падіння', pRecovU: 'віддали {v}% росту',
+  pAfter: 'далі: 1 год {a} · 4 год {b} · 24 год {c}',
+  pNone: 'На цьому таймфреймі панік-рухів не знайдено. Спробуйте інший таймфрейм.',
+  noSym: 'Монети {s} немає серед USDT-ф’ючерсів Binance'
+},
+ru: {
+  title: 'Радар ликвидаций', tagline: 'Фьючерсы Binance USDT-M: где скопилось плечо и кто под риском',
+  themeLight: 'Светлая тема', themeDark: 'Тёмная тема',
+  searchPh: 'Поиск монеты, Enter — открыть анализ', coins: 'Монет', minVol: 'Мин. объём', all: 'все', refresh: 'Обновить',
+  favOnly: '★ Избранное', favAdd: 'Добавить в избранное', fav: '☆ В избранное', faved: '★ В избранном',
+  monTitle: 'Монитор риска сквиза',
+  monSub: 'Красное — риск прокола вниз (ликвидации лонгов), бирюзовое — риск прострела вверх (ликвидации шортов). Нажмите строку для подробного анализа, ☆ — добавить в избранное.',
+  liveTitle: 'Ликвидации в реальном времени', waitFirst: 'Ждём первые ликвидации…',
+  back: '← Монитор', tf5m: '5м', tf15m: '15м', tf1h: '1ч',
+  mapTitle: 'Карта ликвидаций',
+  mapSub: 'Яркие полосы — больше оценочного плеча, которое ликвидируется, если цена туда дойдёт. Полоса обрывается там, где цена её уже сняла. Красные треугольники под свечами — паник-селлы, бирюзовые над свечами — паник-покупки. Точки сверху — моменты, когда риск сквиза пересёк 60. Справа — сумма по уровням. Коснитесь графика, чтобы увидеть оценку на уровне.',
+  legDensity: 'плотность ликвидаций', legLong: 'лонги (ниже цены)', legShort: 'шорты (выше цены)', legPanic: 'паник-селл', legPanicUp: 'паник-покупка', legSig: 'сигнал риска 60+',
+  tipDefault: 'Коснитесь или наведите на график.',
+  statTitle: 'Работают ли сигналы на этой монете',
+  statSub: 'Среднее изменение цены после сигнала на этом таймфрейме (история ≈ {span}). «В ожидаемом направлении» — доля случаев, когда через 4 ч цена пошла туда, куда указывал сигнал: после паники — разворот, после риска сквиза — движение к кластеру.',
+  sigPS: 'Паник-селл → отскок', sigPB: 'Паник-покупка → откат', sigRL: 'Риск прокола вниз', sigRS: 'Риск прострела вверх',
+  thSignal: 'Сигнал', thN: 'Случаев', th1: 'через 1 ч', th4: 'через 4 ч', th24: 'через 24 ч', thHit: 'В ожидаемом направлении',
+  statFew: 'Где случаев меньше 5, выводы ненадёжны. Для более длинной истории выберите таймфрейм 1ч. Прошлые результаты не гарантируют будущих.',
+  spanD: '{n} дн', spanH: '{n} ч',
+  panicTitle: 'Паник-селлы и паник-покупки',
+  panicSub: 'Свечи с резким движением, всплеском объёма и перевесом рыночных ордеров в одну сторону. Падение вместе со снижением Open Interest — капитуляция лонгов, рост со снижением OI — капитуляция шортов (short squeeze). Если OI растёт — в рынок агрессивно заходят новые позиции.',
+  riskTitle: 'Риск сквиза', insTitle: 'Что это значит', oiTitle: 'Open Interest и цена', lsTitle: 'Соотношение лонг/шорт',
+  bookTitle: 'Крупные заявки в стакане (±3%)', dLiveTitle: 'Ликвидации по монете в реальном времени',
+  footer: 'Уровни ликвидаций — модель на публичных данных Binance: прирост Open Interest, цена и доля лонг/шорт аккаунтов, разложенные по типичным плечам (10x, 25x, 50x, 100x). Биржа не публикует реальные позиции, поэтому это приближение, а не прогноз. Без сервера поток ликвидаций считается только с момента открытия страницы, а Binance отдаёт не больше одного события на монету в секунду, поэтому суммы занижены. Не является финансовой рекомендацией.',
+  err451: '<b>Binance Futures API недоступен из вашей сети (код {st}).</b> Биржа блокирует некоторые регионы. Включите VPN или отправляйте запросы через свой сервер.',
+  errGen: '<b>Не удалось получить данные от Binance.</b> {msg}. Проверьте соединение и нажмите «Обновить».',
+  long: 'лонг', short: 'шорт', at: 'по {p}', noLiq: 'Пока ликвидаций нет.',
+  sums: 'За 1 ч:', longsV: 'лонги {v}', shortsV: 'шорты {v}',
+  colCoin: 'Монета', colScore: 'Риск сквиза', colChg: '24 ч', colPan: 'Паника 24 ч', colFr: 'Фандинг', colOi: 'OI за 24 ч',
+  colLsr: 'Лонг/шорт', colCl: 'Кластер лонгов', colCs: 'Кластер шортов', colLiq: 'Ликвидации 1 ч', colVol: 'Объём 24 ч',
+  scoreTitle: 'Лонги {l} / шорты {s}', calc: 'Считаем…', noRows: 'Нет монет под фильтр. Уменьшите минимальный объём, очистите поиск или выключите «Избранное».',
+  volX: 'объём ×{v}', loadingMarket: 'Загружаем рынок…', counted: 'Посчитано {a} из {b}', noneLoaded: 'Не загрузилась ни одна монета',
+  monDone: '{n} монет · обновлено {t} · автообновление каждые 5 мин', loadErr: 'Ошибка загрузки',
+  building: 'Строим карту ликвидаций…', noCandles: 'Нет свечей для {s}', detDone: 'Обновлено {t} · {n} свечей по {tf} · автообновление каждые 2 мин',
+  minAgo: '{n} мин назад', hAgo: '{n} ч назад', dAgo: '{n} дн назад',
+  kindCap: 'капитуляция лонгов', kindShorts: 'агрессивные шорты', kindSell: 'давление продавцов',
+  kindShortCap: 'капитуляция шортов', kindLongs: 'агрессивные лонги', kindBuy: 'давление покупателей',
+  tipPanicD: '<b class="dn">Паник-селл {d}</b>: {mv}, объём ×{vx}, рыночные продажи {fl}%, {kind}.<br>',
+  tipPanicU: '<b class="up">Паник-покупка {d}</b>: {mv}, объём ×{vx}, рыночные покупки {fl}%, {kind}.<br>',
+  tipDown: 'Если цена упадёт до <b>{p}</b> ({d}), по оценке ликвидируется ≈ <b class="dn">{c}</b> лонгов. На этом уровне: {lv}.',
+  tipUp: 'Если цена вырастет до <b>{p}</b> ({d}), по оценке ликвидируется ≈ <b class="up">{c}</b> шортов. На этом уровне: {lv}.',
+  noData: 'нет данных',
+  insLong: 'Повышенный риск прокола вниз (long squeeze): <b>{v}/100</b>.', insLongCl: ' Крупнейший кластер ликвидаций лонгов ≈ {p} ({d}), оценка {u}.',
+  insShort: 'Повышенный риск прострела вверх (short squeeze): <b>{v}/100</b>.', insShortCl: ' Крупнейший кластер ликвидаций шортов ≈ {p} ({d}), оценка {u}.',
+  insBal: 'Сильного перекоса нет: толпа относительно сбалансирована или крупные кластеры далеко от цены.',
+  insPanicD: 'Только что был паник-селл: {d} на объёме ×{vx} ({kind}).', insBackD: ' Падение уже в основном выкупили — продавцы выдохлись, по крайней мере сейчас.', insNoBackD: ' Выкупа пока нет — давление продавцов ещё не исчерпано.',
+  insPanicU: 'Только что была паник-покупка: {d} на объёме ×{vx} ({kind}).', insBackU: ' Рост уже в основном отдали — покупатели выдохлись.', insNoBackU: ' Рост удерживается — покупатели ещё контролируют рынок.',
+  insHist: 'На этой монете после сигнала «{s}» цена через 4 ч в среднем {v}, в ожидаемом направлении — {h}% случаев ({n}).',
+  insOiUp: 'Open Interest вырос на {v} за сутки при спокойной цене — набирается плечо. Такой набор часто разряжается резким движением.',
+  insOiDown: 'Open Interest упал на {v} за сутки — часть плеча уже закрыта или выбита, давление ликвидаций слабее.',
+  insFrHigh: 'Фандинг {v} — лонги переплачивают шортам, толпа перегрета в лонг.', insFrNeg: 'Отрицательный фандинг {v} — перекос в шорты, почва для short squeeze.',
+  insCascade: 'За последний час прошло ликвидаций на {v} — каскад уже случился, часть кластера снята.',
+  insBookDown: 'Стакан снизу заметно тоньше верхнего — цену легче продавить вниз к кластерам лонгов.',
+  insBookUp: 'Стакан сверху заметно тоньше нижнего — цене легче дойти до кластеров шортов.',
+  insProtect: 'Для своей защиты: не ставьте стоп и уровень ликвидации сразу за крупным кластером — цена чаще всего тянется именно туда. Когда риск сквиза выше 60, уменьшайте плечо.',
+  stFund: 'Фандинг', stFundSub: 'до выплаты {h} ч {m} мин', stOi: 'Open Interest', stOiSub: 'за 24 ч {v}',
+  stLsr: 'Лонг/шорт, аккаунты', stLsrSub: '{v}% аккаунтов в лонгах', stTop: 'Топ-трейдеры, позиции', stTopSub: 'лонг/шорт по объёму',
+  stTaker: 'Агрессивные покупки/продажи', stTakerSub: 'среднее за 12 свечей', stLiq: 'Ликвидации за 1 ч', stLiqSub: 'шорты {v}',
+  stBook: 'Стакан ±2%', stBookSub: 'покупка / продажа {v}', stVol: 'Объём 24 ч',
+  rDown: 'прокол вниз, ликвидации лонгов', rUp: 'прострел вверх, ликвидации шортов', rLongs: 'лонги', rShorts: 'шорты',
+  compFund: 'Фандинг', compCrowd: 'Перекос толпы', compBuild: 'Набор OI', compNear: 'Кластер в пределах 3%',
+  lgPrice: 'Цена', lgOi: 'Open Interest', lgPanics: 'паник-движения', lgAcc: 'Аккаунты', lgTop: 'Топ-трейдеры',
+  bookSum: 'В пределах ±1%: покупка <b class="up">{b}</b>, продажа <b class="dn">{a}</b>. Крупные заявки могут быть сняты в любой момент.',
+  bookNone: 'Стакан не загрузился.', wallBuy: 'Покупка (поддержка)', wallSell: 'Продажа (сопротивление)',
+  pOver: ' за {n} свечи', tagBack: 'выкупили', tagBackU: 'откатили', pVol: 'объём ×{v}', pSell: 'продажи {v}%', pBuy: 'покупки {v}%',
+  pKnockL: 'снято ≈ {v} лонгов', pKnockS: 'снято ≈ {v} шортов', pRecovD: 'выкуп {v}% падения', pRecovU: 'отдали {v}% роста',
+  pAfter: 'дальше: 1 ч {a} · 4 ч {b} · 24 ч {c}',
+  pNone: 'На этом таймфрейме паник-движений не найдено. Попробуйте другой таймфрейм.',
+  noSym: 'Монеты {s} нет среди USDT-фьючерсов Binance'
+},
+en: {
+  title: 'Liquidation Radar', tagline: 'Binance USDT-M futures: where leverage piles up and who is at risk',
+  themeLight: 'Light theme', themeDark: 'Dark theme',
+  searchPh: 'Search a coin, Enter to open analysis', coins: 'Coins', minVol: 'Min volume', all: 'all', refresh: 'Refresh',
+  favOnly: '★ Favorites', favAdd: 'Add to favorites', fav: '☆ Favorite', faved: '★ Favorited',
+  monTitle: 'Squeeze risk monitor',
+  monSub: 'Red means risk of a flush down (long liquidations), teal means risk of a spike up (short liquidations). Tap a row for detailed analysis, ☆ to add to favorites.',
+  liveTitle: 'Live liquidations', waitFirst: 'Waiting for the first liquidations…',
+  back: '← Monitor', tf5m: '5m', tf15m: '15m', tf1h: '1h',
+  mapTitle: 'Liquidation map',
+  mapSub: 'Brighter bands mean more estimated leverage that gets liquidated if price reaches it. A band ends where price has already swept it. Red triangles under candles are panic sells, teal ones above candles are panic buys. Dots at the top mark moments when squeeze risk crossed 60. On the right: totals by level. Tap the chart to see the estimate at a level.',
+  legDensity: 'liquidation density', legLong: 'longs (below price)', legShort: 'shorts (above price)', legPanic: 'panic sell', legPanicUp: 'panic buy', legSig: 'risk signal 60+',
+  tipDefault: 'Tap or hover over the chart.',
+  statTitle: 'Do the signals work on this coin',
+  statSub: 'Average price change after a signal on this timeframe (history ≈ {span}). “In expected direction” is the share of cases where price moved the way the signal pointed 4h later: a reversal after a panic, a move toward the cluster after squeeze risk.',
+  sigPS: 'Panic sell → bounce', sigPB: 'Panic buy → pullback', sigRL: 'Flush-down risk', sigRS: 'Spike-up risk',
+  thSignal: 'Signal', thN: 'Cases', th1: 'after 1h', th4: 'after 4h', th24: 'after 24h', thHit: 'In expected direction',
+  statFew: 'Where there are fewer than 5 cases, conclusions are unreliable. Pick the 1h timeframe for a longer history. Past results do not guarantee future ones.',
+  spanD: '{n} days', spanH: '{n}h',
+  panicTitle: 'Panic sells and panic buys',
+  panicSub: 'Candles with a sharp move, a volume spike and market orders dominating one side. A drop with falling Open Interest is long capitulation; a rise with falling OI is short capitulation (short squeeze). If OI rises, new positions are piling in aggressively.',
+  riskTitle: 'Squeeze risk', insTitle: 'What it means', oiTitle: 'Open Interest and price', lsTitle: 'Long/short ratio',
+  bookTitle: 'Large order book walls (±3%)', dLiveTitle: 'Live liquidations for this coin',
+  footer: 'Liquidation levels are a model built on public Binance data: Open Interest growth, price and the long/short account share, spread across typical leverage (10x, 25x, 50x, 100x). The exchange does not publish real positions, so this is an approximation, not a forecast. Without the server, liquidations are counted only from the moment the page opens, and Binance sends at most one event per coin per second, so totals are understated. Not financial advice.',
+  err451: '<b>Binance Futures API is not reachable from your network (code {st}).</b> The exchange blocks some regions. Use a VPN or route requests through your own server.',
+  errGen: '<b>Could not get data from Binance.</b> {msg}. Check your connection and press “Refresh”.',
+  long: 'long', short: 'short', at: 'at {p}', noLiq: 'No liquidations yet.',
+  sums: 'Last 1h:', longsV: 'longs {v}', shortsV: 'shorts {v}',
+  colCoin: 'Coin', colScore: 'Squeeze risk', colChg: '24h', colPan: 'Panic 24h', colFr: 'Funding', colOi: 'OI 24h',
+  colLsr: 'Long/short', colCl: 'Long cluster', colCs: 'Short cluster', colLiq: 'Liquidations 1h', colVol: 'Volume 24h',
+  scoreTitle: 'Longs {l} / shorts {s}', calc: 'Calculating…', noRows: 'No coins match. Lower the minimum volume, clear the search or turn off “Favorites”.',
+  volX: 'volume ×{v}', loadingMarket: 'Loading the market…', counted: 'Calculated {a} of {b}', noneLoaded: 'No coins could be loaded',
+  monDone: '{n} coins · updated {t} · auto-refresh every 5 min', loadErr: 'Loading error',
+  building: 'Building the liquidation map…', noCandles: 'No candles for {s}', detDone: 'Updated {t} · {n} candles of {tf} · auto-refresh every 2 min',
+  minAgo: '{n} min ago', hAgo: '{n}h ago', dAgo: '{n}d ago',
+  kindCap: 'long capitulation', kindShorts: 'aggressive shorts', kindSell: 'selling pressure',
+  kindShortCap: 'short capitulation', kindLongs: 'aggressive longs', kindBuy: 'buying pressure',
+  tipPanicD: '<b class="dn">Panic sell {d}</b>: {mv}, volume ×{vx}, market sells {fl}%, {kind}.<br>',
+  tipPanicU: '<b class="up">Panic buy {d}</b>: {mv}, volume ×{vx}, market buys {fl}%, {kind}.<br>',
+  tipDown: 'If price drops to <b>{p}</b> ({d}), an estimated ≈ <b class="dn">{c}</b> of longs get liquidated. At this level: {lv}.',
+  tipUp: 'If price rises to <b>{p}</b> ({d}), an estimated ≈ <b class="up">{c}</b> of shorts get liquidated. At this level: {lv}.',
+  noData: 'no data',
+  insLong: 'Elevated risk of a flush down (long squeeze): <b>{v}/100</b>.', insLongCl: ' Largest long liquidation cluster ≈ {p} ({d}), estimated {u}.',
+  insShort: 'Elevated risk of a spike up (short squeeze): <b>{v}/100</b>.', insShortCl: ' Largest short liquidation cluster ≈ {p} ({d}), estimated {u}.',
+  insBal: 'No strong imbalance: the crowd is fairly balanced or large clusters are far from price.',
+  insPanicD: 'A panic sell just happened: {d} on ×{vx} volume ({kind}).', insBackD: ' The drop has mostly been bought back — sellers look exhausted, at least for now.', insNoBackD: ' No buyback yet — selling pressure is not exhausted.',
+  insPanicU: 'A panic buy just happened: {d} on ×{vx} volume ({kind}).', insBackU: ' The rise has mostly been given back — buyers look exhausted.', insNoBackU: ' The rise is holding — buyers are still in control.',
+  insHist: 'On this coin, 4h after a “{s}” signal price moved {v} on average, in the expected direction in {h}% of cases ({n}).',
+  insOiUp: 'Open Interest grew {v} in 24h while price stayed calm — leverage is building up. Such buildups often discharge in a sharp move.',
+  insOiDown: 'Open Interest fell {v} in 24h — part of the leverage is already closed or wiped out, liquidation pressure is weaker.',
+  insFrHigh: 'Funding {v} — longs are overpaying shorts, the crowd is overheated long.', insFrNeg: 'Negative funding {v} — skewed to shorts, fuel for a short squeeze.',
+  insCascade: 'Liquidations worth {v} in the last hour — a cascade already happened, part of the cluster is gone.',
+  insBookDown: 'The bid side is noticeably thinner than the ask side — price is easier to push down into long clusters.',
+  insBookUp: 'The ask side is noticeably thinner than the bid side — price can more easily reach short clusters.',
+  insProtect: 'To protect yourself: do not put your stop or liquidation price right behind a large cluster — price is drawn there most often. When squeeze risk is above 60, reduce leverage.',
+  stFund: 'Funding', stFundSub: 'next payment in {h}h {m}m', stOi: 'Open Interest', stOiSub: '24h {v}',
+  stLsr: 'Long/short, accounts', stLsrSub: '{v}% of accounts long', stTop: 'Top traders, positions', stTopSub: 'long/short by size',
+  stTaker: 'Aggressive buys/sells', stTakerSub: 'average of 12 candles', stLiq: 'Liquidations 1h', stLiqSub: 'shorts {v}',
+  stBook: 'Order book ±2%', stBookSub: 'bids / asks {v}', stVol: 'Volume 24h',
+  rDown: 'flush down, long liquidations', rUp: 'spike up, short liquidations', rLongs: 'longs', rShorts: 'shorts',
+  compFund: 'Funding', compCrowd: 'Crowd skew', compBuild: 'OI buildup', compNear: 'Cluster within 3%',
+  lgPrice: 'Price', lgOi: 'Open Interest', lgPanics: 'panic moves', lgAcc: 'Accounts', lgTop: 'Top traders',
+  bookSum: 'Within ±1%: bids <b class="up">{b}</b>, asks <b class="dn">{a}</b>. Large orders can be pulled at any moment.',
+  bookNone: 'Order book did not load.', wallBuy: 'Bids (support)', wallSell: 'Asks (resistance)',
+  pOver: ' over {n} candles', tagBack: 'bought back', tagBackU: 'faded', pVol: 'volume ×{v}', pSell: 'sells {v}%', pBuy: 'buys {v}%',
+  pKnockL: '≈ {v} of longs wiped', pKnockS: '≈ {v} of shorts wiped', pRecovD: '{v}% of the drop recovered', pRecovU: '{v}% of the rise given back',
+  pAfter: 'after: 1h {a} · 4h {b} · 24h {c}',
+  pNone: 'No panic moves on this timeframe. Try another timeframe.',
+  noSym: '{s} is not among Binance USDT futures'
+}
+};
+const LOCALE = { uk: 'uk-UA', ru: 'ru-RU', en: 'en-US' };
+const tg = window.Telegram && window.Telegram.WebApp;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('lr_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('lr_' + k, JSON.stringify(v)); } catch (e) {} }
+};
+function detectLang() {
+  const code = ((tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || navigator.language || 'uk').slice(0, 2).toLowerCase();
+  return code === 'ru' ? 'ru' : code === 'en' ? 'en' : 'uk';
+}
+let LANG = store.get('lang', null) || detectLang();
+if (!I18N[LANG]) LANG = 'uk';
+function t(k, v) {
+  let s = I18N[LANG][k] ?? I18N.uk[k] ?? k;
+  if (v) s = s.replace(/\{(\w+)\}/g, (_, x) => (v[x] ?? ''));
+  return s;
+}
+const loc = () => LOCALE[LANG];
+
+const { buildSeries, analyze } = window.RadarCore;
+const API = 'https://fapi.binance.com';
+const WS_URL = 'wss://fstream.binance.com/ws/!forceOrder@arr';
+const PER = { '5m': 3e5, '15m': 9e5, '1h': 36e5 };
+const $ = s => document.querySelector(s);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+const S = {
+  rows: [], symbols: [], loading: false, liq: [],
+  sort: store.get('sort', { key: 'score', dir: -1 }),
+  topN: store.get('topN', 60), minVol: store.get('minVol', 10000000),
+  fav: new Set(store.get('fav', [])), favOnly: store.get('favOnly', false),
+  tf: store.get('tf', '15m'), detail: null, dSym: null, dLoading: false,
+  st: {}, lastErr: null, tipHTML: null
+};
+
+/* ---------- helpers ---------- */
+async function api(path) {
+  const r = await fetch(API + path);
+  if (!r.ok) { const e = new Error('HTTP ' + r.status); e.status = r.status; throw e; }
+  return r.json();
+}
+async function pool(items, n, fn) {
+  let i = 0;
+  const run = async () => { while (i < items.length) { const k = i++; try { await fn(items[k], k); } catch (e) {} } };
+  await Promise.all(Array.from({ length: n }, run));
+}
+function fUsd(v) {
+  if (v == null || !isFinite(v)) return '—';
+  const a = Math.abs(v);
+  if (a >= 1e9) return '$' + (v / 1e9).toFixed(2) + 'B';
+  if (a >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
+  if (a >= 1e3) return '$' + (v / 1e3).toFixed(0) + 'K';
+  return '$' + v.toFixed(0);
+}
+function fPx(p) {
+  if (!isFinite(p)) return '—';
+  const d = p >= 1000 ? 1 : p >= 100 ? 2 : p >= 1 ? 3 : p >= 0.01 ? 5 : 7;
+  return p.toLocaleString(loc(), { minimumFractionDigits: d, maximumFractionDigits: d });
+}
+function fPct(v, d = 2) { return v != null && isFinite(v) ? (v > 0 ? '+' : '') + v.toFixed(d) + '%' : '—'; }
+function cls(v) { return v > 0 ? 'up' : v < 0 ? 'dn' : 'mut'; }
+function cPct(v, d = 1) { return `<span class="${v == null ? 'mut' : cls(v)}">${fPct(v, d)}</span>`; }
+function base(sym) { return sym.replace(/USDT$/, ''); }
+function hhmm(ts) { return new Date(ts).toLocaleTimeString(loc(), { hour: '2-digit', minute: '2-digit', second: '2-digit' }); }
+function dt(ts) { return new Date(ts).toLocaleString(loc(), { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); }
+function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function setStat(id, key, vars) {
+  S.st[id] = key ? { key, vars: vars || {} } : null;
+  const v = vars ? Object.fromEntries(Object.entries(vars).map(([k, x]) => [k, typeof x === 'function' ? x() : x])) : {};
+  $(id).textContent = key ? t(key, v) : '';
+}
+function showErr(e) {
+  S.lastErr = e || null;
+  const el = $('#err');
+  if (!e) { el.classList.add('hidden'); return; }
+  const st = e.status;
+  el.innerHTML = e.key ? t(e.key, e.vars) : (st === 451 || st === 403) ? t('err451', { st }) : t('errGen', { msg: e.message || String(e) });
+  el.classList.remove('hidden');
+}
+function lastPanic(a, maxAgeMs) {
+  const e = a.panic[a.panic.length - 1];
+  return e && Date.now() - e.t <= maxAgeMs ? e : null;
+}
+function ago(ts) {
+  const m = Math.round((Date.now() - ts) / 6e4);
+  return m < 60 ? t('minAgo', { n: m }) : m < 1440 ? t('hAgo', { n: Math.round(m / 60) }) : t('dAgo', { n: Math.round(m / 1440) });
+}
+function toggleFav(sym) {
+  if (S.fav.has(sym)) S.fav.delete(sym); else S.fav.add(sym);
+  store.set('fav', [...S.fav]);
+  renderTable(); renderFavBtn();
+}
+function renderFavBtn() {
+  const on = S.dSym && S.fav.has(S.dSym);
+  $('#dFav').textContent = t(on ? 'faved' : 'fav');
+  $('#dFav').classList.toggle('on', !!on);
+  $('#favOnly').classList.toggle('on', S.favOnly);
+  $('#favOnly').setAttribute('aria-pressed', String(S.favOnly));
+}
+
+/* ---------- live liquidations ---------- */
+let ws, wsBackoff = 1000, feedDirty = true;
+function pushLiq(x) { S.liq.push(x); feedDirty = true; }
+function trimLiq() {
+  const cut = Date.now() - 2 * 36e5;
+  if (S.liq.length > 6000 || (S.liq[0] && S.liq[0].t < cut)) S.liq = S.liq.filter(x => x.t >= cut).slice(-6000);
+}
+function connectWS() {
+  try { ws = new WebSocket(WS_URL); } catch (e) { return; }
+  ws.onopen = () => { wsBackoff = 1000; };
+  ws.onmessage = ev => {
+    let d; try { d = JSON.parse(ev.data); } catch (e) { return; }
+    for (const m of (Array.isArray(d) ? d : [d])) {
+      const o = m && m.o; if (!o) continue;
+      const px = +o.ap || +o.p, q = +o.z || +o.q;
+      pushLiq({ s: o.s, side: o.S === 'SELL' ? 'L' : 'S', usd: px * q, price: px, t: +o.T || Date.now() });
+    }
+    trimLiq();
+  };
+  ws.onclose = () => { setTimeout(connectWS, wsBackoff); wsBackoff = Math.min(wsBackoff * 2, 30000); };
+  ws.onerror = () => { try { ws.close(); } catch (e) {} };
+}
+async function loadServerLiq() {
+  if (!RADAR_SERVER) return;
+  try {
+    const r = await fetch(`${RADAR_SERVER.replace(/\/$/, '')}/liq?since=${Date.now() - 2 * 36e5}`);
+    if (!r.ok) return;
+    const arr = await r.json();
+    const seen = new Set(S.liq.map(x => x.s + x.t + x.usd.toFixed(0)));
+    for (const x of arr) if (!seen.has(x.s + x.t + (+x.usd).toFixed(0))) S.liq.push({ s: x.s, side: x.side, usd: +x.usd, price: +x.price, t: +x.t });
+    S.liq.sort((a, b) => a.t - b.t); trimLiq(); feedDirty = true; renderFeeds();
+  } catch (e) {}
+}
+function liqOf(sym, ms = 36e5) {
+  const cut = Date.now() - ms; let L = 0, Sh = 0;
+  for (const x of S.liq) if (x.s === sym && x.t >= cut) { if (x.side === 'L') L += x.usd; else Sh += x.usd; }
+  return { L, S: Sh, t: L + Sh };
+}
+function feedHTML(list, emptyKey) {
+  if (!list.length) return `<li class="empty">${t(emptyKey)}</li>`;
+  return list.map(x => `<li><span><b>${base(x.s)}</b> <span class="${x.side === 'L' ? 'dn' : 'up'}">${t(x.side === 'L' ? 'long' : 'short')}</span></span>
+    <span class="${x.side === 'L' ? 'dn' : 'up'}">${fUsd(x.usd)}</span>
+    <small>${t('at', { p: fPx(x.price) })}</small><small style="text-align:right">${hhmm(x.t)}</small></li>`).join('');
+}
+function renderFeeds() {
+  if (!feedDirty) return; feedDirty = false;
+  $('#feed').innerHTML = feedHTML(S.liq.slice(-40).reverse(), 'waitFirst');
+  const cut = Date.now() - 36e5; let L = 0, Sh = 0;
+  for (const x of S.liq) if (x.t >= cut) { if (x.side === 'L') L += x.usd; else Sh += x.usd; }
+  $('#sums').innerHTML = `<span>${t('sums')} <b class="dn">${t('longsV', { v: fUsd(L) })}</b></span><span><b class="up">${t('shortsV', { v: fUsd(Sh) })}</b></span>`;
+  if (S.dSym) $('#dFeed').innerHTML = feedHTML(S.liq.filter(x => x.s === S.dSym).slice(-30).reverse(), 'noLiq');
+  if (!$('#monitor').classList.contains('hidden') && S.rows.length && S.sort.key === 'liq') renderTable();
+}
+
+/* ---------- monitor ---------- */
+const COLS = [
+  { k: 'sym', t: 'colCoin', v: r => r.sym },
+  { k: 'score', t: 'colScore', v: r => r.a.score },
+  { k: 'chg', t: 'colChg', v: r => r.chg },
+  { k: 'pan', t: 'colPan', v: r => { const e = lastPanic(r.a, 864e5); return e ? e.strength : -1; } },
+  { k: 'fr', t: 'colFr', v: r => r.fr },
+  { k: 'oi', t: 'colOi', v: r => r.a.oiChg },
+  { k: 'lsr', t: 'colLsr', v: r => r.a.lsr },
+  { k: 'cl', t: 'colCl', v: r => r.a.majL ? r.a.majL.dist : -999 },
+  { k: 'cs', t: 'colCs', v: r => r.a.majS ? -r.a.majS.dist : -999 },
+  { k: 'liq', t: 'colLiq', v: r => liqOf(r.sym).t },
+  { k: 'vol', t: 'colVol', v: r => r.vol }
+];
+function renderHead() {
+  $('#tbl thead').innerHTML = '<tr>' + COLS.map(c =>
+    `<th data-k="${c.k}" class="${S.sort.key === c.k ? 'act' : ''}" aria-sort="${S.sort.key === c.k ? (S.sort.dir > 0 ? 'ascending' : 'descending') : 'none'}">${t(c.t)}${S.sort.key === c.k ? (S.sort.dir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr>';
+}
+function panicCell(e) {
+  if (!e) return '<span class="mut">—</span>';
+  return `<span class="${e.dir === 'D' ? 'dn' : 'up'}">${e.dir === 'D' ? '▼' : '▲'} ${fPct(e.move, 1)}</span><small>${ago(e.t)} · ${t('volX', { v: e.vx.toFixed(0) })}</small>`;
+}
+function renderTable(rows = S.rows) {
+  const q = $('#q').value.trim().toUpperCase();
+  const col = COLS.find(c => c.k === S.sort.key) || COLS[1];
+  const list = rows.filter(r => (r.vol >= S.minVol || S.fav.has(r.sym)) && (!q || r.sym.includes(q)) && (!S.favOnly || S.fav.has(r.sym)));
+  list.sort((a, b) => {
+    const x = col.v(a), y = col.v(b);
+    return (typeof x === 'string' ? x.localeCompare(y) : x - y) * S.sort.dir;
+  });
+  renderHead();
+  if (!list.length) {
+    $('#tbl tbody').innerHTML = `<tr><td colspan="${COLS.length}" class="mut" style="text-align:left">${t(S.loading ? 'calc' : 'noRows')}</td></tr>`;
+    return;
+  }
+  $('#tbl tbody').innerHTML = list.map(r => {
+    const a = r.a, lq = liqOf(r.sym), f = S.fav.has(r.sym);
+    return `<tr data-sym="${r.sym}">
+      <td class="coin"><button class="star ${f ? 'on' : ''}" data-fav="${r.sym}" type="button" aria-label="${t('favAdd')}" aria-pressed="${f}">${f ? '★' : '☆'}</button><b>${base(r.sym)}</b><small>${fPx(r.price)}</small></td>
+      <td><span class="tug" title="${t('scoreTitle', { l: a.longRisk, s: a.shortRisk })}"><span class="t"><i class="l" style="width:${a.longRisk / 2}%"></i><i class="s" style="width:${a.shortRisk / 2}%"></i></span>
+        <b class="${a.dir === 'L' ? 'dn' : 'up'}">${a.dir === 'L' ? '↓' : '↑'} ${a.score}</b></span></td>
+      <td class="${cls(r.chg)}">${fPct(r.chg)}</td>
+      <td>${panicCell(lastPanic(a, 864e5))}</td>
+      <td class="${r.fr > 0.0003 ? 'dn' : r.fr < -0.0001 ? 'up' : ''}">${(r.fr * 100).toFixed(4)}%</td>
+      <td class="${a.oiChg > 10 ? 'dn' : ''}">${fPct(a.oiChg, 1)}</td>
+      <td>${a.lsr.toFixed(2)}</td>
+      <td>${a.majL ? `<span class="dn">${fPct(a.majL.dist, 1)}</span><small>${fUsd(a.majL.usd)}</small>` : '—'}</td>
+      <td>${a.majS ? `<span class="up">${fPct(a.majS.dist, 1)}</span><small>${fUsd(a.majS.usd)}</small>` : '—'}</td>
+      <td>${lq.t ? `<span class="dn">${fUsd(lq.L)}</span><small class="up">${fUsd(lq.S)}</small>` : '<span class="mut">—</span>'}</td>
+      <td>${fUsd(r.vol)}</td></tr>`;
+  }).join('');
+}
+async function loadSymbols() {
+  const info = await api('/fapi/v1/exchangeInfo');
+  S.symbols = info.symbols.filter(s => s.contractType === 'PERPETUAL' && s.quoteAsset === 'USDT' && s.status === 'TRADING').map(s => s.symbol);
+  $('#symList').innerHTML = S.symbols.map(s => `<option value="${base(s)}">`).join('');
+}
+async function loadMonitor() {
+  if (S.loading) return;
+  S.loading = true; showErr(null);
+  setStat('#stat', 'loadingMarket'); $('#prog').style.width = '3%';
+  try {
+    if (!S.symbols.length) await loadSymbols();
+    const perp = new Set(S.symbols);
+    const [tick, prem] = await Promise.all([api('/fapi/v1/ticker/24hr'), api('/fapi/v1/premiumIndex')]);
+    const pm = new Map(prem.map(p => [p.symbol, p]));
+    const all = tick.filter(x => perp.has(x.symbol)).map(x => ({
+      sym: x.symbol, price: +x.lastPrice, chg: +x.priceChangePercent, vol: +x.quoteVolume,
+      fr: pm.has(x.symbol) ? +pm.get(x.symbol).lastFundingRate : 0
+    })).sort((a, b) => b.vol - a.vol);
+    const list = all.slice(0, S.topN);
+    for (const r of all.slice(S.topN)) if (S.fav.has(r.sym)) list.push(r); // favorites are always loaded
+    const fresh = []; let done = 0, lastPaint = 0;
+    const first = !S.rows.length;
+    await pool(list, 6, async r => {
+      const [kl, oi, ls] = await Promise.all([
+        api(`/fapi/v1/klines?symbol=${r.sym}&interval=1h&limit=73`),
+        api(`/futures/data/openInterestHist?symbol=${r.sym}&period=1h&limit=73`),
+        api(`/futures/data/globalLongShortAccountRatio?symbol=${r.sym}&period=1h&limit=73`)
+      ]).finally(() => { done++; $('#prog').style.width = (done / list.length * 100) + '%'; });
+      if (!kl.length) return;
+      r.a = analyze(buildSeries(kl, oi, ls, PER['1h']), r.fr, PER['1h']);
+      fresh.push(r);
+      if (first && Date.now() - lastPaint > 700) { lastPaint = Date.now(); renderTable(fresh); setStat('#stat', 'counted', { a: fresh.length, b: list.length }); }
+    });
+    if (!fresh.length) throw new Error(t('noneLoaded'));
+    S.rows = fresh;
+    const doneAt = Date.now();
+    setStat('#stat', 'monDone', { n: fresh.length, t: () => hhmm(doneAt) });
+  } catch (e) {
+    showErr(e); setStat('#stat', 'loadErr');
+  } finally {
+    S.loading = false; $('#prog').style.width = '0';
+    renderTable();
+  }
+}
+
+/* ---------- detail ---------- */
+function setTfButtons() { document.querySelectorAll('#tfSeg button').forEach(b => b.classList.toggle('on', b.dataset.tf === S.tf)); }
+async function loadDetail(sym) {
+  if (S.dLoading) return;
+  S.dLoading = true; showErr(null);
+  setStat('#dStat', 'building');
+  const tf = S.tf, per = PER[tf];
+  try {
+    const [kl, oi, ls, top, tk, pm, dp, t24, fh] = await Promise.all([
+      api(`/fapi/v1/klines?symbol=${sym}&interval=${tf}&limit=500`),
+      api(`/futures/data/openInterestHist?symbol=${sym}&period=${tf}&limit=500`),
+      api(`/futures/data/globalLongShortAccountRatio?symbol=${sym}&period=${tf}&limit=500`),
+      api(`/futures/data/topLongShortPositionRatio?symbol=${sym}&period=${tf}&limit=500`).catch(() => []),
+      api(`/futures/data/takerlongshortRatio?symbol=${sym}&period=${tf}&limit=500`).catch(() => []),
+      api(`/fapi/v1/premiumIndex?symbol=${sym}`),
+      api(`/fapi/v1/depth?symbol=${sym}&limit=1000`).catch(() => null),
+      api(`/fapi/v1/ticker/24hr?symbol=${sym}`),
+      api(`/fapi/v1/fundingRate?symbol=${sym}&limit=200`).catch(() => [])
+    ]);
+    if (S.dSym !== sym || S.tf !== tf) return;
+    if (!kl.length) { const e = new Error(); e.key = 'noCandles'; e.vars = { s: sym }; throw e; }
+    const s = buildSeries(kl, oi, ls, per);
+    const fr = +pm.lastFundingRate;
+    const topM = new Map(top.map(x => [+x.timestamp, +x.longShortRatio]));
+    const tkM = new Map(tk.map(x => [+x.timestamp, +x.buySellRatio]));
+    const frHist = fh.map(x => ({ t: +x.fundingTime, r: +x.fundingRate }));
+    if (!frHist.length) frHist.push({ t: 0, r: fr });
+    S.detail = { sym, s, per, fr, nextFund: +pm.nextFundingTime, chg: +t24.priceChangePercent, vol: +t24.quoteVolume,
+      top: s.map(p => topM.get(p.t + per) ?? topM.get(p.t) ?? null),
+      taker: s.map(p => tkM.get(p.t + per) ?? tkM.get(p.t) ?? null),
+      book: dp, a: analyze(s, fr, per, { frHist }) };
+    S.tipHTML = null;
+    renderDetail();
+    const doneAt = Date.now();
+    setStat('#dStat', 'detDone', { t: () => hhmm(doneAt), n: s.length, tf: () => t('tf' + tf) });
+  } catch (e) {
+    showErr(e); setStat('#dStat', 'loadErr');
+  } finally { S.dLoading = false; }
+}
+function heatColor(x) {
+  const st = [[0, 90, 40, 140, .35], [.35, 200, 60, 120, .7], [.7, 255, 150, 50, .9], [1, 255, 240, 120, 1]];
+  for (let i = 1; i < st.length; i++) {
+    if (x <= st[i][0]) {
+      const a = st[i - 1], b = st[i], f = (x - a[0]) / (b[0] - a[0]);
+      const m = j => a[j] + (b[j] - a[j]) * f;
+      return `rgba(${m(1) | 0},${m(2) | 0},${m(3) | 0},${m(4).toFixed(2)})`;
+    }
+  }
+  return 'rgba(255,240,120,1)';
+}
+function prepCanvas(cv, H) {
+  const W = cv.parentElement.clientWidth - 16, dpr = window.devicePixelRatio || 1;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.height = H + 'px';
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  return { g, W, H };
+}
+function drawHeat() {
+  const D = S.detail; if (!D) return;
+  const cv = $('#heat');
+  const W0 = cv.parentElement.clientWidth - 16;
+  const { g, W, H } = prepCanvas(cv, Math.round(clamp(W0 * 0.72, 300, 470)));
+  const col = { text: cssVar('--text'), muted: cssVar('--muted'), line: cssVar('--line'), long: cssVar('--long'), short: cssVar('--short'), panel: cssVar('--panel') };
+  const axisW = 62, histW = Math.round(clamp(W * 0.2, 60, 170)), plotW = W - axisW - histW - 8;
+  const s = D.s, P = D.a.P;
+  const nVis = Math.min(s.length, Math.max(50, Math.floor(plotW / 4))), i0 = s.length - nVis, cw = plotW / nVis;
+  let lo = Infinity, hi = -Infinity;
+  for (let i = i0; i < s.length; i++) { lo = Math.min(lo, s[i].l); hi = Math.max(hi, s[i].h); }
+  const pad = (hi - lo) * 0.3 || P * 0.02;
+  lo = Math.max(0, Math.min(lo - pad, P * 0.97)); hi = Math.max(hi + pad, P * 1.03);
+  const padT = 14, padB = 20, ph = H - padT - padB;
+  const rows = Math.max(40, Math.round(ph / 3.5)), step = (hi - lo) / rows, rowH = ph / rows;
+  const y = p => padT + (hi - p) / (hi - lo) * ph;
+
+  const cols = nVis + 1, grid = new Float64Array(rows * cols);
+  for (const c of D.a.cl) {
+    if (c.price < lo || c.price >= hi) continue;
+    const r = Math.min(rows - 1, Math.floor((hi - c.price) / step));
+    const x0 = Math.max(c.start, i0) - i0, x1 = Math.min((c.end < 0 ? s.length : c.end + 1) - i0, nVis);
+    if (x1 <= 0 || x0 >= nVis) continue;
+    grid[r * cols + x0] += c.usd; grid[r * cols + x1] -= c.usd;
+  }
+  let max = 0;
+  for (let r = 0; r < rows; r++) { let acc = 0; for (let x = 0; x < nVis; x++) { acc += grid[r * cols + x]; grid[r * cols + x] = acc; if (acc > max) max = acc; } }
+  if (max > 0) for (let r = 0; r < rows; r++) for (let x = 0; x < nVis; x++) {
+    const v = grid[r * cols + x]; if (v <= max * 0.03) continue;
+    g.fillStyle = heatColor(Math.sqrt(v / max));
+    g.fillRect(x * cw, padT + r * rowH, cw + 0.5, rowH + 0.5);
+  }
+  // panic bands
+  const pv = D.a.panic.filter(e => e.iEnd >= i0);
+  g.globalAlpha = 0.16;
+  for (const e of pv) {
+    g.fillStyle = e.dir === 'D' ? col.long : col.short;
+    const x0 = (Math.max(e.i, i0) - i0) * cw; g.fillRect(x0, padT, (e.iEnd - Math.max(e.i, i0) + 1) * cw, ph);
+  }
+  g.globalAlpha = 1;
+  // candles
+  for (let i = i0; i < s.length; i++) {
+    const b = s[i], x = (i - i0) * cw + cw / 2, up = b.c >= b.o;
+    g.strokeStyle = g.fillStyle = up ? col.short : col.long;
+    g.lineWidth = 1; g.beginPath(); g.moveTo(x, y(b.h)); g.lineTo(x, y(b.l)); g.stroke();
+    const bw = Math.max(1, cw * 0.62), y1 = y(Math.max(b.o, b.c)), y2 = y(Math.min(b.o, b.c));
+    g.fillRect(x - bw / 2, y1, bw, Math.max(1, y2 - y1));
+  }
+  // panic markers: ▲ under the low for panic sells, ▼ above the high for panic buys
+  g.font = '600 10.5px Onest, system-ui, sans-serif'; g.textAlign = 'center';
+  for (const e of pv) {
+    const x = ((Math.max(e.i, i0) + e.iEnd) / 2 - i0) * cw + cw / 2, sz = 4 + e.strength / 22, dn = e.dir === 'D';
+    const y0 = dn ? y(e.ext) + 5 : y(e.ext) - 5, y1 = dn ? y0 + sz * 1.6 : y0 - sz * 1.6;
+    g.beginPath(); g.moveTo(x, y0); g.lineTo(x - sz, y1); g.lineTo(x + sz, y1); g.closePath();
+    g.fillStyle = dn ? col.long : col.short; g.fill(); g.lineWidth = 1.2; g.strokeStyle = col.text; g.stroke();
+    const ly = dn ? y1 + 11 : y1 - 4;
+    if (e.strength >= 60 && ly > padT + 8 && ly < padT + ph) { g.fillStyle = col.text; g.fillText(fPct(e.move, 1), clamp(x, 18, plotW - 18), ly); }
+  }
+  g.textAlign = 'start';
+  // squeeze-risk signals at the top
+  for (const sg of D.a.sig) {
+    if (sg.i < i0) continue;
+    const x = (sg.i - i0) * cw + cw / 2;
+    g.beginPath(); g.arc(x, 7, 3.5, 0, Math.PI * 2); g.fillStyle = sg.dir === 'L' ? col.long : col.short; g.fill();
+    g.globalAlpha = .35; g.strokeStyle = g.fillStyle; g.setLineDash([2, 3]); g.beginPath(); g.moveTo(x, 11); g.lineTo(x, padT + ph); g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
+  }
+  // histogram of active clusters
+  const hx = plotW + 6, hw = histW - 6;
+  const bL = new Float64Array(rows), bS = new Float64Array(rows);
+  for (const c of D.a.cl) {
+    if (c.end >= 0 || c.price < lo || c.price >= hi) continue;
+    const r = Math.min(rows - 1, Math.floor((hi - c.price) / step));
+    (c.side === 'L' ? bL : bS)[r] += c.usd;
+  }
+  let hmax = 0; for (let r = 0; r < rows; r++) hmax = Math.max(hmax, bL[r], bS[r]);
+  g.strokeStyle = col.line; g.lineWidth = 1; g.beginPath(); g.moveTo(hx - 3, padT); g.lineTo(hx - 3, padT + ph); g.stroke();
+  if (hmax > 0) for (let r = 0; r < rows; r++) {
+    const yy = padT + r * rowH;
+    if (bL[r]) { g.fillStyle = col.long; g.fillRect(hx, yy, hw * bL[r] / hmax, Math.max(1, rowH - 0.6)); }
+    if (bS[r]) { g.fillStyle = col.short; g.fillRect(hx, yy, hw * bS[r] / hmax, Math.max(1, rowH - 0.6)); }
+  }
+  const pr = clamp(Math.floor((hi - P) / step), 0, rows - 1);
+  const cumL = new Float64Array(rows), cumS = new Float64Array(rows);
+  for (let r = pr, acc = 0; r < rows; r++) { acc += bL[r]; cumL[r] = acc; }
+  for (let r = pr, acc = 0; r >= 0; r--) { acc += bS[r]; cumS[r] = acc; }
+  const cmax = Math.max(cumL[rows - 1], cumS[0]) || 1;
+  g.lineWidth = 1.5; g.globalAlpha = 0.85;
+  g.strokeStyle = col.long; g.beginPath();
+  for (let r = pr; r < rows; r++) { const xx = hx + hw * cumL[r] / cmax, yy = padT + (r + .5) * rowH; r === pr ? g.moveTo(xx, yy) : g.lineTo(xx, yy); } g.stroke();
+  g.strokeStyle = col.short; g.beginPath();
+  for (let r = pr; r >= 0; r--) { const xx = hx + hw * cumS[r] / cmax, yy = padT + (r + .5) * rowH; r === pr ? g.moveTo(xx, yy) : g.lineTo(xx, yy); } g.stroke();
+  g.globalAlpha = 1;
+  g.font = '11px Onest, system-ui, sans-serif'; g.fillStyle = col.muted; g.textBaseline = 'middle';
+  for (let k = 0; k <= 6; k++) { const p = lo + (hi - lo) * k / 6; g.fillText(fPx(p), W - axisW + 4, clamp(y(p), padT + 6, padT + ph - 6)); }
+  const yp = y(P);
+  g.setLineDash([4, 4]); g.strokeStyle = col.text; g.globalAlpha = .6; g.beginPath(); g.moveTo(0, yp); g.lineTo(W - axisW, yp); g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
+  g.fillStyle = col.text; g.fillRect(W - axisW + 1, yp - 9, axisW - 1, 18);
+  g.fillStyle = col.panel; g.fillText(fPx(P), W - axisW + 4, yp);
+  g.fillStyle = col.muted; g.textBaseline = 'alphabetic';
+  for (let k = 0; k < 4; k++) {
+    const i = i0 + Math.floor((nVis - 1) * (k + 0.5) / 4), d = new Date(s[i].t);
+    const lab = D.per >= 36e5 ? d.toLocaleDateString(loc(), { day: '2-digit', month: '2-digit' }) + ' ' + d.getHours() + ':00'
+      : d.toLocaleTimeString(loc(), { hour: '2-digit', minute: '2-digit' });
+    g.fillText(lab, (i - i0) * cw - 16, H - 5);
+  }
+  D.lay = { i0, cw, plotW, lo, hi, padT, ph, P, cumL, cumS, bL, bS, rows, step };
+}
+function heatTip(ev) {
+  const D = S.detail; if (!D || !D.lay) return;
+  const L = D.lay, rect = $('#heat').getBoundingClientRect();
+  const yy = ev.clientY - rect.top;
+  if (yy < L.padT || yy > L.padT + L.ph) return;
+  const price = L.hi - (yy - L.padT) / L.ph * (L.hi - L.lo);
+  const r = clamp(Math.floor((L.hi - price) / L.step), 0, L.rows - 1);
+  const dist = (price / L.P - 1) * 100;
+  const xx = ev.clientX - rect.left, ci = L.i0 + Math.floor(xx / L.cw);
+  const pe = xx <= L.plotW ? D.a.panic.find(e => ci >= e.i - 1 && ci <= e.iEnd + 1) : null;
+  const ptip = pe ? t(pe.dir === 'D' ? 'tipPanicD' : 'tipPanicU', { d: dt(pe.t), mv: fPct(pe.move, 1), vx: pe.vx.toFixed(1), fl: (pe.flow * 100).toFixed(0), kind: t(pe.kind) }) : '';
+  const tip = ptip + (price < L.P
+    ? t('tipDown', { p: fPx(price), d: fPct(dist, 1), c: fUsd(L.cumL[r]), lv: fUsd(L.bL[r]) })
+    : t('tipUp', { p: fPx(price), d: fPct(dist, 1), c: fUsd(L.cumS[r]), lv: fUsd(L.bS[r]) }));
+  S.tipHTML = tip;
+  $('#heatTip').innerHTML = tip;
+}
+function drawLines(id, legendId, series, H = 150, marks = []) {
+  const D = S.detail; if (!D) return;
+  const { g, W } = prepCanvas($(id), H);
+  const padT = 8, padB = 8, ph = H - padT - padB;
+  const leg = [], n = series[0] ? series[0].vals.length : 0;
+  if (n > 1 && marks.length) {
+    g.globalAlpha = .45; g.setLineDash([2, 3]); g.lineWidth = 1;
+    for (const m of marks) { g.strokeStyle = m.c; const xx = m.i / (n - 1) * W; g.beginPath(); g.moveTo(xx, padT); g.lineTo(xx, padT + ph); g.stroke(); }
+    g.setLineDash([]); g.globalAlpha = 1;
+  }
+  for (const sr of series) {
+    const v = sr.vals, fin = v.filter(x => x != null && isFinite(x));
+    if (!fin.length) { leg.push(`<span><i style="background:${sr.color}"></i>${sr.name}: ${t('noData')}</span>`); continue; }
+    let lo = Math.min(...fin), hi = Math.max(...fin); if (hi === lo) { hi += 1; lo -= 1; }
+    if (sr.ref != null && sr.ref > lo && sr.ref < hi) {
+      const yr = padT + (hi - sr.ref) / (hi - lo) * ph;
+      g.setLineDash([3, 4]); g.strokeStyle = sr.color; g.globalAlpha = .4; g.beginPath(); g.moveTo(0, yr); g.lineTo(W, yr); g.stroke(); g.setLineDash([]); g.globalAlpha = 1;
+    }
+    g.strokeStyle = sr.color; g.lineWidth = sr.width || 1.6; g.beginPath(); let st = false;
+    v.forEach((x, i) => {
+      if (x == null || !isFinite(x)) return;
+      const xx = i / (v.length - 1) * W, yy = padT + (hi - x) / (hi - lo) * ph;
+      st ? g.lineTo(xx, yy) : (g.moveTo(xx, yy), st = true);
+    });
+    g.stroke();
+    leg.push(`<span><i style="background:${sr.color}"></i>${sr.name}: <b class="num">${sr.fmt(fin[fin.length - 1])}</b></span>`);
+  }
+  $(legendId).innerHTML = leg.join('');
+}
+function bookStats(book, P) {
+  if (!book) return null;
+  const agg = (side, lim) => side.reduce((a, [p, q]) => { p = +p; q = +q; return Math.abs(p / P - 1) <= lim ? a + p * q : a; }, 0);
+  const walls = side => side.map(([p, q]) => ({ p: +p, usd: +p * +q })).filter(x => Math.abs(x.p / P - 1) <= 0.03).sort((a, b) => b.usd - a.usd).slice(0, 4);
+  return { b1: agg(book.bids, .01), a1: agg(book.asks, .01), b2: agg(book.bids, .02), a2: agg(book.asks, .02), wb: walls(book.bids), wa: walls(book.asks) };
+}
+function insights(D, bk) {
+  const a = D.a, out = [], lq = liqOf(D.sym);
+  if (a.longRisk >= 55) out.push(t('insLong', { v: a.longRisk }) + (a.majL ? t('insLongCl', { p: fPx(a.majL.price), d: fPct(a.majL.dist, 1), u: fUsd(a.majL.usd) }) : ''));
+  if (a.shortRisk >= 55) out.push(t('insShort', { v: a.shortRisk }) + (a.majS ? t('insShortCl', { p: fPx(a.majS.price), d: fPct(a.majS.dist, 1), u: fUsd(a.majS.usd) }) : ''));
+  if (a.longRisk < 55 && a.shortRisk < 55) out.push(t('insBal'));
+  const rp = a.panic[a.panic.length - 1];
+  if (rp && D.s.length - 1 - rp.iEnd <= 6) {
+    const d = rp.dir;
+    out.push(t('insPanic' + d, { d: fPct(rp.move, 1), vx: rp.vx.toFixed(1), kind: t(rp.kind) }) + t((rp.back >= 0.6 ? 'insBack' : 'insNoBack') + d));
+  }
+  // historical reliability of the currently relevant signal
+  if (a.stats) {
+    const key = rp && D.s.length - 1 - rp.iEnd <= 6 ? (rp.dir === 'D' ? 'sigPS' : 'sigPB') : a.score >= 55 ? (a.dir === 'L' ? 'sigRL' : 'sigRS') : null;
+    const st = key && a.stats.find(x => x.key === key);
+    if (st && st.nEval >= 3) out.push(t('insHist', { s: t(key), v: fPct(st.avg[1], 2), h: st.hit.toFixed(0), n: st.nEval }));
+  }
+  if (a.oiChg > 12 && Math.abs(D.chg) < 3) out.push(t('insOiUp', { v: fPct(a.oiChg, 1) }));
+  if (a.oiChg < -12) out.push(t('insOiDown', { v: fPct(a.oiChg, 1) }));
+  if (D.fr > 0.0005) out.push(t('insFrHigh', { v: (D.fr * 100).toFixed(4) + '%' }));
+  if (D.fr < -0.0003) out.push(t('insFrNeg', { v: (D.fr * 100).toFixed(4) + '%' }));
+  if (a.oiVal && lq.t > a.oiVal * 0.005) out.push(t('insCascade', { v: fUsd(lq.t) }));
+  if (bk && bk.b2 && bk.a2) {
+    if (bk.b2 < bk.a2 * 0.6) out.push(t('insBookDown'));
+    else if (bk.a2 < bk.b2 * 0.6) out.push(t('insBookUp'));
+  }
+  out.push(t('insProtect'));
+  return out;
+}
+function renderStats(D) {
+  const a = D.a, spanMs = D.s.length * D.per, days = spanMs / 864e5;
+  $('#statSub').textContent = t('statSub', { span: days >= 1 ? t('spanD', { n: days.toFixed(days < 3 ? 1 : 0) }) : t('spanH', { n: Math.round(spanMs / 36e5) }) });
+  if (!a.stats) { $('#sigTbl').innerHTML = ''; $('#statNote').textContent = ''; return; }
+  $('#sigTbl').innerHTML = `<thead><tr><th>${t('thSignal')}</th><th>${t('thN')}</th><th>${t('th1')}</th><th>${t('th4')}</th><th>${t('th24')}</th><th>${t('thHit')}</th></tr></thead><tbody>` +
+    a.stats.map(g => `<tr><td style="text-align:left">${t(g.key)}</td><td>${g.n}</td><td>${cPct(g.avg[0], 2)}</td><td>${cPct(g.avg[1], 2)}</td><td>${cPct(g.avg[2], 2)}</td>
+      <td>${g.hit == null ? '<span class="mut">—</span>' : `<b class="${g.hit >= 55 ? 'up' : g.hit <= 45 ? 'dn' : ''}">${g.hit.toFixed(0)}%</b>`}${g.nEval && g.nEval < 5 ? ' <small class="mut" style="display:inline">(' + g.nEval + ')</small>' : ''}</td></tr>`).join('') + '</tbody>';
+  $('#statNote').textContent = t('statFew');
+}
+function renderDetail() {
+  const D = S.detail; if (!D) return;
+  const a = D.a, lq = liqOf(D.sym), bk = bookStats(D.book, a.P);
+  $('#dSym').textContent = base(D.sym);
+  $('#dPx').textContent = fPx(a.P);
+  $('#dChg').className = cls(D.chg); $('#dChg').textContent = fPct(D.chg);
+  renderFavBtn();
+  drawHeat();
+  $('#heatTip').innerHTML = S.tipHTML || t('tipDefault');
+  const left = Math.max(0, D.nextFund - Date.now()), hh = Math.floor(left / 36e5), mm = Math.floor(left % 36e5 / 6e4);
+  const lastTk = D.taker.filter(x => x != null).slice(-12), tkAvg = lastTk.length ? lastTk.reduce((x, y) => x + y, 0) / lastTk.length : NaN;
+  const lastTop = D.top.filter(x => x != null).pop();
+  $('#dStats').innerHTML = [
+    ['stFund', `<span class="${D.fr > 0.0003 ? 'dn' : D.fr < -0.0001 ? 'up' : ''}">${(D.fr * 100).toFixed(4)}%</span>`, t('stFundSub', { h: hh, m: mm })],
+    ['stOi', fUsd(a.oiVal), t('stOiSub', { v: fPct(a.oiChg, 1) })],
+    ['stLsr', a.lsr.toFixed(2), t('stLsrSub', { v: (a.la * 100).toFixed(0) })],
+    ['stTop', lastTop != null ? lastTop.toFixed(2) : '—', t('stTopSub')],
+    ['stTaker', isFinite(tkAvg) ? tkAvg.toFixed(2) : '—', t('stTakerSub')],
+    ['stLiq', `<span class="dn">${fUsd(lq.L)}</span>`, t('stLiqSub', { v: fUsd(lq.S) })],
+    ['stBook', bk ? `<span class="up">${fUsd(bk.b2)}</span>` : '—', bk ? t('stBookSub', { v: fUsd(bk.a2) }) : ''],
+    ['stVol', fUsd(D.vol), '']
+  ].map(([k, v, sm]) => `<div class="stat"><span>${t(k)}</span><b>${v}</b><small>${sm}</small></div>`).join('');
+
+  renderStats(D);
+
+  const comps = { fund: 'compFund', crowd: 'compCrowd', build: 'compBuild', near: 'compNear' };
+  $('#dRisk').innerHTML = `<div class="big">
+      <div><b class="dn">${a.longRisk}</b><span>${t('rDown')}</span></div>
+      <div><b class="up">${a.shortRisk}</b><span>${t('rUp')}</span></div></div>
+    <div class="comp"><span></span><span class="h">${t('rLongs')}</span><span class="h">${t('rShorts')}</span>
+    ${Object.keys(comps).map(k => `<span>${t(comps[k])}</span>
+      <span class="meter"><i style="width:${a.parts.L[k] * 100}%;background:var(--long)"></i></span>
+      <span class="meter"><i style="width:${a.parts.S[k] * 100}%;background:var(--short)"></i></span>`).join('')}</div>`;
+
+  const pl = a.panic.slice(-12).reverse();
+  $('#dPanic').innerHTML = pl.length ? pl.map(e => {
+    const n = e.iEnd - e.i + 1, dn = e.dir === 'D';
+    const det = [t('pVol', { v: e.vx.toFixed(1) }), t(dn ? 'pSell' : 'pBuy', { v: (e.flow * 100).toFixed(0) }), 'OI ' + (e.oiCh == null ? '—' : fPct(e.oiCh, 1))];
+    if (e.liq) det.push(t(dn ? 'pKnockL' : 'pKnockS', { v: fUsd(e.liq) }));
+    if (e.back > 0) det.push(t(dn ? 'pRecovD' : 'pRecovU', { v: (e.back * 100).toFixed(0) }));
+    const after = e.fwd.some(x => x != null) ? `<small style="grid-column:1/-1">${t('pAfter', { a: cPct(e.fwd[0]), b: cPct(e.fwd[1]), c: cPct(e.fwd[2]) })}</small>` : '';
+    return `<li><span><b class="${dn ? 'dn' : 'up'}">${dn ? '▼' : '▲'} ${fPct(e.move, 1)}</b>${n > 1 ? t('pOver', { n }) : ''} <span class="tag">${t(e.kind)}</span>${e.back >= 0.6 ? ` <span class="tag">${t(dn ? 'tagBack' : 'tagBackU')}</span>` : ''}</span>
+      <span>${e.strength}/100</span>
+      <small>${det.join(' · ')}</small>
+      <small style="text-align:right">${dt(e.t)}</small>${after}</li>`;
+  }).join('') : `<li class="empty">${t('pNone')}</li>`;
+  $('#dIns').innerHTML = insights(D, bk).map(x => `<li>${x}</li>`).join('');
+
+  const col = { long: cssVar('--long'), short: cssVar('--short'), muted: cssVar('--muted'), warn: cssVar('--warn'), focus: cssVar('--focus') };
+  drawLines('#cOI', '#lOI', [
+    { name: t('lgPrice'), color: col.muted, width: 1.2, vals: D.s.map(p => p.c), fmt: fPx },
+    { name: t('lgOi'), color: col.warn, vals: D.s.map(p => p.oi == null ? null : p.oi * p.c), fmt: fUsd }
+  ], 150, a.panic.map(e => ({ i: e.i, c: e.dir === 'D' ? col.long : col.short })));
+  $('#lOI').insertAdjacentHTML('beforeend', `<span><i style="background:linear-gradient(90deg,var(--long) 50%,var(--short) 50%)"></i>${t('lgPanics')}</span>`);
+  drawLines('#cLS', '#lLS', [
+    { name: t('lgAcc'), color: col.long, vals: D.s.map(p => p.la / (1 - p.la)), fmt: v => v.toFixed(2), ref: 1 },
+    { name: t('lgTop'), color: col.focus, vals: D.top, fmt: v => v.toFixed(2), ref: 1 }
+  ]);
+
+  $('#bookSum').innerHTML = bk ? t('bookSum', { b: fUsd(bk.b1), a: fUsd(bk.a1) }) : t('bookNone');
+  const wl = (arr, c) => arr.length ? arr.map(w => `<p><span>${fPx(w.p)} <span class="mut">${fPct((w.p / a.P - 1) * 100, 2)}</span></span><b class="${c}">${fUsd(w.usd)}</b></p>`).join('') : '<p class="mut">—</p>';
+  $('#walls').innerHTML = bk ? `<div><h3>${t('wallBuy')}</h3>${wl(bk.wb, 'up')}</div><div><h3>${t('wallSell')}</h3>${wl(bk.wa, 'dn')}</div>` : '';
+  feedDirty = true; renderFeeds();
+}
+
+/* ---------- language ---------- */
+function applyI18n() {
+  document.documentElement.lang = LANG;
+  document.title = t('title');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.dataset.i18nPh); });
+  $('#langSel').value = LANG;
+  $('#themeBtn').textContent = t(document.documentElement.dataset.theme === 'dark' ? 'themeLight' : 'themeDark');
+  for (const id of ['#stat', '#dStat']) { const s = S.st[id]; if (s) setStat(id, s.key, s.vars); }
+  if (S.lastErr) showErr(S.lastErr);
+  S.tipHTML = null;
+  renderFavBtn();
+  feedDirty = true; renderFeeds();
+  renderTable();
+  if (S.detail) renderDetail(); else $('#heatTip').textContent = t('tipDefault');
+}
+
+/* ---------- routing & UI ---------- */
+let dTimer = null;
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1)).toUpperCase();
+  if (/^[A-Z0-9]{2,24}USDT$/.test(h)) {
+    $('#monitor').classList.add('hidden'); $('#detail').classList.remove('hidden');
+    if (S.dSym !== h) {
+      S.dSym = h; S.detail = null; S.dLoading = false; S.tipHTML = null;
+      $('#dSym').textContent = base(h); if (window.CH) CH.linksInto($('#chLinks'), { coin: base(h), q: 'USDT', ex: 'binance', from: 'liq' }); $('#dPx').textContent = ''; $('#dChg').textContent = '';
+      $('#heatTip').textContent = t('tipDefault'); $('#dFeed').innerHTML = ''; $('#dPanic').innerHTML = ''; $('#sigTbl').innerHTML = '';
+      const cv = $('#heat'); cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
+    }
+    renderFavBtn(); setTfButtons(); loadDetail(h);
+    clearInterval(dTimer); dTimer = setInterval(() => loadDetail(S.dSym), 120000);
+    if (tg && tg.BackButton) tg.BackButton.show();
+    window.scrollTo(0, 0);
+  } else {
+    S.dSym = null; S.detail = null; clearInterval(dTimer);
+    $('#detail').classList.add('hidden'); $('#monitor').classList.remove('hidden');
+    if (tg && tg.BackButton) tg.BackButton.hide();
+    renderTable();
+  }
+}
+function openSym(raw) {
+  let s = raw.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (!s) return;
+  if (!s.endsWith('USDT')) s += 'USDT';
+  if (S.symbols.length && !S.symbols.includes(s)) { showErr({ key: 'noSym', vars: { s } }); return; }
+  location.hash = s;
+}
+function applyTheme(th) {
+  document.documentElement.dataset.theme = th;
+  $('#themeBtn').textContent = t(th === 'dark' ? 'themeLight' : 'themeDark');
+  if (S.detail) renderDetail();
+}
+
+$('#tbl').addEventListener('click', e => {
+  const star = e.target.closest('[data-fav]');
+  if (star) { e.stopPropagation(); toggleFav(star.dataset.fav); return; }
+  const th = e.target.closest('th');
+  if (th) {
+    const k = th.dataset.k;
+    S.sort = S.sort.key === k ? { key: k, dir: -S.sort.dir } : { key: k, dir: k === 'sym' ? 1 : -1 };
+    store.set('sort', S.sort); renderTable(); return;
+  }
+  const tr = e.target.closest('tr[data-sym]'); if (tr) location.hash = tr.dataset.sym;
+});
+$('#favOnly').addEventListener('click', () => { S.favOnly = !S.favOnly; store.set('favOnly', S.favOnly); renderFavBtn(); renderTable(); });
+$('#dFav').addEventListener('click', () => { if (S.dSym) { const was = S.fav.has(S.dSym); toggleFav(S.dSym); if (!was && !S.rows.some(r => r.sym === S.dSym)) loadMonitor(); } });
+$('#q').addEventListener('input', () => renderTable());
+$('#q').addEventListener('keydown', e => { if (e.key === 'Enter') openSym($('#q').value); });
+$('#topN').value = String(S.topN);
+$('#topN').addEventListener('change', e => { S.topN = +e.target.value; store.set('topN', S.topN); loadMonitor(); });
+$('#minVol').value = String(S.minVol);
+$('#minVol').addEventListener('change', e => { S.minVol = +e.target.value; store.set('minVol', S.minVol); renderTable(); });
+$('#refresh').addEventListener('click', loadMonitor);
+$('#back').addEventListener('click', () => { location.hash = ''; });
+$('#dRefresh').addEventListener('click', () => S.dSym && loadDetail(S.dSym));
+$('#tfSeg').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || b.dataset.tf === S.tf) return;
+  S.tf = b.dataset.tf; store.set('tf', S.tf); setTfButtons(); S.dLoading = false; loadDetail(S.dSym);
+});
+$('#heat').addEventListener('pointermove', heatTip);
+$('#heat').addEventListener('pointerdown', heatTip);
+$('#themeBtn').addEventListener('click', () => {
+  const th = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  store.set('theme', th); applyTheme(th);
+});
+$('#langSel').addEventListener('change', e => { LANG = e.target.value; store.set('lang', LANG); applyI18n(); });
+let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => S.detail && renderDetail(), 150); });
+window.addEventListener('hashchange', route);
+
+if (tg) {
+  try { tg.ready(); tg.expand(); if (tg.BackButton) tg.BackButton.onClick(() => { location.hash = ''; }); } catch (e) {}
+}
+applyTheme(window.CH ? CH.theme(store.get('theme', tg && tg.colorScheme === 'light' ? 'light' : 'dark')) : store.get('theme', tg && tg.colorScheme === 'light' ? 'light' : 'dark'));
+applyI18n();
+connectWS();
+loadServerLiq();
+setInterval(renderFeeds, 1000);
+loadMonitor();
+if (location.hash) route();
+setInterval(loadMonitor, 300000);
+})();
+</script>
+<script>
+(function () {
+  if (!window.CH) return;
+  var d = document.querySelector('#detail .dhead');
+  CH.cam(d, function () { return document.getElementById('detail'); }, { opts: function () { var x = document.getElementById('dSym'); return { name: 'liquidations-' + (x ? x.textContent.toLowerCase() : 'coin'), title: CH.t('liq')[0] + (x ? ': ' + x.textContent : '') }; } });
+  var c = document.querySelector('#monitor .controls');
+  CH.cam(c, function () { return document.getElementById('monitor'); }, { opts: { name: 'liquidations-monitor' } });
+})();
+</script>
+</body>
+</html>

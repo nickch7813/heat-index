@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16181d">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/ch.css">
+<script src="../assets/ch.js" data-tool="elliott"></script>
+<title>Elliott Wave Index</title>
+<style>
+:root{--bg:#f3f5f8;--surface:#ffffff;--line:#dfe4ea;--text:#18212b;--muted:#5f6c79;--green:#13985a;--red:#d23a40;--wave:#b7791f;--chip:#eef1f5;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e141b;--surface:#16202a;--line:#253240;--text:#e4ebf2;--muted:#8d9cab;--green:#33c47c;--red:#ef5a5f;--wave:#f0b54a;--chip:#1e2a36;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e141b;--surface:#16202a;--line:#253240;--text:#e4ebf2;--muted:#8d9cab;--green:#33c47c;--red:#ef5a5f;--wave:#f0b54a;--chip:#1e2a36;color-scheme:dark}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Sora,system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums}
+main{max-width:760px;margin:0 auto;padding:20px 14px 40px}
+h1{font-size:1.6rem;margin:0;letter-spacing:-.02em}
+.sub{color:var(--muted);margin:2px 0 16px;font-size:.9rem}
+.group{margin:0 0 10px}
+.group>span{display:block;font-size:.8rem;color:var(--muted);margin-bottom:4px}
+.btns{display:flex;flex-wrap:wrap;gap:6px}
+button,input{font:inherit;color:inherit}
+.btns button,.act{background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+.btns button[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+button:focus-visible,input:focus-visible,.card:focus-visible{outline:2px solid var(--wave);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:end}
+.row label{font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.row input{width:110px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+.legend{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin:14px 0 4px}
+.scale{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--green),#9a9a9a 50%,var(--red))}
+#status{color:var(--muted);font-size:.85rem;margin:12px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.sym{font-weight:700;font-size:1.1rem}
+.px{color:var(--muted);font-size:.85rem;margin-left:6px}
+.idx{font-weight:700;font-size:1.6rem;line-height:1}
+.bar{position:relative;height:6px;border-radius:3px;background:var(--chip);margin:8px 0}
+.bar i{position:absolute;top:-3px;width:4px;height:12px;border-radius:2px;background:var(--text);transform:translateX(-2px)}
+.wave{font-weight:600}
+.tag{font-size:.75rem;padding:1px 7px;border-radius:10px;background:var(--chip);color:var(--muted);margin-left:6px;white-space:nowrap}
+.meta{display:flex;flex-wrap:wrap;gap:4px 16px;color:var(--muted);font-size:.82rem;margin-top:4px}
+.meta b{color:var(--text);font-weight:600}
+canvas{display:block;width:100%;height:440px;margin-top:10px}
+.rec{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:2px 0 8px;padding:8px 10px;border-radius:8px;background:var(--chip)}
+.rec strong{font-size:.95rem}
+.rec.strong{background:var(--green);color:#fff}.rec.buy{box-shadow:inset 3px 0 0 var(--green)}
+.rec.exit{background:var(--red);color:#fff}.rec.tp{box-shadow:inset 3px 0 0 var(--wave)}
+.rec small{opacity:.9}
+.plan{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.82rem;margin-bottom:4px}
+.why{margin:6px 0 0;padding-left:18px;font-size:.8rem;color:var(--muted)}
+.alt{font-size:.8rem;color:var(--muted);margin-top:6px}
+
+.shot{margin-top:10px}
+.revl{font-size:.88rem;margin:0 0 6px;padding-left:10px;border-left:3px solid var(--line)}
+.hist{font-size:.8rem;color:var(--muted);margin:8px 0 0}
+.fc{font-size:.88rem;margin:0 0 6px;padding-left:10px;border-left:3px solid var(--line)}
+.fc.up{border-color:var(--green)}.fc.dn{border-color:var(--red)}
+.fc.up b{color:var(--green)}.fc.dn b{color:var(--red)}
+.fcl{color:var(--muted)}
+.src{margin:10px 0 0;font-size:.82rem}
+.src div{display:grid;grid-template-columns:18px max-content 1fr;gap:8px;padding:4px 0;border-bottom:1px solid var(--line)}
+.src div>span:nth-child(2){white-space:nowrap}
+.src b{font-weight:600;text-align:right}
+.src p{margin:6px 0 0;color:var(--muted)}
+.ar{font-weight:700;color:var(--muted)}.ar.up{color:var(--green)}.ar.dn{color:var(--red)}
+.searchbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:6px 0 10px}
+.searchbar input{width:100%;font-size:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.extra{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:10px 14px;margin-bottom:8px}
+.extra p{margin:0 0 8px;color:var(--muted);font-size:.85rem}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.modal{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px))}
+.sheet{background:var(--surface);color:var(--text);border-radius:14px;padding:14px;max-width:560px;width:100%;max-height:100%;overflow:auto}
+.sheet img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--line)}
+.sheet p{font-size:.85rem;color:var(--muted);margin:10px 0}
+.sheet a.act{text-decoration:none;display:inline-block}
+footer{color:var(--muted);font-size:.78rem;margin-top:20px}
+</style>
+<style id="ch-skin">
+body.ch-skin{background:var(--ch-bg);color:var(--ch-tx)}
+body.ch-skin :is(h1){font-size:20px!important;font-weight:500!important;letter-spacing:0!important;line-height:1.25!important}
+body.ch-skin :is(h2){font-weight:500!important;letter-spacing:0!important}
+body.ch-skin :is(h3){font-weight:500!important}
+body.ch-skin b, body.ch-skin strong{font-weight:600}
+body.ch-skin ::placeholder{color:var(--ch-t3)}
+
+html:root:root{--bg:var(--ch-bg);--surface:var(--ch-bg);--line:var(--ch-bd);--text:var(--ch-tx);--muted:var(--ch-t2);--green:var(--ch-up);--red:var(--ch-dn);--wave:var(--ch-warn);--chip:var(--ch-s1);--ch-w:760px}
+body.ch-skin main{padding-top:12px}
+body.ch-skin .btns button,body.ch-skin .act{background:none;border:0.5px solid var(--ch-bd2);border-radius:14px;padding:4px 11px;font-size:12px;color:var(--ch-t2);min-height:28px}
+body.ch-skin .btns button[aria-pressed="true"]{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+body.ch-skin .card{border-width:0.5px;border-radius:12px;padding:10px 12px}
+body.ch-skin .card:hover{border-color:var(--ch-bd2)}
+body.ch-skin .sym{font-weight:500;font-size:15px}
+body.ch-skin .idx{font-weight:600;font-size:22px}
+body.ch-skin .wave{font-weight:500}
+body.ch-skin .rec{border-radius:8px}
+body.ch-skin .rec.strong{background:var(--ch-okb);color:var(--ch-okt)}
+body.ch-skin .rec.exit{background:var(--ch-erb);color:var(--ch-ert)}
+body.ch-skin :is(.searchbar input,.row input){border-width:0.5px;border-radius:8px;font-size:14px}
+body.ch-skin .tag{border-radius:6px}
+body.ch-skin .extra{border-width:0.5px}
+body.ch-skin .sheet{border:0.5px solid var(--ch-bd2)}
+</style>
+<body>
+<main>
+<h1 id="title"></h1>
+<p class="sub" id="sub"></p>
+<div id="controls"></div>
+<div class="legend"><span id="leg0"></span><span id="leg50"></span><span id="leg100"></span></div>
+<div class="scale"></div>
+<div id="status"></div>
+<div class="searchbar"><input id="search" type="search" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
+<div id="list"></div>
+<footer id="footer"></footer>
+</main>
+<script>
+// ===== Elliott Wave core (pure functions) =====
+const EW = (() => {
+  const fit = (x, ideals, tol) => Math.max(...ideals.map(t => Math.exp(-(((x - t) / tol) ** 2))));
+
+  function atrPct(h, l, c) {
+    const n = c.length, from = Math.max(1, n - 100);
+    let s = 0;
+    for (let i = from; i < n; i++)
+      s += Math.max(h[i] - l[i], Math.abs(h[i] - c[i - 1]), Math.abs(l[i] - c[i - 1])) / c[i - 1];
+    return s / Math.max(1, n - from);
+  }
+
+  // ZigZag over highs/lows; last pivot is the unfinished (current) leg
+  function zigzag(h, l, dev) {
+    const piv = [];
+    let dir = 0, hiI = 0, hiP = h[0], loI = 0, loP = l[0], eI = 0, eP = 0;
+    for (let i = 1; i < h.length; i++) {
+      if (dir === 0) {
+        if (h[i] > hiP) { hiP = h[i]; hiI = i; }
+        if (l[i] < loP) { loP = l[i]; loI = i; }
+        if (hiP >= loP * (1 + dev) && hiI > loI) { piv.push({ i: loI, p: loP, t: 'L' }); dir = 1; eI = hiI; eP = hiP; }
+        else if (loP <= hiP * (1 - dev) && loI > hiI) { piv.push({ i: hiI, p: hiP, t: 'H' }); dir = -1; eI = loI; eP = loP; }
+      } else if (dir === 1) {
+        if (h[i] >= eP) { eP = h[i]; eI = i; }
+        else if (l[i] <= eP * (1 - dev)) { piv.push({ i: eI, p: eP, t: 'H' }); dir = -1; eI = i; eP = l[i]; }
+      } else {
+        if (l[i] <= eP) { eP = l[i]; eI = i; }
+        else if (h[i] >= eP * (1 + dev)) { piv.push({ i: eI, p: eP, t: 'L' }); dir = 1; eI = i; eP = h[i]; }
+      }
+    }
+    if (dir !== 0) piv.push({ i: eI, p: eP, t: dir === 1 ? 'H' : 'L', tentative: true });
+    return piv;
+  }
+
+  // v = sign-adjusted prices (bull space). Returns score 0..1 or 0 if rules broken.
+  function impulseScore(v) {
+    const w1 = v[1] - v[0], w2 = v[1] - v[2], w3 = v[3] - v[2], w4 = v[3] - v[4], w5 = v[5] - v[4];
+    if (!(w1 > 0 && w2 > 0 && w3 > 0 && w4 > 0 && w5 > 0)) return 0;
+    if (v[2] <= v[0] || v[3] <= v[1] || v[4] <= v[1] || v[5] <= v[3]) return 0; // core rules
+    if (w3 < w1 && w3 < w5) return 0;                                           // wave 3 never shortest
+    const s = 0.25 * fit(w2 / w1, [0.5, 0.618], 0.2) + 0.3 * fit(w3 / w1, [1.618, 2.618, 1], 0.5)
+            + 0.2 * fit(w4 / w3, [0.382, 0.236, 0.5], 0.15) + 0.25 * fit(w5 / w1, [1, 0.618, 1.618], 0.35);
+    return 0.4 + 0.6 * s;
+  }
+
+  // Raw index in bull space: 0 = strong buy, 100 = strong sell
+  const RAW = { w2: 15, w3: 35, w4: 28, w5: 78, A: 68, B: 72, ABC: 18 };
+  const NAMES = {
+    w2: 'Wave 2 pullback', w3: 'Wave 3 in progress', w4: 'Wave 4 pullback', w5: 'Wave 5, late stage',
+    A: 'Wave A after the top', B: 'Wave B bounce', ABC: 'ABC correction complete'
+  };
+
+  function scenarios(piv) {
+    const n = piv.length, out = [];
+    for (const sign of [1, -1]) {
+      const startType = sign === 1 ? 'L' : 'H';
+      const V = k => sign * piv[k].p;
+      const add = (key, start, len, conf, target, invalid, labels) => {
+        if (conf <= 0) return;
+        out.push({ key, sign, conf: Math.min(1, conf), target: sign * target, invalid: sign * invalid,
+          points: labels.map((lab, j) => ({ i: piv[start + j].i, p: piv[start + j].p, lab })) });
+      };
+      const ctxLow = s => { // wave 1 should start from a meaningful extreme
+        let ok = 1;
+        for (let k = Math.max(0, s - 6); k < s; k++) if (V(k) < V(s)) ok = 0.65;
+        return ok;
+      };
+      // Wave 2 (current leg)
+      if (n >= 3 && piv[n - 3].t === startType) {
+        const s = n - 3, v = [V(s), V(s + 1), V(s + 2)], w1 = v[1] - v[0], r = (v[1] - v[2]) / w1;
+        if (w1 > 0 && v[2] > v[0] && r >= 0.236 && r <= 0.886)
+          add('w2', s, 3, (0.3 + 0.45 * fit(r, [0.5, 0.618], 0.15)) * ctxLow(s), v[2] + 1.618 * w1, v[0], ['0', '1', '2']);
+      }
+      // Wave 3 (current leg)
+      if (n >= 4 && piv[n - 4].t === startType) {
+        const s = n - 4, v = [0, 1, 2, 3].map(j => V(s + j)), w1 = v[1] - v[0], r2 = (v[1] - v[2]) / w1, e = (v[3] - v[2]) / w1;
+        if (w1 > 0 && v[2] > v[0] && v[3] > v[1] && r2 >= 0.236 && r2 <= 0.886)
+          add('w3', s, 4, (0.35 + 0.2 * fit(r2, [0.5, 0.618], 0.2) + 0.2 * Math.min(1, e / 1.618)) * ctxLow(s),
+            v[2] + 1.618 * w1, v[2], ['0', '1', '2', '3']);
+      }
+      // Wave 4 (current leg)
+      if (n >= 5 && piv[n - 5].t === startType) {
+        const s = n - 5, v = [0, 1, 2, 3, 4].map(j => V(s + j));
+        const w1 = v[1] - v[0], w3 = v[3] - v[2], r2 = (v[1] - v[2]) / w1, r4 = (v[3] - v[4]) / w3;
+        if (w1 > 0 && w3 > 0 && v[2] > v[0] && v[3] > v[1] && v[4] > v[1] && r4 >= 0.146 && r4 <= 0.618)
+          add('w4', s, 5, (0.35 + 0.2 * fit(r4, [0.382, 0.236], 0.12) + 0.15 * fit(r2, [0.5, 0.618], 0.2) + 0.1 * fit(w3 / w1, [1.618, 2.618], 0.5)) * ctxLow(s),
+            v[4] + Math.max(w1, 0.618 * w3) * 0.9, v[1], ['0', '1', '2', '3', '4']);
+      }
+      // Wave 5 (current leg = full impulse)
+      if (n >= 6 && piv[n - 6].t === startType) {
+        const s = n - 6, v = [0, 1, 2, 3, 4, 5].map(j => V(s + j)), q = impulseScore(v);
+        add('w5', s, 6, q * 0.9, v[4], v[4], ['0', '1', '2', '3', '4', '5']); // target = wave-4 area after correction
+      }
+      // Wave A after completed impulse
+      if (n >= 7 && piv[n - 7].t === startType) {
+        const s = n - 7, v = [0, 1, 2, 3, 4, 5, 6].map(j => V(s + j)), q = impulseScore(v.slice(0, 6));
+        if (q && v[6] < v[5]) add('A', s, 7, q * 0.85, v[4], v[5], ['0', '1', '2', '3', '4', '5', 'A']);
+      }
+      // Wave B bounce
+      if (n >= 8 && piv[n - 8].t === startType) {
+        const s = n - 8, v = [...Array(8)].map((_, j) => V(s + j)), q = impulseScore(v.slice(0, 6));
+        const a = v[5] - v[6], rb = (v[7] - v[6]) / a;
+        if (q && a > 0 && v[7] < v[5] && rb > 0.2)
+          add('B', s, 8, q * (0.55 + 0.3 * fit(rb, [0.5, 0.618, 0.382], 0.2)), v[7] - a, v[5], ['0', '1', '2', '3', '4', '5', 'A', 'B']);
+      }
+      // ABC complete (current leg = C)
+      if (n >= 9 && piv[n - 9].t === startType) {
+        const s = n - 9, v = [...Array(9)].map((_, j) => V(s + j)), q = impulseScore(v.slice(0, 6));
+        const a = v[5] - v[6], c = v[7] - v[8], depth = (v[5] - v[8]) / (v[5] - v[0]);
+        if (q && a > 0 && c > 0 && v[7] < v[5] && v[8] < v[7] && c / a >= 0.618 && c / a <= 1.786 && depth >= 0.236 && depth <= 0.886)
+          add('ABC', s, 9, q * (0.45 + 0.35 * fit(c / a, [1, 1.618, 0.618], 0.3) + 0.15 * fit(depth, [0.382, 0.5, 0.618], 0.2)),
+            v[5], v[8], ['0', '1', '2', '3', '4', '5', 'A', 'B', 'C']);
+      }
+    }
+    return out;
+  }
+
+  function analyze(k, sensitivity = 3) {
+    const h = k.map(x => +x[2]), l = k.map(x => +x[3]), c = k.map(x => +x[4]);
+    if (c.length < 60) return null;
+    const dev = Math.min(0.3, Math.max(0.012, sensitivity * atrPct(h, l, c)));
+    const piv = zigzag(h, l, dev);
+    const sc = scenarios(piv).sort((a, b) => b.conf - a.conf);
+    const price = c[c.length - 1];
+    if (!sc.length) return { price, index: 50, conf: 0, label: 'No clear wave count', trend: 0, bias: 0, piv, dev, best: null };
+    const b = sc[0];
+    const rawBull = RAW[b.key], blended = 50 + (rawBull - 50) * b.conf;
+    const index = Math.round(b.sign === 1 ? blended : 100 - blended);
+    return {
+      price, index, conf: b.conf, piv, dev, best: b, alt: sc[1] || null,
+      label: NAMES[b.key], trend: b.sign,
+      bias: index < 40 ? 1 : index > 60 ? -1 : 0
+    };
+  }
+  return { analyze, zigzag, impulseScore, scenarios };
+})();
+
+// ===== Translations =====
+const I18N = {
+  en: {
+    'rev.title': 'Trend reversal probability', 'rev.dirUp': 'reversal up', 'rev.dirDn': 'reversal down', 'pane.rev': 'Reversal probability, %', 'pane.ews': 'Elliott wave stochastic', 'ews.short': 'EWS', 'ews.bull': 'bullish cross {n} bars ago', 'ews.bear': 'bearish cross {n} bars ago', 'ews.none': 'no cross', 'ews.confUp': 'Elliott wave stochastic: bullish cross in the oversold zone confirms a reversal up', 'ews.confDn': 'Elliott wave stochastic: bearish cross in the overbought zone confirms a reversal down', 'why.rev': 'Trend reversal probability {p}%, {d}', 'rev.hist': 'Check on this chart: readings above 60% were followed by a turn within {h} bars in {r}% of cases ({n} signals), versus {b}% for a random bar.', 'rev.histNone': 'Too few readings above 60% on this chart to check them against history.', 'sort.rev': 'Reversal probability',
+    'sort.fc': 'Growth forecast', 'fc.title': 'Forecast:', 'fc.up': 'up to {t} ({p}%) in {time}', 'fc.down': 'down to {t} ({p}%) in {time}', 'fc.flat': 'sideways, the signals disagree', 'fc.hours': '≈ {a}–{b} h', 'fc.days': '≈ {a}–{b} days', 'fc.strong': 'strong', 'fc.moderate': 'moderate', 'fc.weak': 'weak', 'fc.agree': 'Sources agreeing with the forecast: {n} of 3', 'src.elliott': 'Elliott waves', 'src.heat': 'Heat index', 'src.hs': 'short', 'src.hm': 'mid', 'src.hl': 'long', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (growth zone)', 'why.heatHigh': ' (overheated)', 'why.heatMid': ' (neutral)', 'why.heatAgainst': 'Heat index is overheated, buying now is risky',
+    search: 'Search coin, for example SOL', analyze: 'Analyze {c}/{p}, volume {v}', analyzing: 'Counting waves…', noData: 'Not enough data', moreFound: 'Also on the exchange, below the volume filter:', lowVol: '«{q}» is below the minimum volume filter. Analyze it anyway:', notListed: 'No coin «{q}» on {ex}.',
+    shot: 'Screenshot', share: 'Share', download: 'Save image', close: 'Close', shotHint: 'If the buttons do not work in your app, long-press the image and choose Save.',
+    title: 'Elliott Wave Index', sub: 'Automatic wave count with trade recommendations for every coin on {ex}. 0 is a buy zone, 100 is a sell zone.',
+    exchange: 'Exchange', language: 'Language', market: 'Market', timeframe: 'Timeframe', sens: 'Wave sensitivity', sort: 'Sort by', show: 'Show',
+    'q.ALL': 'All coins', 'q.pair': '{q} pairs', 'tf.1h': '1 hour', 'tf.4h': '4 hours', 'tf.1d': '1 day',
+    's.2': 'Fine waves', 's.3': 'Normal waves', 's.4.5': 'Large waves',
+    'sort.best': 'Best signals', 'sort.buy': 'Buy zone first', 'sort.sell': 'Sell zone first', 'sort.conf': 'Confidence', 'sort.vol': 'Volume',
+    'show.all': 'All coins', 'show.buy': 'Buy signals only', 'show.sell': 'Sell signals only',
+    minVol: 'Min volume 24h, {u}', refresh: 'Refresh data', theme: 'Switch theme',
+    leg0: '0 buy zone', leg50: '50 neutral', leg100: '100 sell zone',
+    loading: 'Loading coins…', counting: 'Counting waves: {d} of {n}', done: '{n} coins, {m}, timeframe {tf}, updated {t}', allMarkets: 'all markets',
+    noResp: '{ex} did not respond. Check the connection and tap Refresh data.',
+    noSignal: 'No coins with this signal right now. Choose All coins to see the rest.', noCoins: 'No coins match the minimum volume. Lower it and tap Refresh data.',
+    footer: 'Wave counts are found automatically from price swings (ZigZag) and checked against Elliott rules: wave 2 never retraces all of wave 1, wave 3 is never the shortest, wave 4 does not enter wave 1 territory. A count is a probability, not a guarantee. Recommendations follow fixed rules: index, confidence, higher timeframe and reward/risk. Always use the stop. Not financial advice.',
+    'rec.strong': 'Strong buy', 'rec.buy': 'Buy', 'rec.wait': 'Wait', 'rec.tp': 'Take profit', 'rec.exit': 'Sell / exit',
+    rr: 'Reward/risk {v}', buyNear: 'Buy near', stop: 'Stop', takeProfit: 'Take profit', pullbackTo: 'Expected pullback to',
+    target: 'Target', invalid: 'Invalidation', conf: 'Confidence', volume: 'Volume',
+    alt: 'Alternative: {w}, {d}, {c}%', up: 'uptrend count', down: 'downtrend count',
+    'w.w2': 'Wave 2 pullback', 'w.w3': 'Wave 3 in progress', 'w.w4': 'Wave 4 pullback', 'w.w5': 'Wave 5, late stage',
+    'w.A': 'Wave A after the impulse', 'w.B': 'Wave B bounce', 'w.ABC': 'ABC correction complete', 'w.none': 'No clear wave count',
+    'htf.4h': '4-hour chart', 'htf.1d': 'Daily chart', 'htf.1w': 'Weekly chart',
+    'why.noWave': 'No clear wave structure, the market is choppy', 'why.count': '{w}, {d}, confidence {c}%',
+    'why.htf': '{tf}: {w}, index {i}', 'why.htfUp': ' (supports growth)', 'why.htfDown': ' (points down)', 'why.htfFlat': ' (neutral)',
+    'why.broken': 'Price is already below the invalidation level, the count is broken',
+    'why.reached': 'Price has already reached the target, the move is used up', 'why.rr': 'Reward is {v} times the risk',
+    'why.unclear': 'Wave count is unclear, wait for a cleaner structure', 'why.lowRR': 'Reward is only {v} times the risk, wait for a deeper pullback',
+    'why.htfAgainst': 'Higher timeframe points down, a buy here goes against the bigger trend',
+    'why.exit': 'Both timeframes expect a decline, close long positions', 'why.tp': 'A pullback is likely, lock in part of the profit and move the stop up',
+    'why.weakDown': 'A decline is possible but the count is weak, do not open new buys', 'why.noEdge': 'No edge in either direction, stay out',
+    'c.target': 'Target', 'c.invalid': 'Invalid', 'c.stop': 'Stop'
+  },
+  uk: {
+    'rev.title': 'Ймовірність розвороту тренду', 'rev.dirUp': 'розворот вгору', 'rev.dirDn': 'розворот вниз', 'pane.rev': 'Ймовірність розвороту, %', 'pane.ews': 'Хвильовий стохастик', 'ews.short': 'EWS', 'ews.bull': 'бичачий перетин {n} св. тому', 'ews.bear': 'ведмежий перетин {n} св. тому', 'ews.none': 'перетину немає', 'ews.confUp': 'Хвильовий стохастик: бичачий перетин у зоні перепроданості підтверджує розворот вгору', 'ews.confDn': 'Хвильовий стохастик: ведмежий перетин у зоні перекупленості підтверджує розворот вниз', 'why.rev': 'Ймовірність розвороту тренду {p}%, {d}', 'rev.hist': 'Перевірка на цьому графіку: після показників понад 60% розворот протягом {h} свічок стався в {r}% випадків ({n} сигналів), тоді як для випадкової свічки це {b}%.', 'rev.histNone': 'На цьому графіку замало показників понад 60%, щоб перевірити їх на історії.', 'sort.rev': 'Ймовірність розвороту',
+    'sort.fc': 'Прогноз росту', 'fc.title': 'Прогноз:', 'fc.up': 'ріст до {t} ({p}%) за {time}', 'fc.down': 'падіння до {t} ({p}%) за {time}', 'fc.flat': 'бокова, сигнали суперечать один одному', 'fc.hours': '≈ {a}–{b} год', 'fc.days': '≈ {a}–{b} дн.', 'fc.strong': 'сильний', 'fc.moderate': 'помірний', 'fc.weak': 'слабкий', 'fc.agree': 'Джерел, що підтверджують прогноз: {n} з 3', 'src.elliott': 'Хвилі Елліота', 'src.heat': 'Heat index', 'src.hs': 'корот.', 'src.hm': 'серед.', 'src.hl': 'довг.', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (зона росту)', 'why.heatHigh': ' (перегрів)', 'why.heatMid': ' (нейтрально)', 'why.heatAgainst': 'Heat index показує перегрів, купувати зараз ризиковано',
+    search: 'Пошук монети, наприклад SOL', analyze: 'Аналізувати {c}/{p}, об\u2019єм {v}', analyzing: 'Рахуємо хвилі…', noData: 'Замало даних', moreFound: 'Також є на біржі, нижче фільтра об\u2019єму:', lowVol: '«{q}» не проходить за мінімальним об\u2019ємом. Можна проаналізувати все одно:', notListed: 'Монети «{q}» на {ex} немає.',
+    shot: 'Скріншот', share: 'Поділитися', download: 'Зберегти зображення', close: 'Закрити', shotHint: 'Якщо кнопки не працюють у вашому застосунку, затисніть зображення пальцем і виберіть «Зберегти».',
+    title: 'Індекс хвиль Елліота', sub: 'Автоматичний підрахунок хвиль і торгові рекомендації для всіх монет на {ex}. 0 означає зону купівлі, 100 означає зону продажу.',
+    exchange: 'Біржа', language: 'Мова', market: 'Ринок', timeframe: 'Таймфрейм', sens: 'Чутливість хвиль', sort: 'Сортування', show: 'Показати',
+    'q.ALL': 'Усі монети', 'q.pair': 'Пари до {q}', 'tf.1h': '1 година', 'tf.4h': '4 години', 'tf.1d': '1 день',
+    's.2': 'Дрібні хвилі', 's.3': 'Звичайні хвилі', 's.4.5': 'Великі хвилі',
+    'sort.best': 'Найкращі сигнали', 'sort.buy': 'Спершу зона купівлі', 'sort.sell': 'Спершу зона продажу', 'sort.conf': 'Впевненість', 'sort.vol': 'Об\u2019єм',
+    'show.all': 'Усі монети', 'show.buy': 'Лише сигнали купівлі', 'show.sell': 'Лише сигнали продажу',
+    minVol: 'Мін. об\u2019єм за 24 год, {u}', refresh: 'Оновити дані', theme: 'Змінити тему',
+    leg0: '0 зона купівлі', leg50: '50 нейтрально', leg100: '100 зона продажу',
+    loading: 'Завантаження монет…', counting: 'Рахуємо хвилі: {d} з {n}', done: 'Монет: {n}, {m}, таймфрейм {tf}, оновлено {t}', allMarkets: 'усі ринки',
+    noResp: '{ex} не відповідає. Перевірте з\u2019єднання й натисніть «Оновити дані».',
+    noSignal: 'Зараз немає монет із таким сигналом. Оберіть «Усі монети», щоб побачити решту.', noCoins: 'Жодна монета не проходить за мінімальним об\u2019ємом. Зменште його й натисніть «Оновити дані».',
+    footer: 'Хвилі визначаються автоматично за коливаннями ціни (ZigZag) і перевіряються правилами Елліота: хвиля 2 ніколи не відкочує всю хвилю 1, хвиля 3 ніколи не найкоротша, хвиля 4 не заходить на територію хвилі 1. Рахунок хвиль є ймовірністю, а не гарантією. Рекомендації будуються за фіксованими правилами: індекс, впевненість, старший таймфрейм і співвідношення прибутку до ризику. Завжди ставте стоп. Це не фінансова порада.',
+    'rec.strong': 'Сильна купівля', 'rec.buy': 'Купувати', 'rec.wait': 'Чекати', 'rec.tp': 'Фіксувати прибуток', 'rec.exit': 'Продавати / виходити',
+    rr: 'Прибуток/ризик {v}', buyNear: 'Купити біля', stop: 'Стоп', takeProfit: 'Тейк-профіт', pullbackTo: 'Очікуваний відкат до',
+    target: 'Ціль', invalid: 'Скасування', conf: 'Впевненість', volume: 'Об\u2019єм',
+    alt: 'Альтернатива: {w}, {d}, {c}%', up: 'висхідний рахунок', down: 'низхідний рахунок',
+    'w.w2': 'Відкат хвилі 2', 'w.w3': 'Хвиля 3 триває', 'w.w4': 'Відкат хвилі 4', 'w.w5': 'Хвиля 5, пізня стадія',
+    'w.A': 'Хвиля A після імпульсу', 'w.B': 'Відскок хвилі B', 'w.ABC': 'Корекція ABC завершена', 'w.none': 'Чіткого рахунку хвиль немає',
+    'htf.4h': 'Графік 4 години', 'htf.1d': 'Денний графік', 'htf.1w': 'Тижневий графік',
+    'why.noWave': 'Чіткої хвильової структури немає, ринок пиляє', 'why.count': '{w}, {d}, впевненість {c}%',
+    'why.htf': '{tf}: {w}, індекс {i}', 'why.htfUp': ' (підтримує ріст)', 'why.htfDown': ' (вказує вниз)', 'why.htfFlat': ' (нейтрально)',
+    'why.broken': 'Ціна вже нижче рівня скасування, рахунок хвиль зламаний',
+    'why.reached': 'Ціна вже дійшла до цілі, рух вичерпано', 'why.rr': 'Можливий прибуток у {v} раза більший за ризик',
+    'why.unclear': 'Рахунок хвиль нечіткий, дочекайтеся чистішої структури', 'why.lowRR': 'Прибуток лише в {v} раза більший за ризик, дочекайтеся глибшого відкату',
+    'why.htfAgainst': 'Старший таймфрейм вказує вниз, купівля тут іде проти великого тренду',
+    'why.exit': 'Обидва таймфрейми очікують падіння, закривайте довгі позиції', 'why.tp': 'Ймовірний відкат, зафіксуйте частину прибутку й підтягніть стоп',
+    'why.weakDown': 'Падіння можливе, але рахунок слабкий, нових купівель не відкривайте', 'why.noEdge': 'Переваги немає в жодний бік, краще не входити',
+    'c.target': 'Ціль', 'c.invalid': 'Скас.', 'c.stop': 'Стоп'
+  },
+  ru: {
+    'rev.title': 'Вероятность разворота тренда', 'rev.dirUp': 'разворот вверх', 'rev.dirDn': 'разворот вниз', 'pane.rev': 'Вероятность разворота, %', 'pane.ews': 'Волновой стохастик', 'ews.short': 'EWS', 'ews.bull': 'бычье пересечение {n} св. назад', 'ews.bear': 'медвежье пересечение {n} св. назад', 'ews.none': 'пересечения нет', 'ews.confUp': 'Волновой стохастик: бычье пересечение в зоне перепроданности подтверждает разворот вверх', 'ews.confDn': 'Волновой стохастик: медвежье пересечение в зоне перекупленности подтверждает разворот вниз', 'why.rev': 'Вероятность разворота тренда {p}%, {d}', 'rev.hist': 'Проверка на этом графике: после показателей выше 60% разворот в течение {h} свечей случился в {r}% случаев ({n} сигналов), тогда как для случайной свечи это {b}%.', 'rev.histNone': 'На этом графике слишком мало показателей выше 60%, чтобы проверить их на истории.', 'sort.rev': 'Вероятность разворота',
+    'sort.fc': 'Прогноз роста', 'fc.title': 'Прогноз:', 'fc.up': 'рост до {t} ({p}%) за {time}', 'fc.down': 'падение до {t} ({p}%) за {time}', 'fc.flat': 'боковик, сигналы противоречат друг другу', 'fc.hours': '≈ {a}–{b} ч', 'fc.days': '≈ {a}–{b} дн.', 'fc.strong': 'сильный', 'fc.moderate': 'умеренный', 'fc.weak': 'слабый', 'fc.agree': 'Источников, подтверждающих прогноз: {n} из 3', 'src.elliott': 'Волны Эллиотта', 'src.heat': 'Heat index', 'src.hs': 'корот.', 'src.hm': 'сред.', 'src.hl': 'длин.', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (зона роста)', 'why.heatHigh': ' (перегрев)', 'why.heatMid': ' (нейтрально)', 'why.heatAgainst': 'Heat index показывает перегрев, покупать сейчас рискованно',
+    search: 'Поиск монеты, например SOL', analyze: 'Анализировать {c}/{p}, объём {v}', analyzing: 'Считаем волны…', noData: 'Мало данных', moreFound: 'Также есть на бирже, ниже фильтра объёма:', lowVol: '«{q}» не проходит по минимальному объёму. Можно проанализировать всё равно:', notListed: 'Монеты «{q}» на {ex} нет.',
+    shot: 'Скриншот', share: 'Поделиться', download: 'Сохранить изображение', close: 'Закрыть', shotHint: 'Если кнопки не работают в вашем приложении, зажмите изображение пальцем и выберите «Сохранить».',
+    title: 'Индекс волн Эллиотта', sub: 'Автоматический подсчёт волн и торговые рекомендации для всех монет на {ex}. 0 означает зону покупки, 100 означает зону продажи.',
+    exchange: 'Биржа', language: 'Язык', market: 'Рынок', timeframe: 'Таймфрейм', sens: 'Чувствительность волн', sort: 'Сортировка', show: 'Показать',
+    'q.ALL': 'Все монеты', 'q.pair': 'Пары к {q}', 'tf.1h': '1 час', 'tf.4h': '4 часа', 'tf.1d': '1 день',
+    's.2': 'Мелкие волны', 's.3': 'Обычные волны', 's.4.5': 'Крупные волны',
+    'sort.best': 'Лучшие сигналы', 'sort.buy': 'Сначала зона покупки', 'sort.sell': 'Сначала зона продажи', 'sort.conf': 'Уверенность', 'sort.vol': 'Объём',
+    'show.all': 'Все монеты', 'show.buy': 'Только сигналы покупки', 'show.sell': 'Только сигналы продажи',
+    minVol: 'Мин. объём за 24 ч, {u}', refresh: 'Обновить данные', theme: 'Сменить тему',
+    leg0: '0 зона покупки', leg50: '50 нейтрально', leg100: '100 зона продажи',
+    loading: 'Загрузка монет…', counting: 'Считаем волны: {d} из {n}', done: 'Монет: {n}, {m}, таймфрейм {tf}, обновлено {t}', allMarkets: 'все рынки',
+    noResp: '{ex} не отвечает. Проверьте соединение и нажмите «Обновить данные».',
+    noSignal: 'Сейчас нет монет с таким сигналом. Выберите «Все монеты», чтобы увидеть остальные.', noCoins: 'Ни одна монета не проходит по минимальному объёму. Уменьшите его и нажмите «Обновить данные».',
+    footer: 'Волны определяются автоматически по колебаниям цены (ZigZag) и проверяются правилами Эллиотта: волна 2 никогда не откатывает всю волну 1, волна 3 никогда не самая короткая, волна 4 не заходит на территорию волны 1. Счёт волн является вероятностью, а не гарантией. Рекомендации строятся по фиксированным правилам: индекс, уверенность, старший таймфрейм и соотношение прибыли к риску. Всегда ставьте стоп. Это не финансовый совет.',
+    'rec.strong': 'Сильная покупка', 'rec.buy': 'Покупать', 'rec.wait': 'Ждать', 'rec.tp': 'Фиксировать прибыль', 'rec.exit': 'Продавать / выходить',
+    rr: 'Прибыль/риск {v}', buyNear: 'Купить около', stop: 'Стоп', takeProfit: 'Тейк-профит', pullbackTo: 'Ожидаемый откат до',
+    target: 'Цель', invalid: 'Отмена', conf: 'Уверенность', volume: 'Объём',
+    alt: 'Альтернатива: {w}, {d}, {c}%', up: 'восходящий счёт', down: 'нисходящий счёт',
+    'w.w2': 'Откат волны 2', 'w.w3': 'Волна 3 продолжается', 'w.w4': 'Откат волны 4', 'w.w5': 'Волна 5, поздняя стадия',
+    'w.A': 'Волна A после импульса', 'w.B': 'Отскок волны B', 'w.ABC': 'Коррекция ABC завершена', 'w.none': 'Чёткого счёта волн нет',
+    'htf.4h': 'График 4 часа', 'htf.1d': 'Дневной график', 'htf.1w': 'Недельный график',
+    'why.noWave': 'Чёткой волновой структуры нет, рынок пилит', 'why.count': '{w}, {d}, уверенность {c}%',
+    'why.htf': '{tf}: {w}, индекс {i}', 'why.htfUp': ' (поддерживает рост)', 'why.htfDown': ' (указывает вниз)', 'why.htfFlat': ' (нейтрально)',
+    'why.broken': 'Цена уже ниже уровня отмены, счёт волн сломан',
+    'why.reached': 'Цена уже дошла до цели, движение исчерпано', 'why.rr': 'Возможная прибыль в {v} раза больше риска',
+    'why.unclear': 'Счёт волн нечёткий, дождитесь более чистой структуры', 'why.lowRR': 'Прибыль лишь в {v} раза больше риска, дождитесь более глубокого отката',
+    'why.htfAgainst': 'Старший таймфрейм указывает вниз, покупка здесь идёт против большого тренда',
+    'why.exit': 'Оба таймфрейма ожидают падения, закрывайте длинные позиции', 'why.tp': 'Вероятен откат, зафиксируйте часть прибыли и подтяните стоп',
+    'why.weakDown': 'Падение возможно, но счёт слабый, новых покупок не открывайте', 'why.noEdge': 'Преимущества нет ни в одну сторону, лучше не входить',
+    'c.target': 'Цель', 'c.invalid': 'Отмена', 'c.stop': 'Стоп'
+  }
+};
+const T = (k, v = {}) => (I18N[S.lang][k] ?? I18N.en[k] ?? k).replace(/\{(\w+)\}/g, (_, n) => v[n] ?? '');
+
+// ===== Exchanges =====
+async function getJSON(bases, path) {
+  let err;
+  for (const base of bases) {
+    try { const r = await fetch(base + path); if (r.ok) return await r.json(); err = new Error('HTTP ' + r.status); }
+    catch (e) { err = e; }
+  }
+  throw err;
+}
+const EX = {
+  binance: {
+    name: 'Binance', quotes: ['ALL', 'USDT', 'BTC', 'USDC', 'FDUSD', 'ETH', 'BNB'],
+    bases: ['https://api.binance.com', 'https://data-api.binance.vision'], symbols: null,
+    async markets() {
+      if (!this.symbols) {
+        const info = await getJSON(this.bases, '/api/v3/exchangeInfo?symbolStatus=TRADING').catch(() => getJSON(this.bases, '/api/v3/exchangeInfo'));
+        this.symbols = {};
+        info.symbols.filter(x => x.status === 'TRADING' && x.isSpotTradingAllowed !== false)
+          .forEach(x => this.symbols[x.symbol] = { base: x.baseAsset, quote: x.quoteAsset });
+      }
+      const t = await getJSON(this.bases, '/api/v3/ticker/24hr');
+      return t.filter(x => this.symbols[x.symbol]).map(x => ({ sym: x.symbol, coin: this.symbols[x.symbol].base, quote: this.symbols[x.symbol].quote,
+        price: +x.lastPrice, vol: +x.quoteVolume, chg: +x.priceChangePercent }));
+    },
+    async klines(sym, tf) {
+      return (await getJSON(this.bases, `/api/v3/klines?symbol=${sym}&interval=${tf}&limit=300`)).map(k => [k[0], +k[1], +k[2], +k[3], +k[4]]);
+    }
+  },
+  bybit: {
+    name: 'Bybit', quotes: ['ALL', 'USDT', 'USDC', 'BTC', 'ETH'],
+    bases: ['https://api.bybit.com', 'https://api.bytick.com'], symbols: null,
+    tf: { '1h': '60', '4h': '240', '1d': 'D', '1w': 'W' },
+    async v5(path) {
+      const r = await getJSON(this.bases, path);
+      if (r.retCode !== 0) throw new Error(r.retMsg);
+      return r.result;
+    },
+    async markets() {
+      if (!this.symbols) {
+        this.symbols = {};
+        let cursor = '';
+        do {
+          const r = await this.v5('/v5/market/instruments-info?category=spot&limit=1000' + (cursor ? '&cursor=' + encodeURIComponent(cursor) : ''));
+          r.list.filter(x => x.status === 'Trading').forEach(x => this.symbols[x.symbol] = { base: x.baseCoin, quote: x.quoteCoin });
+          cursor = r.nextPageCursor;
+        } while (cursor);
+      }
+      const t = await this.v5('/v5/market/tickers?category=spot');
+      return t.list.filter(x => this.symbols[x.symbol]).map(x => ({ sym: x.symbol, coin: this.symbols[x.symbol].base, quote: this.symbols[x.symbol].quote,
+        price: +x.lastPrice, vol: +x.turnover24h, chg: +x.price24hPcnt * 100 }));
+    },
+    async klines(sym, tf) {
+      const r = await this.v5(`/v5/market/kline?category=spot&symbol=${sym}&interval=${this.tf[tf]}&limit=300`);
+      return r.list.map(k => [+k[0], +k[1], +k[2], +k[3], +k[4]]).reverse(); // Bybit returns newest first
+    }
+  }
+};
+
+// ===== State =====
+const navLang = (navigator.language || 'en').slice(0, 2);
+const S = { ex: 'binance', lang: ['uk', 'ru'].includes(navLang) ? navLang : 'en', tf: '4h', sens: '3', sort: 'best', show: 'all', quote: 'ALL',
+  minVols: { ALL: 1000000, USDT: 1000000, BTC: 20, USDC: 500000, FDUSD: 500000, ETH: 300, BNB: 1500 },
+  rows: [], open: new Set(), loading: false, status: ['loading'] };
+try { const s = JSON.parse(localStorage.getItem('ewi') || '{}'); delete s.rows; delete s.open; Object.assign(S, s, { minVols: Object.assign(S.minVols, s.minVols || {}) }); } catch (e) {}
+const save = () => { try { localStorage.setItem('ewi', JSON.stringify({ ex: S.ex, lang: S.lang, tf: S.tf, sens: S.sens, sort: S.sort, show: S.show, quote: S.quote, minVols: S.minVols, theme: S.theme })); } catch (e) {} };
+if (window.CH) S.theme = CH.theme(S.theme);
+if (S.theme) document.documentElement.dataset.theme = S.theme;
+if (!EX[S.ex]) S.ex = 'binance';
+if (!EX[S.ex].quotes.includes(S.quote)) S.quote = 'ALL';
+
+// ===== Heat index =====
+// Modified stochastic in three horizons, 0 = oversold (growth zone), 100 = overheated.
+// To use the exact numbers from the heat-index app, replace the body of heatIndex() with that app's function;
+// it only has to return { short, mid, long, composite } on the 0-100 scale.
+const HEAT = { short: 14, mid: 50, long: 150, smooth: 3, weights: [0.5, 0.3, 0.2] };
+function heatIndex(k) {
+  return heatAt(k.map(b => +b[2]), k.map(b => +b[3]), k.map(b => +b[4]), k.length - 1);
+}
+function heatAt(h, l, c, end) {
+  const n = end + 1;
+  const stoch = len => {
+    const raw = [];
+    for (let i = Math.max(len - 1, n - 3 * HEAT.smooth - 2); i < n; i++) {
+      let hh = -Infinity, ll = Infinity;
+      for (let j = Math.max(0, i - len + 1); j <= i; j++) { hh = Math.max(hh, h[j]); ll = Math.min(ll, l[j]); }
+      raw.push(hh > ll ? (c[i] - ll) / (hh - ll) * 100 : 50);
+    }
+    const sma = (a, m) => a.map((_, i) => i < m - 1 ? null : a.slice(i - m + 1, i + 1).reduce((x, y) => x + y, 0) / m).filter(v => v !== null);
+    const slow = sma(sma(raw, HEAT.smooth), HEAT.smooth); // %K smoothed twice
+    return slow.length ? slow[slow.length - 1] : raw[raw.length - 1];
+  };
+  if (n < HEAT.mid) return null;
+  const short = stoch(HEAT.short), mid = stoch(HEAT.mid), long = stoch(Math.min(HEAT.long, n));
+  const [a, b, w] = HEAT.weights;
+  return { short: Math.round(short), mid: Math.round(mid), long: Math.round(long), composite: Math.round(a * short + b * mid + w * long) };
+}
+
+// ===== Trend reversal probability and Elliott Wave Stochastic (EWS), bar by bar without look-ahead =====
+// EWS: a stochastic whose lookback adapts to the wave structure. At every bar the window starts at the
+// second-to-last confirmed ZigZag pivot, so it spans the last complete swing plus the leg in progress.
+// %K = 3-bar average of the raw value, %D = 3-bar average of %K. A %K/%D cross below 25 confirms a turn up,
+// a cross above 75 confirms a turn down.
+const PHASE_REV = { w2: 0.6, w3: 0.15, w4: 0.5, w5: 0.75, A: 0.45, B: 0.55, ABC: 0.7 };
+const clamp01 = v => Math.max(0, Math.min(1, v));
+function buildHistory(k, dev) {
+  const h = k.map(b => +b[2]), l = k.map(b => +b[3]), c = k.map(b => +b[4]), n = c.length;
+  const P = Array(n).fill(null), RD = Array(n).fill(0), raw = Array(n).fill(null), K = Array(n).fill(null), D = Array(n).fill(null), X = Array(n).fill(0);
+  const conf = [];
+  let dir = 0, hiI = 0, hiP = h[0], loI = 0, loP = l[0], eI = 0, eP = 0;
+  const avg = (a, i, m) => { let s = 0; for (let j = i - m + 1; j <= i; j++) { if (a[j] === null) return null; s += a[j]; } return s / m; };
+  for (let i = 1; i < n; i++) {
+    // online ZigZag, identical to EW.zigzag
+    if (dir === 0) {
+      if (h[i] > hiP) { hiP = h[i]; hiI = i; }
+      if (l[i] < loP) { loP = l[i]; loI = i; }
+      if (hiP >= loP * (1 + dev) && hiI > loI) { conf.push({ i: loI, p: loP, t: 'L' }); dir = 1; eI = hiI; eP = hiP; }
+      else if (loP <= hiP * (1 - dev) && loI > hiI) { conf.push({ i: hiI, p: hiP, t: 'H' }); dir = -1; eI = loI; eP = loP; }
+    } else if (dir === 1) {
+      if (h[i] >= eP) { eP = h[i]; eI = i; }
+      else if (l[i] <= eP * (1 - dev)) { conf.push({ i: eI, p: eP, t: 'H' }); dir = -1; eI = i; eP = l[i]; }
+    } else {
+      if (l[i] <= eP) { eP = l[i]; eI = i; }
+      else if (h[i] >= eP * (1 + dev)) { conf.push({ i: eI, p: eP, t: 'L' }); dir = 1; eI = i; eP = h[i]; }
+    }
+    // EWS
+    const start = conf.length >= 2 ? conf[conf.length - 2].i : conf.length ? conf[0].i : 0;
+    const L = Math.max(8, Math.min(120, i - start + 1));
+    if (i >= 8) {
+      let hh = -Infinity, ll = Infinity;
+      for (let j = Math.max(0, i - L + 1); j <= i; j++) { hh = Math.max(hh, h[j]); ll = Math.min(ll, l[j]); }
+      raw[i] = hh > ll ? (c[i] - ll) / (hh - ll) * 100 : 50;
+      K[i] = avg(raw, i, 3); D[i] = avg(K, i, 3);
+      if (D[i] !== null && D[i - 1] !== null) {
+        if (K[i - 1] <= D[i - 1] && K[i] > D[i] && D[i] < 25) X[i] = 1;
+        else if (K[i - 1] >= D[i - 1] && K[i] < D[i] && D[i] > 75) X[i] = -1;
+      }
+    }
+    // reversal probability of the leg in progress
+    if (i >= 60 && dir !== 0 && conf.length >= 2 && K[i] !== null) {
+      const snap = conf.concat([{ i: eI, p: eP, t: dir === 1 ? 'H' : 'L', tentative: true }]);
+      const best = EW.scenarios(snap).sort((a, b) => b.conf - a.conf)[0];
+      const phase = best ? PHASE_REV[best.key] * best.conf + 0.12 * (1 - best.conf) : 0.12;
+      const legs = []; for (let j = Math.max(1, conf.length - 3); j < conf.length; j++) legs.push(Math.abs(conf[j].p - conf[j - 1].p));
+      const mean = legs.length ? legs.reduce((a, v) => a + v, 0) / legs.length : 0;
+      const mat = mean ? clamp01((Math.abs(eP - conf[conf.length - 1].p) / mean - 0.6) / 0.8) : 0;
+      const ex = dir === 1 ? clamp01((K[i] - 70) / 30) : clamp01((30 - K[i]) / 30);
+      let cr = 0; for (let j = Math.max(0, i - 2); j <= i; j++) if (X[j] === -dir) cr = 1;
+      const ht = i >= 50 ? heatAt(h, l, c, i).composite : 50;
+      const hx = dir === 1 ? clamp01((ht - 70) / 30) : clamp01((30 - ht) / 30);
+      const z = -2.2 + 2.6 * phase + 1.0 * mat + 1.0 * ex + 1.2 * cr + 0.6 * hx;
+      P[i] = Math.max(3, Math.min(97, Math.round(100 / (1 + Math.exp(-z)))));
+      RD[i] = -dir;
+    }
+  }
+  return { P, RD, K, D, X };
+}
+// how often high readings were followed by a real turn on this same chart
+function reversalCheck(H, piv) {
+  const turns = piv.filter(p => !p.tentative).map(p => p.i), n = H.P.length;
+  if (turns.length < 4) return null;
+  const legBars = (turns[turns.length - 1] - turns[0]) / (turns.length - 1);
+  const win = Math.max(2, Math.round(legBars / 3));
+  const turnNear = i => turns.some(t => t >= i - 2 && t <= i + win);
+  let sig = 0, hit = 0, all = 0, base = 0;
+  for (let i = 61; i < n - win; i++) {
+    if (H.P[i] === null) continue;
+    all++; if (turnNear(i)) base++;
+    if (H.P[i] >= 60 && (H.P[i - 1] === null || H.P[i - 1] < 60)) { sig++; if (turnNear(i)) hit++; }
+  }
+  return { sig, rate: sig ? Math.round(hit / sig * 100) : 0, base: all ? Math.round(base / all * 100) : 0, win };
+}
+
+// ===== Forecast: Elliott count + heat index + higher timeframe =====
+const TF_HOURS = { '1h': 1, '4h': 4, '1d': 24 };
+function forecast(x) {
+  const b = x.best;
+  const src = [
+    { k: 'elliott', v: (50 - x.index) / 50, w: 0.5 },
+    { k: 'heat', v: x.heat ? (50 - x.heat.composite) / 50 : 0, w: 0.3 },
+    { k: 'htf', v: x.htf ? (50 - x.htf.index) / 50 : 0, w: 0.2 }
+  ];
+  const score = src.reduce((a, s) => a + s.v * s.w, 0); // -1 (down) .. +1 (up)
+  const dir = score > 0.12 ? 1 : score < -0.12 ? -1 : 0;
+  const agree = src.filter(s => Math.sign(Math.round(s.v * 5)) === dir).length;
+  const F = { dir, score, src, agree, strength: Math.abs(score) >= 0.45 && agree === 3 ? 'strong' : Math.abs(score) >= 0.25 ? 'moderate' : 'weak' };
+  if (!dir) return F;
+  // target: the Elliott target when it points the same way, otherwise one typical swing
+  F.target = b && Math.sign(b.target - x.price) === dir ? b.target : x.price * (1 + dir * x.dev);
+  F.pct = (F.target / x.price - 1) * 100;
+  // time: average leg length of the current count (wave 3 usually lasts longer)
+  let bars = 20;
+  if (b && b.points.length > 1) {
+    const legs = b.points.slice(1).map((p, j) => p.i - b.points[j].i);
+    bars = Math.max(3, Math.round(legs.reduce((a, v) => a + v, 0) / legs.length * (b.key === 'w2' ? 1.4 : 1)));
+  }
+  F.bars = bars; F.barsLo = Math.max(2, Math.round(bars * 0.7)); F.barsHi = Math.round(bars * 1.4);
+  return F;
+}
+const fcTime = F => {
+  const hrs = TF_HOURS[S.tf], a = F.barsLo * hrs, b = F.barsHi * hrs;
+  return b < 48 ? T('fc.hours', { a, b }) : T('fc.days', { a: Math.max(1, Math.round(a / 24)), b: Math.max(1, Math.round(b / 24)) });
+};
+const arrow = v => v > 0.1 ? '↑' : v < -0.1 ? '↓' : '→';
+
+// ===== Recommendations (reasons stored as [key, vars] so they follow the language) =====
+const HTF = { '1h': '4h', '4h': '1d', '1d': '1w' };
+const REC_RANK = { strong: 0, buy: 1, wait: 2, tp: 3, exit: 4 };
+const keyOf = a => a && a.best ? a.best.key : 'none';
+
+function recommend(x) {
+  const b = x.best, R = { code: 'wait', why: [], plan: null };
+  if (!b) { R.why.push(['why.noWave']); return R; }
+  const h = x.htf, hi = h ? h.index : 50;
+  R.why.push(['why.count', { w: ['w.' + b.key], d: [x.trend === 1 ? 'up' : 'down'], c: Math.round(x.conf * 100) }]);
+  const heat = x.heat ? x.heat.composite : 50;
+  if (x.heat) R.why.push(['why.heat', { v: heat, tail: [heat <= 35 ? 'why.heatLow' : heat >= 65 ? 'why.heatHigh' : 'why.heatMid'] }]);
+  if (x.rev && x.rev.p !== null) R.why.push(['why.rev', { p: x.rev.p, d: [x.rev.dir > 0 ? 'rev.dirUp' : 'rev.dirDn'] }]);
+  if (x.ews && x.ews.cross) R.why.push([x.ews.cross.dir > 0 ? 'ews.confUp' : 'ews.confDn']);
+  if (h) R.why.push(['why.htf', { tf: ['htf.' + HTF[S.tf]], w: ['w.' + keyOf(h)], i: hi, tail: [hi <= 45 ? 'why.htfUp' : hi >= 55 ? 'why.htfDown' : 'why.htfFlat'] }]);
+  if (x.index <= 40) {
+    // stop sits at the invalidation level, but never closer than half a swing below price
+    const stop = Math.min(b.key === 'w5' ? b.points[b.points.length - 1].p : b.invalid, x.price * (1 - x.dev / 2));
+    const risk = x.price - stop, reward = b.target - x.price;
+    if (risk <= 0) { R.why.push(['why.broken']); return R; }
+    if (reward <= 0) { R.why.push(['why.reached']); return R; }
+    const rr = reward / risk;
+    R.plan = { entry: x.price, stop, target: b.target, rr };
+    if (heat >= 75) R.why.push(['why.heatAgainst']);
+    if (x.index <= 30 && x.conf >= 0.6 && rr >= 2 && hi <= 50 && heat <= 60) { R.code = 'strong'; R.why.push(['why.rr', { v: rr.toFixed(1) }]); }
+    else if (x.conf >= 0.5 && rr >= 1.5 && hi <= 60 && heat < 75) { R.code = 'buy'; R.why.push(['why.rr', { v: rr.toFixed(1) }]); }
+    else {
+      if (x.conf < 0.5) R.why.push(['why.unclear']);
+      if (rr < 1.5) R.why.push(['why.lowRR', { v: rr.toFixed(1) }]);
+      if (hi > 60) R.why.push(['why.htfAgainst']);
+    }
+  } else if (x.index >= 60) {
+    if (x.conf >= 0.6 && (hi >= 55 || heat >= 75)) { R.code = 'exit'; R.why.push(['why.exit']); }
+    else if (x.conf >= 0.5) { R.code = 'tp'; R.why.push(['why.tp']); }
+    else R.why.push(['why.weakDown']);
+    R.down = b.target;
+  } else R.why.push(['why.noEdge']);
+  return R;
+}
+// translate a [key, vars] pair; vars given as [key] are translated too, "tail" is appended
+const TR = ([k, v = {}]) => {
+  const o = {};
+  for (const n in v) o[n] = Array.isArray(v[n]) ? TR(v[n]) : v[n];
+  return T(k, o) + (o.tail || '');
+};
+
+// ===== Formatting =====
+const fmt = (p, q) => !isFinite(p) ? '–' : q === 'BTC' && p < 0.0001 ? Math.round(p * 1e8) + ' sat' : (+p.toPrecision(p < 1 ? 4 : 6)).toString();
+const fmtVol = v => v >= 1e9 ? (v / 1e9).toFixed(2) + 'B' : v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : v >= 1e3 ? (v / 1e3).toFixed(1) + 'K' : v.toFixed(1);
+const unitOf = () => S.quote === 'ALL' ? 'USDT' : S.quote;
+const colorFor = i => i < 40 ? 'var(--green)' : i > 60 ? 'var(--red)' : 'var(--muted)';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const STABLES = new Set(['USDT', 'USDC', 'FDUSD', 'TUSD', 'USDP', 'DAI', 'BUSD', 'EUR', 'EURI', 'AEUR', 'USD1', 'XUSD', 'BFUSD', 'USDE', 'RLUSD', 'PYUSD', 'GBP', 'TRY', 'BRL']);
+
+// ===== Loading =====
+let loadId = 0;
+async function analyzeCoin(ex, c, tf, sens) {
+  try {
+    const k = await ex.klines(c.sym, tf), a = EW.analyze(k, sens);
+    if (!a) return null;
+    let htf = null;
+    try { htf = EW.analyze(await ex.klines(c.sym, HTF[tf]), sens); } catch (e) {}
+    const row = Object.assign({}, c, a, { k, htf, heat: heatIndex(k) });
+    row.hist = buildHistory(k, a.dev);
+    const n = k.length, Hs = row.hist;
+    let lc = null; for (let j = n - 1; j >= Math.max(0, n - 10); j--) if (Hs.X[j]) { lc = { ago: n - 1 - j, dir: Hs.X[j] }; break; }
+    row.rev = { p: Hs.P[n - 1], dir: Hs.RD[n - 1] };
+    row.ews = { k: Hs.K[n - 1], d: Hs.D[n - 1], cross: lc };
+    row.revCheck = reversalCheck(Hs, a.piv);
+    row.rec = recommend(row);
+    row.fc = forecast(row);
+    return row;
+  } catch (e) { return null; }
+}
+async function load() {
+  if (S.loading) { S.again = true; return; }
+  S.loading = true; S.again = false;
+  const my = ++loadId, ex = EX[S.ex];
+  S.rows = []; S.pairs = []; render(); setStatus(['loading']);
+  try {
+    const m = await ex.markets();
+    const px = {}; m.forEach(x => px[x.coin + '/' + x.quote] = x.price);
+    const usd = q => ['USDT', 'USDC', 'FDUSD'].includes(q) ? 1 : px[q + '/USDT'] || 0;
+    const minVol = S.minVols[S.quote];
+    let coins = m.filter(x => x.price > 0 && !STABLES.has(x.coin)).map(x => Object.assign(x, { volUsd: x.vol * usd(x.quote) }));
+    S.pairs = (S.quote === 'ALL' ? coins : coins.filter(c => c.quote === S.quote)).slice().sort((a, b) => b.volUsd - a.volUsd);
+    if (S.quote === 'ALL') {
+      const best = {}; // one row per coin: the pair with the largest dollar volume
+      coins.forEach(c => { if (!best[c.coin] || c.volUsd > best[c.coin].volUsd) best[c.coin] = c; });
+      coins = Object.values(best).filter(c => c.volUsd >= minVol);
+    } else coins = coins.filter(c => c.quote === S.quote && c.vol >= minVol);
+    coins.sort((a, b) => b.volUsd - a.volUsd);
+    const rows = [], queue = coins.slice(); let done = 0;
+    const tf = S.tf, sens = +S.sens;
+    const worker = async () => {
+      while (queue.length && !S.again) {
+        const c = queue.shift();
+        const row = await analyzeCoin(ex, c, tf, sens);
+        if (row) rows.push(row);
+        done++; setStatus(['counting', { d: done, n: coins.length }]);
+        if (done % 25 === 0) { S.rows = rows.slice(); render(); }
+      }
+    };
+    await Promise.all([...Array(8)].map(worker));
+    if (!S.again) {
+      S.rows = rows;
+      setStatus(['done', { n: rows.length, m: S.quote === 'ALL' ? ['allMarkets'] : ['q.pair', { q: S.quote }], tf: ['tf.' + tf], t: new Date().toLocaleTimeString(S.lang, { hour: '2-digit', minute: '2-digit' }) }]);
+      render();
+    }
+  } catch (e) {
+    setStatus(['noResp', { ex: ex.name }]);
+  }
+  S.loading = false;
+  if (S.again) load();
+}
+const setStatus = st => { S.status = st; document.getElementById('status').textContent = TR(st); };
+
+// ===== UI =====
+const LANGS = { en: 'English', uk: 'Українська', ru: 'Русский' };
+function group(key, label, opts) {
+  return `<div class="group"><span>${label}</span><div class="btns">${opts.map(([v, t]) =>
+    `<button data-g="${key}" data-v="${v}" aria-pressed="${String(S[key]) === v}">${t}</button>`).join('')}</div></div>`;
+}
+function renderUI() {
+  document.documentElement.lang = S.lang;
+  document.title = T('title');
+  const ex = EX[S.ex];
+  document.getElementById('title').textContent = T('title');
+  document.getElementById('sub').textContent = T('sub', { ex: ex.name });
+  ['leg0', 'leg50', 'leg100', 'footer'].forEach(id => document.getElementById(id).textContent = T(id));
+  document.getElementById('controls').innerHTML =
+    group('lang', T('language'), Object.entries(LANGS)) +
+    group('ex', T('exchange'), Object.entries(EX).map(([k, e]) => [k, e.name])) +
+    group('quote', T('market'), ex.quotes.map(q => [q, q === 'ALL' ? T('q.ALL') : T('q.pair', { q })])) +
+    group('tf', T('timeframe'), ['1h', '4h', '1d'].map(v => [v, T('tf.' + v)])) +
+    group('sens', T('sens'), ['2', '3', '4.5'].map(v => [v, T('s.' + v)])) +
+    group('sort', T('sort'), ['best', 'fc', 'rev', 'buy', 'sell', 'conf', 'vol'].map(v => [v, T('sort.' + v)])) +
+    group('show', T('show'), ['all', 'buy', 'sell'].map(v => [v, T('show.' + v)])) +
+    `<div class="group row"><label>${T('minVol', { u: unitOf() })}<input id="minVol" type="number" min="0" step="any" value="${S.minVols[S.quote]}"></label>
+     <button class="act" id="refresh">${T('refresh')}</button><button class="act" id="theme">${T('theme')}</button></div>`;
+  document.getElementById('status').textContent = TR(S.status);
+  document.getElementById('search').placeholder = T('search');
+  document.getElementById('search').setAttribute('aria-label', T('search'));
+}
+
+function render() {
+  const q = (S.q || '').trim().toUpperCase().replace(/[\s/\-_]/g, '');
+  const match = x => x.coin.toUpperCase().startsWith(q) || x.sym.toUpperCase().includes(q);
+  // while searching, every loaded coin is searched, whatever the signal filter says
+  const r = S.rows.filter(x => q ? match(x) : S.show === 'all' || (S.show === 'buy' ? REC_RANK[x.rec.code] < 2 : REC_RANK[x.rec.code] > 2));
+  const by = {
+    best: (a, b) => REC_RANK[a.rec.code] - REC_RANK[b.rec.code] || (b.rec.plan?.rr || 0) - (a.rec.plan?.rr || 0) || a.index - b.index,
+    fc: (a, b) => b.fc.score - a.fc.score,
+    rev: (a, b) => (b.rev?.p ?? -1) - (a.rev?.p ?? -1),
+    buy: (a, b) => a.index - b.index, sell: (a, b) => b.index - a.index, conf: (a, b) => b.conf - a.conf, vol: (a, b) => b.volUsd - a.volUsd
+  }[S.sort];
+  r.sort(by);
+  const list = document.getElementById('list');
+  list.innerHTML = r.map(x => {
+    const b = x.best, q = x.quote, rec = x.rec;
+    const trend = x.trend === 1 ? T('up') : x.trend === -1 ? T('down') : '';
+    const alt = x.alt ? `<div class="alt">${T('alt', { w: T('w.' + x.alt.key), d: T(x.alt.sign === 1 ? 'up' : 'down'), c: Math.round(x.alt.conf * 100) })}</div>` : '';
+    const showPlan = rec.code !== 'wait';
+    return `<div class="card" tabindex="0" data-s="${esc(x.sym)}">
+      <div class="top"><div><span class="sym">${esc(x.coin)}</span><span class="px">${fmt(x.price, q)} ${esc(q)}, ${x.chg > 0 ? '+' : ''}${x.chg.toFixed(1)}%</span></div>
+      <div class="idx" style="color:${colorFor(x.index)}">${x.index}</div></div>
+      <div class="bar"><i style="left:${x.index}%"></i></div>
+      <div class="rec ${rec.code}"><strong>${T('rec.' + rec.code)}</strong>${rec.plan ? `<small>${T('rr', { v: rec.plan.rr.toFixed(1) })}</small>` : ''}</div>
+      ${rec.plan && showPlan ? `<div class="plan"><span>${T('buyNear')} <b>${fmt(rec.plan.entry, q)}</b></span><span>${T('stop')} <b>${fmt(rec.plan.stop, q)}</b></span><span>${T('takeProfit')} <b>${fmt(rec.plan.target, q)}</b></span></div>` : ''}
+      ${rec.down && showPlan ? `<div class="plan"><span>${T('pullbackTo')} <b>${fmt(rec.down, q)}</b></span></div>` : ''}
+      ${fcHTML(x)}
+      ${revHTML(x)}
+      <div><span class="wave">${T('w.' + keyOf(x))}</span>${trend ? `<span class="tag">${trend}</span>` : ''}</div>
+      <div class="meta">${b ? `<span>${T('target')} <b>${fmt(b.target, q)}</b></span><span>${T('invalid')} <b>${fmt(b.invalid, q)}</b></span><span>${T('conf')} <b>${Math.round(x.conf * 100)}%</b></span>` : ''}<span>${T('volume')} <b>${fmtVol(x.vol)} ${esc(q)}</b></span></div>
+      ${window.CH ? CH.links({ coin: x.coin, q: x.quote, ex: S.ex, from: 'elliott' }) : ''}
+      ${S.open.has(x.sym) ? `${fcSources(x)}${revCheckHTML(x)}<ul class="why">${rec.why.map(w => `<li>${TR(w)}</li>`).join('')}</ul><canvas></canvas>${alt}<button class="act shot" data-shot="${esc(x.sym)}">${T('shot')}</button>` : ''}
+    </div>`;
+  }).join('') + (q ? searchExtra(q, r) : '') || (S.loading && !S.rows.length ? '' : `<p>${S.rows.length ? T('noSignal') : T('noCoins')}</p>`);
+  list.querySelectorAll('canvas').forEach(cv => draw(cv, S.rows.find(x => x.sym === cv.parentNode.dataset.s)));
+}
+const cssColor = () => { const css = getComputedStyle(document.documentElement); return n => css.getPropertyValue(n).trim(); };
+function chartFrame(x) {
+  const k = x.k, from = Math.max(0, x.best ? Math.min(x.best.points[0].i - 10, k.length - 120) : k.length - 150);
+  const future = x.fc && x.fc.dir ? x.fc.barsHi + 2 : 0;
+  return { from, slots: k.length - from + future };
+}
+function draw(cv, x) {
+  const dpr = devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+  cv.width = W * dpr; cv.height = H * dpr;
+  const g = cv.getContext('2d'); g.scale(dpr, dpr);
+  paintAll(g, x, W, H);
+}
+function paintAll(g, x, W, H) {
+  const gap = 10, priceH = Math.round(H * 0.56), ph = Math.floor((H - priceH - 2 * gap) / 2);
+  paintChart(g, x, W, priceH);
+  if (!x.hist) return;
+  paintPane(g, x, W, priceH + gap, ph, 'rev');
+  paintPane(g, x, W, priceH + 2 * gap + ph, ph, 'ews');
+}
+function paneTitle(g, C, txt, y0) {
+  const w = g.measureText(txt).width;
+  g.fillStyle = C('--surface'); g.globalAlpha = 0.85; g.fillRect(2, y0 + 2, w + 6, 15); g.globalAlpha = 1;
+  g.fillStyle = C('--muted'); g.fillText(txt, 4, y0 + 13);
+}
+function paintPane(g, x, W, y0, h, kind) {
+  const C = cssColor(), { from, slots } = chartFrame(x), padR = 64, n = x.k.length, Hs = x.hist;
+  const X = i => (i - from + 0.5) * (W - padR) / slots, Y = v => y0 + 3 + (100 - v) / 100 * (h - 6);
+  const bw = Math.max(1, (W - padR) / slots * 0.7);
+  g.save();
+  g.strokeStyle = C('--line'); g.lineWidth = 1; g.strokeRect(0.5, y0 + 0.5, W - padR - 1, h - 1);
+  const level = v => { g.strokeStyle = C('--muted'); g.globalAlpha = 0.5; g.setLineDash([3, 3]); g.beginPath(); g.moveTo(0, Y(v)); g.lineTo(W - padR, Y(v)); g.stroke(); g.setLineDash([]); g.globalAlpha = 1; };
+  g.font = '11px Sora, system-ui, sans-serif'; g.textAlign = 'left';
+  if (kind === 'rev') {
+    level(60);
+    for (let i = from; i < n; i++) {
+      const p = Hs.P[i]; if (p === null) continue;
+      g.fillStyle = Hs.RD[i] > 0 ? C('--green') : C('--red'); g.globalAlpha = p >= 60 ? 0.85 : 0.22;
+      g.fillRect(X(i) - bw / 2, Y(p), bw, Y(0) - Y(p));
+    }
+    g.globalAlpha = 1;
+    paneTitle(g, C, T('pane.rev'), y0);
+    const p = Hs.P[n - 1];
+    if (p !== null) { g.fillStyle = p >= 60 ? (Hs.RD[n - 1] > 0 ? C('--green') : C('--red')) : C('--text'); g.fillText(`${p}% ${Hs.RD[n - 1] > 0 ? '↑' : '↓'}`, W - padR + 4, Y(p) + 4); }
+    g.fillStyle = C('--muted'); g.fillText('60', W - padR + 4, Y(60) + 4);
+  } else {
+    g.fillStyle = C('--green'); g.globalAlpha = 0.07; g.fillRect(0, Y(25), W - padR, Y(0) - Y(25));
+    g.fillStyle = C('--red'); g.fillRect(0, Y(100), W - padR, Y(75) - Y(100)); g.globalAlpha = 1;
+    level(25); level(75);
+    const line = (arr, col, wdt) => {
+      g.strokeStyle = col; g.lineWidth = wdt; g.beginPath(); let on = false;
+      for (let i = from; i < n; i++) { if (arr[i] === null) { on = false; continue; } on ? g.lineTo(X(i), Y(arr[i])) : g.moveTo(X(i), Y(arr[i])); on = true; }
+      g.stroke(); g.lineWidth = 1;
+    };
+    line(Hs.D, C('--wave'), 1.5); line(Hs.K, C('--text'), 1.2);
+    for (let i = from; i < n; i++) if (Hs.X[i]) { // cross markers
+      const up = Hs.X[i] > 0, cx = X(i), cy = Math.max(y0 + 7, Math.min(y0 + h - 7, up ? Y(Hs.K[i]) + 9 : Y(Hs.K[i]) - 9));
+      g.fillStyle = up ? C('--green') : C('--red'); g.beginPath();
+      if (up) { g.moveTo(cx, cy - 5); g.lineTo(cx - 5, cy + 4); g.lineTo(cx + 5, cy + 4); }
+      else { g.moveTo(cx, cy + 5); g.lineTo(cx - 5, cy - 4); g.lineTo(cx + 5, cy - 4); }
+      g.fill();
+    }
+    paneTitle(g, C, T('pane.ews'), y0);
+    const kk = Hs.K[n - 1], dd = Hs.D[n - 1];
+    if (kk !== null) { g.fillStyle = C('--text'); g.fillText(`K ${Math.round(kk)}`, W - padR + 4, y0 + 13); }
+    if (dd !== null) { g.fillStyle = C('--wave'); g.fillText(`D ${Math.round(dd)}`, W - padR + 4, y0 + 27); }
+  }
+  g.restore();
+}
+function paintChart(g, x, W, H) {
+  const C = cssColor();
+  let labels = [];
+  const k = x.k, { from } = chartFrame(x);
+  const bars = k.slice(from), padR = 64, padT = 14, padB = 14;
+  let lo = Infinity, hi = -Infinity;
+  bars.forEach(b => { lo = Math.min(lo, +b[3]); hi = Math.max(hi, +b[2]); });
+  if (x.best) [x.best.target, x.best.invalid, x.rec.plan ? x.rec.plan.stop : x.best.invalid].forEach(v => { lo = Math.min(lo, v); hi = Math.max(hi, v); });
+  const F = x.fc && x.fc.dir ? x.fc : null, future = F ? F.barsHi + 2 : 0;
+  if (F) { lo = Math.min(lo, F.target); hi = Math.max(hi, F.target); }
+  const slots = bars.length + future;
+  const X = i => (i - from + 0.5) * (W - padR) / slots, Y = p => padT + (hi - p) / (hi - lo) * (H - padT - padB);
+  const bw = Math.max(1, (W - padR) / slots * 0.6);
+  if (F) { // forecast cone and expected path
+    const last = k.length - 1, col = F.dir > 0 ? C('--green') : C('--red');
+    g.fillStyle = col; g.globalAlpha = 0.12; g.beginPath();
+    g.moveTo(X(last), Y(x.price)); g.lineTo(X(last + F.barsLo), Y(F.target)); g.lineTo(X(last + F.barsHi), Y(F.target)); g.closePath(); g.fill();
+    g.globalAlpha = 1; g.strokeStyle = col; g.lineWidth = 2; g.setLineDash([6, 4]);
+    g.beginPath(); g.moveTo(X(last), Y(x.price)); g.lineTo(X(last + F.bars), Y(F.target)); g.stroke(); g.setLineDash([]); g.lineWidth = 1;
+    g.beginPath(); g.arc(X(last + F.bars), Y(F.target), 4, 0, 7); g.fill();
+    g.strokeStyle = C('--line'); g.beginPath(); g.moveTo(X(last) + 4, padT); g.lineTo(X(last) + 4, H - padB); g.stroke();
+  }
+  bars.forEach((b, j) => {
+    const o = +b[1], c = +b[4], up = c >= o, cx = X(from + j);
+    g.strokeStyle = g.fillStyle = up ? C('--green') : C('--red'); g.globalAlpha = 0.55;
+    g.beginPath(); g.moveTo(cx, Y(+b[2])); g.lineTo(cx, Y(+b[3])); g.stroke();
+    g.fillRect(cx - bw / 2, Y(Math.max(o, c)), bw, Math.max(1, Math.abs(Y(o) - Y(c))));
+  });
+  g.globalAlpha = 1;
+  // zigzag
+  g.strokeStyle = C('--muted'); g.lineWidth = 1; g.setLineDash([2, 3]); g.beginPath();
+  x.piv.filter(p => p.i >= from).forEach((p, j) => j ? g.lineTo(X(p.i), Y(p.p)) : g.moveTo(X(p.i), Y(p.p)));
+  g.stroke(); g.setLineDash([]);
+  if (x.best) {
+    const pts = x.best.points;
+    g.strokeStyle = C('--wave'); g.lineWidth = 2; g.beginPath();
+    pts.forEach((p, j) => j ? g.lineTo(X(p.i), Y(p.p)) : g.moveTo(X(p.i), Y(p.p))); g.stroke();
+    g.font = '600 12px Sora, system-ui, sans-serif'; g.textAlign = 'center';
+    pts.forEach((p, j) => {
+      const isHigh = j < pts.length - 1 ? p.p > pts[j + 1].p : p.p > pts[j - 1].p;
+      g.fillStyle = C('--wave'); g.fillText(p.lab, X(p.i), Y(p.p) + (isHigh ? -6 : 16));
+    });
+    const lines = [[x.best.target, x.index <= 50 ? C('--green') : C('--red'), T('c.target')], [x.best.invalid, C('--muted'), T('c.invalid')]];
+    if (x.rec.plan && Math.abs(x.rec.plan.stop - x.best.invalid) / x.price > 0.002) lines.push([x.rec.plan.stop, C('--red'), T('c.stop')]);
+    lines.filter(l => isFinite(l[0])).forEach(([v, col]) => {
+      g.strokeStyle = col; g.setLineDash([5, 4]); g.beginPath(); g.moveTo(0, Y(v)); g.lineTo(W - padR, Y(v)); g.stroke(); g.setLineDash([]);
+    });
+    labels = lines.filter(l => isFinite(l[0])).map(([v, col, txt]) => ({ y: Y(v), col, txt }));
+  }
+  // right-side labels: line names plus top/bottom price, pushed apart so they never overlap
+  labels.push({ y: padT, col: C('--muted'), txt: fmt(hi, x.quote), axis: 1 }, { y: H - padB, col: C('--muted'), txt: fmt(lo, x.quote), axis: 1 });
+  labels.sort((a, b) => a.y - b.y);
+  const kept = [];
+  labels.forEach(l => { const prev = kept[kept.length - 1]; if (prev && l.y - prev.y < 13) { if (l.axis) return; if (prev.axis) kept.pop(); else l.y = prev.y + 13; } kept.push(l); });
+  g.textAlign = 'left'; g.font = '11px Sora, system-ui, sans-serif';
+  kept.forEach(l => { g.fillStyle = l.col; g.fillText(l.txt, W - padR + 4, Math.min(H - 2, l.y + 4)); });
+}
+
+function revText(x) {
+  if (!x.rev || x.rev.p === null) return '';
+  const e = x.ews && x.ews.cross ? T(x.ews.cross.dir > 0 ? 'ews.bull' : 'ews.bear', { n: x.ews.cross.ago }) : T('ews.none');
+  return { p: `${x.rev.p}% ${x.rev.dir > 0 ? '↑' : '↓'}`, d: T(x.rev.dir > 0 ? 'rev.dirUp' : 'rev.dirDn'), e };
+}
+function revHTML(x) {
+  const r = revText(x); if (!r) return '';
+  const col = x.rev.p >= 60 ? (x.rev.dir > 0 ? 'var(--green)' : 'var(--red)') : 'var(--text)';
+  return `<div class="revl">${T('rev.title')} <b style="color:${col}">${r.p}</b> <span class="tag">${T('ews.short')}: ${r.e}</span></div>`;
+}
+function revCheckHTML(x) {
+  const c = x.revCheck;
+  return `<p class="hist">${c && c.sig >= 3 ? T('rev.hist', { h: c.win, r: c.rate, n: c.sig, b: c.base }) : T('rev.histNone')}</p>`;
+}
+function fcText(x) {
+  const F = x.fc, q = x.quote;
+  if (!F.dir) return T('fc.flat');
+  return T(F.dir > 0 ? 'fc.up' : 'fc.down', { t: fmt(F.target, q), p: (F.pct > 0 ? '+' : '') + F.pct.toFixed(1), time: fcTime(F) });
+}
+function fcHTML(x) {
+  const F = x.fc;
+  return `<div class="fc ${F.dir > 0 ? 'up' : F.dir < 0 ? 'dn' : ''}"><span class="fcl">${T('fc.title')}</span> <b>${fcText(x)}</b>
+    <span class="tag">${T('fc.' + F.strength)}</span></div>`;
+}
+function fcSources(x) {
+  const F = x.fc, h = x.heat;
+  const rows = [
+    [T('src.elliott'), `${T('w.' + keyOf(x))}, ${x.index}`, F.src[0].v],
+    [T('src.heat'), h ? `${h.composite} (${T('src.hs')} ${h.short}, ${T('src.hm')} ${h.mid}, ${T('src.hl')} ${h.long})` : '–', F.src[1].v],
+    [T('src.htf', { tf: T('htf.' + HTF[S.tf]) }), x.htf ? `${T('w.' + keyOf(x.htf))}, ${x.htf.index}` : '–', F.src[2].v]
+  ];
+  return `<div class="src">${rows.map(([n, v, d]) => `<div><span class="ar ${d > 0.1 ? 'up' : d < -0.1 ? 'dn' : ''}">${arrow(d)}</span><span>${n}</span><b>${v}</b></div>`).join('')}
+    <p>${T('fc.agree', { n: F.agree })}</p></div>`;
+}
+
+// coins that exist on the exchange but were skipped (low volume) can be analysed on demand
+function searchExtra(q, shown) {
+  const have = new Set(S.rows.map(x => x.sym));
+  const extra = (S.pairs || []).filter(x => !have.has(x.sym) && (x.coin.toUpperCase().startsWith(q) || x.sym.toUpperCase().includes(q))).slice(0, 6);
+  if (!extra.length) return shown.length || S.loading ? '' : `<p>${T('notListed', { q: esc(S.q.trim()), ex: EX[S.ex].name })}</p>`;
+  return `<div class="extra"><p>${shown.length ? T('moreFound') : T('lowVol', { q: esc(S.q.trim()) })}</p><div class="btns">${extra.map(x =>
+    `<button data-an="${esc(x.sym)}">${T('analyze', { c: esc(x.coin), p: esc(x.quote), v: fmtVol(x.vol) })}</button>`).join('')}</div></div>`;
+}
+async function analyzeOnDemand(sym, btn) {
+  const c = (S.pairs || []).find(x => x.sym === sym); if (!c) return;
+  btn.disabled = true; btn.textContent = T('analyzing');
+  const row = await analyzeCoin(EX[S.ex], c, S.tf, +S.sens);
+  if (!row) { btn.textContent = T('noData'); return; }
+  if (!S.rows.some(x => x.sym === sym)) { S.rows.push(row); S.open.add(sym); }
+  render();
+}
+
+// ===== Watermark on screenshots (change here if the channel changes) =====
+const BRAND = { name: 'CRYPTO HUNTERS', link: 't.me/Cr_hunters' };
+
+// ===== Card screenshot (drawn on a canvas, so the wave chart is always included) =====
+function wrap(g, text, maxW) {
+  const words = text.split(' '), lines = []; let line = '';
+  for (const w of words) { const t = line ? line + ' ' + w : w; if (g.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; }
+  if (line) lines.push(line);
+  return lines;
+}
+function cardImage(x) {
+  const C = cssColor(), W = 540, P = 24, scale = 2, F = 'Sora, system-ui, -apple-system, sans-serif';
+  const q = x.quote, rec = x.rec, b = x.best;
+  const meas = document.createElement('canvas').getContext('2d');
+  meas.font = `13px ${F}`;
+  const why = rec.why.map(w => wrap(meas, '• ' + TR(w), W - 2 * P)).flat();
+  const planLine = rec.plan && rec.code !== 'wait'
+    ? `${T('buyNear')} ${fmt(rec.plan.entry, q)}   ${T('stop')} ${fmt(rec.plan.stop, q)}   ${T('takeProfit')} ${fmt(rec.plan.target, q)}`
+    : rec.down && rec.code !== 'wait' ? `${T('pullbackTo')} ${fmt(rec.down, q)}` : '';
+  const planLines = planLine ? wrap(meas, planLine, W - 2 * P) : [];
+  meas.font = `600 14px ${F}`;
+  const fcLines = wrap(meas, `${T('fc.title')} ${fcText(x)} (${T('fc.' + x.fc.strength)})`, W - 2 * P);
+  meas.font = `13px ${F}`;
+  const srcLines = [
+    `${arrow(x.fc.src[0].v)} ${T('src.elliott')}: ${x.index}`,
+    `${arrow(x.fc.src[1].v)} ${T('src.heat')}: ${x.heat ? x.heat.composite : '–'}`,
+    `${arrow(x.fc.src[2].v)} ${T('src.htf', { tf: T('htf.' + HTF[S.tf]) })}: ${x.htf ? x.htf.index : '–'}`
+  ].join('    ');
+  const rv = revText(x);
+  const srcWrapped = wrap(meas, srcLines, W - 2 * P).concat(rv ? wrap(meas, `${T('rev.title')} ${rv.p}    ${T('ews.short')}: ${rv.e}`, W - 2 * P) : []);
+  const chartH = 470;
+  const H = P + 40 + 22 + 50 + planLines.length * 20 + (planLines.length ? 6 : 0) + fcLines.length * 20 + 8 + srcWrapped.length * 19 + 8 + 28 + 22 + why.length * 19 + 12 + chartH + 44 + 52;
+  const cv = document.createElement('canvas'); cv.width = W * scale; cv.height = H * scale;
+  const g = cv.getContext('2d'); g.scale(scale, scale);
+  g.fillStyle = C('--bg'); g.fillRect(0, 0, W, H);
+  g.fillStyle = C('--surface'); g.beginPath(); g.roundRect ? g.roundRect(8, 8, W - 16, H - 16, 16) : g.rect(8, 8, W - 16, H - 16); g.fill();
+  let y = P + 22;
+  // header: coin, price, index
+  g.fillStyle = C('--text'); g.font = `700 26px ${F}`; g.textAlign = 'left'; g.fillText(x.coin, P, y);
+  const cw = g.measureText(x.coin).width;
+  g.fillStyle = C('--muted'); g.font = `14px ${F}`;
+  g.fillText(`${fmt(x.price, q)} ${q}, ${x.chg > 0 ? '+' : ''}${x.chg.toFixed(1)}%`, P + cw + 10, y);
+  g.textAlign = 'right'; g.font = `700 34px ${F}`; g.fillStyle = x.index < 40 ? C('--green') : x.index > 60 ? C('--red') : C('--muted');
+  g.fillText(String(x.index), W - P, y + 4);
+  y += 20;
+  // index bar
+  const grad = g.createLinearGradient(P, 0, W - P, 0);
+  grad.addColorStop(0, C('--green')); grad.addColorStop(0.5, '#9a9a9a'); grad.addColorStop(1, C('--red'));
+  g.fillStyle = grad; g.fillRect(P, y, W - 2 * P, 6);
+  g.fillStyle = C('--text'); g.fillRect(P + (W - 2 * P) * x.index / 100 - 2, y - 3, 4, 12);
+  y += 22;
+  // recommendation pill
+  const pillCol = { strong: C('--green'), buy: C('--green'), tp: C('--wave'), exit: C('--red') }[rec.code];
+  g.fillStyle = rec.code === 'strong' || rec.code === 'exit' ? pillCol : C('--chip');
+  g.fillRect(P, y, W - 2 * P, 38);
+  if (pillCol && rec.code !== 'strong' && rec.code !== 'exit') { g.fillStyle = pillCol; g.fillRect(P, y, 4, 38); }
+  const onPill = rec.code === 'strong' || rec.code === 'exit' ? '#fff' : C('--text');
+  g.fillStyle = onPill; g.textAlign = 'left'; g.font = `700 16px ${F}`; g.fillText(T('rec.' + rec.code), P + 14, y + 25);
+  if (rec.plan) { g.textAlign = 'right'; g.font = `13px ${F}`; g.fillText(T('rr', { v: rec.plan.rr.toFixed(1) }), W - P - 12, y + 24); }
+  y += 50;
+  g.textAlign = 'left'; g.font = `600 13px ${F}`; g.fillStyle = C('--text');
+  planLines.forEach(l => { g.fillText(l, P, y + 4); y += 20; });
+  if (planLines.length) y += 6;
+  g.font = `600 14px ${F}`; g.fillStyle = x.fc.dir > 0 ? C('--green') : x.fc.dir < 0 ? C('--red') : C('--muted');
+  fcLines.forEach(l => { g.fillText(l, P, y + 4); y += 20; });
+  y += 4; g.font = `13px ${F}`; g.fillStyle = C('--muted');
+  srcWrapped.forEach(l => { g.fillText(l, P, y + 4); y += 19; });
+  y += 10; g.fillStyle = C('--text');
+  // wave name + trend
+  g.font = `600 16px ${F}`; g.fillStyle = C('--wave');
+  const trend = x.trend === 1 ? T('up') : x.trend === -1 ? T('down') : '';
+  g.fillText(T('w.' + keyOf(x)) + (trend ? '  ·  ' + trend : ''), P, y + 6);
+  y += 28;
+  g.font = `13px ${F}`; g.fillStyle = C('--muted');
+  g.fillText(b ? `${T('target')} ${fmt(b.target, q)}   ${T('invalid')} ${fmt(b.invalid, q)}   ${T('conf')} ${Math.round(x.conf * 100)}%` : `${T('volume')} ${fmtVol(x.vol)} ${q}`, P, y);
+  y += 22;
+  why.forEach(l => { g.fillText(l, P, y); y += 19; });
+  y += 4;
+  // chart with waves
+  g.save(); g.translate(P, y); paintAll(g, x, W - 2 * P, chartH); g.restore();
+  y += chartH + 26;
+  // footer
+  g.font = `12px ${F}`; g.fillStyle = C('--muted'); g.textAlign = 'left';
+  g.fillText(`${T('title')}  ·  ${EX[S.ex].name}  ·  ${T('tf.' + S.tf)}`, P, y);
+  g.textAlign = 'right'; g.fillText(new Date().toLocaleString(S.lang, { dateStyle: 'medium', timeStyle: 'short' }), W - P, y);
+  // brand bar at the bottom
+  y += 16;
+  g.fillStyle = C('--chip'); g.fillRect(P, y, W - 2 * P, 34);
+  g.fillStyle = C('--wave'); g.fillRect(P, y, 4, 34);
+  g.textAlign = 'left'; g.font = `700 14px ${F}`; g.fillStyle = C('--text'); g.fillText(BRAND.name, P + 14, y + 22);
+  g.textAlign = 'right'; g.font = `600 14px ${F}`; g.fillStyle = C('--wave'); g.fillText(BRAND.link, W - P - 12, y + 22);
+  // faint diagonal watermark across the whole card, so a crop does not remove it
+  g.save();
+  g.globalAlpha = 0.07; g.fillStyle = C('--text'); g.font = `700 22px ${F}`; g.textAlign = 'center';
+  g.translate(W / 2, H / 2); g.rotate(-Math.PI / 7);
+  const step = 170, span = Math.hypot(W, H);
+  for (let yy = -span / 2; yy < span / 2; yy += step / 1.6)
+    for (let xx = -span / 2, r = 0; xx < span / 2; xx += step * 1.6, r++)
+      g.fillText(BRAND.link, xx + ((yy / (step / 1.6)) % 2 ? step * 0.8 : 0), yy);
+  g.restore();
+  return cv;
+}
+async function screenshot(x) {
+  if (!x) return;
+  if (document.fonts && document.fonts.ready) await document.fonts.ready;
+  const cv = cardImage(x);
+  const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+  const name = `${x.coin}-${x.quote}-${S.tf}-elliott.png`;
+  const file = new File([blob], name, { type: 'image/png' });
+  const url = URL.createObjectURL(blob);
+  const canShare = navigator.canShare && navigator.canShare({ files: [file] });
+  const m = document.createElement('div');
+  m.className = 'modal';
+  m.innerHTML = `<div class="sheet"><img src="${url}" alt="${esc(x.coin)}"><p>${T('shotHint')}</p>
+    <div class="btns">${canShare ? `<button data-a="share">${T('share')}</button>` : ''}<a class="act" href="${url}" download="${esc(name)}">${T('download')}</a><button data-a="close">${T('close')}</button></div></div>`;
+  const close = () => { m.remove(); URL.revokeObjectURL(url); };
+  m.addEventListener('click', async e => {
+    const a = e.target.closest('[data-a]')?.dataset.a;
+    if (e.target === m || a === 'close') close();
+    if (a === 'share') { try { await navigator.share({ files: [file], title: `${x.coin} ${T('title')}` }); } catch (err) {} }
+  });
+  document.body.appendChild(m);
+}
+
+// ===== Events =====
+const RELOAD = new Set(['ex', 'quote', 'tf', 'sens']);
+const controls = document.getElementById('controls');
+controls.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'refresh') return load();
+  if (b.id === 'theme') {
+    const dark = getComputedStyle(document.documentElement).colorScheme === 'dark';
+    S.theme = dark ? 'light' : 'dark'; document.documentElement.dataset.theme = S.theme; save(); return render();
+  }
+  const g = b.dataset.g; if (!g) return;
+  S[g] = b.dataset.v;
+  if (g === 'ex') { S.open.clear(); if (!EX[S.ex].quotes.includes(S.quote)) S.quote = 'ALL'; }
+  save(); renderUI();
+  RELOAD.has(g) ? load() : render();
+});
+controls.addEventListener('change', e => {
+  if (e.target.id !== 'minVol') return;
+  S.minVols[S.quote] = Math.max(0, +e.target.value || 0); save(); load();
+});
+const search = document.getElementById('search');
+search.addEventListener('input', () => { S.q = search.value; render(); });
+search.addEventListener('keydown', e => { if (e.key === 'Escape') { search.value = ''; S.q = ''; render(); } });
+const list = document.getElementById('list');
+list.addEventListener('click', e => {
+  if (e.target.closest('.ch-links')) return;
+  const an = e.target.closest('[data-an]');
+  if (an) return analyzeOnDemand(an.dataset.an, an);
+  const sb = e.target.closest('[data-shot]');
+  if (sb) { e.stopPropagation(); return screenshot(S.rows.find(x => x.sym === sb.dataset.shot)); }
+  const c = e.target.closest('.card'); if (!c) return;
+  const s = c.dataset.s; S.open.has(s) ? S.open.delete(s) : S.open.add(s); render();
+});
+list.addEventListener('keydown', e => { if (e.key === 'Enter') e.target.closest('.card')?.click(); });
+addEventListener('resize', () => S.open.size && render());
+const DL = window.CH ? CH.param() : {};
+if (DL.coin) {
+  if (DL.ex && EX[DL.ex]) S.ex = DL.ex;
+  S.quote = DL.q && EX[S.ex].quotes.includes(DL.q) ? DL.q : 'ALL';
+  S.q = DL.coin; search.value = DL.coin;
+}
+renderUI();
+load();
+setInterval(() => { if (!S.loading) load(); }, 5 * 60 * 1000);
+if (DL.coin) {
+  const want = x => x.coin.toUpperCase() === DL.coin && (!DL.q || x.quote === DL.q);
+  let tries = 0;
+  const tick = setInterval(() => {
+    if (++tries > 240) return clearInterval(tick);
+    if (S.loading || !S.rows.length && !(S.pairs || []).length) return;
+    clearInterval(tick);
+    const row = S.rows.find(want) || S.rows.find(x => x.coin.toUpperCase() === DL.coin);
+    if (row) { S.open.add(row.sym); render(); return; }
+    const p = (S.pairs || []).find(want) || (S.pairs || []).find(x => x.coin.toUpperCase() === DL.coin);
+    if (p) analyzeOnDemand(p.sym, document.createElement('button'));
+  }, 250);
+}
+</script>
+</body>
+</html>

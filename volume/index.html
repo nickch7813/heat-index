@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16181d">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/ch.css">
+<script src="../assets/ch.js" data-tool="volume"></script>
+<title>Volume Spikes · Binance, Bybit, OKX</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#EEF2F6; --surface:#FFFFFF; --line:#D5DDE6; --text:#13202C; --muted:#5D6F80;
+  --spike:#C98300; --spike-soft:rgba(201,131,0,.14); --up:#0E9A74; --down:#D2465A;
+  --bar:#B7C4D2; --chip:#E3E9F0; --accent:#1F5F8B;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#142130; --surface:#1C2C3D; --line:#2C4054; --text:#E4ECF3; --muted:#8FA3B6;
+    --spike:#F2B544; --spike-soft:rgba(242,181,68,.16); --up:#3FCB9F; --down:#F07384;
+    --bar:#3C5268; --chip:#24374A; --accent:#7DB8E0; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#142130; --surface:#1C2C3D; --line:#2C4054; --text:#E4ECF3; --muted:#8FA3B6;
+  --spike:#F2B544; --spike-soft:rgba(242,181,68,.16); --up:#3FCB9F; --down:#F07384;
+  --bar:#3C5268; --chip:#24374A; --accent:#7DB8E0; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 "Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:20px 16px 48px}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+
+header{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+h1{font:700 clamp(34px,6vw,56px)/.95 "Barlow Condensed","Arial Narrow",sans-serif;margin:0;letter-spacing:-.01em}
+h1 .bars{display:inline-flex;gap:3px;align-items:flex-end;height:.72em;margin-left:.2em}
+h1 .bars i{display:block;width:.12em;background:var(--bar);border-radius:1px}
+h1 .bars i.hot{background:var(--spike)}
+h3{font:600 20px/1.2 "Barlow Condensed",sans-serif;margin:22px 2px 8px}
+.sub{color:var(--muted);margin:8px 0 0;max-width:62ch}
+.topctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;background:var(--chip);border-radius:10px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:8px;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 10px}
+.tabs{margin:0 0 14px}
+.tabs .seg button{font-size:16px;padding:8px 18px}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px}
+.row{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:flex-end}
+.field{display:grid;gap:5px}
+.field > span{font-size:13px;color:var(--muted)}
+.field input[type=number],.field input[type=text],.field input[type=password],.field select{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:7px 10px;width:150px}
+.field.wide input{width:min(340px,80vw)}
+.check{display:flex;gap:8px;align-items:center;font-size:14px;padding-bottom:6px}
+.check input{width:18px;height:18px;accent-color:var(--spike)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.primary{border:0;background:var(--spike);color:#1A1204;font-weight:600;padding:10px 20px;border-radius:10px;font-size:16px;text-decoration:none;display:inline-block}
+.secondary{border:1px solid var(--line);background:var(--bg);padding:10px 16px;border-radius:10px;font-weight:500;text-decoration:none;color:inherit;display:inline-block}
+.secondary:disabled,.primary:disabled{opacity:.5;cursor:not-allowed}
+details{border-top:1px solid var(--line);padding-top:12px}
+summary{cursor:pointer;font-weight:600;color:var(--text)}
+details > .inner{display:grid;gap:14px;margin-top:12px}
+.note{font-size:13px;color:var(--muted);margin:0;max-width:70ch}
+
+.status{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;margin:16px 2px 10px;color:var(--muted);font-size:14px}
+.progress{flex:1 1 200px;height:4px;background:var(--chip);border-radius:4px;overflow:hidden;max-width:320px}
+.progress i{display:block;height:100%;width:0;background:var(--spike);transition:width .2s}
+.errors{color:var(--down);font-size:14px;margin:0 2px 10px}
+.errors:empty{display:none}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:0 2px 10px;font-size:14px;color:var(--muted)}
+.toolbar input,.toolbar select{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:7px 10px}
+.toolbar input{width:180px}
+.sortwrap{display:none;gap:8px;align-items:center}
+
+#shotArea{background:var(--bg)}
+.shotcap{display:none;padding:12px 4px 10px;font:600 20px/1.2 "Barlow Condensed",sans-serif}
+.shotcap small{display:block;font:400 13px "Barlow",sans-serif;color:var(--muted)}
+.capturing .shotcap{display:block}
+.capturing .nocap{display:none!important}
+
+.tablewrap{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:10px 12px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+tbody tr:last-child td{border-bottom:0}
+th{font-weight:500;font-size:13px;color:var(--muted);user-select:none}
+th button{border:0;background:none;padding:0;color:inherit;font:inherit}
+th[aria-sort] button{color:var(--text)}
+th .arr{display:inline-block;width:1em}
+#resTable tbody tr{cursor:pointer}
+#resTable tbody tr:hover td{background:var(--spike-soft)}
+.sym{font-weight:600;font-size:16px}
+.sym small{font-weight:400;color:var(--muted);font-size:13px}
+.badge{display:inline-block;font-size:12px;padding:1px 7px;border-radius:6px;background:var(--chip);color:var(--muted);margin-left:6px;vertical-align:2px;font-weight:500}
+.badge.new{background:var(--spike);color:#1A1204;font-weight:600}
+.badge.bu{background:rgba(14,154,116,.16);color:var(--up)}
+.badge.bd{background:rgba(210,70,90,.16);color:var(--down)}
+.star{border:0;background:none;padding:0 6px 0 0;font-size:17px;color:var(--muted);line-height:1;vertical-align:-1px}
+.star[aria-pressed="true"]{color:var(--spike)}
+.ratio{display:flex;gap:10px;align-items:center;justify-content:flex-end}
+.ratio b{font:700 22px/1 "Barlow Condensed",sans-serif;color:var(--spike);min-width:3.2em;text-align:right}
+.ratio canvas{width:96px;height:28px;display:block}
+.chips{display:inline-flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.chip{font-size:12px;padding:1px 6px;border-radius:6px;background:var(--chip);color:var(--muted)}
+.chip.hot{background:var(--spike-soft);color:var(--text)}
+.chip.cur{box-shadow:inset 0 0 0 1px var(--spike)}
+.up{color:var(--up)} .down{color:var(--down)}
+.muted{color:var(--muted)}
+.tag{font-size:12px;color:var(--muted)}
+.shotbtn{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:4px 8px;font-size:15px;line-height:1}
+.empty{padding:40px 16px;text-align:center;color:var(--muted)}
+
+@media (max-width:820px){
+  .sortwrap{display:flex}
+  #shotArea .tablewrap{background:transparent;border:0;overflow:visible}
+  #resTable thead{display:none}
+  #resTable,#resTable tbody{display:block}
+  #resTable tbody tr{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+  #resTable tbody tr:hover td{background:none}
+  #resTable td{border:0;padding:0;text-align:left;white-space:normal;display:block}
+  #resTable td[data-l]::before{content:attr(data-l);display:block;font-size:12px;color:var(--muted)}
+  #resTable td.c-sym{align-self:center}
+  #resTable td.c-mtf{grid-column:1 / -1}
+  #resTable td.c-mtf .chips{justify-content:flex-start}
+  #resTable td.c-act{text-align:right;align-self:end}
+}
+
+dialog{border:0;padding:0;background:transparent;max-width:min(680px,94vw);width:100%;color:var(--text)}
+dialog::backdrop{background:rgba(8,14,20,.6)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.cardhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.cardhead h2{margin:0;font:700 32px/1 "Barlow Condensed",sans-serif}
+.cardhead .big{font:700 40px/1 "Barlow Condensed",sans-serif;color:var(--spike);text-align:right}
+.cardhead .big small{display:block;font:400 13px "Barlow",sans-serif;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px 16px;margin:16px 0}
+.grid div{font-variant-numeric:tabular-nums}
+.grid span{display:block;font-size:12px;color:var(--muted)}
+.grid b{font-weight:600;font-size:17px}
+.card canvas.chart{width:100%;height:210px;display:block}
+.cap{font-size:12px;color:var(--muted);margin:6px 0 0}
+.cstats{font-size:14px;margin:10px 0 0}
+.wm{font-size:12px;color:var(--muted);margin-top:10px;display:flex;justify-content:space-between;gap:10px}
+.dlgbar{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:12px}
+#previewImg{max-width:100%;border-radius:12px;display:block;margin:0 auto;border:1px solid var(--line)}
+.hint{font-size:13px;color:var(--muted);margin:8px 0 0;text-align:center}
+#offscreen{position:fixed;left:-10000px;top:0;width:600px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style id="ch-skin">
+body.ch-skin{background:var(--ch-bg);color:var(--ch-tx)}
+body.ch-skin :is(h1){font-size:20px!important;font-weight:500!important;letter-spacing:0!important;line-height:1.25!important}
+body.ch-skin :is(h2){font-weight:500!important;letter-spacing:0!important}
+body.ch-skin :is(h3){font-weight:500!important}
+body.ch-skin b, body.ch-skin strong{font-weight:600}
+body.ch-skin ::placeholder{color:var(--ch-t3)}
+
+html:root:root{--bg:var(--ch-bg);--surface:var(--ch-bg);--line:var(--ch-bd);--text:var(--ch-tx);--muted:var(--ch-t2);--spike:var(--ch-warn);--spike-soft:rgba(186,117,23,.12);--up:var(--ch-up);--down:var(--ch-dn);--bar:var(--ch-bd2);--chip:var(--ch-s1);--accent:var(--ch-ac);--ch-w:1240px}
+:root[data-theme=dark] body.ch-skin{--spike-soft:rgba(239,159,39,.14)}
+body.ch-skin .wrap{padding-top:12px}
+body.ch-skin h3{font-size:15px!important;margin:18px 2px 8px}
+body.ch-skin .seg{background:none;border:0.5px solid var(--ch-bd2);border-radius:8px;padding:0;gap:0;overflow:hidden}
+body.ch-skin .seg button{border-radius:0;font-size:13px;padding:6px 11px}
+body.ch-skin .seg button[aria-pressed="true"]{background:var(--ch-acb);color:var(--ch-act);box-shadow:none;font-weight:500}
+body.ch-skin .tabs .seg button{font-size:14px;padding:7px 16px}
+body.ch-skin .panel,body.ch-skin .tablewrap,body.ch-skin .card{border-width:0.5px;border-radius:12px}
+body.ch-skin :is(.iconbtn,.secondary,.shotbtn){background:none;border:0.5px solid var(--ch-bd2);border-radius:14px;color:var(--ch-t2);font-size:13px;padding:6px 12px}
+body.ch-skin .primary{background:var(--ch-acb);color:var(--ch-act);border:0.5px solid var(--ch-acd);border-radius:14px;font-size:14px;font-weight:500;padding:7px 16px}
+body.ch-skin .badge.new{color:#fff}
+body.ch-skin :is(.ratio b,.cardhead h2,.cardhead .big){font-family:inherit!important;font-weight:600}
+body.ch-skin .cardhead h2{font-size:24px}
+body.ch-skin .cardhead .big{font-size:28px}
+body.ch-skin .ratio b{font-size:17px}
+body.ch-skin .shotcap{font-family:inherit;font-size:16px;font-weight:500}
+body.ch-skin .sym{font-weight:500}
+body.ch-skin th,body.ch-skin td{border-bottom-width:0.5px}
+body.ch-skin :is(.field input,.field select,.toolbar input,.toolbar select){border-radius:8px}
+body.ch-skin dialog #chLinks .ch-links{background:var(--ch-bg);border:0.5px solid var(--ch-bd);border-radius:12px;padding:8px 10px;margin-top:8px}
+@media (max-width:820px){body.ch-skin #resTable tbody tr{border-width:0.5px;border-radius:12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1><span data-i="title"></span><span class="bars" aria-hidden="true"><i style="height:30%"></i><i style="height:22%"></i><i style="height:35%"></i><i style="height:26%"></i><i class="hot" style="height:100%"></i></span></h1>
+      <p class="sub" data-i="sub"></p>
+    </div>
+    <div class="topctl">
+      <div class="seg" id="langSeg" role="group" aria-label="Language">
+        <button data-lang="en">EN</button><button data-lang="uk">УКР</button><button data-lang="ru">РУС</button>
+      </div>
+      <button class="iconbtn" id="themeBtn" aria-label="Theme">◐</button>
+    </div>
+  </header>
+
+  <div class="tabs"><div class="seg" id="tabSeg"><button data-tab="spikes" data-i="tabSpikes"></button><button data-tab="hist" data-i="tabHist"></button></div></div>
+
+  <section class="panel">
+    <div class="row">
+      <div class="field"><span data-i="exchanges"></span>
+        <div class="seg" id="exSeg"><button data-ex="binance">Binance</button><button data-ex="bybit">Bybit</button><button data-ex="okx">OKX</button></div>
+      </div>
+      <div class="field"><span data-i="market"></span>
+        <div class="seg" id="mkSeg"><button data-mk="spot" data-i="spot"></button><button data-mk="futures" data-i="futures"></button></div>
+      </div>
+      <div class="field"><span data-i="tf"></span>
+        <div class="seg" id="tfSeg"><button data-tf="5m">5m</button><button data-tf="15m">15m</button><button data-tf="1h">1h</button><button data-tf="4h">4h</button></div>
+      </div>
+    </div>
+    <div class="row">
+      <label class="field"><span data-i="thr"></span><input type="number" id="thr" min="1.5" step="0.5"></label>
+      <label class="field"><span data-i="minVol"></span><input type="number" id="minVol" min="0" step="100000"></label>
+      <label class="field"><span data-i="maxCoins"></span><input type="number" id="maxCoins" min="10" max="600" step="10"></label>
+      <label class="field"><span data-i="auto"></span><select id="auto"></select></label>
+      <label class="check"><input type="checkbox" id="sound"><span data-i="sound"></span></label>
+    </div>
+
+    <details>
+      <summary data-i="filters"></summary>
+      <div class="inner">
+        <div class="row">
+          <div class="field"><span data-i="dir"></span>
+            <div class="seg" id="dirSeg"><button data-dir="all" data-i="dirAll"></button><button data-dir="up" data-i="dirUp"></button><button data-dir="down" data-i="dirDown"></button></div>
+          </div>
+          <label class="check"><input type="checkbox" id="onlyBreak"><span data-i="onlyBreak"></span></label>
+          <label class="check"><input type="checkbox" id="onlyFav"><span data-i="onlyFav"></span></label>
+        </div>
+        <div class="row">
+          <label class="field"><span data-i="favThr"></span><input type="number" id="favThr" min="1.2" step="0.5"></label>
+          <label class="field"><span data-i="minNorm"></span><input type="number" id="minNorm" min="0" step="1000"></label>
+          <label class="field"><span data-i="ageDays"></span><input type="number" id="ageDays" min="0" max="60" step="1"></label>
+          <label class="field"><span data-i="cooldown"></span><input type="number" id="cooldown" min="0" step="5"></label>
+        </div>
+        <p class="note" data-i="buyNote"></p>
+      </div>
+    </details>
+
+    <details>
+      <summary data-i="tg"></summary>
+      <div class="inner">
+        <div class="row">
+          <label class="field wide"><span data-i="tgToken"></span><input type="password" id="tgToken" autocomplete="off" placeholder="123456:ABC…"></label>
+          <label class="field wide"><span data-i="tgChat"></span><input type="text" id="tgChat" autocomplete="off" placeholder="-100… / @channel"></label>
+        </div>
+        <div class="row">
+          <label class="check"><input type="checkbox" id="tgOn"><span data-i="tgOn"></span></label>
+          <label class="check"><input type="checkbox" id="tgPhoto"><span data-i="tgPhoto"></span></label>
+          <button class="secondary" id="tgTest" data-i="tgTest"></button>
+          <span class="tag" id="tgStatus"></span>
+        </div>
+        <p class="note" data-i="tgNote"></p>
+      </div>
+    </details>
+
+    <details>
+      <summary data-i="wm"></summary>
+      <div class="inner">
+        <div class="row">
+          <label class="check"><input type="checkbox" id="wmOn"><span data-i="wmOn"></span></label>
+          <label class="field"><span data-i="wmName"></span><input type="text" id="wmName" autocomplete="off"></label>
+          <label class="field wide"><span data-i="wmLink"></span><input type="text" id="wmLink" autocomplete="off"></label>
+        </div>
+        <p class="note" data-i="wmNote"></p>
+      </div>
+    </details>
+
+    <div class="actions">
+      <button class="primary" id="scanBtn"></button>
+      <button class="secondary" id="shotTableBtn" data-i="shotTable" disabled></button>
+      <button class="secondary" id="csvBtn" data-i="csv" disabled></button>
+    </div>
+  </section>
+
+  <div class="status">
+    <span id="statusText"></span>
+    <div class="progress" id="prog" hidden><i></i></div>
+    <span id="foundText"></span>
+  </div>
+  <div class="errors" id="errors"></div>
+
+  <section id="spikesView">
+    <div class="toolbar">
+      <input type="search" id="search" aria-label="Search">
+      <span class="sortwrap"><span data-i="sort"></span><select id="sortSel"></select></span>
+    </div>
+    <div id="shotArea">
+      <div class="shotcap" id="shotCap"></div>
+      <div class="tablewrap">
+        <table id="resTable">
+          <thead><tr id="headRow"></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div class="empty" id="empty"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="histView" hidden>
+    <p class="note" data-i="histNote"></p>
+    <div class="actions" style="margin-top:12px">
+      <button class="secondary" id="histCsv" data-i="csv"></button>
+      <button class="secondary" id="histClear" data-i="clear"></button>
+    </div>
+    <h3 data-i="byTf"></h3>
+    <div class="tablewrap"><table id="sumTf"></table></div>
+    <h3 data-i="byRatio"></h3>
+    <div class="tablewrap"><table id="sumRatio"></table></div>
+    <h3 data-i="histList"></h3>
+    <div class="tablewrap"><table id="histTable"></table><div class="empty" id="histEmpty" data-i="histEmpty"></div></div>
+  </section>
+</div>
+
+<template id="cardTpl">
+  <div class="card">
+    <div class="cardhead">
+      <div><h2 class="c-sym"></h2><div class="muted c-ex"></div></div>
+      <div class="big c-ratio"></div>
+    </div>
+    <div class="grid c-grid"></div>
+    <canvas class="chart"></canvas>
+    <p class="cap c-cap"></p>
+    <p class="cstats c-stats"></p>
+    <div class="wm"><span class="c-time"></span><span>Volume spikes · Binance · Bybit · OKX</span></div>
+  </div>
+</template>
+
+<dialog id="detail">
+  <div id="detailCard"></div>
+  <div id="chLinks"></div>
+  <div class="dlgbar">
+    <button class="secondary" id="dFav"></button>
+    <a class="secondary" id="dLink" target="_blank" rel="noopener"></a>
+    <button class="primary" id="dShot" data-i="shot"></button>
+    <button class="secondary" id="dClose" data-i="close"></button>
+  </div>
+</dialog>
+
+<dialog id="preview">
+  <div class="card">
+    <img id="previewImg" alt="">
+    <p class="hint" data-i="hint"></p>
+    <div class="dlgbar">
+      <a class="primary" id="pSave" data-i="save"></a>
+      <button class="secondary" id="pShare" data-i="share" hidden></button>
+      <button class="secondary" id="pCopy" data-i="copy" hidden></button>
+      <button class="secondary" id="pClose" data-i="close"></button>
+    </div>
+  </div>
+</dialog>
+
+<div id="offscreen" aria-hidden="true"></div>
+
+<script>
+const I18N = {
+  en:{
+    title:"Volume spikes",
+    sub:"Finds coins on Binance, Bybit and OKX whose trading volume suddenly jumps far above its recent norm, checks the signal and keeps a history of how price moved afterwards.",
+    tabSpikes:"Spikes", tabHist:"History", exchanges:"Exchanges", market:"Market", spot:"Spot", futures:"Futures (USDT perp)", tf:"Candle",
+    thr:"Spike at least, ×", minVol:"Min 24h volume, USDT", maxCoins:"Coins per exchange", auto:"Auto-refresh",
+    off:"Off", every:"Every {n} min", sound:"Sound on new spikes", scan:"Scan now", stop:"Stop",
+    scanning:"Scanning {d} of {t}…", enriching:"Checking signals {d} of {t}…", idle:"Press “Scan now” to look for spikes.", last:"Last scan {time}",
+    found:"Spikes found: {n}", shown:"shown: {n}", none:"No spikes match right now. Lower the threshold, change filters or pick a shorter candle.",
+    coin:"Coin", spike:"Spike", price:"Price", candle:"Candle change", ch24:"24h change", buy:"Buys", mtf:"Other candles",
+    oi:"Open interest", funding:"Funding", spikeVol:"Spike volume", norm:"Norm", vol24:"24h volume", time:"Candle",
+    live:"forming", closed:"closed", isNew:"new", brkUp:"breakout up", brkDown:"breakdown",
+    shotTable:"Screenshot of table", shot:"Save screenshot", close:"Close", save:"Download", share:"Share",
+    copy:"Copy", copied:"Copied", openEx:"Open on {ex}", errFetch:"{ex}: could not load data ({msg}).",
+    vsNorm:"× the norm", chartCap:"Volume of the last {n} candles. Dashed line: norm (median of 30 candles before the spike). Line: closing price.",
+    sort:"Sort by", hint:"On a phone you can also long-press the image to save it.", noEx:"Select at least one exchange.",
+    candleOpen:"Candle opened {time}", csv:"Export CSV", search:"Search coin",
+    filters:"Filters and noise", dir:"Direction", dirAll:"All", dirUp:"Growth", dirDown:"Fall",
+    onlyBreak:"Only with price breakout", onlyFav:"Only favorites", favThr:"Favorites spike at least, ×",
+    minNorm:"Min norm volume per candle, USDT", ageDays:"Skip coins younger than, days", cooldown:"Repeat alert after, min",
+    buyNote:"Buys = share of volume from market buy orders. Only Binance provides it. Breakout = the spike candle closed above the high (or below the low) of the previous 20 candles. Open interest change = over the last 6 candles.",
+    tg:"Telegram alerts", tgToken:"Bot token", tgChat:"Chat or channel ID", tgOn:"Send new spikes to Telegram", tgPhoto:"Attach screenshot of the card",
+    tgTest:"Send test", tgOk:"Sent", tgFail:"Not sent: {msg}",
+    tgNote:"The token is stored only in this browser. Alerts go out only while this page is open; 24/7 alerts need a server. Never put the token into the public repository.",
+    histNote:"Every spike found is logged here. The app then records how the price changed 15 minutes, 1 hour and 4 hours after it was spotted. In the summaries, the move is counted in the direction of the spike candle: if the candle was green, growth is a plus; if red, a fall is a plus. History is kept in this browser.",
+    byTf:"By candle", byRatio:"By spike strength", histList:"Logged spikes", histEmpty:"No spikes logged yet.",
+    group:"Group", n:"Spikes", after15:"After 15m", after1h:"After 1h", after4h:"After 4h", hit:"Worked (1h)",
+    clear:"Clear history", clearConfirm:"Delete the whole spike history?", spotted:"Spotted", ex:"Exchange",
+    coinStats:"History of this coin: {n} spikes, average move after 1h {avg} in the spike direction, worked {hit}.",
+    coinStatsNone:"No finished history for this coin yet.", fav:"☆ Add to favorites", unfav:"★ In favorites",
+    tgTestMsg:"Test message from Volume spikes ✅",
+    wm:"Watermark", wmOn:"Add watermark to screenshots", wmName:"Name", wmLink:"Link",
+    wmNote:"The watermark is added to every screenshot: table, coin card and photos sent to Telegram. The link runs faintly across the image, and a strip with the name and link is added at the bottom."
+  },
+  uk:{
+    title:"Сплески об’ємів",
+    sub:"Шукає монети на Binance, Bybit та OKX, у яких об’єм торгів раптово зріс значно вище звичайного рівня, перевіряє сигнал і веде історію того, як потім рухалася ціна.",
+    tabSpikes:"Сплески", tabHist:"Історія", exchanges:"Біржі", market:"Ринок", spot:"Спот", futures:"Ф’ючерси (USDT perp)", tf:"Свічка",
+    thr:"Сплеск щонайменше, ×", minVol:"Мін. об’єм за 24 год, USDT", maxCoins:"Монет на біржу", auto:"Автооновлення",
+    off:"Вимк.", every:"Кожні {n} хв", sound:"Звук на нові сплески", scan:"Сканувати", stop:"Зупинити",
+    scanning:"Сканую {d} з {t}…", enriching:"Перевіряю сигнали {d} з {t}…", idle:"Натисніть «Сканувати», щоб знайти сплески.", last:"Останнє сканування {time}",
+    found:"Знайдено сплесків: {n}", shown:"показано: {n}", none:"Зараз немає сплесків за цими умовами. Зменште поріг, змініть фільтри або оберіть коротшу свічку.",
+    coin:"Монета", spike:"Сплеск", price:"Ціна", candle:"Зміна свічки", ch24:"Зміна 24 год", buy:"Покупки", mtf:"Інші свічки",
+    oi:"Відкритий інтерес", funding:"Фандинг", spikeVol:"Об’єм сплеску", norm:"Норма", vol24:"Об’єм 24 год", time:"Свічка",
+    live:"формується", closed:"закрита", isNew:"нова", brkUp:"пробій вгору", brkDown:"пробій вниз",
+    shotTable:"Скріншот таблиці", shot:"Зберегти скріншот", close:"Закрити", save:"Завантажити", share:"Поділитися",
+    copy:"Копіювати", copied:"Скопійовано", openEx:"Відкрити на {ex}", errFetch:"{ex}: не вдалося завантажити дані ({msg}).",
+    vsNorm:"× від норми", chartCap:"Об’єм останніх {n} свічок. Пунктир: норма (медіана 30 свічок до сплеску). Лінія: ціна закриття.",
+    sort:"Сортувати", hint:"На телефоні зображення також можна зберегти довгим натисканням.", noEx:"Оберіть хоча б одну біржу.",
+    candleOpen:"Свічка відкрита {time}", csv:"Експорт CSV", search:"Пошук монети",
+    filters:"Фільтри та шум", dir:"Напрямок", dirAll:"Усі", dirUp:"Ріст", dirDown:"Падіння",
+    onlyBreak:"Лише з пробоєм ціни", onlyFav:"Лише обрані", favThr:"Сплеск для обраних щонайменше, ×",
+    minNorm:"Мін. норма об’єму на свічку, USDT", ageDays:"Пропускати монети молодші за, днів", cooldown:"Повторне сповіщення через, хв",
+    buyNote:"Покупки = частка об’єму від ринкових ордерів на купівлю. Ці дані дає лише Binance. Пробій = свічка сплеску закрилася вище максимуму (або нижче мінімуму) попередніх 20 свічок. Зміна відкритого інтересу = за останні 6 свічок.",
+    tg:"Сповіщення в Telegram", tgToken:"Токен бота", tgChat:"ID чату або каналу", tgOn:"Надсилати нові сплески в Telegram", tgPhoto:"Додавати скріншот картки",
+    tgTest:"Надіслати тест", tgOk:"Надіслано", tgFail:"Не надіслано: {msg}",
+    tgNote:"Токен зберігається лише в цьому браузері. Сповіщення надсилаються, поки сторінка відкрита; для роботи 24/7 потрібен сервер. Ніколи не додавайте токен у публічний репозиторій.",
+    histNote:"Сюди записується кожен знайдений сплеск. Потім додаток фіксує, як змінилася ціна через 15 хвилин, 1 годину і 4 години після виявлення. У зведенні рух рахується в напрямку свічки сплеску: якщо свічка зелена, ріст іде в плюс; якщо червона, у плюс іде падіння. Історія зберігається в цьому браузері.",
+    byTf:"За свічкою", byRatio:"За силою сплеску", histList:"Записані сплески", histEmpty:"Сплесків ще не записано.",
+    group:"Група", n:"Сплесків", after15:"Через 15 хв", after1h:"Через 1 год", after4h:"Через 4 год", hit:"Спрацювало (1 год)",
+    clear:"Очистити історію", clearConfirm:"Видалити всю історію сплесків?", spotted:"Виявлено", ex:"Біржа",
+    coinStats:"Історія цієї монети: {n} сплесків, середній рух через 1 год {avg} у напрямку сплеску, спрацювало {hit}.",
+    coinStatsNone:"Для цієї монети ще немає завершеної історії.", fav:"☆ Додати в обрані", unfav:"★ В обраних",
+    tgTestMsg:"Тестове повідомлення від «Сплески об’ємів» ✅",
+    wm:"Водяний знак", wmOn:"Додавати водяний знак на скріншоти", wmName:"Назва", wmLink:"Посилання",
+    wmNote:"Водяний знак додається до кожного скріншота: таблиці, картки монети і фото, що надсилаються в Telegram. Посилання напівпрозоро проходить через усе зображення, а знизу додається смуга з назвою і посиланням."
+  },
+  ru:{
+    title:"Всплески объёмов",
+    sub:"Ищет монеты на Binance, Bybit и OKX, у которых объём торгов внезапно вырос намного выше обычного уровня, проверяет сигнал и ведёт историю того, как потом двигалась цена.",
+    tabSpikes:"Всплески", tabHist:"История", exchanges:"Биржи", market:"Рынок", spot:"Спот", futures:"Фьючерсы (USDT perp)", tf:"Свеча",
+    thr:"Всплеск не меньше, ×", minVol:"Мин. объём за 24 ч, USDT", maxCoins:"Монет на биржу", auto:"Автообновление",
+    off:"Выкл.", every:"Каждые {n} мин", sound:"Звук на новые всплески", scan:"Сканировать", stop:"Остановить",
+    scanning:"Сканирую {d} из {t}…", enriching:"Проверяю сигналы {d} из {t}…", idle:"Нажмите «Сканировать», чтобы найти всплески.", last:"Последнее сканирование {time}",
+    found:"Найдено всплесков: {n}", shown:"показано: {n}", none:"Сейчас нет всплесков по этим условиям. Уменьшите порог, измените фильтры или выберите более короткую свечу.",
+    coin:"Монета", spike:"Всплеск", price:"Цена", candle:"Изменение свечи", ch24:"Изменение 24 ч", buy:"Покупки", mtf:"Другие свечи",
+    oi:"Открытый интерес", funding:"Фандинг", spikeVol:"Объём всплеска", norm:"Норма", vol24:"Объём 24 ч", time:"Свеча",
+    live:"формируется", closed:"закрыта", isNew:"новая", brkUp:"пробой вверх", brkDown:"пробой вниз",
+    shotTable:"Скриншот таблицы", shot:"Сохранить скриншот", close:"Закрыть", save:"Скачать", share:"Поделиться",
+    copy:"Копировать", copied:"Скопировано", openEx:"Открыть на {ex}", errFetch:"{ex}: не удалось загрузить данные ({msg}).",
+    vsNorm:"× от нормы", chartCap:"Объём последних {n} свечей. Пунктир: норма (медиана 30 свечей до всплеска). Линия: цена закрытия.",
+    sort:"Сортировать", hint:"На телефоне изображение также можно сохранить долгим нажатием.", noEx:"Выберите хотя бы одну биржу.",
+    candleOpen:"Свеча открыта {time}", csv:"Экспорт CSV", search:"Поиск монеты",
+    filters:"Фильтры и шум", dir:"Направление", dirAll:"Все", dirUp:"Рост", dirDown:"Падение",
+    onlyBreak:"Только с пробоем цены", onlyFav:"Только избранные", favThr:"Всплеск для избранных не меньше, ×",
+    minNorm:"Мин. норма объёма на свечу, USDT", ageDays:"Пропускать монеты моложе, дней", cooldown:"Повторное уведомление через, мин",
+    buyNote:"Покупки = доля объёма от рыночных ордеров на покупку. Эти данные даёт только Binance. Пробой = свеча всплеска закрылась выше максимума (или ниже минимума) предыдущих 20 свечей. Изменение открытого интереса = за последние 6 свечей.",
+    tg:"Уведомления в Telegram", tgToken:"Токен бота", tgChat:"ID чата или канала", tgOn:"Отправлять новые всплески в Telegram", tgPhoto:"Прикладывать скриншот карточки",
+    tgTest:"Отправить тест", tgOk:"Отправлено", tgFail:"Не отправлено: {msg}",
+    tgNote:"Токен хранится только в этом браузере. Уведомления отправляются, пока страница открыта; для работы 24/7 нужен сервер. Никогда не добавляйте токен в публичный репозиторий.",
+    histNote:"Сюда записывается каждый найденный всплеск. Затем приложение фиксирует, как изменилась цена через 15 минут, 1 час и 4 часа после обнаружения. В сводке движение считается в направлении свечи всплеска: если свеча зелёная, рост идёт в плюс; если красная, в плюс идёт падение. История хранится в этом браузере.",
+    byTf:"По свече", byRatio:"По силе всплеска", histList:"Записанные всплески", histEmpty:"Всплесков ещё не записано.",
+    group:"Группа", n:"Всплесков", after15:"Через 15 мин", after1h:"Через 1 ч", after4h:"Через 4 ч", hit:"Сработало (1 ч)",
+    clear:"Очистить историю", clearConfirm:"Удалить всю историю всплесков?", spotted:"Обнаружен", ex:"Биржа",
+    coinStats:"История этой монеты: {n} всплесков, среднее движение через 1 ч {avg} в направлении всплеска, сработало {hit}.",
+    coinStatsNone:"Для этой монеты ещё нет завершённой истории.", fav:"☆ Добавить в избранное", unfav:"★ В избранном",
+    tgTestMsg:"Тестовое сообщение от «Всплески объёмов» ✅",
+    wm:"Водяной знак", wmOn:"Добавлять водяной знак на скриншоты", wmName:"Название", wmLink:"Ссылка",
+    wmNote:"Водяной знак добавляется к каждому скриншоту: таблицы, карточки монеты и фото, отправляемым в Telegram. Ссылка полупрозрачно проходит через всё изображение, а снизу добавляется полоса с названием и ссылкой."
+  }
+};
+
+const $ = s => document.querySelector(s);
+const store = {
+  get(k,d){try{const v=localStorage.getItem("vs_"+k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("vs_"+k,JSON.stringify(v))}catch(e){}}
+};
+const navLang = (navigator.language||"en").slice(0,2);
+const S = {
+  lang: store.get("lang", ["uk","ru"].includes(navLang)?navLang:"en"),
+  theme: window.CH ? CH.theme(store.get("theme", null)) : store.get("theme", null), tab:"spikes",
+  ex: store.get("ex2", {binance:true, bybit:true, okx:false}),
+  mk: store.get("mk","spot"), tf: store.get("tf","15m"),
+  thr: store.get("thr",3), minVol: store.get("minVol",1000000), maxCoins: store.get("maxCoins",200),
+  auto: store.get("auto",5), sound: store.get("sound",false), sort: store.get("sort",{key:"ratio",dir:-1}),
+  dir: store.get("dir","all"), onlyBreak: store.get("onlyBreak",false), onlyFav: store.get("onlyFav",false),
+  favThr: store.get("favThr",2), minNorm: store.get("minNorm",3000), ageDays: store.get("ageDays",7), cooldown: store.get("cooldown",30),
+  favs: store.get("favs",[]), tgToken: store.get("tgToken",""), tgChat: store.get("tgChat",""), tgOn: store.get("tgOn",false), tgPhoto: store.get("tgPhoto",true),
+  wmOn: store.get("wmOn",true), wmName: store.get("wmName","CRYPTO HUNTERS"), wmLink: store.get("wmLink","https://t.me/Cr_hunters")
+};
+let notified = store.get("notified",{});
+let hist = store.get("hist",[]);
+const t = (k,p={}) => (I18N[S.lang][k] ?? I18N.en[k] ?? k).replace(/\{(\w+)\}/g,(_,x)=>p[x]??"");
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+const TFS = ["5m","15m","1h","4h"];
+
+let results=[], prevKeys=new Set(), scanning=false, abortCtl=null, lastScan=null, autoTimer=null, errors=[], scanMk=S.mk, search="";
+
+/* ===================== exchanges ===================== */
+const nextAt = {};
+const hostIdx = {};
+async function throttle(ex){ const now=Date.now(), at=Math.max(now, nextAt[ex]||0); nextAt[ex]=at+EX[ex].gap; if(at>now) await sleep(at-now); }
+async function req(ex, mk, path, signal){
+  const list = EX[ex].hosts[mk], key = ex+mk, start = hostIdx[key]||0; let lastErr;
+  for(let i=0;i<list.length;i++){
+    const h = list[(start+i)%list.length];
+    for(let attempt=0; attempt<3; attempt++){
+      try{
+        await throttle(ex);
+        const r = await fetch(h+path, {signal});
+        if(r.status===429||r.status===418){ await sleep(1500*(attempt+1)); continue; }
+        if(!r.ok) throw new Error("HTTP "+r.status);
+        const j = await r.json();
+        if(ex==="bybit" && j.retCode!==0){ if(j.retCode===10006){ await sleep(1500); continue; } throw new Error(j.retMsg||"error"); }
+        if(ex==="okx" && j.code!=="0"){ if(j.code==="50011"){ await sleep(1500); continue; } throw new Error(j.msg||("code "+j.code)); }
+        hostIdx[key]=(start+i)%list.length;
+        return j;
+      }catch(e){ if(e.name==="AbortError") throw e; lastErr=e; break; }
+    }
+  }
+  throw lastErr||new Error("network");
+}
+const bk = k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[7],bv:+k[10]});
+const EX = {
+  binance:{
+    name:"Binance", gap:12,
+    hosts:{spot:["https://api.binance.com","https://data-api.binance.vision"], futures:["https://fapi.binance.com"]},
+    async tickers(mk,sg){
+      const j = await req("binance",mk, mk==="spot"?"/api/v3/ticker/24hr":"/fapi/v1/ticker/24hr", sg);
+      const rows = j.map(x=>({symbol:x.symbol, inst:x.symbol, price:+x.lastPrice, ch24:+x.priceChangePercent, vol24:+x.quoteVolume}));
+      if(mk==="futures"){ try{ const f = await req("binance",mk,"/fapi/v1/premiumIndex",sg); const m = new Map(f.map(x=>[x.symbol,+x.lastFundingRate*100])); rows.forEach(r=>r.funding=m.get(r.symbol)); }catch(e){} }
+      return rows;
+    },
+    async klines(mk,r,tf,limit,sg){
+      const j = await req("binance",mk,(mk==="spot"?"/api/v3/klines":"/fapi/v1/klines")+`?symbol=${r.inst}&interval=${tf}&limit=${limit}`,sg);
+      return j.map(bk);
+    },
+    async range5m(mk,r,s,e){
+      const j = await req("binance",mk,(mk==="spot"?"/api/v3/klines":"/fapi/v1/klines")+`?symbol=${r.inst}&interval=5m&startTime=${s}&endTime=${e}&limit=60`);
+      return j.map(bk);
+    },
+    async oi(r,tf,sg){
+      const j = await req("binance","futures",`/futures/data/openInterestHist?symbol=${r.inst}&period=${tf}&limit=7`,sg);
+      if(j.length<2) return null; const a=+j[0].sumOpenInterest, b=+j[j.length-1].sumOpenInterest; return a?(b-a)/a*100:null;
+    },
+    url(mk,r){ const b=baseOf(r.symbol); return mk==="spot"?`https://www.binance.com/en/trade/${b}_USDT`:`https://www.binance.com/en/futures/${r.symbol}`; }
+  },
+  bybit:{
+    name:"Bybit", gap:12,
+    hosts:{spot:["https://api.bybit.com","https://api.bytick.com"], futures:["https://api.bybit.com","https://api.bytick.com"]},
+    cat:mk=>mk==="spot"?"spot":"linear",
+    iv:{"5m":"5","15m":"15","1h":"60","4h":"240","1d":"D"},
+    async tickers(mk,sg){
+      const j = await req("bybit",mk,"/v5/market/tickers?category="+this.cat(mk),sg);
+      return j.result.list.map(x=>({symbol:x.symbol, inst:x.symbol, price:+x.lastPrice, ch24:+x.price24hPcnt*100, vol24:+x.turnover24h, funding: x.fundingRate!==undefined && x.fundingRate!==""?+x.fundingRate*100:undefined}));
+    },
+    async klines(mk,r,tf,limit,sg){
+      const j = await req("bybit",mk,`/v5/market/kline?category=${this.cat(mk)}&symbol=${r.inst}&interval=${this.iv[tf]}&limit=${limit}`,sg);
+      return j.result.list.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[6],bv:NaN})).reverse();
+    },
+    async range5m(mk,r,s,e){
+      const j = await req("bybit",mk,`/v5/market/kline?category=${this.cat(mk)}&symbol=${r.inst}&interval=5&start=${s}&end=${e}&limit=60`);
+      return j.result.list.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[6]})).reverse();
+    },
+    async oi(r,tf,sg){
+      const it = {"5m":"5min","15m":"15min","1h":"1h","4h":"4h"}[tf];
+      const j = await req("bybit","futures",`/v5/market/open-interest?category=linear&symbol=${r.inst}&intervalTime=${it}&limit=7`,sg);
+      const l = j.result.list; if(l.length<2) return null; const b=+l[0].openInterest, a=+l[l.length-1].openInterest; return a?(b-a)/a*100:null;
+    },
+    url(mk,r){ const b=baseOf(r.symbol); return mk==="spot"?`https://www.bybit.com/en/trade/spot/${b}/USDT`:`https://www.bybit.com/trade/usdt/${r.symbol}`; }
+  },
+  okx:{
+    name:"OKX", gap:60,
+    hosts:{spot:["https://www.okx.com"], futures:["https://www.okx.com"]},
+    bar:{"5m":"5m","15m":"15m","1h":"1H","4h":"4H","1d":"1D"},
+    async tickers(mk,sg){
+      const j = await req("okx",mk,"/api/v5/market/tickers?instType="+(mk==="spot"?"SPOT":"SWAP"),sg);
+      const suf = mk==="spot"?"-USDT":"-USDT-SWAP";
+      return j.data.filter(x=>x.instId.endsWith(suf)).map(x=>{
+        const base = x.instId.split("-")[0], last=+x.last, open=+x.open24h;
+        return {symbol:base+"USDT", inst:x.instId, price:last, ch24: open?(last-open)/open*100:0, vol24: mk==="spot"?+x.volCcy24h:+x.volCcy24h*last};
+      });
+    },
+    async klines(mk,r,tf,limit,sg){
+      const j = await req("okx",mk,`/api/v5/market/candles?instId=${r.inst}&bar=${this.bar[tf]}&limit=${limit}`,sg);
+      return j.data.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[7],bv:NaN})).reverse();
+    },
+    async range5m(mk,r,s,e){
+      const j = await req("okx",mk,`/api/v5/market/history-candles?instId=${r.inst}&bar=5m&after=${e}&before=${s-1}&limit=100`);
+      return j.data.map(k=>({t:+k[0],o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[7]})).reverse();
+    },
+    async oi(r,tf,sg){
+      const j = await req("okx","futures",`/api/v5/rubik/stat/contracts/open-interest-history?instId=${r.inst}&period=${this.bar[tf]}&limit=7`,sg);
+      const l = j.data; if(!l||l.length<2) return null; const b=+l[0][1], a=+l[l.length-1][1]; return a?(b-a)/a*100:null;
+    },
+    async funding(r,sg){
+      const j = await req("okx","futures",`/api/v5/public/funding-rate?instId=${r.inst}`,sg);
+      return j.data?.[0] ? +j.data[0].fundingRate*100 : undefined;
+    },
+    url(mk,r){ return `https://www.okx.com/${mk==="spot"?"trade-spot":"trade-swap"}/${r.inst.toLowerCase()}`; }
+  }
+};
+const STABLE = /^(USDC|FDUSD|TUSD|BUSD|DAI|USDP|EUR|EURI|USDE|PYUSD|USD1|AEUR|XUSD|RLUSD|BFUSD|USDD|USTC|PAXG|XAUT|WBTC|BTCB|USDG|USDQ)USDT$/;
+const LEVER = /\d[LS]USDT$/;
+
+/* ===================== analysis ===================== */
+function median(a){const s=[...a].sort((x,y)=>x-y), m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2}
+function analyze(kl, minNorm=0){
+  const n = kl.length; if(n<40) return null;
+  const med = median(kl.slice(n-32,n-2).map(k=>k.v)); if(!(med>0) || med<minNorm) return null;
+  const rL = kl[n-1].v/med, rC = kl[n-2].v/med, useLive = rL>=rC, idx = useLive?n-1:n-2, k = kl[idx];
+  const prev = kl.slice(Math.max(0,idx-20), idx);
+  const hi = Math.max(...prev.map(x=>x.h)), lo = Math.min(...prev.map(x=>x.l));
+  const breakout = k.c>hi ? 1 : k.c<lo ? -1 : 0;
+  const buyShare = Number.isFinite(k.bv) && k.v>0 ? k.bv/k.v*100 : null;
+  return {ratio:useLive?rL:rC, spikeVol:k.v, norm:med, candle:(k.c-k.o)/k.o*100, live:useLive, time:k.t, idx, kl, breakout, buyShare};
+}
+async function pool(items, size, fn){ let i=0; await Promise.all(Array.from({length:Math.min(size,items.length)}, async()=>{ while(i<items.length){ await fn(items[i++]); } })); }
+const exName = e => EX[e].name;
+const baseOf = s => s.replace(/USDT$/,"");
+const isFav = s => S.favs.includes(s);
+
+/* ===================== scan ===================== */
+async function scan(){
+  if(scanning){ abortCtl?.abort(); return; }
+  const exs = Object.keys(EX).filter(e=>S.ex[e]);
+  if(!exs.length){ setErrors([t("noEx")]); return; }
+  scanning=true; abortCtl=new AbortController(); const sg=abortCtl.signal;
+  const mk=S.mk, tf=S.tf; errors=[]; setErrors(errors); updateScanBtn();
+  const found=[]; let done=0, total=0, phase="scanning";
+  const prog=$("#prog"), bar=prog.firstElementChild; prog.hidden=false;
+  const tick=()=>{ $("#statusText").textContent=t(phase,{d:done,t:total}); bar.style.width=total?(done/total*100)+"%":"0"; };
+  $("#foundText").textContent="";
+  try{
+    const lists = await Promise.all(exs.map(async ex=>{
+      try{
+        const rows = (await EX[ex].tickers(mk,sg)).filter(r=>r.symbol.endsWith("USDT") && !STABLE.test(r.symbol) && !LEVER.test(r.symbol) && r.price>0);
+        const top = rows.filter(r=>r.vol24>=S.minVol).sort((a,b)=>b.vol24-a.vol24).slice(0,S.maxCoins);
+        const inTop = new Set(top.map(r=>r.symbol));
+        const favs = rows.filter(r=>isFav(r.symbol) && !inTop.has(r.symbol));
+        return [...top,...favs].map(r=>({...r,ex}));
+      }catch(e){ if(e.name!=="AbortError") errors.push(t("errFetch",{ex:exName(ex),msg:e.message})); return []; }
+    }));
+    total = lists.reduce((a,l)=>a+l.length,0); tick();
+    await Promise.all(lists.map(list=>pool(list, 8, async r=>{
+      if(sg.aborted) return;
+      try{
+        const a = analyze(await EX[r.ex].klines(mk,r,tf,60,sg), S.minNorm);
+        const thr = isFav(r.symbol) ? Math.min(S.favThr,S.thr) : S.thr;
+        if(a && a.ratio>=thr) found.push({...r,...a, mk, tf, price:a.kl[a.kl.length-1].c, key:`${r.ex}:${mk}:${tf}:${r.symbol}:${a.time}`});
+      }catch(e){ if(e.name==="AbortError") return; }
+      done++; if(done%5===0||done===total) tick();
+    })));
+    // enrichment
+    phase="enriching"; done=0; total=found.length; tick();
+    const byEx = exs.map(ex=>found.filter(f=>f.ex===ex));
+    await Promise.all(byEx.map(list=>pool(list, 4, async f=>{
+      if(sg.aborted) return;
+      f.mtf = {[tf]:f.ratio};
+      for(const o of TFS.filter(x=>x!==tf)){ try{ const a=analyze(await EX[f.ex].klines(mk,f,o,60,sg)); f.mtf[o]=a?a.ratio:null; }catch(e){ if(e.name==="AbortError") return; f.mtf[o]=null; } }
+      if(S.ageDays>0){ try{ const d=await EX[f.ex].klines(mk,f,"1d",S.ageDays+1,sg); f.young = d.length<S.ageDays; }catch(e){} }
+      if(mk==="futures"){
+        try{ f.oi = await EX[f.ex].oi(f,tf,sg); }catch(e){ f.oi=null; }
+        if(f.funding===undefined && EX[f.ex].funding){ try{ f.funding = await EX[f.ex].funding(f,sg); }catch(e){} }
+      }
+      done++; tick();
+    })));
+  }finally{
+    scanning=false; prog.hidden=true; updateScanBtn(); setErrors(errors);
+  }
+  if(sg.aborted && !found.length){ renderStatus(); return; }
+  const list = found.filter(f=>!f.young);
+  list.forEach(f=>f.isNew = prevKeys.size>0 && !prevKeys.has(f.key));
+  prevKeys = new Set(list.map(f=>f.key));
+  results=list; scanMk=mk; lastScan=new Date();
+  logHistory(list);
+  render(); renderStatus();
+  notify(list);
+  evalHistory();
+}
+
+/* ===================== filters ===================== */
+function passes(r, withSearch=true){
+  if(S.dir==="up" && !(r.candle>0)) return false;
+  if(S.dir==="down" && !(r.candle<0)) return false;
+  if(S.onlyBreak && !r.breakout) return false;
+  if(S.onlyFav && !isFav(r.symbol)) return false;
+  if(withSearch && search && !r.symbol.includes(search)) return false;
+  return true;
+}
+
+/* ===================== notifications ===================== */
+async function notify(list){
+  const now=Date.now(), cd=S.cooldown*60000, out=[];
+  for(const f of list){
+    if(!passes(f,false)) continue;
+    const nk=`${f.ex}:${f.mk}:${f.symbol}`, prev=notified[nk];
+    if(prev && (prev.key===f.key || now-prev.at<cd)) continue;
+    notified[nk]={at:now,key:f.key}; out.push(f);
+  }
+  for(const k in notified) if(now-notified[k].at>86400000) delete notified[k];
+  store.set("notified",notified);
+  if(!out.length) return;
+  if(S.sound) beep();
+  if(S.tgOn && S.tgToken && S.tgChat){
+    for(const f of out.sort((a,b)=>b.ratio-a.ratio).slice(0,8)){
+      try{ await sendTg(f); }catch(e){ $("#tgStatus").textContent=t("tgFail",{msg:e.message}); }
+      await sleep(1100);
+    }
+  }
+}
+function tgCaption(f){
+  const L=[`<b>${esc(baseOf(f.symbol))}/USDT</b> · ${exName(f.ex)} ${esc(t(f.mk))} ${f.tf}`,
+    `${esc(t("spike"))}: ×${f.ratio.toFixed(1)} (${esc(t("norm"))} ${fmtVol(f.norm)})`,
+    `${esc(t("candle"))}: ${fmtPct(f.candle)} · ${esc(t("ch24"))}: ${fmtPct(f.ch24)}`,
+    `${esc(t("price"))}: ${fmtPrice(f.price)}`];
+  if(f.breakout) L.push(esc(t(f.breakout>0?"brkUp":"brkDown")));
+  if(f.buyShare!=null) L.push(`${esc(t("buy"))}: ${f.buyShare.toFixed(0)}%`);
+  if(f.mk==="futures"){ const x=[]; if(f.oi!=null) x.push(`${esc(t("oi"))}: ${fmtPct(f.oi)}`); if(f.funding!=null) x.push(`${esc(t("funding"))}: ${f.funding.toFixed(4)}%`); if(x.length) L.push(x.join(" · ")); }
+  L.push(`<a href="${EX[f.ex].url(f.mk,f)}">${esc(t("openEx",{ex:exName(f.ex)}))}</a>`);
+  return L.join("\n");
+}
+async function tgCall(method, body){
+  const r = await fetch(`https://api.telegram.org/bot${S.tgToken}/${method}`, {method:"POST", body});
+  const j = await r.json().catch(()=>({ok:false,description:"HTTP "+r.status}));
+  if(!j.ok) throw new Error(j.description||"error");
+  return j;
+}
+async function sendTg(f){
+  const fd = new FormData(); fd.append("chat_id",S.tgChat); fd.append("parse_mode","HTML");
+  if(S.tgPhoto && window.html2canvas){
+    try{
+      const off=$("#offscreen"); off.innerHTML=""; const card=buildCard(f); off.appendChild(card); drawChart(card.querySelector("canvas.chart"),f);
+      const blob = await renderBlob(card); off.innerHTML="";
+      fd.append("photo", blob, "spike.png"); fd.append("caption", tgCaption(f));
+      return await tgCall("sendPhoto", fd);
+    }catch(e){ if(/chat|token|Unauthorized|Forbidden/i.test(e.message)) throw e; }
+  }
+  fd.append("text", tgCaption(f)); fd.append("disable_web_page_preview","true");
+  return await tgCall("sendMessage", fd);
+}
+
+/* ===================== history ===================== */
+function saveHist(){ if(hist.length>1500) hist=hist.slice(-1500); store.set("hist",hist); }
+function logHistory(list){
+  const keys = new Set(hist.map(h=>h.k)); const now=Date.now();
+  for(const f of list){ if(keys.has(f.key)) continue;
+    hist.push({k:f.key, ex:f.ex, mk:f.mk, tf:f.tf, s:f.symbol, i:f.inst, r:+f.ratio.toFixed(2), c:+f.candle.toFixed(3), b:f.breakout, at:now, p:f.price});
+  }
+  saveHist(); if(S.tab==="hist") renderHist();
+}
+const OFFS=[15,60,240];
+let evaluating=false;
+async function evalHistory(){
+  if(evaluating) return; evaluating=true;
+  try{
+    const now=Date.now();
+    hist.forEach(h=>{ if(!h.x && now-h.at>2*86400000) h.x=1; });
+    const due = hist.filter(h=>!h.x && OFFS.some(o=>h["r"+o]===undefined && now>=h.at+(o+5)*60000)).slice(-30);
+    const byEx = Object.keys(EX).map(ex=>due.filter(h=>h.ex===ex));
+    await Promise.all(byEx.map(list=>pool(list, 3, async h=>{
+      try{
+        const s=h.at-300000, e=Math.min(now, h.at+245*60000);
+        const kl = await EX[h.ex].range5m(h.mk,{inst:h.i,symbol:h.s},s,e);
+        for(const o of OFFS){
+          if(h["r"+o]!==undefined) continue;
+          const tg=h.at+o*60000, c=kl.find(k=>k.t<=tg && tg<k.t+300000);
+          if(c && c.t+300000<=now) h["r"+o]=+((c.c-h.p)/h.p*100).toFixed(3);
+        }
+        if(h.r240!==undefined) h.x=1;
+      }catch(e){}
+    })));
+    saveHist(); if(S.tab==="hist") renderHist();
+  }finally{ evaluating=false; }
+}
+const dirOf = h => h.c>=0?1:-1;
+function stats(list){
+  const out={n:list.length};
+  for(const o of OFFS){ const v=list.filter(h=>typeof h["r"+o]==="number").map(h=>h["r"+o]*dirOf(h)); out["a"+o]=v.length?v.reduce((a,b)=>a+b,0)/v.length:null; }
+  const v60=list.filter(h=>typeof h.r60==="number"); out.hit = v60.length? v60.filter(h=>h.r60*dirOf(h)>0).length/v60.length*100 : null;
+  return out;
+}
+function renderHist(){
+  const head = `<thead><tr><th>${esc(t("group"))}</th><th>${esc(t("n"))}</th><th>${esc(t("after15"))}</th><th>${esc(t("after1h"))}</th><th>${esc(t("after4h"))}</th><th>${esc(t("hit"))}</th></tr></thead>`;
+  const row = (label,l)=>{ const s=stats(l); return `<tr><td>${esc(label)}</td><td>${s.n}</td><td>${fmtR(s.a15)}</td><td>${fmtR(s.a60)}</td><td>${fmtR(s.a240)}</td><td>${s.hit==null?"—":s.hit.toFixed(0)+"%"}</td></tr>`; };
+  $("#sumTf").innerHTML = head+"<tbody>"+TFS.map(tf=>row(tf,hist.filter(h=>h.tf===tf))).join("")+row("∑",hist)+"</tbody>";
+  const B=[["< ×5",h=>h.r<5],["×5–10",h=>h.r>=5&&h.r<10],["×10+",h=>h.r>=10]];
+  $("#sumRatio").innerHTML = head+"<tbody>"+B.map(([l,f])=>row(l,hist.filter(f))).join("")+"</tbody>";
+  const last = hist.slice(-200).reverse();
+  $("#histEmpty").hidden = last.length>0;
+  $("#histTable").innerHTML = last.length ? `<thead><tr><th>${esc(t("spotted"))}</th><th>${esc(t("coin"))}</th><th>${esc(t("ex"))}</th><th>${esc(t("tf"))}</th><th>${esc(t("spike"))}</th><th>${esc(t("candle"))}</th><th>${esc(t("price"))}</th><th>${esc(t("after15"))}</th><th>${esc(t("after1h"))}</th><th>${esc(t("after4h"))}</th></tr></thead><tbody>`+
+    last.map(h=>`<tr><td>${fmtDateTime(new Date(h.at))}</td><td><b>${esc(baseOf(h.s))}</b>${h.b?`<span class="badge ${h.b>0?"bu":"bd"}">${esc(t(h.b>0?"brkUp":"brkDown"))}</span>`:""}</td><td>${exName(h.ex)} ${esc(t(h.mk))}</td><td>${h.tf}</td><td>×${h.r.toFixed(1)}</td><td class="${cls(h.c)}">${fmtPct(h.c)}</td><td>${fmtPrice(h.p)}</td><td>${fmtRes(h.r15,h)}</td><td>${fmtRes(h.r60,h)}</td><td>${fmtRes(h.r240,h)}</td></tr>`).join("")+"</tbody>" : "";
+  $("#histCsv").disabled = !hist.length; $("#histClear").disabled = !hist.length;
+}
+const fmtR = v => v==null ? "—" : `<span class="${cls(v)}">${fmtPct(v)}</span>`;
+const fmtRes = (v,h) => v===undefined ? (h.x?"—":`<span class="muted">…</span>`) : `<span class="${cls(v)}">${fmtPct(v)}</span>`;
+function coinStats(symbol){
+  const l = hist.filter(h=>h.s===symbol && typeof h.r60==="number");
+  if(!l.length) return t("coinStatsNone");
+  const s = stats(l); return t("coinStats",{n:l.length, avg:fmtPct(s.a60), hit:s.hit.toFixed(0)+"%"});
+}
+
+/* ===================== formatting ===================== */
+function fmtPrice(p){ if(!Number.isFinite(p)) return "—"; if(p>=1000) return p.toLocaleString("en-US",{maximumFractionDigits:2}); if(p>=1) return p.toFixed(4).replace(/0+$/,"").replace(/\.$/,""); const d=Math.min(10,Math.max(4,3-Math.floor(Math.log10(p)))); return p.toFixed(d); }
+function fmtVol(v){ for(const [s,n] of [["B",1e9],["M",1e6],["K",1e3]]) if(v>=n) return (v/n).toFixed(v/n>=100?0:v/n>=10?1:2)+s; return v.toFixed(0); }
+const fmtPct = p => (p>0?"+":"")+p.toFixed(2)+"%";
+const cls = p => p>0?"up":p<0?"down":"muted";
+const loc = () => S.lang==="en"?"en-GB":S.lang;
+const fmtTime = ms => new Date(ms).toLocaleTimeString(loc(),{hour:"2-digit",minute:"2-digit"});
+const fmtDateTime = d => d.toLocaleString(loc(),{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+const buyHtml = b => b==null ? `<span class="muted">—</span>` : `<span class="${b>=55?"up":b<=45?"down":""}">${b.toFixed(0)}%</span>`;
+const mtfHtml = r => `<span class="chips">${TFS.map(tf=>{ const v=r.mtf?.[tf]; const c=(v!=null&&v>=S.thr?" hot":"")+(tf===r.tf?" cur":""); return `<span class="chip${c}">${tf} ${v===undefined?"…":v===null?"—":"×"+v.toFixed(1)}</span>`; }).join("")}</span>`;
+const brkHtml = b => b ? `<span class="badge ${b>0?"bu":"bd"}">${esc(t(b>0?"brkUp":"brkDown"))}</span>` : "";
+
+/* ===================== results rendering ===================== */
+function cols(){
+  const c=[{k:"symbol",l:"coin"},{k:"ratio",l:"spike"},{k:"price",l:"price"},{k:"candle",l:"candle"},{k:"ch24",l:"ch24"},{k:"buyShare",l:"buy"},{k:"mtf",l:"mtf",ns:1}];
+  if(scanMk==="futures") c.push({k:"oi",l:"oi"},{k:"funding",l:"funding"});
+  c.push({k:"spikeVol",l:"spikeVol"},{k:"vol24",l:"vol24"},{k:"time",l:"time"});
+  return c;
+}
+function renderHead(){
+  const C=cols();
+  $("#headRow").innerHTML = C.map(c=>{
+    if(c.ns) return `<th>${esc(t(c.l))}</th>`;
+    const on=S.sort.key===c.k;
+    return `<th ${on?`aria-sort="${S.sort.dir>0?"ascending":"descending"}"`:""}><button data-sort="${c.k}">${esc(t(c.l))}<span class="arr">${on?(S.sort.dir>0?"↑":"↓"):""}</span></button></th>`;
+  }).join("")+`<th class="nocap"></th>`;
+  const opts=[]; C.filter(c=>!c.ns).forEach(c=>{ opts.push([c.k+":-1",t(c.l)+" ↓"]); opts.push([c.k+":1",t(c.l)+" ↑"]); });
+  $("#sortSel").innerHTML = opts.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("");
+  $("#sortSel").value = S.sort.key+":"+S.sort.dir;
+}
+function visible(){
+  const {key,dir}=S.sort;
+  return results.filter(r=>passes(r)).sort((a,b)=>{
+    const x=a[key], y=b[key];
+    if(x==null && y==null) return 0; if(x==null) return 1; if(y==null) return -1;
+    return (typeof x==="string"?x.localeCompare(y):x-y)*dir;
+  });
+}
+function render(){
+  renderHead();
+  const rows=visible(), F=scanMk==="futures";
+  $("#tbody").innerHTML = rows.map((r,i)=>`
+    <tr data-i="${i}">
+      <td class="c-sym"><button class="star nocap" data-fav="${r.symbol}" aria-pressed="${isFav(r.symbol)}" aria-label="★">${isFav(r.symbol)?"★":"☆"}</button><span class="sym">${esc(baseOf(r.symbol))}<small>/USDT</small></span><span class="badge">${exName(r.ex)}</span>${r.isNew?`<span class="badge new">${esc(t("isNew"))}</span>`:""}${brkHtml(r.breakout)}</td>
+      <td class="c-ratio"><div class="ratio"><canvas data-spark="${i}"></canvas><b>×${r.ratio.toFixed(1)}</b></div></td>
+      <td data-l="${esc(t("price"))}">${fmtPrice(r.price)}</td>
+      <td data-l="${esc(t("candle"))}" class="${cls(r.candle)}">${fmtPct(r.candle)}</td>
+      <td data-l="${esc(t("ch24"))}" class="${cls(r.ch24)}">${fmtPct(r.ch24)}</td>
+      <td data-l="${esc(t("buy"))}">${buyHtml(r.buyShare)}</td>
+      <td class="c-mtf" data-l="${esc(t("mtf"))}">${mtfHtml(r)}</td>
+      ${F?`<td data-l="${esc(t("oi"))}">${r.oi==null?'<span class="muted">—</span>':`<span class="${cls(r.oi)}">${fmtPct(r.oi)}</span>`}</td>
+      <td data-l="${esc(t("funding"))}">${r.funding==null?'<span class="muted">—</span>':`<span class="${cls(r.funding)}">${r.funding.toFixed(4)}%</span>`}</td>`:""}
+      <td data-l="${esc(t("spikeVol"))}">${fmtVol(r.spikeVol)} <span class="tag">/ ${esc(t("norm"))} ${fmtVol(r.norm)}</span></td>
+      <td data-l="${esc(t("vol24"))}">${fmtVol(r.vol24)}</td>
+      <td data-l="${esc(t("time"))}">${fmtTime(r.time)} <span class="tag">${esc(t(r.live?"live":"closed"))}</span></td>
+      <td class="c-act nocap"><button class="shotbtn" data-shot="${i}" aria-label="${esc(t("shot"))}" title="${esc(t("shot"))}">📷</button></td>
+    </tr>`).join("");
+  rows.forEach((r,i)=>drawSpark(document.querySelector(`canvas[data-spark="${i}"]`),r));
+  const e=$("#empty"); e.hidden=rows.length>0; e.textContent = lastScan?t("none"):t("idle");
+  $("#shotTableBtn").disabled=!rows.length; $("#csvBtn").disabled=!rows.length;
+  $("#tbody")._rows=rows;
+  renderStatus();
+}
+function renderStatus(){
+  $("#statusText").textContent = scanning?$("#statusText").textContent:(lastScan?t("last",{time:fmtDateTime(lastScan)}):"");
+  if(!scanning) $("#foundText").textContent = lastScan ? t("found",{n:results.length})+(visible().length!==results.length?", "+t("shown",{n:visible().length}):"") : "";
+}
+function setErrors(l){ $("#errors").textContent=l.join(" "); }
+function updateScanBtn(){ $("#scanBtn").textContent = scanning?t("stop"):t("scan"); }
+
+/* ===================== canvas ===================== */
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+function prepCanvas(c,w,h){ const d=Math.max(2,window.devicePixelRatio||1); c.width=w*d; c.height=h*d; const g=c.getContext("2d"); g.scale(d,d); return g; }
+function drawSpark(c,r){
+  if(!c) return; const w=96,h=28,g=prepCanvas(c,w,h);
+  const kl=r.kl.slice(-30), off=r.kl.length-kl.length, max=Math.max(...kl.map(k=>k.v)), bw=w/kl.length;
+  kl.forEach((k,i)=>{ const bh=Math.max(1,k.v/max*h); g.fillStyle=(off+i===r.idx)?css("--spike"):css("--bar"); g.fillRect(i*bw+.5,h-bh,Math.max(1,bw-1.2),bh); });
+}
+function drawChart(c,r){
+  const w=c.clientWidth||560, h=210, g=prepCanvas(c,w,h);
+  const kl=r.kl, n=kl.length, max=Math.max(...kl.map(k=>k.v)), padT=10, padB=18, ch=h-padT-padB, bw=w/n;
+  kl.forEach((k,i)=>{ const bh=Math.max(1,k.v/max*ch); g.fillStyle=i===r.idx?css("--spike"):css("--bar"); g.fillRect(i*bw+1,padT+ch-bh,Math.max(1,bw-2),bh); });
+  const ny=padT+ch-r.norm/max*ch;
+  g.strokeStyle=css("--muted"); g.setLineDash([4,4]); g.lineWidth=1; g.beginPath(); g.moveTo(0,ny); g.lineTo(w,ny); g.stroke(); g.setLineDash([]);
+  const ps=kl.map(k=>k.c), pmin=Math.min(...ps), pr=(Math.max(...ps)-pmin)||1;
+  g.strokeStyle=css("--accent"); g.lineWidth=2; g.beginPath();
+  ps.forEach((p,i)=>{ const x=i*bw+bw/2, y=padT+(1-(p-pmin)/pr)*ch*.85+ch*.05; i?g.lineTo(x,y):g.moveTo(x,y); }); g.stroke();
+  g.fillStyle=css("--muted"); g.font="11px Barlow, sans-serif";
+  g.textAlign="left"; g.fillText(fmtTime(kl[0].t),2,h-4); g.textAlign="right"; g.fillText(fmtTime(kl[n-1].t),w-2,h-4);
+}
+
+/* ===================== card ===================== */
+function buildCard(r){
+  const card=$("#cardTpl").content.firstElementChild.cloneNode(true);
+  card.querySelector(".c-sym").textContent=baseOf(r.symbol)+"/USDT";
+  card.querySelector(".c-ex").textContent=`${exName(r.ex)} · ${t(r.mk)} · ${r.tf}`;
+  card.querySelector(".c-ratio").innerHTML="×"+r.ratio.toFixed(1)+`<small>${esc(t("vsNorm"))}</small>`;
+  const cells=[["price",esc(fmtPrice(r.price))],["candle",`<span class="${cls(r.candle)}">${fmtPct(r.candle)}</span>`],["ch24",`<span class="${cls(r.ch24)}">${fmtPct(r.ch24)}</span>`],
+    ["spikeVol",fmtVol(r.spikeVol)+" USDT"],["norm",fmtVol(r.norm)+" USDT"],["vol24",fmtVol(r.vol24)+" USDT"]];
+  if(r.buyShare!=null) cells.push(["buy",buyHtml(r.buyShare)]);
+  if(r.mk==="futures"){ if(r.oi!=null) cells.push(["oi",`<span class="${cls(r.oi)}">${fmtPct(r.oi)}</span>`]); if(r.funding!=null) cells.push(["funding",r.funding.toFixed(4)+"%"]); }
+  let g=cells.map(([k,v])=>`<div><span>${esc(t(k))}</span><b>${v}</b></div>`).join("");
+  g+=`<div style="grid-column:1/-1"><span>${esc(t("mtf"))}</span>${mtfHtml(r)} ${brkHtml(r.breakout)}</div>`;
+  card.querySelector(".c-grid").innerHTML=g;
+  card.querySelector(".c-cap").textContent=t("chartCap",{n:r.kl.length});
+  card.querySelector(".c-stats").textContent=coinStats(r.symbol);
+  card.querySelector(".c-time").textContent=t("candleOpen",{time:fmtTime(r.time)})+" ("+t(r.live?"live":"closed")+")";
+  return card;
+}
+let current=null;
+function openDetail(r){
+  current=r; const box=$("#detailCard"); box.innerHTML=""; box.appendChild(buildCard(r));
+  if(window.CH) CH.linksInto($("#chLinks"),{coin:baseOf(r.symbol),q:"USDT",ex:r.ex,from:"volume"});
+  $("#dLink").textContent=t("openEx",{ex:exName(r.ex)}); $("#dLink").href=EX[r.ex].url(r.mk,r);
+  updFavBtn();
+  $("#detail").showModal();
+  requestAnimationFrame(()=>drawChart(box.querySelector("canvas.chart"),r));
+}
+function updFavBtn(){ if(current) $("#dFav").textContent = isFav(current.symbol)?t("unfav"):t("fav"); }
+function toggleFav(sym){ S.favs = isFav(sym)?S.favs.filter(s=>s!==sym):[...S.favs,sym]; store.set("favs",S.favs); render(); updFavBtn(); }
+
+/* ===================== screenshots ===================== */
+let shotBlob=null, shotName="";
+async function renderBlob(el){
+  const bg=getComputedStyle(document.body).backgroundColor, sc=Math.max(2,window.devicePixelRatio||1);
+  const c=watermark(await html2canvas(el,{backgroundColor:bg,scale:sc,logging:false}), sc);
+  return await new Promise(r=>c.toBlob(r,"image/png"));
+}
+function watermark(src, s){
+  const link=(S.wmLink||"").trim(), name=(S.wmName||"").trim();
+  if(!S.wmOn || (!link && !name)) return src;
+  const short=link.replace(/^https?:\/\//,"").replace(/\/$/,"");
+  const bar=Math.round(46*s), pad=Math.round(16*s);
+  const c=document.createElement("canvas"); c.width=src.width; c.height=src.height+bar;
+  const g=c.getContext("2d"); g.drawImage(src,0,0);
+  // faint diagonal pattern across the image
+  const mark=short||name;
+  g.save(); g.beginPath(); g.rect(0,0,c.width,src.height); g.clip();
+  g.globalAlpha=.09; g.fillStyle=css("--text"); g.textAlign="center"; g.textBaseline="middle";
+  g.font=`600 ${Math.round(17*s)}px Barlow, sans-serif`;
+  g.translate(c.width/2, src.height/2); g.rotate(-Math.PI/8);
+  const stepX=g.measureText(mark).width+Math.round(90*s), stepY=Math.round(84*s), R=Math.hypot(c.width,src.height)/2+stepX;
+  for(let y=-R, row=0; y<=R; y+=stepY, row++) for(let x=-R+(row%2?stepX/2:0); x<=R; x+=stepX) g.fillText(mark,x,y);
+  g.restore();
+  // bottom strip
+  g.fillStyle=css("--surface"); g.fillRect(0,src.height,c.width,bar);
+  g.fillStyle=css("--line"); g.fillRect(0,src.height,c.width,Math.max(1,Math.round(s)));
+  const mid=src.height+bar/2; g.textBaseline="middle";
+  let x=pad; const bh=Math.round(18*s), bw=Math.round(3*s), hs=[.35,.25,.45,.3,1];
+  hs.forEach((h,i)=>{ g.fillStyle=i===4?css("--spike"):css("--bar"); g.fillRect(x+i*(bw+Math.round(2*s)), mid+bh/2-bh*h, bw, bh*h); });
+  x+=5*(bw+Math.round(2*s))+Math.round(10*s);
+  if(name){ g.fillStyle=css("--text"); g.textAlign="left"; g.font=`700 ${Math.round(20*s)}px "Barlow Condensed", Barlow, sans-serif`; g.fillText(name,x,mid); }
+  if(short){ g.fillStyle=css("--spike"); g.textAlign="right"; g.font=`600 ${Math.round(16*s)}px Barlow, sans-serif`; g.fillText(short,c.width-pad,mid); }
+  return c;
+}
+async function capture(el,name){
+  if(!window.html2canvas){ alert("html2canvas not loaded"); return; }
+  shotBlob=await renderBlob(el); shotName=name;
+  const url=URL.createObjectURL(shotBlob);
+  $("#previewImg").src=url; const a=$("#pSave"); a.href=url; a.download=name;
+  const file=new File([shotBlob],name,{type:"image/png"});
+  $("#pShare").hidden=!(navigator.canShare&&navigator.canShare({files:[file]}));
+  $("#pCopy").hidden=!(navigator.clipboard&&window.ClipboardItem); $("#pCopy").textContent=t("copy");
+  $("#preview").showModal();
+}
+async function shotTable(){
+  const area=$("#shotArea");
+  $("#shotCap").innerHTML=esc(t("title"))+` <small>${esc(Object.keys(EX).filter(e=>S.ex[e]).map(exName).join(" + "))}, ${esc(t(scanMk))}, ${S.tf}, ×${S.thr}+. ${esc(lastScan?fmtDateTime(lastScan):"")}</small>`;
+  area.classList.add("capturing");
+  try{ await capture(area,`volume-spikes-${stamp()}.png`); }finally{ area.classList.remove("capturing"); }
+}
+async function shotCard(){ if(current) await capture($("#detailCard").firstElementChild,`${baseOf(current.symbol)}-${current.ex}-${current.tf}-${stamp()}.png`); }
+const stamp=()=>{ const d=new Date(),p=n=>String(n).padStart(2,"0"); return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}`; };
+
+/* ===================== CSV ===================== */
+function downloadCSV(name, header, rows){
+  const q=v=>{ const s=v==null?"":String(v); return /[",;\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s; };
+  const txt="\ufeff"+[header,...rows].map(r=>r.map(q).join(",")).join("\n");
+  const url=URL.createObjectURL(new Blob([txt],{type:"text/csv;charset=utf-8"}));
+  const a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000);
+}
+function resultsCSV(){
+  const r=visible();
+  downloadCSV(`volume-spikes-${stamp()}.csv`,["exchange","market","tf","symbol","ratio","price","candle_pct","change24_pct","buy_share_pct","breakout","mtf_5m","mtf_15m","mtf_1h","mtf_4h","oi_change_pct","funding_pct","spike_volume","norm_volume","volume24","candle_time","candle_state"],
+    r.map(x=>[exName(x.ex),x.mk,x.tf,x.symbol,x.ratio.toFixed(2),x.price,x.candle.toFixed(3),x.ch24.toFixed(3),x.buyShare?.toFixed(1),x.breakout,...TFS.map(tf=>x.mtf?.[tf]?.toFixed(2)),x.oi?.toFixed(3),x.funding?.toFixed(5),x.spikeVol.toFixed(0),x.norm.toFixed(0),x.vol24.toFixed(0),new Date(x.time).toISOString(),x.live?"forming":"closed"]));
+}
+function histCSV(){
+  downloadCSV(`spike-history-${stamp()}.csv`,["spotted","exchange","market","tf","symbol","ratio","candle_pct","breakout","price","after_15m_pct","after_1h_pct","after_4h_pct"],
+    hist.map(h=>[new Date(h.at).toISOString(),exName(h.ex),h.mk,h.tf,h.s,h.r,h.c,h.b,h.p,h.r15,h.r60,h.r240]));
+}
+
+/* ===================== sound ===================== */
+function beep(){ try{ const ac=new (window.AudioContext||window.webkitAudioContext)();
+  [0,.18].forEach(d=>{ const o=ac.createOscillator(),g=ac.createGain(); o.frequency.value=880; g.gain.setValueAtTime(.15,ac.currentTime+d); g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+d+.15); o.connect(g).connect(ac.destination); o.start(ac.currentTime+d); o.stop(ac.currentTime+d+.16); });
+}catch(e){} }
+
+/* ===================== UI wiring ===================== */
+function applyLang(){
+  document.documentElement.lang=S.lang;
+  document.querySelectorAll("[data-i]").forEach(el=>el.textContent=t(el.dataset.i));
+  document.querySelectorAll("#langSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===S.lang));
+  $("#auto").innerHTML=[0,1,3,5,10,15].map(n=>`<option value="${n}">${esc(n?t("every",{n}):t("off"))}</option>`).join(""); $("#auto").value=S.auto;
+  $("#search").placeholder=t("search");
+  updateScanBtn(); render(); renderHist(); updFavBtn();
+}
+function applyToggles(){
+  const set=(sel,attr,fn)=>document.querySelectorAll(sel+" button").forEach(b=>b.setAttribute("aria-pressed",fn(b.dataset[attr])));
+  set("#exSeg","ex",v=>!!S.ex[v]); set("#mkSeg","mk",v=>v===S.mk); set("#tfSeg","tf",v=>v===S.tf);
+  set("#dirSeg","dir",v=>v===S.dir); set("#tabSeg","tab",v=>v===S.tab);
+  $("#spikesView").hidden=S.tab!=="spikes"; $("#histView").hidden=S.tab!=="hist";
+}
+function applyTheme(){ if(S.theme) document.documentElement.dataset.theme=S.theme; else delete document.documentElement.dataset.theme; }
+function setAuto(){ clearInterval(autoTimer); if(S.auto>0) autoTimer=setInterval(()=>{ if(!scanning&&!document.hidden) scan(); },S.auto*60000); }
+const seg=(sel,fn)=>$(sel).addEventListener("click",e=>{ const b=e.target.closest("button"); if(b) fn(b); });
+
+seg("#langSeg",b=>{ S.lang=b.dataset.lang; store.set("lang",S.lang); applyLang(); });
+seg("#tabSeg",b=>{ S.tab=b.dataset.tab; applyToggles(); if(S.tab==="hist"){ renderHist(); evalHistory(); } });
+seg("#exSeg",b=>{ S.ex[b.dataset.ex]=!S.ex[b.dataset.ex]; store.set("ex2",S.ex); applyToggles(); prevKeys=new Set(); });
+seg("#mkSeg",b=>{ S.mk=b.dataset.mk; store.set("mk",S.mk); applyToggles(); prevKeys=new Set(); });
+seg("#tfSeg",b=>{ S.tf=b.dataset.tf; store.set("tf",S.tf); applyToggles(); prevKeys=new Set(); });
+seg("#dirSeg",b=>{ S.dir=b.dataset.dir; store.set("dir",S.dir); applyToggles(); render(); });
+$("#themeBtn").addEventListener("click",()=>{ const dark=S.theme?S.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches; S.theme=dark?"light":"dark"; store.set("theme",S.theme); applyTheme(); render(); });
+[["thr",1.5],["minVol",0],["maxCoins",10,600],["favThr",1.2],["minNorm",0],["ageDays",0,60],["cooldown",0]].forEach(([id,min,max])=>{
+  const el=$("#"+id); el.value=S[id];
+  el.addEventListener("change",()=>{ let v=+el.value; if(!(v>=min)) v=min; if(max) v=Math.min(max,Math.round(v)); el.value=v; S[id]=v; store.set(id,v); if(id==="thr") render(); });
+});
+[["sound"],["onlyBreak",1],["onlyFav",1],["tgOn"],["tgPhoto"],["wmOn"]].forEach(([id,rer])=>{
+  const el=$("#"+id); el.checked=S[id];
+  el.addEventListener("change",()=>{ S[id]=el.checked; store.set(id,S[id]); if(rer) render(); if(id==="sound"&&S.sound) beep(); });
+});
+["tgToken","tgChat","wmName","wmLink"].forEach(id=>{ const el=$("#"+id); el.value=S[id]; el.addEventListener("change",()=>{ S[id]=el.value.trim(); store.set(id,S[id]); }); });
+$("#tgTest").addEventListener("click",async()=>{
+  S.tgToken=$("#tgToken").value.trim(); S.tgChat=$("#tgChat").value.trim(); store.set("tgToken",S.tgToken); store.set("tgChat",S.tgChat);
+  const st=$("#tgStatus"); st.textContent="…";
+  try{ const fd=new FormData(); fd.append("chat_id",S.tgChat); fd.append("text",t("tgTestMsg")); await tgCall("sendMessage",fd); st.textContent=t("tgOk"); }
+  catch(e){ st.textContent=t("tgFail",{msg:e.message}); }
+});
+$("#auto").addEventListener("change",e=>{ S.auto=+e.target.value; store.set("auto",S.auto); setAuto(); });
+$("#scanBtn").addEventListener("click",scan);
+$("#shotTableBtn").addEventListener("click",shotTable);
+$("#csvBtn").addEventListener("click",resultsCSV);
+$("#histCsv").addEventListener("click",histCSV);
+$("#histClear").addEventListener("click",()=>{ if(confirm(t("clearConfirm"))){ hist=[]; saveHist(); renderHist(); } });
+$("#search").addEventListener("input",e=>{ search=e.target.value.trim().toUpperCase(); render(); });
+$("#headRow").addEventListener("click",e=>{ const b=e.target.closest("button[data-sort]"); if(!b) return; const k=b.dataset.sort;
+  S.sort=S.sort.key===k?{key:k,dir:-S.sort.dir}:{key:k,dir:k==="symbol"?1:-1}; store.set("sort",S.sort); render(); });
+$("#sortSel").addEventListener("change",e=>{ const [key,dir]=e.target.value.split(":"); S.sort={key,dir:+dir}; store.set("sort",S.sort); render(); });
+$("#tbody").addEventListener("click",e=>{
+  const rows=$("#tbody")._rows||[];
+  const fb=e.target.closest("[data-fav]"); if(fb){ e.stopPropagation(); toggleFav(fb.dataset.fav); return; }
+  const sb=e.target.closest("[data-shot]"); if(sb){ e.stopPropagation(); openDetail(rows[+sb.dataset.shot]); setTimeout(shotCard,250); return; }
+  const tr=e.target.closest("tr[data-i]"); if(tr) openDetail(rows[+tr.dataset.i]);
+});
+$("#dFav").addEventListener("click",()=>current&&toggleFav(current.symbol));
+$("#dClose").addEventListener("click",()=>$("#detail").close());
+$("#dShot").addEventListener("click",shotCard);
+$("#pClose").addEventListener("click",()=>$("#preview").close());
+$("#pShare").addEventListener("click",async()=>{ try{ await navigator.share({files:[new File([shotBlob],shotName,{type:"image/png"})]}); }catch(e){} });
+$("#pCopy").addEventListener("click",async()=>{ try{ await navigator.clipboard.write([new ClipboardItem({"image/png":shotBlob})]); $("#pCopy").textContent=t("copied"); }catch(e){} });
+document.querySelectorAll("dialog").forEach(d=>d.addEventListener("click",e=>{ if(e.target===d) d.close(); }));
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",()=>{ if(!S.theme) render(); });
+
+applyTheme(); applyToggles(); applyLang(); setAuto();
+scan();
+</script>
+<script>
+(function () {
+  var DL = window.CH ? CH.param() : {};
+  if (!DL.coin) return;
+  search = DL.coin; var i = document.getElementById('search'); if (i) i.value = DL.coin; render();
+})();
+</script>
+</body>
+</html>

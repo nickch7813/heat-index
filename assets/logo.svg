@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 70 500 500" role="img" aria-label="CRYPTO HUNTERS">
+<rect x="70" y="70" width="500" height="500" rx="120" fill="#0B0E14"/>
+<circle cx="320" cy="320" r="200" fill="none" stroke="#F5A524" stroke-width="22"/>
+<circle cx="320" cy="320" r="120" fill="none" stroke="#F5A524" stroke-width="6" stroke-opacity=".35"/>
+<path d="M320 96v80M320 464v80M96 320h80M464 320h80" stroke="#F5A524" stroke-width="22" stroke-linecap="round"/>
+<path d="M230 160v80M275 200v85M320 250v70" stroke="#F0475B" stroke-width="6"/>
+<rect x="215" y="175" width="30" height="50" rx="4" fill="#F0475B"/>
+<rect x="260" y="215" width="30" height="55" rx="4" fill="#F0475B"/>
+<rect x="305" y="262" width="30" height="40" rx="4" fill="#F0475B"/>
+<path d="M365 225v85M410 160v95" stroke="#2EBD85" stroke-width="6"/>
+<rect x="350" y="240" width="30" height="60" rx="4" fill="#2EBD85"/>
+<rect x="395" y="175" width="30" height="70" rx="4" fill="#2EBD85"/>
+<circle cx="320" cy="320" r="14" fill="#F5A524"/>
+</svg>

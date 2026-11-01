@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16181d">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/ch.css">
+<script src="../assets/ch.js" data-tool="lab"></script>
+<title>Coin Lab — CRYPTO HUNTERS</title>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#0F1724; --panel:#151F30; --panel2:#1B283C; --line:#26354D; --text:#E7EDF5; --mute:#8798B0;
+  --up:#2EBD8E; --down:#EE5D5D; --accent:#F2B441; --accent-ink:#1A1405; --blue:#5B9CF5; --violet:#A58BF0;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#F2F5F9; --panel:#FFFFFF; --panel2:#F6F8FB; --line:#DDE4EE; --text:#132034; --mute:#5B6C86;
+  --up:#13956B; --down:#D3423F; --accent:#C9861A; --accent-ink:#FFFFFF; --blue:#2F6FD6; --violet:#7656D6;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 "Onest",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--accent)}
+.wrap{max-width:1320px;margin:0 auto;padding:0 16px}
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--bg)}
+.top .wrap{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding-top:10px;padding-bottom:10px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.2px;white-space:nowrap}
+.brand small{font-weight:500;color:var(--mute)}
+.brand svg{width:26px;height:26px;color:var(--accent)}
+.pick{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex:1}
+.tools{display:flex;gap:6px;align-items:center}
+.inp,select.inp{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:40px}
+#sym{width:130px;text-transform:uppercase;font-weight:700}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:transparent;padding:8px 12px;cursor:pointer;color:var(--mute);min-height:38px}
+.seg button[aria-pressed="true"]{background:var(--panel2);color:var(--text);font-weight:600;box-shadow:inset 0 -2px 0 var(--accent)}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 12px;cursor:pointer;min-height:40px;white-space:nowrap}
+.btn:hover{border-color:var(--mute)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn.icon{width:40px;padding:0;display:inline-grid;place-items:center}
+.btn:focus-visible,.inp:focus-visible,.seg button:focus-visible,.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.favs{display:flex;gap:6px;flex-wrap:wrap;padding:10px 0 0}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:4px 11px;font-size:13px;cursor:pointer}
+.chip b{font-weight:700}.chip .x{margin-left:6px;color:var(--mute)}
+.status{font-size:13px;color:var(--mute);padding:8px 0 0;min-height:28px}
+.status.err{color:var(--down)}
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr 1fr 1.15fr;gap:14px;margin-top:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.coin h1{margin:0;font-size:30px;line-height:1.1;font-weight:800;letter-spacing:-.5px}
+.coin .sub{color:var(--mute);font-size:13px}
+.price{font-size:40px;font-weight:800;letter-spacing:-1px;line-height:1.15;margin-top:8px}
+.chg{font-weight:700}
+.up{color:var(--up)}.down{color:var(--down)}.mute{color:var(--mute)}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.kv div{background:var(--panel2);border-radius:10px;padding:8px 10px}
+.kv span{display:block;font-size:12px;color:var(--mute)}
+.kv b{font-size:15px}
+.dial{display:flex;flex-direction:column;align-items:center;text-align:center}
+.dial svg{width:100%;max-width:330px;margin-bottom:6px}
+.verdict{font-size:26px;font-weight:800;margin-top:-6px;letter-spacing:-.3px}
+.dial .meta{color:var(--mute);font-size:13px}
+.hz{display:grid;gap:10px}
+.hzrow{display:grid;grid-template-columns:118px 1fr 40px;gap:10px;align-items:center;font-size:14px}
+.bar{position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--up),#C9C25A 50%,var(--down))}
+.bar i{position:absolute;top:-4px;width:4px;height:20px;border-radius:2px;background:var(--text);box-shadow:0 0 0 2px var(--panel);transform:translateX(-2px)}
+.plan{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.plan div{background:var(--panel2);border-radius:10px;padding:8px 10px}
+.plan span{display:block;font-size:12px;color:var(--mute)}
+.plan b{font-size:15px}
+h2{font-size:18px;margin:0 0 10px;font-weight:700}
+h3{font-size:15px;margin:16px 0 8px;font-weight:700}
+/* chart */
+.chartcard{margin-top:14px;padding:12px}
+.ctool{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+.tog{border:1px solid var(--line);background:transparent;border-radius:8px;padding:4px 10px;font-size:13px;cursor:pointer;color:var(--mute)}
+.tog[aria-pressed="true"]{color:var(--text);border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+#chart{height:460px;position:relative}
+.pbadge{position:absolute;left:8px;top:8px;z-index:3;pointer-events:none;padding-right:30px!important;background:color-mix(in srgb,var(--panel) 90%,transparent);border:1px solid var(--line);border-radius:12px;padding:8px 12px;min-width:210px}
+.pbadge .row{display:flex;justify-content:space-between;gap:14px;font-size:14px}
+.pbadge .big{font-size:20px;font-weight:800}
+.pbadge .split{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:6px 0 4px}
+.pbadge .split b{display:block}
+.pbadge .sub{font-size:12px;color:var(--mute)}
+.pbadge:empty{display:none}
+.ib{position:relative;display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;border:1px solid var(--mute);color:var(--mute);background:transparent;font:700 11px/1 "Onest",system-ui,sans-serif;cursor:pointer;padding:0;margin-left:6px;vertical-align:middle;flex:none;pointer-events:auto}
+.ib::after{content:"";position:absolute;inset:-9px}
+.ib:hover,.ib[aria-expanded="true"]{color:var(--accent);border-color:var(--accent)}
+.hlab .ib{margin-left:2px}
+.pbadge .ib{position:absolute;top:6px;right:6px}
+.plh{display:flex;align-items:center;margin:14px 0 8px;font-size:14px;color:var(--mute);font-weight:600}
+#tip{position:fixed;z-index:60;width:min(360px,calc(100vw - 16px));max-height:70vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 14px 40px rgba(0,0,0,.4);font-size:14px;line-height:1.5;display:none}
+#tip.on{display:block}
+#tip h4{margin:0 0 6px;font-size:15px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+#tip h4 button{border:0;background:transparent;color:var(--mute);font-size:18px;cursor:pointer;padding:0 2px;line-height:1}
+#tip p{margin:0 0 8px}#tip p:last-child{margin:0}
+#tip .gi{padding:8px 0;border-top:1px solid var(--line)}#tip .gi:first-of-type{border-top:0}
+#tip .gi b{display:block;margin-bottom:2px}
+.pane2{position:relative;height:var(--pnh,150px);border-top:1px solid var(--line)}
+.hrhead{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.hrhead .lbl{font-weight:700;font-size:14px;margin-right:4px}
+.hrhead label{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--mute)}
+.hrhead input{width:64px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 8px}
+.hrow{position:relative;height:var(--hrh,200px);border-top:1px solid var(--line)}
+#hr_avg{height:calc(var(--hrh,200px) * 1.2)}
+.hlab{position:absolute;left:6px;top:4px;z-index:3;pointer-events:none;font-size:12px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:2px 8px;border-radius:8px;background:color-mix(in srgb,var(--panel) 85%,transparent);max-width:calc(100% - 100px)}
+.hlab i{width:10px;height:3px;border-radius:2px;display:inline-block}
+.hlab .v{font-weight:800;font-size:13px}
+.hlab .pill{font-size:11px;padding:1px 7px}
+.hrow.off{display:none}
+.bar s{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--panel);opacity:.9}
+.legend{font-size:12px;color:var(--mute);display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+/* tabs */
+.tabs{display:flex;gap:4px;overflow-x:auto;margin:18px 0 0;border-bottom:1px solid var(--line);scrollbar-width:none}
+.tab{border:0;background:transparent;padding:10px 14px;cursor:pointer;color:var(--mute);font-weight:600;white-space:nowrap;border-bottom:2px solid transparent}
+.tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--accent)}
+.pane{display:none;padding:16px 0}
+.pane.on{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.prose p{margin:0 0 10px;max-width:78ch}
+.prose p b{font-weight:700}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mute);font-weight:500;font-size:13px}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.pill.up{background:color-mix(in srgb,var(--up) 16%,transparent)}
+.pill.down{background:color-mix(in srgb,var(--down) 16%,transparent)}
+.pill.n{background:var(--panel2);color:var(--mute)}
+canvas.plot{width:100%;display:block}
+.tape{max-height:320px;overflow:auto}
+.note{font-size:13px;color:var(--mute)}
+.scorebar{display:grid;grid-template-columns:150px 1fr 54px;gap:10px;align-items:center;font-size:14px;margin:6px 0}
+.sb{position:relative;height:10px;background:var(--panel2);border-radius:5px}
+.sb::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--mute)}
+.sb i{position:absolute;top:0;bottom:0;border-radius:5px}
+/* drawer */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);background:var(--panel);border-left:1px solid var(--line);z-index:40;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.drawer.open{transform:none}
+.drawer header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
+.drawer .body{overflow:auto;padding:4px 16px 20px;flex:1}
+.drawer fieldset{border:0;padding:0;margin:14px 0 0}
+.drawer legend{font-weight:700;font-size:15px;margin-bottom:6px}
+.fld{display:grid;grid-template-columns:1fr 130px;gap:10px;align-items:center;padding:5px 0;font-size:14px}
+.fld input[type=number],.fld input[type=text],.fld input[type=password],.fld select{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.fld input[type=checkbox]{justify-self:end;width:20px;height:20px;accent-color:var(--accent)}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:39;display:none}
+.scrim.on{display:block}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;z-index:50;display:none;max-width:90vw}
+footer{padding:26px 0 40px;color:var(--mute);font-size:13px;border-top:1px solid var(--line);margin-top:20px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--mute);border-top-color:var(--accent);border-radius:50%;animation:sp 0.8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}.drawer{transition:none}}
+@media (max-width:1000px){.hero{grid-template-columns:1fr 1fr}.hero .c3{grid-column:1/-1}.grid3{grid-template-columns:1fr 1fr}}
+@media (max-width:700px){.top{position:static}.hrow{height:calc(var(--hrh,200px) * .8)}.pane2{height:calc(var(--pnh,150px) * .85)}#hr_avg{height:calc(var(--hrh,200px) * .95)}.hero,.grid2,.grid3{grid-template-columns:1fr}.price{font-size:32px}#chart{height:360px}#tip.sheet{left:8px!important;right:8px;top:auto!important;bottom:calc(8px + env(safe-area-inset-bottom,0px));width:auto}.pbadge{min-width:0;padding:6px 9px}.pbadge .big{font-size:16px}.kv{grid-template-columns:repeat(2,1fr)}.scorebar{grid-template-columns:110px 1fr 46px}#sym{width:100px}}
+</style>
+<style id="ch-skin">
+body.ch-skin{background:var(--ch-bg);color:var(--ch-tx)}
+body.ch-skin :is(h1){font-size:20px!important;font-weight:500!important;letter-spacing:0!important;line-height:1.25!important}
+body.ch-skin :is(h2){font-weight:500!important;letter-spacing:0!important}
+body.ch-skin :is(h3){font-weight:500!important}
+body.ch-skin b, body.ch-skin strong{font-weight:600}
+body.ch-skin ::placeholder{color:var(--ch-t3)}
+
+html:root:root{--bg:var(--ch-bg);--panel:var(--ch-bg);--panel2:var(--ch-s1);--line:var(--ch-bd);--text:var(--ch-tx);--mute:var(--ch-t2);
+  --up:var(--ch-up);--down:var(--ch-dn);--accent:var(--ch-ac);--accent-ink:#fff;--blue:var(--ch-ac);--violet:#8b6fe0;--ch-w:1320px}
+body.ch-skin .top{background:var(--ch-bg);backdrop-filter:none;border-bottom-width:0.5px}
+body.ch-skin .brand{font-weight:500}
+body.ch-skin .brand svg{color:var(--ch-brand)}
+body.ch-skin .card{border-width:0.5px;border-radius:12px}
+body.ch-skin :is(.btn,.inp,.seg,.chip,.tog,.drawer,.tabs,.pbadge,#tip){border-width:0.5px}
+body.ch-skin .inp,body.ch-skin select.inp{background:var(--ch-bg);border-radius:8px;min-height:34px;padding:5px 9px}
+body.ch-skin .btn{background:none;color:var(--ch-t2);border-color:var(--ch-bd2);border-radius:14px;min-height:32px;padding:4px 12px;font-size:13px}
+body.ch-skin .btn:hover{border-color:var(--ch-t3);color:var(--ch-tx)}
+body.ch-skin .btn.icon{width:32px;padding:0}
+body.ch-skin .btn.primary{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+body.ch-skin .seg{border-color:var(--ch-bd2);border-radius:8px;background:none}
+body.ch-skin .seg button{min-height:32px;padding:5px 11px;font-size:13px}
+body.ch-skin .seg button[aria-pressed="true"]{background:var(--ch-acb);color:var(--ch-act);box-shadow:none;font-weight:500}
+body.ch-skin .tog[aria-pressed="true"]{color:var(--ch-act);background:var(--ch-acb);border-color:var(--ch-acd)}
+body.ch-skin .chip{border-color:var(--ch-bd2)}
+body.ch-skin .tab{font-weight:500}
+body.ch-skin .tab[aria-selected="true"]{border-bottom-color:var(--ch-ac)}
+body.ch-skin .coin h1{font-size:26px!important;font-weight:500!important}
+body.ch-skin .price{font-weight:600;letter-spacing:-.5px}
+body.ch-skin .verdict{font-weight:600}
+body.ch-skin .pbadge .big,body.ch-skin .hlab .v{font-weight:600}
+body.ch-skin .pill{font-weight:500}
+body.ch-skin .kv div,body.ch-skin .plan div{border-radius:8px}
+body.ch-skin .toast{border-radius:14px;font-weight:500}
+body.ch-skin footer:not(.ch-foot){border-top-width:0.5px}
+#chLinks .ch-links{margin-top:12px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="4"/><path d="M16 1v7M16 24v7M1 16h7M24 16h7"/></svg>
+      <span>Coin Lab</span>
+    </div>
+    <div class="pick">
+      <input id="sym" class="inp" list="symlist" autocomplete="off" spellcheck="false" aria-label="Coin">
+      <datalist id="symlist"></datalist>
+      <select id="quote" class="inp" aria-label="Quote"><option>USDT</option><option>BTC</option><option>USDC</option><option>FDUSD</option></select>
+      <select id="exch" class="inp" aria-label="Exchange"><option value="binance">Binance</option><option value="bybit">Bybit</option><option value="okx">OKX</option></select>
+      <div class="seg" id="mkt"><button data-v="spot" data-i="spot"></button><button data-v="fut" data-i="futures"></button></div>
+      <select id="tf" class="inp" aria-label="Timeframe"><option>5m</option><option>15m</option><option>1h</option><option>4h</option><option>1d</option><option>1w</option></select>
+      <button id="go" class="btn primary" data-i="analyze"></button>
+    </div>
+    <div class="tools">
+      <button id="star" class="btn icon" aria-label="Favorite">☆</button>
+      <button id="refresh" class="btn icon" aria-label="Refresh">⟳</button>
+      <select id="lang" class="inp" aria-label="Language"><option value="uk">UA</option><option value="en">EN</option><option value="ru">RU</option></select>
+      <button id="themeBtn" class="btn icon" aria-label="Theme">◐</button>
+      <button id="openSet" class="btn icon" aria-label="Settings">⚙</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="favs" class="favs"></div>
+  <div id="status" class="status" role="status"></div>
+
+  <section class="hero">
+    <div class="card coin">
+      <h1 id="hName">—</h1>
+      <div class="sub" id="hSub"></div>
+      <div class="price" id="hPrice">—</div>
+      <div id="hChg" class="chg"></div>
+      <div class="kv" id="hKv"></div>
+      <div id="chLinks"></div>
+    </div>
+    <div class="card dial" style="position:relative">
+      <span style="position:absolute;top:12px;right:12px"><button class="ib" data-tip="score" aria-label="?">i</button></span>
+      <svg id="gauge" viewBox="0 0 300 175" aria-hidden="true"></svg>
+      <div class="verdict" id="verdict">—</div>
+      <div class="meta" id="prob"></div>
+      <div class="meta" id="conf"></div>
+    </div>
+    <div class="card c3">
+      <h2><span data-i="heatTitle"></span><button class="ib" data-tip="hz" aria-label="?">i</button></h2>
+      <div class="hz" id="hz"></div>
+      <h3 class="plh"><span data-i="planTitle"></span><button class="ib" data-tip="plan" aria-label="?">i</button></h3>
+      <div class="plan" id="plan" style="margin-top:0"></div>
+    </div>
+  </section>
+
+  <section class="card chartcard">
+    <div class="ctool" id="ovl"></div>
+    <div id="chart"><div class="pbadge" id="pBadge"></div></div>
+    <div class="ctool hrhead" id="paneSel"></div>
+    <div id="panes"></div>
+    <div class="ctool hrhead" id="hrHead"></div>
+    <div id="hrows"><div class="hrow" id="hr_h1"><div class="hlab" id="hl_h1"></div></div><div class="hrow" id="hr_h4"><div class="hlab" id="hl_h4"></div></div><div class="hrow" id="hr_d1"><div class="hlab" id="hl_d1"></div></div><div class="hrow" id="hr_avg"><div class="hlab" id="hl_avg"></div></div></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <nav class="tabs" role="tablist" id="tabs">
+    <button class="tab" role="tab" data-t="sum" data-i="tSum" aria-selected="true"></button>
+    <button class="tab" role="tab" data-t="ind" data-i="tInd"></button>
+    <button class="tab" role="tab" data-t="ew" data-i="tEw"></button>
+    <button class="tab" role="tab" data-t="wh" data-i="tWh"></button>
+    <button class="tab" role="tab" data-t="lq" data-i="tLq"></button>
+    <button class="tab" role="tab" data-t="bt" data-i="tBt"></button>
+    <button class="tab" role="tab" data-t="sh" data-i="tSh"></button>
+  </nav>
+
+  <section class="pane on" id="p-sum">
+    <div class="grid2">
+      <div class="card prose" id="narr"></div>
+      <div class="card"><h2><span data-i="factors"></span><button class="ib" data-tip="score" aria-label="?">i</button></h2><div id="factors"></div><p class="note" data-i="factorsNote"></p></div>
+    </div>
+    <div class="card" style="margin-top:14px"><h2 data-i="levels"></h2><div class="tbl-wrap" id="levelsTbl"></div></div>
+  </section>
+
+  <section class="pane" id="p-ind">
+    <div class="card"><div class="tbl-wrap" id="indTbl"></div></div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card"><h2 data-i="mtf"></h2><div class="tbl-wrap" id="mtfTbl"></div></div>
+      <div class="card"><h2 data-i="volTitle"></h2><div id="volBox" class="prose"></div></div>
+    </div>
+  </section>
+
+  <section class="pane" id="p-ew">
+    <div class="grid2">
+      <div class="card prose" id="ewBox"></div>
+      <div class="card"><h2><span data-i="ewPoints"></span><button class="ib" data-tip="ew" aria-label="?">i</button></h2><div class="tbl-wrap" id="ewTbl"></div><p class="note" data-i="ewNote"></p></div>
+    </div>
+  </section>
+
+  <section class="pane" id="p-wh">
+    <div class="grid2">
+      <div class="card"><h2><span data-i="depth"></span><button class="ib" data-tip="imb" aria-label="?">i</button></h2><canvas class="plot" id="depthCv" height="260"></canvas><div id="imbBox" style="margin-top:10px"></div></div>
+      <div class="card"><h2><span data-i="walls"></span><button class="ib" data-tip="walls" aria-label="?">i</button></h2><div class="tbl-wrap" id="wallsTbl"></div></div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card prose" id="flowBox"></div>
+      <div class="card"><h2 data-i="tape"></h2><div class="tape tbl-wrap" id="tapeTbl"></div></div>
+    </div>
+  </section>
+
+  <section class="pane" id="p-lq">
+    <div class="grid3" id="drvKv"></div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="card"><h2><span data-i="liqMap"></span><button class="ib" data-tip="liqmap" aria-label="?">i</button></h2><canvas class="plot" id="liqCv" height="380"></canvas><p class="note" data-i="liqMapNote"></p></div>
+      <div class="card prose" id="drvBox"></div>
+    </div>
+    <div class="card" style="margin-top:14px"><h2 data-i="liqLive"></h2><div id="liqTot" class="note"></div><div class="tape tbl-wrap" id="liqTbl"></div></div>
+  </section>
+
+  <section class="pane" id="p-bt">
+    <div class="card">
+      <div class="ctool">
+        <label class="note" data-i="btSignal"></label>
+        <select id="btSig" class="inp"><option value="heat"></option><option value="rsi"></option><option value="macd"></option><option value="conf"></option><option value="avg"></option></select>
+        <button class="btn" id="btRun" data-i="btRun"></button><button class="ib" data-tip="bt" aria-label="?">i</button>
+      </div>
+      <div class="kv" id="btKv" style="grid-template-columns:repeat(4,1fr)"></div>
+      <h3 data-i="equity"></h3>
+      <canvas class="plot" id="eqCv" height="200"></canvas>
+      <h3 data-i="fwd"></h3>
+      <div class="tbl-wrap" id="fwdTbl"></div>
+      <h3 data-i="trades"></h3>
+      <div class="tbl-wrap tape" id="btTbl"></div>
+    </div>
+  </section>
+
+  <section class="pane" id="p-sh">
+    <div class="grid2">
+      <div class="card"><h2 data-i="cardTitle"></h2><canvas id="shareCv" width="1200" height="675" style="width:100%;border-radius:12px;border:1px solid var(--line)"></canvas>
+        <div class="ctool" style="margin-top:10px"><button class="btn primary" id="dlCard" data-i="dlCard"></button><button class="btn" id="tgCard" data-i="tgCard"></button><button class="btn" id="tgText" data-i="tgText"></button><button class="btn" id="cpText" data-i="cpText"></button></div>
+      </div>
+      <div class="card"><h2 data-i="postTitle"></h2><pre id="postTxt" style="white-space:pre-wrap;font:inherit;font-size:14px;margin:0"></pre></div>
+    </div>
+  </section>
+
+  <footer>
+    <div><b>CRYPTO HUNTERS</b> · <a href="https://t.me/Cr_hunters" target="_blank" rel="noopener">t.me/Cr_hunters</a> · <a href="https://github.com/nickch7813/heat-index" target="_blank" rel="noopener">GitHub</a></div>
+    <div data-i="disclaimer" style="margin-top:6px;max-width:80ch"></div>
+  </footer>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Settings">
+  <header><b data-i="settings"></b><div style="display:flex;gap:6px"><button class="btn" id="resetSet" data-i="reset"></button><button class="btn icon" id="closeSet" aria-label="Close">✕</button></div></header>
+  <div class="body" id="setBody"></div>
+</aside>
+<div class="toast" id="toast"></div>
+<div id="tip" role="dialog" aria-modal="false"></div>
+<script>
+"use strict";
+/* ================= SETTINGS ================= */
+const DEF = {
+  base:"BTC", quote:"USDT", exch:"binance", market:"spot", tf:"1h", bars:700, refresh:60, lang:"uk", theme:"dark",
+  emaF:20, emaM:50, emaS:200, rsiP:14, macdF:12, macdS:26, macdG:9, bbP:20, bbK:2, atrP:14, stK:14, stD:3, adxP:14, mfiP:14,
+  heatBuy:25, heatSell:75, hrH:200, paneH:150, panes:{vol:true,prob:true,rsi:true,macd:true}, sv:3, hrow:{h1:true,h4:true,d1:true,avg:true}, heatSmooth:3, volSpike:2.5, volSma:20,
+  zzMode:"auto", zzPct:5, zzAtr:4, ewStrict:false,
+  wallMult:6, wallMin:50000, whaleTrade:50000, bookRange:5,
+  horizon:24, wHeat:1, wTrend:1.2, wMom:1, wEw:0.8, wBook:0.6, wFlow:0.7, wDrv:0.6, wVol:0.4,
+  btSL:2, btTP:4, btFee:0.1, btTrend:true, btHold:48,
+  alerts:false, alertCd:30, tgToken:"", tgChat:"", tgAuto:false,
+  ov:{ema:true, bb:false, vol:true, ew:true, sr:true, fib:false, fc:true, prob:true, walls:true, liq:false, sig:true}, osc:"heat", favs:["BTC","ETH","SOL"]
+};
+const LS_KEY = "ch_coinlab_v1";
+let S = load();
+function load(){ try{ const v = JSON.parse(localStorage.getItem(LS_KEY)||"{}"); const o={...DEF, ...v, ov:{...DEF.ov, ...(v.ov||{})}, hrow:{...DEF.hrow, ...(v.hrow||{})}}; if((v.sv||1)<2){ o.heatBuy=25; o.heatSell=75; } if((v.sv||1)<3){ o.panes={...DEF.panes}; if(v.osc&&v.osc!=="cvd") o.panes[v.osc]=true; if(v.osc==="cvd") o.panes.cvd=o.panes.delta=true; if(v.ov&&v.ov.vol===false) o.panes.vol=false; o.sv=3; } o.panes={...o.panes}; return o; }catch(e){ return structuredClone(DEF); } }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ================= UTILS ================= */
+const $ = id => document.getElementById(id);
+const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+const last = a => { for(let i=a.length-1;i>=0;i--) if(a[i]!=null && !isNaN(a[i])) return a[i]; return null; };
+const lastN = (a,n) => a.length? a[a.length-1-n] : null;
+const median = a => { if(!a.length) return 0; const s=[...a].sort((x,y)=>x-y); const m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; };
+const sum = a => a.reduce((x,y)=>x+(y||0),0);
+function decimals(p){ if(!p||!isFinite(p)) return 2; if(p>=1000) return 2; if(p>=1) return 4; return Math.min(10, Math.max(4, -Math.floor(Math.log10(p))+3)); }
+function fp(p){ if(p==null||!isFinite(p)) return "—"; return Number(p).toLocaleString("en-US",{minimumFractionDigits:decimals(ST.price||p),maximumFractionDigits:decimals(ST.price||p)}); }
+function fn(x,d=2){ if(x==null||!isFinite(x)) return "—"; return Number(x).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function fbig(x){ if(x==null||!isFinite(x)) return "—"; if(x===0) return "0"; const a=Math.abs(x); const s=x<0?"−":""; if(a>=1e9) return s+fn(a/1e9,2)+"B"; if(a>=1e6) return s+fn(a/1e6,2)+"M"; if(a>=1e3) return s+fn(a/1e3,1)+"K"; return s+fn(a, a<1?4:0); }
+function fpct(x,d=2){ if(x==null||!isFinite(x)) return "—"; return (x>0?"+":x<0?"−":"")+fn(Math.abs(x),d)+"%"; }
+const cls = x => x>0?"up":x<0?"down":"mute";
+const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(msg){ const el=$("toast"); el.textContent=msg; el.style.display="block"; clearTimeout(toast._t); toast._t=setTimeout(()=>el.style.display="none",2600); }
+async function j(url, opt){ const r = await fetch(url, opt); if(!r.ok) throw new Error(r.status+" "+url.split("?")[0]); return r.json(); }
+const TF_SEC = {"5m":300,"15m":900,"1h":3600,"4h":14400,"1d":86400,"1w":604800};
+
+/* ================= EXCHANGES ================= */
+const BN_S="https://api.binance.com/api/v3", BN_F="https://fapi.binance.com", BY="https://api.bybit.com/v5", OK="https://www.okx.com/api/v5";
+const EX = {
+  binance:{
+    sym:(b,q)=>b+q,
+    async klines(sym, tf, limit, fut){
+      const d = await j(fut?`${BN_F}/fapi/v1/klines?symbol=${sym}&interval=${tf}&limit=${Math.min(limit,1500)}`:`${BN_S}/klines?symbol=${sym}&interval=${tf}&limit=${Math.min(limit,1000)}`);
+      return d.map(k=>({t:k[0]/1000,o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[5],qv:+k[7],tb:+k[9]}));
+    },
+    async ticker(sym,fut){ const d=await j(fut?`${BN_F}/fapi/v1/ticker/24hr?symbol=${sym}`:`${BN_S}/ticker/24hr?symbol=${sym}`); return {last:+d.lastPrice,chg:+d.priceChangePercent,high:+d.highPrice,low:+d.lowPrice,qv:+d.quoteVolume}; },
+    async depth(sym,fut){ const d=await j(fut?`${BN_F}/fapi/v1/depth?symbol=${sym}&limit=1000`:`${BN_S}/depth?symbol=${sym}&limit=1000`); return {bids:d.bids.map(x=>[+x[0],+x[1]]),asks:d.asks.map(x=>[+x[0],+x[1]])}; },
+    async trades(sym,fut){ const d=await j(fut?`${BN_F}/fapi/v1/aggTrades?symbol=${sym}&limit=1000`:`${BN_S}/aggTrades?symbol=${sym}&limit=1000`); return d.map(x=>({p:+x.p,q:+x.q,t:x.T,buy:!x.m})); },
+    async symbols(quote){ const d=await j(`${BN_S}/ticker/24hr`); return d.filter(x=>x.symbol.endsWith(quote)&&+x.quoteVolume>0).map(x=>({b:x.symbol.slice(0,-quote.length),qv:+x.quoteVolume})).sort((a,b)=>b.qv-a.qv); },
+    async deriv(base){
+      const s=base+"USDT";
+      const r = await Promise.allSettled([
+        j(`${BN_F}/fapi/v1/premiumIndex?symbol=${s}`),
+        j(`${BN_F}/fapi/v1/openInterest?symbol=${s}`),
+        j(`${BN_F}/futures/data/openInterestHist?symbol=${s}&period=1h&limit=500`),
+        j(`${BN_F}/futures/data/globalLongShortAccountRatio?symbol=${s}&period=1h&limit=48`),
+        j(`${BN_F}/futures/data/topLongShortPositionRatio?symbol=${s}&period=1h&limit=48`),
+        j(`${BN_F}/futures/data/takerlongshortRatio?symbol=${s}&period=1h&limit=48`),
+        j(`${BN_F}/fapi/v1/fundingRate?symbol=${s}&limit=30`)
+      ]);
+      const v = i => r[i].status==="fulfilled"? r[i].value : null;
+      if(!v(0)) return null;
+      const pi=v(0);
+      return {
+        mark:+pi.markPrice, funding:+pi.lastFundingRate*100, nextFunding:pi.nextFundingTime,
+        oi:v(1)? +v(1).openInterest*+pi.markPrice : null,
+        oiHist:(v(2)||[]).map(x=>({t:x.timestamp/1000, v:+x.sumOpenInterestValue})),
+        ls:(v(3)||[]).map(x=>({t:x.timestamp/1000, v:+x.longShortRatio, l:+x.longAccount})),
+        top:(v(4)||[]).map(x=>({t:x.timestamp/1000, v:+x.longShortRatio})),
+        taker:(v(5)||[]).map(x=>({t:x.timestamp/1000, v:+x.buySellRatio})),
+        fundHist:(v(6)||[]).map(x=>({t:x.fundingTime/1000, v:+x.fundingRate*100}))
+      };
+    },
+    wsTrades:(sym,fut)=>({url:fut?`wss://fstream.binance.com/ws/${sym.toLowerCase()}@aggTrade`:`wss://stream.binance.com:9443/ws/${sym.toLowerCase()}@aggTrade`, parse:m=>m.e==="aggTrade"?[{p:+m.p,q:+m.q,t:m.T,buy:!m.m}]:[]}),
+    wsLiq:base=>({url:`wss://fstream.binance.com/ws/${(base+"USDT").toLowerCase()}@forceOrder`, parse:m=>{ const o=m.o; if(!o) return []; return [{t:o.T, side:o.S==="SELL"?"long":"short", p:+o.ap||+o.p, q:+o.z||+o.q}]; }})
+  },
+  bybit:{
+    sym:(b,q)=>b+q,
+    iv:{"5m":"5","15m":"15","1h":"60","4h":"240","1d":"D","1w":"W"},
+    async klines(sym, tf, limit, fut){
+      const d=await j(`${BY}/market/kline?category=${fut?"linear":"spot"}&symbol=${sym}&interval=${this.iv[tf]}&limit=${Math.min(limit,1000)}`);
+      if(d.retCode!==0||!d.result.list.length) throw new Error("bybit "+d.retMsg);
+      return d.result.list.map(k=>({t:+k[0]/1000,o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:+k[5],qv:+k[6]})).reverse();
+    },
+    async ticker(sym,fut){ const d=await j(`${BY}/market/tickers?category=${fut?"linear":"spot"}&symbol=${sym}`); const x=d.result.list[0]; return {last:+x.lastPrice,chg:+x.price24hPcnt*100,high:+x.highPrice24h,low:+x.lowPrice24h,qv:+x.turnover24h}; },
+    async depth(sym,fut){ const d=await j(`${BY}/market/orderbook?category=${fut?"linear":"spot"}&symbol=${sym}&limit=${fut?500:200}`); return {bids:d.result.b.map(x=>[+x[0],+x[1]]),asks:d.result.a.map(x=>[+x[0],+x[1]])}; },
+    async trades(sym,fut){ const d=await j(`${BY}/market/recent-trade?category=${fut?"linear":"spot"}&symbol=${sym}&limit=${fut?1000:60}`); return d.result.list.map(x=>({p:+x.price,q:+x.size,t:+x.time,buy:x.side==="Buy"})).reverse(); },
+    async symbols(quote){ const d=await j(`${BY}/market/tickers?category=spot`); return d.result.list.filter(x=>x.symbol.endsWith(quote)).map(x=>({b:x.symbol.slice(0,-quote.length),qv:+x.turnover24h})).sort((a,b)=>b.qv-a.qv); },
+    async deriv(base){
+      const s=base+"USDT";
+      const r=await Promise.allSettled([
+        j(`${BY}/market/tickers?category=linear&symbol=${s}`),
+        j(`${BY}/market/open-interest?category=linear&symbol=${s}&intervalTime=1h&limit=200`),
+        j(`${BY}/market/account-ratio?category=linear&symbol=${s}&period=1h&limit=48`),
+        j(`${BY}/market/funding/history?category=linear&symbol=${s}&limit=30`)
+      ]);
+      const v=i=>r[i].status==="fulfilled"&&r[i].value.retCode===0?r[i].value.result:null;
+      if(!v(0)||!v(0).list.length) return null;
+      const tk=v(0).list[0]; const mark=+tk.markPrice;
+      return {
+        mark, funding:+tk.fundingRate*100, nextFunding:+tk.nextFundingTime, oi:+tk.openInterestValue,
+        oiHist:(v(1)?.list||[]).map(x=>({t:+x.timestamp/1000, v:+x.openInterest*mark})).reverse(),
+        ls:(v(2)?.list||[]).map(x=>({t:+x.timestamp/1000, v:+x.buyRatio/Math.max(1e-9,+x.sellRatio), l:+x.buyRatio})).reverse(),
+        top:[], taker:[],
+        fundHist:(v(3)?.list||[]).map(x=>({t:+x.fundingRateTimestamp/1000, v:+x.fundingRate*100})).reverse()
+      };
+    },
+    wsTrades:(sym,fut)=>({url:`wss://stream.bybit.com/v5/public/${fut?"linear":"spot"}`, sub:{op:"subscribe",args:["publicTrade."+sym]}, ping:{op:"ping"}, parse:m=>(m.topic&&m.topic.startsWith("publicTrade")?m.data.map(x=>({p:+x.p,q:+x.v,t:x.T,buy:x.S==="Buy"})):[])}),
+    wsLiq:base=>({url:"wss://stream.bybit.com/v5/public/linear", sub:{op:"subscribe",args:["allLiquidation."+base+"USDT"]}, ping:{op:"ping"}, parse:m=>(m.topic&&m.topic.startsWith("allLiquidation")?m.data.map(x=>({t:x.T, side:x.S==="Buy"?"long":"short", p:+x.p, q:+x.v})):[])})
+  },
+  okx:{
+    sym:(b,q,fut)=>fut?`${b}-USDT-SWAP`:`${b}-${q}`,
+    iv:{"5m":"5m","15m":"15m","1h":"1H","4h":"4H","1d":"1Dutc","1w":"1Wutc"},
+    ct:{},
+    async ctVal(inst){ if(!inst.endsWith("SWAP")) return 1; if(this.ct[inst]) return this.ct[inst]; const d=await j(`${OK}/public/instruments?instType=SWAP&instId=${inst}`); this.ct[inst]=+d.data[0].ctVal; return this.ct[inst]; },
+    async klines(inst, tf, limit, fut){
+      let out=[]; let after="";
+      for(let p=0;p<6&&out.length<limit;p++){
+        const url = p===0? `${OK}/market/candles?instId=${inst}&bar=${this.iv[tf]}&limit=300` : `${OK}/market/history-candles?instId=${inst}&bar=${this.iv[tf]}&limit=100&after=${after}`;
+        const d=await j(url); if(d.code!=="0") throw new Error("okx "+d.msg);
+        if(!d.data.length) break;
+        out=out.concat(d.data); after=d.data[d.data.length-1][0];
+      }
+      if(!out.length) throw new Error("okx empty");
+      return out.slice(0,limit).map(k=>({t:+k[0]/1000,o:+k[1],h:+k[2],l:+k[3],c:+k[4],v:fut?+k[6]:+k[5],qv:+k[7]})).reverse();
+    },
+    async ticker(inst,fut){ const d=await j(`${OK}/market/ticker?instId=${inst}`); const x=d.data[0]; const last=+x.last; return {last,chg:(last/+x.open24h-1)*100,high:+x.high24h,low:+x.low24h,qv:fut?+x.volCcy24h*last:+x.volCcy24h}; },
+    async depth(inst){ const ct=await this.ctVal(inst); const d=await j(`${OK}/market/books?instId=${inst}&sz=400`); const b=d.data[0]; return {bids:b.bids.map(x=>[+x[0],+x[1]*ct]),asks:b.asks.map(x=>[+x[0],+x[1]*ct])}; },
+    async trades(inst){ const ct=await this.ctVal(inst); const d=await j(`${OK}/market/trades?instId=${inst}&limit=500`); return d.data.map(x=>({p:+x.px,q:+x.sz*ct,t:+x.ts,buy:x.side==="buy"})).reverse(); },
+    async symbols(quote){ const d=await j(`${OK}/market/tickers?instType=SPOT`); return d.data.filter(x=>x.instId.endsWith("-"+quote)).map(x=>({b:x.instId.split("-")[0],qv:+x.volCcy24h})).sort((a,b)=>b.qv-a.qv); },
+    async deriv(base){
+      const inst=`${base}-USDT-SWAP`;
+      const r=await Promise.allSettled([
+        j(`${OK}/public/funding-rate?instId=${inst}`),
+        j(`${OK}/public/open-interest?instType=SWAP&instId=${inst}`),
+        j(`${OK}/rubik/stat/contracts/open-interest-volume?ccy=${base}&period=1H`),
+        j(`${OK}/rubik/stat/contracts/long-short-account-ratio?ccy=${base}&period=1H`),
+        j(`${OK}/rubik/stat/taker-volume?ccy=${base}&instType=CONTRACTS&period=1H`),
+        j(`${OK}/public/funding-rate-history?instId=${inst}&limit=30`),
+        j(`${OK}/public/mark-price?instType=SWAP&instId=${inst}`)
+      ]);
+      const v=i=>r[i].status==="fulfilled"&&r[i].value.code==="0"?r[i].value.data:null;
+      if(!v(0)||!v(0).length) return null;
+      const mark=v(6)?.[0]? +v(6)[0].markPx : null;
+      return {
+        mark, funding:+v(0)[0].fundingRate*100, nextFunding:+v(0)[0].nextFundingTime||+v(0)[0].fundingTime,
+        oi:v(1)?.[0]? +v(1)[0].oiCcy*(mark||0) : null,
+        oiHist:(v(2)||[]).map(x=>({t:+x[0]/1000, v:+x[1]})).reverse(),
+        ls:(v(3)||[]).slice(0,48).map(x=>({t:+x[0]/1000, v:+x[1]})).reverse(),
+        top:[], taker:(v(4)||[]).slice(0,48).map(x=>({t:+x[0]/1000, v:+x[2]/Math.max(1e-9,+x[1])})).reverse(),
+        fundHist:(v(5)||[]).map(x=>({t:+x.fundingTime/1000, v:+x.realizedRate*100})).reverse()
+      };
+    },
+    wsTrades:(inst)=>({url:"wss://ws.okx.com:8443/ws/v5/public", sub:{op:"subscribe",args:[{channel:"trades",instId:inst}]}, ping:"ping", ctInst:inst, parse:m=>(m.arg&&m.arg.channel==="trades"&&m.data?m.data.map(x=>({p:+x.px,q:+x.sz*(EX.okx.ct[inst]||1),t:+x.ts,buy:x.side==="buy"})):[])}),
+    wsLiq:base=>({url:"wss://ws.okx.com:8443/ws/v5/public", sub:{op:"subscribe",args:[{channel:"liquidation-orders",instType:"SWAP"}]}, ping:"ping", parse:m=>{ if(!m.data) return []; const out=[]; const inst=`${base}-USDT-SWAP`; for(const d of m.data){ if(d.instId!==inst) continue; for(const x of d.details){ out.push({t:+x.ts, side:x.posSide==="long"||(x.posSide==="net"&&x.side==="sell")?"long":"short", p:+x.bkPx, q:+x.sz*(EX.okx.ct[inst]||1)}); } } return out; }})
+  }
+};
+/* ================= I18N ================= */
+const I18N = {
+uk:{
+  spot:"Спот", futures:"Ф’ючерси", analyze:"Аналізувати", coinPh:"Монета, напр. SOL",
+  loading:"Завантажую дані {s}…", errPair:"Пару {s} не знайдено на цій біржі. Спробуйте іншу котирувальну валюту або біржу.", updated:"Оновлено о {time}", noData:"немає даних",
+  heatTitle:"Heat Index за горизонтами", hzS:"Короткий", hzM:"Середній", hzL:"Довгий", hzA:"Усереднений", hzAvgRow:"Heat усереднений (1h + 4h + 1d)", hzAvgShort:"Усереднений", hrTitle:"Heat по рядках", planTitle:"Торговий план", guideOv:"Що показують шари на графіку", guidePanes:"Що показують панелі індикаторів", covPart:"дані лише за останні {p}% графіка", lvlLow:"Нижній рівень", lvlHigh:"Верхній рівень", sig_avg:"Усереднений Heat (вихід із зон)",
+  high24:"Макс. 24h", low24:"Мін. 24h", vol24:"Обсяг 24h", rsi1h:"RSI 1h", rsi1d:"RSI 1d", atr:"ATR",
+  vStrongBuy:"Сильна купівля", vBuy:"Купівля", vNeutral:"Нейтрально", vSell:"Продаж", vStrongSell:"Сильний продаж",
+  probUp:"Ймовірність росту {p}% на {h}×{tf}", agree:"Узгодженість факторів {p}%",
+  buy:"Купівля", sell:"Продаж", neutral:"Нейтрально",
+  planEntryL:"Зона входу (лонг)", planEntryS:"Зона входу (шорт)", stop:"Стоп", tp1:"Ціль 1", tp2:"Ціль 2", rr:"Ризик / прибуток", baseT:"Базовий прогноз",
+  conf_buy:"Конфлюенс: перепроданість на всіх горизонтах", conf_sell:"Конфлюенс: перегрів на всіх горизонтах", "conf_lean-buy":"Усі горизонти в нижній половині", "conf_lean-sell":"Усі горизонти у верхній половині",
+  tSum:"Аналіз і прогноз", tInd:"Індикатори", tEw:"Хвилі Елліотта", tWh:"Кити", tLq:"Ліквідації та деривативи", tBt:"Перевірка на історії", tSh:"Картка для каналу",
+  factors:"Фактори прогнозу", factorsNote:"Кожен фактор від −100 до +100. Вага налаштовується в параметрах.", levels:"Ключові рівні",
+  fHeat:"Heat Index", fTrend:"Тренд", fMom:"Імпульс", fEw:"Хвилі Елліотта", fBook:"Стакан", fFlow:"Потік угод", fDrv:"Деривативи", fVol:"Сплеск обсягу",
+  analysisFor:"Розгорнутий аналіз {s}",
+  nSum:"Підсумковий сигнал по {s}: {v} (оцінка {sc}). Ймовірність росту на горизонті {h} свічок {tf} — {pu}%. Базовий сценарій веде до {base}, очікуваний діапазон — від {bear} до {bull} (±{sig}% волатильності).",
+  nTrendUp:"Тренд висхідний: ціна вище EMA {e1}, а EMA {e1} вище EMA {e2}. ADX {adx} — {str}.", nTrendDown:"Тренд низхідний: ціна нижче EMA {e1}, а EMA {e1} нижче EMA {e2}. ADX {adx} — {str}.", nTrendMixed:"Тренд змішаний: ковзні середні не вишикувані в один бік. ADX {adx} — {str}.",
+  adxStrong:"сильний тренд", adxMid:"помірний тренд", adxWeak:"слабкий тренд або флет",
+  nD1Up:"Денний графік підтримує ріст.", nD1Down:"Денний графік тисне вниз.", nD1Flat:"Денний графік без чіткого напрямку.",
+  nMom:"RSI {rsi} — {rz}. MACD: {macd}. Stoch RSI {sk}.",
+  rzOb:"зона перекупленості", rzOs:"зона перепроданості", rzBull:"бичача половина", rzBear:"ведмежа половина",
+  mUpGrow:"гістограма вище нуля і росте", mUpFade:"вище нуля, але слабшає", mDnGrow:"нижче нуля і падає", mDnFade:"нижче нуля, але відновлюється",
+  nHeat:"Heat Index: короткий {s}, середній {m}, довгий {l}; усереднений <b>{a}</b> — {az} (рівні {lo} і {hi}). {c}.", noConf:"Збігу на всіх горизонтах немає",
+  nEw:"Хвилі Елліотта: зараз формується хвиля <b>{w}</b> ({d}). {txt} Ціль {tg}, рахунок скасовується за {inv}. Якість розмітки {c}%.", nEwNone:"Чіткої хвильової структури не знайдено — змініть чутливість ZigZag у параметрах або таймфрейм.",
+  up:"вгору", down:"вниз",
+  ew2:"Корекція після першої хвилі — шукаємо вхід у зоні 50–61,8%.", ew3:"Найсильніша хвиля руху — тренд найімовірніше продовжиться.", ew4:"Бокова корекція перед фінальним рухом — можна добирати позицію.", ew5:"Фінальна хвиля імпульсу — час планувати фіксацію.", ewA:"Імпульс завершено, почалася корекція A.", ewB:"Корекційний відскок B — часто пастка.", ewC:"Фінальна хвиля корекції C — готуємо купівлю біля її завершення.",
+  nBook:"Стакан у межах ±2%: дисбаланс {i2} — {side}. Найближча стіна-підтримка: {sup}, стіна-опір: {res}.", bidsDom:"переважають покупці", asksDom:"переважають продавці", balanced:"рівновага",
+  nFlow:"За останні {m} хв дельта покупок і продажів {d}, у великих угодах {wd} ({n} угод китів). Середній зсув ціни після угоди кита {imp}.",
+  nDrv:"Деривативи: фандинг {f}%, відкритий інтерес {oi} $ ({oic} за 24h), співвідношення лонг/шорт {ls}. Режим ринку: {rg}. Висновок: {c}.",
+  drvBull:"натовп у шортах — є паливо для шорт-сквізу", drvBear:"натовп у лонгах — ризик лонг-сквізу", drvFlat:"перекосу немає",
+  nLiq:"Найбільші кластери ліквідацій: лонги біля {l}, шорти біля {s} — ціна часто тягнеться до них.",
+  nSpike:"На останніх свічках сплеск обсягу ×{r} у напрямку {d}.",
+  nPlanL:"План лонгу: вхід {e1}–{e2}, стоп {sl}, цілі {t1} і {t2}, співвідношення ризик/прибуток {rr}.", nPlanS:"Сигнал ведмежий: для споту краще почекати або фіксувати; для ф’ючерсів — шорт від {e1}–{e2}, стоп {sl}, цілі {t1} і {t2}, ризик/прибуток {rr}.", planWeak:"Сигнал слабкий — угоду варто відкривати лише після підтвердження.", rrLow:"Співвідношення нижче 1,5 — угода слабка, краще дочекатися кращої ціни.",
+  disclaimer:"Аналіз формується автоматично і не є фінансовою порадою. Перевіряйте рівні самостійно та керуйте ризиком.", nfa:"Не фінансова порада",
+  res:"Опір", sup:"Підтримка", touches:"дотиків: {n}", wallBid:"Стіна купівлі", wallAsk:"Стіна продажу", ewTarget:"Ціль хвилі", ewInval:"Скасування хвиль", liqL:"Ліквідації лонгів", liqS:"Ліквідації шортів",
+  type:"Тип", price:"Ціна", dist:"Відстань", note:"Примітка", wave:"Хвиля",
+  indicator:"Індикатор", value:"Значення", signal:"Сигнал", comment:"Коментар", mtf:"Мультитаймфрейм", volTitle:"Обсяг і дельта",
+  zoneLow:"нижня зона", zoneHigh:"верхня зона", zoneMid:"середня зона", bbW:"ширина каналу {w}%", above:"ціна вище", below:"ціна нижче", needBars:"замало свічок", accum:"накопичення", distrib:"розподіл", atrNote:"середній хід свічки", heatLow:"перепроданість", heatHigh:"перегрів", heatMid:"нейтрально",
+  nVol:"Обсяг останньої свічки ×{r} від середнього за {n}. Дельта покупців і продавців за 24 свічки: {d} ({src}).", deltaReal:"за даними taker-обсягу", deltaEst:"оцінка за формою свічки",
+  spikeOn:"Сплеск обсягу ×{r}", noSpike:"Сплеску обсягу (≥ ×{x}) на останніх свічках немає.",
+  ewPoints:"Розмітка хвиль", ewNote:"Хвилі будуються з точок ZigZag. Знак «?» — хвиля ще формується.", formingW:"Формується хвиля", zone:"Зона", time:"Час", len:"Зміна", forming:"формується", ewDev:"Чутливість ZigZag: {d}%",
+  ewAdv_2u:"Чекаємо завершення корекції в зоні та розвороту вгору — це класичний вхід у хвилю 3.", ewAdv_2d:"Відскок у низхідному імпульсі — зона для продажу перед хвилею 3 вниз.",
+  ewAdv_3u:"Тримаємо лонг, стоп переносимо під кінець хвилі 2.", ewAdv_3d:"Сильне падіння — не ловимо ножі, чекаємо хвилю 4.",
+  ewAdv_4u:"Добір позиції в зоні корекції, стоп під скасуванням.", ewAdv_4d:"Відскок у падінні — фіксуємо лонги, можливий шорт перед хвилею 5.",
+  ewAdv_5u:"Фінальний ріст: частково фіксуємо, нові лонги з малим ризиком.", ewAdv_5d:"Останнє падіння — готуємо купівлю біля цілі.",
+  ewAdv_Au:"Корекція після імпульсу: нові лонги не відкриваємо.", ewAdv_Ad:"Відскок після падіння: можлива швидка купівля, але тренд ще низхідний.",
+  ewAdv_Bu:"Відскок B — шанс вийти з лонгів дорожче.", ewAdv_Bd:"Пауза B — чекаємо хвилю C вгору.",
+  ewAdv_Cu:"Хвиля C вниз — готуємо купівлю біля цілі.", ewAdv_Cd:"Хвиля C вгору — готуємо фіксацію біля цілі.",
+  depth:"Глибина стакана", walls:"Стіни китів", imbAt:"Дисбаланс ±{r}%", spread:"Спред", wallThr:"Поріг стіни", side:"Сторона", size:"Обсяг", noWalls:"Великих стін у межах діапазону не знайдено.",
+  flowTitle:"Потік угод і вплив китів", buyVol:"Покупки", sellVol:"Продажі", whaleBuy:"Кити купили", whaleSell:"Кити продали", impactNote:"Вплив — середня зміна ціни через 30 угод після великої угоди (вибірка {n}).",
+  tape:"Стрічка великих угод (наживо)", buyW:"Купівля", sellW:"Продаж", noWhales:"Угод від {x} $ поки немає.",
+  noDeriv:"Безстроковий ф’ючерс для цієї монети не знайдено.", funding:"Фандинг", oi:"Відкритий інтерес", ls:"Лонг/шорт акаунтів", top:"Лонг/шорт топ-трейдерів", taker:"Taker купівля/продаж", regime:"Режим ринку",
+  nextF:"наступний о {t}", avg30:"середній {v}%", longsPct:"лонгів {p}%", topNote:"позиції топ-трейдерів", takerNote:"середнє за 6 год", oiPx:"OI {oi} · ціна {px}",
+  rLongs:"нові лонги (OI↑ ціна↑)", rShorts:"нові шорти (OI↑ ціна↓)", rCover:"закриття шортів (OI↓ ціна↑)", rLiq:"вихід лонгів (OI↓ ціна↓)",
+  drvTitle:"Що кажуть деривативи", nLiqMap:"Скупчення ліквідацій лонгів: {l}. Скупчення ліквідацій шортів: {s}.",
+  fundHot:"Фандинг високий: лонги переплачують, зростає ризик різкого скидання.", fundCold:"Фандинг від’ємний: шорти переплачують, можливий шорт-сквіз.", fundOk:"Фандинг у нормі.",
+  liqMap:"Карта ліквідацій (оцінка)", liqMapNote:"Оцінка за приростом OI та плечима 5–100×. Червоне — ліквідації лонгів, зелене — шортів.", liqMapNoUsd:"Карта доступна для пар до USDT/USDC",
+  liqLive:"Ліквідації наживо", liqTot:"З моменту відкриття: лонги {l} $ · шорти {s} $", liqWait:"Чекаємо ліквідації…", liqLong:"Лонг", liqShort:"Шорт",
+  btSignal:"Сигнал для перевірки", btRun:"Перевірити", sig_heat:"Heat Index (вихід із зон)", sig_rsi:"RSI 30/70", sig_macd:"Перетин MACD", sig_conf:"Heat + RSI + MACD",
+  btRet:"Прибуток стратегії", btHoldR:"Купив і тримав", btWin:"Виграшні угоди", btN:"Угод", btMdd:"Макс. просадка", btPer:"Період",
+  equity:"Крива капіталу", fwd:"Що відбувається після сигналу купівлі", bars:"Через свічок", signals:"Сигналів", avgRet:"Середня зміна", hit:"Частка в плюсі", trades:"Угоди",
+  entryT:"Вхід", entry:"Ціна входу", exit:"Ціна виходу", why:"Причина", why_SL:"Стоп", why_TP:"Ціль", why_SIG:"Сигнал продажу", why_TIME:"Час", noTrades:"За цей період угод немає.", strategy:"Стратегія",
+  cardTitle:"Картка з водяним знаком", postTitle:"Текст поста", dlCard:"Зберегти PNG", tgCard:"Надіслати картку в Telegram", tgText:"Надіслати текст", cpText:"Копіювати текст", copied:"Скопійовано",
+  tgNeed:"Вкажіть токен бота і chat id у параметрах", tgOk:"Надіслано в Telegram", tgErr:"Не вдалося надіслати:", tgHelp:"Бот має бути адміністратором каналу. Chat id каналу: @Cr_hunters або числовий -100…", tgTest:"Тестове повідомлення", notifAllow:"Дозволити сповіщення",
+  alVerdict:"{s}: сигнал змінився на «{v}»", alConf:"{s}: {c}", alSpike:"{s}: сплеск обсягу ×{r}",
+  range:"Діапазон", base:"База", bull:"Бичачий", bear:"Ведмежий", ovEw:"Хвилі",
+  ov_ema:"EMA", ov_bb:"Bollinger", ov_vol:"Обсяг", ov_ew:"Хвилі", ov_sr:"Рівні", ov_fib:"Фібоначчі", ov_fc:"Прогноз", ov_walls:"Стіни", ov_liq:"Ліквідації", ov_sig:"Сигнали", ov_prob:"Ймовірність", osc_prob:"Ймовірність росту", probRise:"Ріст", probFall:"Падіння", probOn:"на {h}×{tf}",
+  osc_heat:"Heat", osc_rsi:"RSI", osc_macd:"MACD", osc_stoch:"Stoch RSI", osc_cvd:"CVD", osc_adx:"ADX", osc_obv:"OBV", osc_mfi:"MFI", osc_vol:"Обсяг", osc_delta:"Дельта обсягу", paneTitle:"Панелі індикаторів", s_paneH:"Висота панелей індикаторів, px",
+  settings:"Параметри", reset:"Скинути", resetDone:"Параметри скинуто",
+  gData:"Дані", gInd:"Індикатори", gHeat:"Heat Index і обсяг", gEw:"Хвилі Елліотта", gWh:"Кити", gFc:"Прогноз і ваги факторів", gBt:"Перевірка на історії", gAl:"Сповіщення і Telegram",
+  s_bars:"Кількість свічок", s_refresh:"Автооновлення, с (0 — вимк.)", s_emaF:"EMA швидка", s_emaM:"EMA середня", s_emaS:"EMA повільна", s_rsiP:"Період RSI", s_macdF:"MACD швидка", s_macdS:"MACD повільна", s_macdG:"MACD сигнальна", s_bbP:"Bollinger період", s_bbK:"Bollinger відхилення", s_atrP:"Період ATR", s_stK:"Stochastic %K", s_stD:"Stochastic згладж.", s_adxP:"Період ADX", s_mfiP:"Період MFI",
+  s_heatBuy:"Нижній рівень Heat", s_heatSell:"Верхній рівень Heat", s_heatSmooth:"Згладжування Heat", s_hrH:"Висота рядків Heat, px", s_volSpike:"Сплеск обсягу від ×", s_volSma:"Середній обсяг за",
+  s_zzMode:"Режим ZigZag", o_auto:"Авто", o_atr:"Множник ATR", o_pct:"Відсоток", s_zzPct:"ZigZag, %", s_zzAtr:"ZigZag, × ATR", s_ewStrict:"Суворі правила хвилі 4",
+  s_wallMult:"Стіна від × медіани", s_wallMin:"Мін. стіна, $", s_whaleTrade:"Угода кита від, $", s_bookRange:"Діапазон стакана, ±%",
+  s_horizon:"Горизонт прогнозу, свічок", s_wHeat:"Вага: Heat", s_wTrend:"Вага: тренд", s_wMom:"Вага: імпульс", s_wEw:"Вага: хвилі", s_wBook:"Вага: стакан", s_wFlow:"Вага: потік угод", s_wDrv:"Вага: деривативи", s_wVol:"Вага: обсяг",
+  s_btSL:"Стоп, × ATR", s_btTP:"Ціль, × ATR", s_btFee:"Комісія, %", s_btHold:"Макс. утримання, свічок", s_btTrend:"Фільтр тренду (EMA повільна)",
+  s_alerts:"Сповіщення про сигнали", s_alertCd:"Пауза між сповіщеннями, хв", s_tgToken:"Токен бота", s_tgChat:"Chat id", s_tgAuto:"Автоматично слати сигнали"
+},
+en:{
+  spot:"Spot", futures:"Futures", analyze:"Analyze", coinPh:"Coin, e.g. SOL",
+  loading:"Loading {s}…", errPair:"Pair {s} not found on this exchange. Try another quote or exchange.", updated:"Updated at {time}", noData:"no data",
+  heatTitle:"Heat Index by horizon", hzS:"Short", hzM:"Mid", hzL:"Long", hzA:"Average", hzAvgRow:"Heat average (1h + 4h + 1d)", hzAvgShort:"Average", hrTitle:"Heat rows", planTitle:"Trade plan", guideOv:"What the chart layers show", guidePanes:"What the indicator panes show", covPart:"data for the last {p}% of the chart only", lvlLow:"Lower level", lvlHigh:"Upper level", sig_avg:"Average Heat (zone exit)",
+  high24:"24h high", low24:"24h low", vol24:"24h volume", rsi1h:"RSI 1h", rsi1d:"RSI 1d", atr:"ATR",
+  vStrongBuy:"Strong buy", vBuy:"Buy", vNeutral:"Neutral", vSell:"Sell", vStrongSell:"Strong sell",
+  probUp:"{p}% chance of rise over {h}×{tf}", agree:"Factor agreement {p}%",
+  buy:"Buy", sell:"Sell", neutral:"Neutral",
+  planEntryL:"Entry zone (long)", planEntryS:"Entry zone (short)", stop:"Stop", tp1:"Target 1", tp2:"Target 2", rr:"Risk / reward", baseT:"Base forecast",
+  conf_buy:"Confluence: oversold on every horizon", conf_sell:"Confluence: overheated on every horizon", "conf_lean-buy":"All horizons in the lower half", "conf_lean-sell":"All horizons in the upper half",
+  tSum:"Analysis & forecast", tInd:"Indicators", tEw:"Elliott waves", tWh:"Whales", tLq:"Liquidations & derivatives", tBt:"History check", tSh:"Channel card",
+  factors:"Forecast factors", factorsNote:"Each factor runs from −100 to +100. Weights are adjustable in settings.", levels:"Key levels",
+  fHeat:"Heat Index", fTrend:"Trend", fMom:"Momentum", fEw:"Elliott waves", fBook:"Order book", fFlow:"Trade flow", fDrv:"Derivatives", fVol:"Volume spike",
+  analysisFor:"Detailed analysis of {s}",
+  nSum:"Overall signal for {s}: {v} (score {sc}). Chance of a rise over the next {h} {tf} candles is {pu}%. The base case points to {base}; the expected range is {bear} to {bull} (±{sig}% volatility).",
+  nTrendUp:"Uptrend: price is above EMA {e1}, and EMA {e1} is above EMA {e2}. ADX {adx}, {str}.", nTrendDown:"Downtrend: price is below EMA {e1}, and EMA {e1} is below EMA {e2}. ADX {adx}, {str}.", nTrendMixed:"Mixed trend: moving averages are not aligned. ADX {adx}, {str}.",
+  adxStrong:"strong trend", adxMid:"moderate trend", adxWeak:"weak trend or range",
+  nD1Up:"The daily chart supports upside.", nD1Down:"The daily chart is pressing down.", nD1Flat:"The daily chart has no clear direction.",
+  nMom:"RSI {rsi}, {rz}. MACD: {macd}. Stoch RSI {sk}.",
+  rzOb:"overbought zone", rzOs:"oversold zone", rzBull:"bullish half", rzBear:"bearish half",
+  mUpGrow:"histogram above zero and rising", mUpFade:"above zero but fading", mDnGrow:"below zero and falling", mDnFade:"below zero but recovering",
+  nHeat:"Heat Index: short {s}, mid {m}, long {l}; average <b>{a}</b>, {az} (levels {lo} and {hi}). {c}.", noConf:"No agreement across all horizons",
+  nEw:"Elliott waves: wave <b>{w}</b> is forming ({d}). {txt} Target {tg}; the count is invalid beyond {inv}. Count quality {c}%.", nEwNone:"No clear wave structure — change ZigZag sensitivity in settings or the timeframe.",
+  up:"up", down:"down",
+  ew2:"Pullback after wave 1 — look for entry in the 50–61.8% zone.", ew3:"The strongest wave — the trend most likely continues.", ew4:"Sideways pullback before the final leg — adding is reasonable.", ew5:"Final impulse wave — plan profit-taking.", ewA:"The impulse is over; correction A has started.", ewB:"Corrective bounce B — often a trap.", ewC:"Final corrective wave C — prepare to buy near its end.",
+  nBook:"Order book within ±2%: imbalance {i2}, {side}. Nearest support wall: {sup}; resistance wall: {res}.", bidsDom:"buyers dominate", asksDom:"sellers dominate", balanced:"balanced",
+  nFlow:"Over the last {m} min, buy/sell delta is {d}; in large trades {wd} ({n} whale trades). Average price move after a whale trade: {imp}.",
+  nDrv:"Derivatives: funding {f}%, open interest {oi} $ ({oic} in 24h), long/short ratio {ls}. Market regime: {rg}. Takeaway: {c}.",
+  drvBull:"the crowd is short — fuel for a short squeeze", drvBear:"the crowd is long — long squeeze risk", drvFlat:"no skew",
+  nLiq:"Largest liquidation clusters: longs near {l}, shorts near {s} — price often gravitates toward them.",
+  nSpike:"Recent candles show a ×{r} volume spike {d}.",
+  nPlanL:"Long plan: entry {e1}–{e2}, stop {sl}, targets {t1} and {t2}, risk/reward {rr}.", nPlanS:"Bearish signal: on spot, wait or take profit; on futures, short from {e1}–{e2}, stop {sl}, targets {t1} and {t2}, risk/reward {rr}.", planWeak:"The signal is weak — open a trade only after confirmation.", rrLow:"Risk/reward below 1.5 — a weak trade; wait for a better price.",
+  disclaimer:"This analysis is generated automatically and is not financial advice. Check the levels yourself and manage your risk.", nfa:"Not financial advice",
+  res:"Resistance", sup:"Support", touches:"touches: {n}", wallBid:"Buy wall", wallAsk:"Sell wall", ewTarget:"Wave target", ewInval:"Wave invalidation", liqL:"Long liquidations", liqS:"Short liquidations",
+  type:"Type", price:"Price", dist:"Distance", note:"Note", wave:"Wave",
+  indicator:"Indicator", value:"Value", signal:"Signal", comment:"Comment", mtf:"Multi-timeframe", volTitle:"Volume and delta",
+  zoneLow:"lower zone", zoneHigh:"upper zone", zoneMid:"middle zone", bbW:"band width {w}%", above:"price above", below:"price below", needBars:"not enough candles", accum:"accumulation", distrib:"distribution", atrNote:"average candle range", heatLow:"oversold", heatHigh:"overheated", heatMid:"neutral",
+  nVol:"Last candle volume is ×{r} of the {n}-bar average. Buyer/seller delta over 24 candles: {d} ({src}).", deltaReal:"from taker volume", deltaEst:"estimated from candle shape",
+  spikeOn:"Volume spike ×{r}", noSpike:"No volume spike (≥ ×{x}) on recent candles.",
+  ewPoints:"Wave count", ewNote:"Waves are built from ZigZag points. “?” means the wave is still forming.", formingW:"Forming wave", zone:"Zone", time:"Time", len:"Change", forming:"forming", ewDev:"ZigZag sensitivity: {d}%",
+  ewAdv_2u:"Wait for the pullback to finish in the zone and turn up — the classic wave 3 entry.", ewAdv_2d:"A bounce inside a down impulse — a selling zone before wave 3 down.",
+  ewAdv_3u:"Hold the long; move the stop below the end of wave 2.", ewAdv_3d:"Strong drop — don’t catch knives; wait for wave 4.",
+  ewAdv_4u:"Add in the pullback zone, stop below invalidation.", ewAdv_4d:"Bounce inside the drop — close longs; a short before wave 5 is possible.",
+  ewAdv_5u:"Final leg up: take partial profit; new longs only with small risk.", ewAdv_5d:"Last leg down — prepare to buy near the target.",
+  ewAdv_Au:"Correction after the impulse: don’t open new longs.", ewAdv_Ad:"Bounce after the decline: a quick buy is possible, but the trend is still down.",
+  ewAdv_Bu:"Bounce B — a chance to exit longs higher.", ewAdv_Bd:"Pause B — wait for wave C up.",
+  ewAdv_Cu:"Wave C down — prepare to buy near the target.", ewAdv_Cd:"Wave C up — prepare to take profit near the target.",
+  depth:"Order book depth", walls:"Whale walls", imbAt:"Imbalance ±{r}%", spread:"Spread", wallThr:"Wall threshold", side:"Side", size:"Size", noWalls:"No large walls in range.",
+  flowTitle:"Trade flow and whale impact", buyVol:"Buys", sellVol:"Sells", whaleBuy:"Whales bought", whaleSell:"Whales sold", impactNote:"Impact is the average price change 30 trades after a large trade (sample {n}).",
+  tape:"Large trades tape (live)", buyW:"Buy", sellW:"Sell", noWhales:"No trades of {x} $ or more yet.",
+  noDeriv:"No perpetual futures found for this coin.", funding:"Funding", oi:"Open interest", ls:"Long/short accounts", top:"Top traders long/short", taker:"Taker buy/sell", regime:"Market regime",
+  nextF:"next at {t}", avg30:"avg {v}%", longsPct:"longs {p}%", topNote:"top trader positions", takerNote:"6-hour average", oiPx:"OI {oi} · price {px}",
+  rLongs:"new longs (OI↑ price↑)", rShorts:"new shorts (OI↑ price↓)", rCover:"short covering (OI↓ price↑)", rLiq:"longs exiting (OI↓ price↓)",
+  drvTitle:"What derivatives say", nLiqMap:"Long liquidation clusters: {l}. Short liquidation clusters: {s}.",
+  fundHot:"Funding is high: longs are overpaying, the risk of a sharp flush is growing.", fundCold:"Funding is negative: shorts are overpaying, a short squeeze is possible.", fundOk:"Funding is normal.",
+  liqMap:"Liquidation map (estimate)", liqMapNote:"Estimated from OI growth and 5–100× leverage. Red: long liquidations; green: shorts.", liqMapNoUsd:"Map is available for USDT/USDC pairs",
+  liqLive:"Live liquidations", liqTot:"Since opening: longs {l} $ · shorts {s} $", liqWait:"Waiting for liquidations…", liqLong:"Long", liqShort:"Short",
+  btSignal:"Signal to check", btRun:"Run check", sig_heat:"Heat Index (zone exit)", sig_rsi:"RSI 30/70", sig_macd:"MACD cross", sig_conf:"Heat + RSI + MACD",
+  btRet:"Strategy return", btHoldR:"Buy & hold", btWin:"Winning trades", btN:"Trades", btMdd:"Max drawdown", btPer:"Period",
+  equity:"Equity curve", fwd:"What happens after a buy signal", bars:"After candles", signals:"Signals", avgRet:"Average change", hit:"Share positive", trades:"Trades",
+  entryT:"Entry", entry:"Entry price", exit:"Exit price", why:"Reason", why_SL:"Stop", why_TP:"Target", why_SIG:"Sell signal", why_TIME:"Time", noTrades:"No trades in this period.", strategy:"Strategy",
+  cardTitle:"Watermarked card", postTitle:"Post text", dlCard:"Save PNG", tgCard:"Send card to Telegram", tgText:"Send text", cpText:"Copy text", copied:"Copied",
+  tgNeed:"Set the bot token and chat id in settings", tgOk:"Sent to Telegram", tgErr:"Couldn’t send:", tgHelp:"The bot must be a channel admin. Channel chat id: @Cr_hunters or numeric -100…", tgTest:"Send test message", notifAllow:"Allow notifications",
+  alVerdict:"{s}: signal changed to “{v}”", alConf:"{s}: {c}", alSpike:"{s}: volume spike ×{r}",
+  range:"Range", base:"Base", bull:"Bullish", bear:"Bearish", ovEw:"Waves",
+  ov_ema:"EMA", ov_bb:"Bollinger", ov_vol:"Volume", ov_ew:"Waves", ov_sr:"Levels", ov_fib:"Fibonacci", ov_fc:"Forecast", ov_walls:"Walls", ov_liq:"Liquidations", ov_sig:"Signals", ov_prob:"Probability", osc_prob:"Chance of rise", probRise:"Rise", probFall:"Fall", probOn:"over {h}×{tf}",
+  osc_heat:"Heat", osc_rsi:"RSI", osc_macd:"MACD", osc_stoch:"Stoch RSI", osc_cvd:"CVD", osc_adx:"ADX", osc_obv:"OBV", osc_mfi:"MFI", osc_vol:"Volume", osc_delta:"Volume delta", paneTitle:"Indicator panes", s_paneH:"Indicator pane height, px",
+  settings:"Settings", reset:"Reset", resetDone:"Settings reset",
+  gData:"Data", gInd:"Indicators", gHeat:"Heat Index and volume", gEw:"Elliott waves", gWh:"Whales", gFc:"Forecast and factor weights", gBt:"History check", gAl:"Alerts and Telegram",
+  s_bars:"Number of candles", s_refresh:"Auto refresh, s (0 = off)", s_emaF:"Fast EMA", s_emaM:"Mid EMA", s_emaS:"Slow EMA", s_rsiP:"RSI period", s_macdF:"MACD fast", s_macdS:"MACD slow", s_macdG:"MACD signal", s_bbP:"Bollinger period", s_bbK:"Bollinger deviation", s_atrP:"ATR period", s_stK:"Stochastic %K", s_stD:"Stochastic smoothing", s_adxP:"ADX period", s_mfiP:"MFI period",
+  s_heatBuy:"Lower Heat level", s_heatSell:"Upper Heat level", s_heatSmooth:"Heat smoothing", s_hrH:"Heat row height, px", s_volSpike:"Volume spike from ×", s_volSma:"Average volume over",
+  s_zzMode:"ZigZag mode", o_auto:"Auto", o_atr:"ATR multiple", o_pct:"Percent", s_zzPct:"ZigZag, %", s_zzAtr:"ZigZag, × ATR", s_ewStrict:"Strict wave 4 rule",
+  s_wallMult:"Wall from × median", s_wallMin:"Min wall, $", s_whaleTrade:"Whale trade from, $", s_bookRange:"Book range, ±%",
+  s_horizon:"Forecast horizon, candles", s_wHeat:"Weight: Heat", s_wTrend:"Weight: trend", s_wMom:"Weight: momentum", s_wEw:"Weight: waves", s_wBook:"Weight: order book", s_wFlow:"Weight: trade flow", s_wDrv:"Weight: derivatives", s_wVol:"Weight: volume",
+  s_btSL:"Stop, × ATR", s_btTP:"Target, × ATR", s_btFee:"Fee, %", s_btHold:"Max hold, candles", s_btTrend:"Trend filter (slow EMA)",
+  s_alerts:"Signal alerts", s_alertCd:"Alert cooldown, min", s_tgToken:"Bot token", s_tgChat:"Chat id", s_tgAuto:"Send signals automatically"
+},
+ru:{
+  spot:"Спот", futures:"Фьючерсы", analyze:"Анализировать", coinPh:"Монета, напр. SOL",
+  loading:"Загружаю данные {s}…", errPair:"Пара {s} не найдена на этой бирже. Попробуйте другую котируемую валюту или биржу.", updated:"Обновлено в {time}", noData:"нет данных",
+  heatTitle:"Heat Index по горизонтам", hzS:"Короткий", hzM:"Средний", hzL:"Длинный", hzA:"Усреднённый", hzAvgRow:"Heat усреднённый (1h + 4h + 1d)", hzAvgShort:"Усреднённый", hrTitle:"Heat по строкам", planTitle:"Торговый план", guideOv:"Что показывают слои на графике", guidePanes:"Что показывают панели индикаторов", covPart:"данные только за последние {p}% графика", lvlLow:"Нижний уровень", lvlHigh:"Верхний уровень", sig_avg:"Усреднённый Heat (выход из зон)",
+  high24:"Макс. 24h", low24:"Мин. 24h", vol24:"Объём 24h", rsi1h:"RSI 1h", rsi1d:"RSI 1d", atr:"ATR",
+  vStrongBuy:"Сильная покупка", vBuy:"Покупка", vNeutral:"Нейтрально", vSell:"Продажа", vStrongSell:"Сильная продажа",
+  probUp:"Вероятность роста {p}% на {h}×{tf}", agree:"Согласованность факторов {p}%",
+  buy:"Покупка", sell:"Продажа", neutral:"Нейтрально",
+  planEntryL:"Зона входа (лонг)", planEntryS:"Зона входа (шорт)", stop:"Стоп", tp1:"Цель 1", tp2:"Цель 2", rr:"Риск / прибыль", baseT:"Базовый прогноз",
+  conf_buy:"Конфлюенс: перепроданность на всех горизонтах", conf_sell:"Конфлюенс: перегрев на всех горизонтах", "conf_lean-buy":"Все горизонты в нижней половине", "conf_lean-sell":"Все горизонты в верхней половине",
+  tSum:"Анализ и прогноз", tInd:"Индикаторы", tEw:"Волны Эллиотта", tWh:"Киты", tLq:"Ликвидации и деривативы", tBt:"Проверка на истории", tSh:"Карточка для канала",
+  factors:"Факторы прогноза", factorsNote:"Каждый фактор от −100 до +100. Вес настраивается в параметрах.", levels:"Ключевые уровни",
+  fHeat:"Heat Index", fTrend:"Тренд", fMom:"Импульс", fEw:"Волны Эллиотта", fBook:"Стакан", fFlow:"Поток сделок", fDrv:"Деривативы", fVol:"Всплеск объёма",
+  analysisFor:"Развёрнутый анализ {s}",
+  nSum:"Итоговый сигнал по {s}: {v} (оценка {sc}). Вероятность роста на горизонте {h} свечей {tf} — {pu}%. Базовый сценарий ведёт к {base}, ожидаемый диапазон — от {bear} до {bull} (±{sig}% волатильности).",
+  nTrendUp:"Тренд восходящий: цена выше EMA {e1}, а EMA {e1} выше EMA {e2}. ADX {adx} — {str}.", nTrendDown:"Тренд нисходящий: цена ниже EMA {e1}, а EMA {e1} ниже EMA {e2}. ADX {adx} — {str}.", nTrendMixed:"Тренд смешанный: скользящие не выстроены в одну сторону. ADX {adx} — {str}.",
+  adxStrong:"сильный тренд", adxMid:"умеренный тренд", adxWeak:"слабый тренд или флэт",
+  nD1Up:"Дневной график поддерживает рост.", nD1Down:"Дневной график давит вниз.", nD1Flat:"Дневной график без чёткого направления.",
+  nMom:"RSI {rsi} — {rz}. MACD: {macd}. Stoch RSI {sk}.",
+  rzOb:"зона перекупленности", rzOs:"зона перепроданности", rzBull:"бычья половина", rzBear:"медвежья половина",
+  mUpGrow:"гистограмма выше нуля и растёт", mUpFade:"выше нуля, но слабеет", mDnGrow:"ниже нуля и падает", mDnFade:"ниже нуля, но восстанавливается",
+  nHeat:"Heat Index: короткий {s}, средний {m}, длинный {l}; усреднённый <b>{a}</b> — {az} (уровни {lo} и {hi}). {c}.", noConf:"Совпадения на всех горизонтах нет",
+  nEw:"Волны Эллиотта: сейчас формируется волна <b>{w}</b> ({d}). {txt} Цель {tg}, счёт отменяется за {inv}. Качество разметки {c}%.", nEwNone:"Чёткой волновой структуры не найдено — измените чувствительность ZigZag в параметрах или таймфрейм.",
+  up:"вверх", down:"вниз",
+  ew2:"Коррекция после первой волны — ищем вход в зоне 50–61,8%.", ew3:"Самая сильная волна движения — тренд скорее всего продолжится.", ew4:"Боковая коррекция перед финальным движением — можно добирать.", ew5:"Финальная волна импульса — время планировать фиксацию.", ewA:"Импульс завершён, началась коррекция A.", ewB:"Коррекционный отскок B — часто ловушка.", ewC:"Финальная волна коррекции C — готовим покупку у её завершения.",
+  nBook:"Стакан в пределах ±2%: дисбаланс {i2} — {side}. Ближайшая стена-поддержка: {sup}, стена-сопротивление: {res}.", bidsDom:"преобладают покупатели", asksDom:"преобладают продавцы", balanced:"равновесие",
+  nFlow:"За последние {m} мин дельта покупок и продаж {d}, в крупных сделках {wd} ({n} сделок китов). Средний сдвиг цены после сделки кита {imp}.",
+  nDrv:"Деривативы: фандинг {f}%, открытый интерес {oi} $ ({oic} за 24h), соотношение лонг/шорт {ls}. Режим рынка: {rg}. Вывод: {c}.",
+  drvBull:"толпа в шортах — есть топливо для шорт-сквиза", drvBear:"толпа в лонгах — риск лонг-сквиза", drvFlat:"перекоса нет",
+  nLiq:"Крупнейшие кластеры ликвидаций: лонги около {l}, шорты около {s} — цена часто тянется к ним.",
+  nSpike:"На последних свечах всплеск объёма ×{r} в направлении {d}.",
+  nPlanL:"План лонга: вход {e1}–{e2}, стоп {sl}, цели {t1} и {t2}, риск/прибыль {rr}.", nPlanS:"Сигнал медвежий: на споте лучше подождать или фиксировать; на фьючерсах — шорт от {e1}–{e2}, стоп {sl}, цели {t1} и {t2}, риск/прибыль {rr}.", planWeak:"Сигнал слабый — открывать сделку стоит только после подтверждения.", rrLow:"Соотношение ниже 1,5 — сделка слабая, лучше дождаться лучшей цены.",
+  disclaimer:"Анализ формируется автоматически и не является финансовым советом. Проверяйте уровни самостоятельно и управляйте риском.", nfa:"Не финансовый совет",
+  res:"Сопротивление", sup:"Поддержка", touches:"касаний: {n}", wallBid:"Стена покупки", wallAsk:"Стена продажи", ewTarget:"Цель волны", ewInval:"Отмена волн", liqL:"Ликвидации лонгов", liqS:"Ликвидации шортов",
+  type:"Тип", price:"Цена", dist:"Расстояние", note:"Примечание", wave:"Волна",
+  indicator:"Индикатор", value:"Значение", signal:"Сигнал", comment:"Комментарий", mtf:"Мультитаймфрейм", volTitle:"Объём и дельта",
+  zoneLow:"нижняя зона", zoneHigh:"верхняя зона", zoneMid:"средняя зона", bbW:"ширина канала {w}%", above:"цена выше", below:"цена ниже", needBars:"мало свечей", accum:"накопление", distrib:"распределение", atrNote:"средний ход свечи", heatLow:"перепроданность", heatHigh:"перегрев", heatMid:"нейтрально",
+  nVol:"Объём последней свечи ×{r} от среднего за {n}. Дельта покупателей и продавцов за 24 свечи: {d} ({src}).", deltaReal:"по taker-объёму", deltaEst:"оценка по форме свечи",
+  spikeOn:"Всплеск объёма ×{r}", noSpike:"Всплеска объёма (≥ ×{x}) на последних свечах нет.",
+  ewPoints:"Разметка волн", ewNote:"Волны строятся по точкам ZigZag. Знак «?» — волна ещё формируется.", formingW:"Формируется волна", zone:"Зона", time:"Время", len:"Изменение", forming:"формируется", ewDev:"Чувствительность ZigZag: {d}%",
+  ewAdv_2u:"Ждём завершения коррекции в зоне и разворота вверх — классический вход в волну 3.", ewAdv_2d:"Отскок в нисходящем импульсе — зона для продажи перед волной 3 вниз.",
+  ewAdv_3u:"Держим лонг, стоп переносим под конец волны 2.", ewAdv_3d:"Сильное падение — не ловим ножи, ждём волну 4.",
+  ewAdv_4u:"Добор в зоне коррекции, стоп под отменой.", ewAdv_4d:"Отскок в падении — фиксируем лонги, возможен шорт перед волной 5.",
+  ewAdv_5u:"Финальный рост: частично фиксируем, новые лонги с малым риском.", ewAdv_5d:"Последнее падение — готовим покупку у цели.",
+  ewAdv_Au:"Коррекция после импульса: новые лонги не открываем.", ewAdv_Ad:"Отскок после падения: возможна быстрая покупка, но тренд ещё нисходящий.",
+  ewAdv_Bu:"Отскок B — шанс выйти из лонгов дороже.", ewAdv_Bd:"Пауза B — ждём волну C вверх.",
+  ewAdv_Cu:"Волна C вниз — готовим покупку у цели.", ewAdv_Cd:"Волна C вверх — готовим фиксацию у цели.",
+  depth:"Глубина стакана", walls:"Стены китов", imbAt:"Дисбаланс ±{r}%", spread:"Спред", wallThr:"Порог стены", side:"Сторона", size:"Объём", noWalls:"Крупных стен в диапазоне не найдено.",
+  flowTitle:"Поток сделок и влияние китов", buyVol:"Покупки", sellVol:"Продажи", whaleBuy:"Киты купили", whaleSell:"Киты продали", impactNote:"Влияние — среднее изменение цены через 30 сделок после крупной сделки (выборка {n}).",
+  tape:"Лента крупных сделок (вживую)", buyW:"Покупка", sellW:"Продажа", noWhales:"Сделок от {x} $ пока нет.",
+  noDeriv:"Бессрочный фьючерс для этой монеты не найден.", funding:"Фандинг", oi:"Открытый интерес", ls:"Лонг/шорт аккаунтов", top:"Лонг/шорт топ-трейдеров", taker:"Taker покупка/продажа", regime:"Режим рынка",
+  nextF:"следующий в {t}", avg30:"средний {v}%", longsPct:"лонгов {p}%", topNote:"позиции топ-трейдеров", takerNote:"среднее за 6 ч", oiPx:"OI {oi} · цена {px}",
+  rLongs:"новые лонги (OI↑ цена↑)", rShorts:"новые шорты (OI↑ цена↓)", rCover:"закрытие шортов (OI↓ цена↑)", rLiq:"выход лонгов (OI↓ цена↓)",
+  drvTitle:"Что говорят деривативы", nLiqMap:"Скопления ликвидаций лонгов: {l}. Скопления ликвидаций шортов: {s}.",
+  fundHot:"Фандинг высокий: лонги переплачивают, растёт риск резкого пролива.", fundCold:"Фандинг отрицательный: шорты переплачивают, возможен шорт-сквиз.", fundOk:"Фандинг в норме.",
+  liqMap:"Карта ликвидаций (оценка)", liqMapNote:"Оценка по приросту OI и плечам 5–100×. Красное — ликвидации лонгов, зелёное — шортов.", liqMapNoUsd:"Карта доступна для пар к USDT/USDC",
+  liqLive:"Ликвидации вживую", liqTot:"С момента открытия: лонги {l} $ · шорты {s} $", liqWait:"Ждём ликвидации…", liqLong:"Лонг", liqShort:"Шорт",
+  btSignal:"Сигнал для проверки", btRun:"Проверить", sig_heat:"Heat Index (выход из зон)", sig_rsi:"RSI 30/70", sig_macd:"Пересечение MACD", sig_conf:"Heat + RSI + MACD",
+  btRet:"Прибыль стратегии", btHoldR:"Купил и держал", btWin:"Прибыльные сделки", btN:"Сделок", btMdd:"Макс. просадка", btPer:"Период",
+  equity:"Кривая капитала", fwd:"Что происходит после сигнала покупки", bars:"Через свечей", signals:"Сигналов", avgRet:"Среднее изменение", hit:"Доля в плюсе", trades:"Сделки",
+  entryT:"Вход", entry:"Цена входа", exit:"Цена выхода", why:"Причина", why_SL:"Стоп", why_TP:"Цель", why_SIG:"Сигнал продажи", why_TIME:"Время", noTrades:"За этот период сделок нет.", strategy:"Стратегия",
+  cardTitle:"Карточка с водяным знаком", postTitle:"Текст поста", dlCard:"Сохранить PNG", tgCard:"Отправить карточку в Telegram", tgText:"Отправить текст", cpText:"Копировать текст", copied:"Скопировано",
+  tgNeed:"Укажите токен бота и chat id в параметрах", tgOk:"Отправлено в Telegram", tgErr:"Не удалось отправить:", tgHelp:"Бот должен быть администратором канала. Chat id канала: @Cr_hunters или числовой -100…", tgTest:"Тестовое сообщение", notifAllow:"Разрешить уведомления",
+  alVerdict:"{s}: сигнал сменился на «{v}»", alConf:"{s}: {c}", alSpike:"{s}: всплеск объёма ×{r}",
+  range:"Диапазон", base:"База", bull:"Бычий", bear:"Медвежий", ovEw:"Волны",
+  ov_ema:"EMA", ov_bb:"Bollinger", ov_vol:"Объём", ov_ew:"Волны", ov_sr:"Уровни", ov_fib:"Фибоначчи", ov_fc:"Прогноз", ov_walls:"Стены", ov_liq:"Ликвидации", ov_sig:"Сигналы", ov_prob:"Вероятность", osc_prob:"Вероятность роста", probRise:"Рост", probFall:"Падение", probOn:"на {h}×{tf}",
+  osc_heat:"Heat", osc_rsi:"RSI", osc_macd:"MACD", osc_stoch:"Stoch RSI", osc_cvd:"CVD", osc_adx:"ADX", osc_obv:"OBV", osc_mfi:"MFI", osc_vol:"Объём", osc_delta:"Дельта объёма", paneTitle:"Панели индикаторов", s_paneH:"Высота панелей индикаторов, px",
+  settings:"Параметры", reset:"Сбросить", resetDone:"Параметры сброшены",
+  gData:"Данные", gInd:"Индикаторы", gHeat:"Heat Index и объём", gEw:"Волны Эллиотта", gWh:"Киты", gFc:"Прогноз и веса факторов", gBt:"Проверка на истории", gAl:"Уведомления и Telegram",
+  s_bars:"Количество свечей", s_refresh:"Автообновление, с (0 — выкл.)", s_emaF:"EMA быстрая", s_emaM:"EMA средняя", s_emaS:"EMA медленная", s_rsiP:"Период RSI", s_macdF:"MACD быстрая", s_macdS:"MACD медленная", s_macdG:"MACD сигнальная", s_bbP:"Bollinger период", s_bbK:"Bollinger отклонение", s_atrP:"Период ATR", s_stK:"Stochastic %K", s_stD:"Stochastic сглаж.", s_adxP:"Период ADX", s_mfiP:"Период MFI",
+  s_heatBuy:"Нижний уровень Heat", s_heatSell:"Верхний уровень Heat", s_heatSmooth:"Сглаживание Heat", s_hrH:"Высота строк Heat, px", s_volSpike:"Всплеск объёма от ×", s_volSma:"Средний объём за",
+  s_zzMode:"Режим ZigZag", o_auto:"Авто", o_atr:"Множитель ATR", o_pct:"Процент", s_zzPct:"ZigZag, %", s_zzAtr:"ZigZag, × ATR", s_ewStrict:"Строгие правила волны 4",
+  s_wallMult:"Стена от × медианы", s_wallMin:"Мин. стена, $", s_whaleTrade:"Сделка кита от, $", s_bookRange:"Диапазон стакана, ±%",
+  s_horizon:"Горизонт прогноза, свечей", s_wHeat:"Вес: Heat", s_wTrend:"Вес: тренд", s_wMom:"Вес: импульс", s_wEw:"Вес: волны", s_wBook:"Вес: стакан", s_wFlow:"Вес: поток сделок", s_wDrv:"Вес: деривативы", s_wVol:"Вес: объём",
+  s_btSL:"Стоп, × ATR", s_btTP:"Цель, × ATR", s_btFee:"Комиссия, %", s_btHold:"Макс. удержание, свечей", s_btTrend:"Фильтр тренда (EMA медленная)",
+  s_alerts:"Уведомления о сигналах", s_alertCd:"Пауза между уведомлениями, мин", s_tgToken:"Токен бота", s_tgChat:"Chat id", s_tgAuto:"Автоматически слать сигналы"
+}};
+/* ================= HINTS (title, body; "\n" = new paragraph) ================= */
+const HINTS = {
+uk:{
+  vol:["Обсяг","Скільки монет проторгувалося за свічку. Колір стовпця — напрямок свічки, жовта лінія — середній обсяг за {n} свічок.\nРух на високому обсязі надійніший. Сплеск від ×{x} середнього позначається на графіку ціни квадратом V×."],
+  prob:["Ймовірність росту","Оцінка шансу, що ціна через {h} свічок буде вищою. Лінія в панелі — технічна частина (Heat, тренд, імпульс) на кожній свічці.\nВище 60 — перевага росту, нижче 40 — падіння, біля 50 — невизначеність. Це зважена сума факторів, а не гарантія."],
+  probB:["Плашка ймовірності","Підсумкова ймовірність росту й падіння на {h} свічок з урахуванням усіх 8 факторів, включно зі стаканом, угодами китів і деривативами. Смуга показує співвідношення, нижче — підсумковий сигнал."],
+  heat:["Heat Index","Наш композитний індикатор 0–100: модифікований стохастик, Stoch RSI, RSI і положення в каналі Bollinger, згладжені разом. Тут він порахований на таймфреймі графіка.\nНижче {lo} — перепроданість (зелене, зона купівлі), вище {hi} — перегрів (червоне, зона фіксації). Сигнал — вихід лінії із зони."],
+  rsi:["RSI","Індекс відносної сили за {p} свічок: співвідношення росту й падіння від 0 до 100.\nВище 70 — перекупленість, нижче 30 — перепроданість, 50 — межа між бичачою і ведмежою силою. Розбіжність RSI з ціною часто передує розвороту."],
+  stoch:["Stoch RSI","Стохастик, застосований до RSI: де RSI зараз у своєму недавньому діапазоні. Дуже чутливий.\n%K (синя) перетинає %D (жовту) знизу нижче 20 — сигнал на ріст, згори вище 80 — на падіння. У сильному тренді може довго стояти в зоні."],
+  mfi:["MFI","Індекс грошового потоку: RSI з урахуванням обсягу за {p} свічок.\nВище 80 — у монету зайшло забагато грошей, ризик відкату. Нижче 20 — гроші вийшли, можливий відскок."],
+  macd:["MACD","Різниця швидкої та повільної EMA ({f}/{s}); сигнальна лінія — EMA {g} від неї; гістограма — MACD мінус сигнальна.\nГістограма вище нуля і росте — імпульс вгору; бліді стовпці — імпульс слабшає. Перетин MACD і сигнальної — класичний сигнал."],
+  adx:["ADX / DI","ADX — сила тренду незалежно від напрямку; +DI і −DI — сила покупців і продавців.\nADX вище 25 — тренд є, вище 40 — сильний; нижче 20 — флет, трендові сигнали ненадійні. Напрям — за тим, яка з DI вища."],
+  delta:["Дельта обсягу","Різниця між агресивними купівлями та продажами на кожній свічці. На Binance це точні taker-дані, на інших біржах — оцінка за формою свічки.\nЗелені стовпці — тиснуть покупці, червоні — продавці. Ріст ціни при від’ємній дельті — тривожний знак."],
+  cvd:["CVD","Накопичена дельта обсягу: сума всіх дельт від початку графіка.\nЦіна росте, а CVD падає — ріст тримається на слабкому попиті. CVD росте при боковику — покупці накопичують."],
+  obv:["OBV","Балансовий обсяг: обсяг додається на зелених свічках і віднімається на червоних.\nВажливий напрям, а не саме значення. Якщо OBV оновлює максимум раніше за ціну — це ознака накопичення."],
+  ema:["EMA","Експоненційні ковзні середні {a}, {b} і {c} свічок.\nЦіна вище всіх EMA, а вони вишикувані знизу вгору — висхідний тренд. EMA {c} — головна межа між бичачим і ведмежим ринком; EMA часто працюють як підтримка й опір."],
+  bb:["Bollinger","Канал навколо середньої за {p} свічок шириною ±{k} стандартних відхилення.\nВузький канал часто передує сильному руху. Вихід за межу — ознака сили, але й ризик повернення всередину."],
+  ew:["Хвилі Елліотта","Автоматична розмітка: імпульс 1–5 і корекція A–B–C за точками ZigZag. Знак «?» — хвиля ще формується, пунктир веде до її цілі.\nРахунок скасовується, якщо ціна проходить рівень скасування. Це найімовірніша розмітка, але не єдина можлива."],
+  sr:["Рівні","Підтримки (S) і опори (R) там, де ціна кілька разів розверталася; ×N — кількість дотиків.\nЧим більше дотиків, тим сильніший рівень. Пробитий опір часто стає підтримкою."],
+  fib:["Фібоначчі","Рівні корекції 23,6–78,6% від останнього великого руху (до 200 свічок).\nНайчастіше корекція зупиняється біля 38,2%, 50% і 61,8%."],
+  fc:["Прогноз","Конус на {h} свічок уперед: бичачий, базовий і ведмежий сценарії з урахуванням волатильності та підсумкової оцінки. Лінії Stop, TP1 і TP2 — торговий план.\nБазовий сценарій — найімовірніший шлях, але ціна може рухатися будь-де в межах конуса."],
+  walls:["Стіни китів","Великі лімітні заявки в стакані, що в {m} разів більші за медіану (мінімум {w} $).\nСтіна знизу може тримати ціну, згори — стримувати ріст. Стіни можуть зникнути будь-якої миті, тож це не гарантія."],
+  liq:["Ліквідації","Оціночні рівні, де скупчені ліквідації лонгів (нижче ціни) і шортів (вище).\nЦіна часто тягнеться до великих скупчень, бо там багато «палива» для різкого руху."],
+  sig:["Сигнали","Стрілки ▲ і ▼ — вихід Heat із зони перепроданості або перегріву, на графіку ціни та в рядках Heat. Квадрат V× — сплеск обсягу.\nЯк ці сигнали працювали раніше, перевірте у вкладці «Перевірка на історії»."],
+  hz:["Heat за горизонтами","Heat Index, порахований на свічках 1h, 4h і 1d і показаний на свічках вашого графіка. Свічка старшого таймфрейму будується з наявних даних, без заглядання в майбутнє.\nНайсильніший сигнал — коли всі горизонти одночасно нижче {lo} (конфлюенс купівлі) або вище {hi} (конфлюенс продажу)."],
+  hzAvg:["Усереднений Heat","Середнє значення Heat 1h, 4h і 1d. Згладжує шум короткого горизонту й показує загальний стан монети.\nВихід усередненого Heat із зони — рідший, але надійніший сигнал, ніж на одному горизонті."],
+  atr:["ATR","Середній діапазон свічки за {p} свічок — міра волатильності. Від нього рахуються стопи й цілі.\nВисокий ATR — ширші стопи й менший розмір позиції."],
+  score:["Підсумковий сигнал","Зважена сума 8 факторів від −100 (сильний продаж) до +100 (сильна купівля). Вище +13 — купівля, вище +40 — сильна купівля; нижче −13 — продаж.\nУзгодженість показує, яка частка факторів погоджується з напрямком."],
+  plan:["Торговий план","Зона входу, стоп і дві цілі з урахуванням рівнів, ATR і хвиль. Ризик/прибуток — скільки можна заробити на кожну одиницю ризику.\nУгоди з ризиком/прибутком нижче 1,5 краще пропускати."],
+  fHeat:["Фактор Heat","Heat на трьох горизонтах (найбільша вага в 1d): низький Heat додає до купівлі, високий — до продажу."],
+  fTrend:["Фактор тренду","Положення ціни відносно EMA {b} і {c}, їхній порядок, денний тренд і сила тренду за ADX."],
+  fMom:["Фактор імпульсу","Гістограма MACD та її напрямок, зона RSI і перевага +DI чи −DI."],
+  fEw:["Фактор хвиль","Яка хвиля Елліотта формується: хвиля 3 — найсильніший плюс, корекція A — мінус. Враховано якість розмітки."],
+  fBook:["Фактор стакану","Дисбаланс заявок на купівлю й продаж у межах ±1% і ±2% від ціни."],
+  fFlow:["Фактор потоку угод","Перевага агресивних купівель над продажами в останніх угодах, в угодах китів і в дельті за 24 свічки."],
+  fDrv:["Фактор деривативів","Діє проти натовпу: високий фандинг і багато лонгів — мінус, від’ємний фандинг і перекіс у шорти — плюс."],
+  fVol:["Фактор обсягу","Сплеск обсягу на останніх свічках у напрямку свічки."],
+  funding:["Фандинг","Платіж між лонгами й шортами на безстрокових ф’ючерсах кожні 8 годин. Плюс — лонги платять шортам.\nВище 0,05% — перегрів лонгів. Від’ємний — натовп у шортах, можливий шорт-сквіз."],
+  oi:["Відкритий інтерес","Сума всіх відкритих ф’ючерсних позицій у доларах.\nOI росте разом із ціною — у тренд заходять нові гроші. Різке падіння OI — масове закриття позицій або ліквідації."],
+  ls:["Лонг/шорт акаунтів","Скільки акаунтів у лонгах на один акаунт у шортах.\nВище 2 — натовп у лонгах (ризик падіння), нижче 1 — у шортах. Працює як протилежний індикатор."],
+  top:["Лонг/шорт топ-трейдерів","Те саме співвідношення, але за позиціями найбільших трейдерів Binance. Їхня позиція часто важливіша за думку натовпу."],
+  taker:["Taker купівля/продаж","Співвідношення ринкових купівель до ринкових продажів на ф’ючерсах за 6 годин.\nВище 1 — агресивніше купують, нижче 1 — продають."],
+  regime:["Режим ринку","Поєднання зміни OI і ціни за 24 години: нові лонги, нові шорти, закриття шортів або вихід лонгів.\nНові позиції підсилюють рух, а закриття часто означає, що рух вичерпується."],
+  imb:["Дисбаланс стакану","Різниця між сумою заявок на купівлю та на продаж біля ціни, від −100% до +100%.\nПлюс — покупців у стакані більше. Великі гравці можуть ставити й знімати заявки, тому важливий стабільний перекіс."],
+  liqmap:["Карта ліквідацій","Оцінка рівнів ліквідацій за приростом OI і типовими плечима 5–100×. Червоне — лонги, зелене — шорти; рівні, через які ціна вже пройшла, прибрано.\nЦе модель, а не реальні ордери біржі."],
+  bt:["Перевірка на історії","Симуляція: вхід за сигналом на наступній свічці, вихід за стопом, ціллю, сигналом продажу або після максимального часу утримання. Комісію враховано.\nМинулі результати не гарантують майбутніх."],
+  guide:["Довідка","Натисніть «i» біля будь-якого індикатора, щоб побачити пояснення."]
+},
+en:{
+  vol:["Volume","How much traded in each candle. Bar colour is the candle direction; the yellow line is the {n}-candle average.\nMoves on high volume are more reliable. A spike of ×{x} the average is marked V× on the price chart."],
+  prob:["Chance of rise","Estimated chance that price is higher in {h} candles. The line in this pane is the technical part (Heat, trend, momentum) for every candle.\nAbove 60 favours a rise, below 40 a fall, around 50 is uncertain. It is a weighted sum of factors, not a guarantee."],
+  probB:["Probability badge","Overall chance of a rise and a fall over {h} candles, using all 8 factors including the order book, whale trades and derivatives. The bar shows the split; below it is the overall signal."],
+  heat:["Heat Index","Our composite 0–100 indicator: a modified stochastic, Stoch RSI, RSI and position inside the Bollinger band, smoothed together. Here it is calculated on the chart timeframe.\nBelow {lo} is oversold (green, buy zone); above {hi} is overheated (red, take-profit zone). The signal is the line leaving a zone."],
+  rsi:["RSI","Relative Strength Index over {p} candles: the balance of gains and losses from 0 to 100.\nAbove 70 is overbought, below 30 oversold, 50 splits bullish and bearish strength. A divergence between RSI and price often precedes a reversal."],
+  stoch:["Stoch RSI","A stochastic applied to RSI: where RSI sits within its recent range. Very sensitive.\n%K (blue) crossing %D (yellow) upward below 20 signals a rise; downward above 80, a fall. In a strong trend it can stay in a zone for a long time."],
+  mfi:["MFI","Money Flow Index: a volume-weighted RSI over {p} candles.\nAbove 80, too much money has flowed in and a pullback is likely. Below 20, money has left and a bounce is possible."],
+  macd:["MACD","The gap between the fast and slow EMA ({f}/{s}); the signal line is a {g}-EMA of it; the histogram is MACD minus signal.\nA histogram above zero and growing means upward momentum; faded bars mean momentum is weakening. A MACD/signal cross is the classic signal."],
+  adx:["ADX / DI","ADX is trend strength regardless of direction; +DI and −DI are buyer and seller strength.\nADX above 25 means a trend, above 40 a strong one; below 20 is a range where trend signals are unreliable. Direction follows whichever DI is higher."],
+  delta:["Volume delta","Aggressive buys minus aggressive sells in each candle. On Binance it is exact taker data; on other exchanges it is estimated from the candle shape.\nGreen bars: buyers pressing; red: sellers. Price rising on negative delta is a warning sign."],
+  cvd:["CVD","Cumulative volume delta: the running sum of every delta since the start of the chart.\nPrice up while CVD falls means the rise rests on weak demand. CVD rising in a range means buyers are accumulating."],
+  obv:["OBV","On-Balance Volume: volume is added on green candles and subtracted on red ones.\nDirection matters more than the value. OBV making a new high before price is a sign of accumulation."],
+  ema:["EMA","Exponential moving averages of {a}, {b} and {c} candles.\nPrice above all EMAs, stacked bottom to top, is an uptrend. EMA {c} is the main line between bull and bear markets; EMAs often act as support and resistance."],
+  bb:["Bollinger","A channel around the {p}-candle average, ±{k} standard deviations wide.\nA narrow channel often precedes a strong move. Breaking outside shows strength but also risks a return inside."],
+  ew:["Elliott waves","Automatic count: impulse 1–5 and correction A–B–C from ZigZag points. “?” means the wave is still forming; the dashed line leads to its target.\nThe count is invalid if price passes the invalidation level. It is the most likely count, not the only possible one."],
+  sr:["Levels","Support (S) and resistance (R) where price has turned several times; ×N is the number of touches.\nMore touches mean a stronger level. Broken resistance often becomes support."],
+  fib:["Fibonacci","Retracement levels 23.6–78.6% of the last big move (up to 200 candles).\nPullbacks most often stall near 38.2%, 50% and 61.8%."],
+  fc:["Forecast","A cone {h} candles ahead: bullish, base and bearish scenarios based on volatility and the overall score. Stop, TP1 and TP2 lines are the trade plan.\nThe base case is the most likely path, but price can move anywhere inside the cone."],
+  walls:["Whale walls","Large limit orders in the book, {m}× the median size (at least {w} $).\nA wall below can hold price; one above can cap a rise. Walls can vanish at any moment, so they are not a guarantee."],
+  liq:["Liquidations","Estimated levels where long liquidations (below price) and short liquidations (above) cluster.\nPrice often gravitates to large clusters because they hold the “fuel” for a sharp move."],
+  sig:["Signals","▲ and ▼ arrows mark Heat leaving the oversold or overheated zone, on the price chart and in the Heat rows. The V× square is a volume spike.\nCheck how these signals performed in the History check tab."],
+  hz:["Heat by horizon","Heat Index calculated on 1h, 4h and 1d candles and drawn on your chart’s candles. A higher-timeframe candle is built from the data available at that moment, with no look-ahead.\nThe strongest signal is all horizons below {lo} at once (buy confluence) or above {hi} (sell confluence)."],
+  hzAvg:["Average Heat","The mean of Heat 1h, 4h and 1d. It smooths short-horizon noise and shows the coin’s overall state.\nAverage Heat leaving a zone is a rarer but more reliable signal than a single horizon."],
+  atr:["ATR","Average candle range over {p} candles, a measure of volatility. Stops and targets are based on it.\nHigh ATR means wider stops and a smaller position."],
+  score:["Overall signal","Weighted sum of 8 factors from −100 (strong sell) to +100 (strong buy). Above +13 is buy, above +40 strong buy; below −13 sell.\nAgreement shows what share of factors point the same way."],
+  plan:["Trade plan","Entry zone, stop and two targets based on levels, ATR and waves. Risk/reward is how much you can make per unit of risk.\nTrades below 1.5 risk/reward are better skipped."],
+  fHeat:["Heat factor","Heat on three horizons (1d weighs most): low Heat adds to buy, high Heat to sell."],
+  fTrend:["Trend factor","Price versus EMA {b} and {c}, their order, the daily trend and ADX strength."],
+  fMom:["Momentum factor","The MACD histogram and its direction, the RSI zone and whether +DI or −DI leads."],
+  fEw:["Wave factor","Which Elliott wave is forming: wave 3 is the strongest plus, correction A a minus. Count quality is taken into account."],
+  fBook:["Order book factor","Buy versus sell order imbalance within ±1% and ±2% of price."],
+  fFlow:["Trade flow factor","Aggressive buys versus sells in recent trades, in whale trades and in the 24-candle delta."],
+  fDrv:["Derivatives factor","Contrarian: high funding and many longs count as minus; negative funding and crowded shorts as plus."],
+  fVol:["Volume factor","A volume spike on recent candles, in the candle’s direction."],
+  funding:["Funding","A payment between longs and shorts on perpetual futures every 8 hours. Positive means longs pay shorts.\nAbove 0.05% longs are overheated. Negative means the crowd is short and a short squeeze is possible."],
+  oi:["Open interest","The total value of open futures positions in dollars.\nOI rising with price means new money is entering the trend. A sharp OI drop means mass closing or liquidations."],
+  ls:["Long/short accounts","How many accounts are long for each account that is short.\nAbove 2 the crowd is long (downside risk); below 1 it is short. Works as a contrarian indicator."],
+  top:["Top traders long/short","The same ratio, but for the positions of Binance’s largest traders. Their positioning often matters more than the crowd’s."],
+  taker:["Taker buy/sell","Market buys versus market sells on futures over 6 hours.\nAbove 1, buyers are more aggressive; below 1, sellers."],
+  regime:["Market regime","How OI and price changed over 24 hours: new longs, new shorts, short covering or longs exiting.\nNew positions reinforce a move; closing often means it is running out."],
+  imb:["Order book imbalance","Total bids minus total asks near the price, from −100% to +100%.\nPositive means more buyers in the book. Big players can place and pull orders, so look for a stable skew."],
+  liqmap:["Liquidation map","Estimated liquidation levels from OI growth and typical 5–100× leverage. Red: longs, green: shorts; levels price has already passed are removed.\nIt is a model, not the exchange’s real orders."],
+  bt:["History check","A simulation: enter on the next candle after a signal; exit at stop, target, sell signal or maximum hold time. Fees included.\nPast results do not guarantee future ones."],
+  guide:["Help","Tap “i” next to any indicator to see an explanation."]
+},
+ru:{
+  vol:["Объём","Сколько монет проторговалось за свечу. Цвет столбца — направление свечи, жёлтая линия — средний объём за {n} свечей.\nДвижение на высоком объёме надёжнее. Всплеск от ×{x} среднего отмечается на графике цены квадратом V×."],
+  prob:["Вероятность роста","Оценка шанса, что цена через {h} свечей будет выше. Линия в панели — техническая часть (Heat, тренд, импульс) на каждой свече.\nВыше 60 — перевес роста, ниже 40 — падения, около 50 — неопределённость. Это взвешенная сумма факторов, а не гарантия."],
+  probB:["Плашка вероятности","Итоговая вероятность роста и падения на {h} свечей с учётом всех 8 факторов, включая стакан, сделки китов и деривативы. Полоса показывает соотношение, ниже — итоговый сигнал."],
+  heat:["Heat Index","Наш композитный индикатор 0–100: модифицированный стохастик, Stoch RSI, RSI и положение в канале Bollinger, сглаженные вместе. Здесь он рассчитан на таймфрейме графика.\nНиже {lo} — перепроданность (зелёное, зона покупки), выше {hi} — перегрев (красное, зона фиксации). Сигнал — выход линии из зоны."],
+  rsi:["RSI","Индекс относительной силы за {p} свечей: соотношение роста и падения от 0 до 100.\nВыше 70 — перекупленность, ниже 30 — перепроданность, 50 — граница бычьей и медвежьей силы. Расхождение RSI с ценой часто предшествует развороту."],
+  stoch:["Stoch RSI","Стохастик, применённый к RSI: где RSI сейчас в своём недавнем диапазоне. Очень чувствительный.\n%K (синяя) пересекает %D (жёлтую) снизу ниже 20 — сигнал на рост, сверху выше 80 — на падение. В сильном тренде может долго стоять в зоне."],
+  mfi:["MFI","Индекс денежного потока: RSI с учётом объёма за {p} свечей.\nВыше 80 — в монету зашло слишком много денег, риск отката. Ниже 20 — деньги вышли, возможен отскок."],
+  macd:["MACD","Разница быстрой и медленной EMA ({f}/{s}); сигнальная линия — EMA {g} от неё; гистограмма — MACD минус сигнальная.\nГистограмма выше нуля и растёт — импульс вверх; бледные столбцы — импульс слабеет. Пересечение MACD и сигнальной — классический сигнал."],
+  adx:["ADX / DI","ADX — сила тренда независимо от направления; +DI и −DI — сила покупателей и продавцов.\nADX выше 25 — тренд есть, выше 40 — сильный; ниже 20 — флэт, трендовые сигналы ненадёжны. Направление — по тому, какая DI выше."],
+  delta:["Дельта объёма","Разница между агрессивными покупками и продажами на каждой свече. На Binance это точные taker-данные, на других биржах — оценка по форме свечи.\nЗелёные столбцы — давят покупатели, красные — продавцы. Рост цены при отрицательной дельте — тревожный знак."],
+  cvd:["CVD","Накопленная дельта объёма: сумма всех дельт от начала графика.\nЦена растёт, а CVD падает — рост держится на слабом спросе. CVD растёт в боковике — покупатели накапливают."],
+  obv:["OBV","Балансовый объём: объём прибавляется на зелёных свечах и вычитается на красных.\nВажно направление, а не само значение. Если OBV обновляет максимум раньше цены — это признак накопления."],
+  ema:["EMA","Экспоненциальные скользящие средние {a}, {b} и {c} свечей.\nЦена выше всех EMA, а они выстроены снизу вверх — восходящий тренд. EMA {c} — главная граница между бычьим и медвежьим рынком; EMA часто работают как поддержка и сопротивление."],
+  bb:["Bollinger","Канал вокруг средней за {p} свечей шириной ±{k} стандартных отклонения.\nУзкий канал часто предшествует сильному движению. Выход за границу — признак силы, но и риск возврата внутрь."],
+  ew:["Волны Эллиотта","Автоматическая разметка: импульс 1–5 и коррекция A–B–C по точкам ZigZag. Знак «?» — волна ещё формируется, пунктир ведёт к её цели.\nСчёт отменяется, если цена проходит уровень отмены. Это самая вероятная разметка, но не единственная."],
+  sr:["Уровни","Поддержки (S) и сопротивления (R) там, где цена несколько раз разворачивалась; ×N — количество касаний.\nЧем больше касаний, тем сильнее уровень. Пробитое сопротивление часто становится поддержкой."],
+  fib:["Фибоначчи","Уровни коррекции 23,6–78,6% от последнего крупного движения (до 200 свечей).\nЧаще всего коррекция останавливается около 38,2%, 50% и 61,8%."],
+  fc:["Прогноз","Конус на {h} свечей вперёд: бычий, базовый и медвежий сценарии с учётом волатильности и итоговой оценки. Линии Stop, TP1 и TP2 — торговый план.\nБазовый сценарий — самый вероятный путь, но цена может двигаться где угодно в пределах конуса."],
+  walls:["Стены китов","Крупные лимитные заявки в стакане, в {m} раз больше медианы (минимум {w} $).\nСтена снизу может держать цену, сверху — сдерживать рост. Стены могут исчезнуть в любой момент, так что это не гарантия."],
+  liq:["Ликвидации","Оценочные уровни, где скоплены ликвидации лонгов (ниже цены) и шортов (выше).\nЦена часто тянется к крупным скоплениям, потому что там много «топлива» для резкого движения."],
+  sig:["Сигналы","Стрелки ▲ и ▼ — выход Heat из зоны перепроданности или перегрева, на графике цены и в строках Heat. Квадрат V× — всплеск объёма.\nКак эти сигналы работали раньше, проверьте во вкладке «Проверка на истории»."],
+  hz:["Heat по горизонтам","Heat Index, рассчитанный на свечах 1h, 4h и 1d и показанный на свечах вашего графика. Свеча старшего таймфрейма строится из доступных данных, без заглядывания в будущее.\nСамый сильный сигнал — когда все горизонты одновременно ниже {lo} (конфлюенс покупки) или выше {hi} (конфлюенс продажи)."],
+  hzAvg:["Усреднённый Heat","Среднее значение Heat 1h, 4h и 1d. Сглаживает шум короткого горизонта и показывает общее состояние монеты.\nВыход усреднённого Heat из зоны — более редкий, но более надёжный сигнал, чем на одном горизонте."],
+  atr:["ATR","Средний диапазон свечи за {p} свечей — мера волатильности. От него считаются стопы и цели.\nВысокий ATR — более широкие стопы и меньший размер позиции."],
+  score:["Итоговый сигнал","Взвешенная сумма 8 факторов от −100 (сильная продажа) до +100 (сильная покупка). Выше +13 — покупка, выше +40 — сильная покупка; ниже −13 — продажа.\nСогласованность показывает, какая доля факторов согласна с направлением."],
+  plan:["Торговый план","Зона входа, стоп и две цели с учётом уровней, ATR и волн. Риск/прибыль — сколько можно заработать на каждую единицу риска.\nСделки с риском/прибылью ниже 1,5 лучше пропускать."],
+  fHeat:["Фактор Heat","Heat на трёх горизонтах (наибольший вес у 1d): низкий Heat добавляет к покупке, высокий — к продаже."],
+  fTrend:["Фактор тренда","Положение цены относительно EMA {b} и {c}, их порядок, дневной тренд и сила тренда по ADX."],
+  fMom:["Фактор импульса","Гистограмма MACD и её направление, зона RSI и перевес +DI или −DI."],
+  fEw:["Фактор волн","Какая волна Эллиотта формируется: волна 3 — самый сильный плюс, коррекция A — минус. Учитывается качество разметки."],
+  fBook:["Фактор стакана","Дисбаланс заявок на покупку и продажу в пределах ±1% и ±2% от цены."],
+  fFlow:["Фактор потока сделок","Перевес агрессивных покупок над продажами в последних сделках, в сделках китов и в дельте за 24 свечи."],
+  fDrv:["Фактор деривативов","Работает против толпы: высокий фандинг и много лонгов — минус, отрицательный фандинг и перекос в шорты — плюс."],
+  fVol:["Фактор объёма","Всплеск объёма на последних свечах в направлении свечи."],
+  funding:["Фандинг","Платёж между лонгами и шортами на бессрочных фьючерсах каждые 8 часов. Плюс — лонги платят шортам.\nВыше 0,05% — перегрев лонгов. Отрицательный — толпа в шортах, возможен шорт-сквиз."],
+  oi:["Открытый интерес","Сумма всех открытых фьючерсных позиций в долларах.\nOI растёт вместе с ценой — в тренд заходят новые деньги. Резкое падение OI — массовое закрытие позиций или ликвидации."],
+  ls:["Лонг/шорт аккаунтов","Сколько аккаунтов в лонгах на один аккаунт в шортах.\nВыше 2 — толпа в лонгах (риск падения), ниже 1 — в шортах. Работает как противоположный индикатор."],
+  top:["Лонг/шорт топ-трейдеров","То же соотношение, но по позициям крупнейших трейдеров Binance. Их позиция часто важнее мнения толпы."],
+  taker:["Taker покупка/продажа","Соотношение рыночных покупок к рыночным продажам на фьючерсах за 6 часов.\nВыше 1 — агрессивнее покупают, ниже 1 — продают."],
+  regime:["Режим рынка","Сочетание изменения OI и цены за 24 часа: новые лонги, новые шорты, закрытие шортов или выход лонгов.\nНовые позиции усиливают движение, а закрытие часто означает, что движение выдыхается."],
+  imb:["Дисбаланс стакана","Разница между суммой заявок на покупку и на продажу около цены, от −100% до +100%.\nПлюс — покупателей в стакане больше. Крупные игроки могут ставить и снимать заявки, поэтому важен стабильный перекос."],
+  liqmap:["Карта ликвидаций","Оценка уровней ликвидаций по приросту OI и типичным плечам 5–100×. Красное — лонги, зелёное — шорты; уровни, через которые цена уже прошла, убраны.\nЭто модель, а не реальные ордера биржи."],
+  bt:["Проверка на истории","Симуляция: вход по сигналу на следующей свече, выход по стопу, цели, сигналу продажи или после максимального времени удержания. Комиссия учтена.\nПрошлые результаты не гарантируют будущих."],
+  guide:["Справка","Нажмите «i» рядом с любым индикатором, чтобы увидеть объяснение."]
+}};
+/* ================= INDICATORS ================= */
+function sma(a,n){ const r=Array(a.length).fill(null); for(let i=n-1;i<a.length;i++){ let s=0,ok=true; for(let j=i-n+1;j<=i;j++){ if(a[j]==null){ok=false;break;} s+=a[j]; } if(ok) r[i]=s/n; } return r; }
+function ema(a,n){ const r=Array(a.length).fill(null); const k=2/(n+1); let cnt=0,s=0,p=null; for(let i=0;i<a.length;i++){ const v=a[i]; if(v==null||isNaN(v)) continue; if(p==null){ s+=v; cnt++; if(cnt===n){ p=s/n; r[i]=p; } } else { p=v*k+p*(1-k); r[i]=p; } } return r; }
+function rma(a,n){ const r=Array(a.length).fill(null); let cnt=0,s=0,p=null; for(let i=0;i<a.length;i++){ const v=a[i]; if(v==null) continue; if(p==null){ s+=v; cnt++; if(cnt===n){p=s/n; r[i]=p;} } else { p=(p*(n-1)+v)/n; r[i]=p; } } return r; }
+function rsi(c,n){ const up=[null],dn=[null]; for(let i=1;i<c.length;i++){ const d=c[i]-c[i-1]; up.push(Math.max(d,0)); dn.push(Math.max(-d,0)); } const u=rma(up,n), d=rma(dn,n); return c.map((_,i)=>u[i]==null?null:(d[i]===0?100:100-100/(1+u[i]/d[i]))); }
+function stdevW(a,n,i){ let m=0; for(let j=i-n+1;j<=i;j++) m+=a[j]; m/=n; let v=0; for(let j=i-n+1;j<=i;j++) v+=(a[j]-m)**2; return Math.sqrt(v/n); }
+function bbands(c,n,k){ const m=sma(c,n); const up=[],lo=[],pb=[],w=[]; for(let i=0;i<c.length;i++){ if(m[i]==null){up.push(null);lo.push(null);pb.push(null);w.push(null);continue;} const sd=stdevW(c,n,i); up.push(m[i]+k*sd); lo.push(m[i]-k*sd); pb.push(sd?(c[i]-(m[i]-k*sd))/(2*k*sd):0.5); w.push(m[i]?2*k*sd/m[i]*100:null); } return {mid:m,up,lo,pb,w}; }
+function atr(K,n){ const tr=K.map((k,i)=>i?Math.max(k.h-k.l,Math.abs(k.h-K[i-1].c),Math.abs(k.l-K[i-1].c)):k.h-k.l); return rma(tr,n); }
+function rollMax(a,n,i){ let m=-Infinity; for(let j=Math.max(0,i-n+1);j<=i;j++) if(a[j]!=null&&a[j]>m) m=a[j]; return m; }
+function rollMin(a,n,i){ let m=Infinity; for(let j=Math.max(0,i-n+1);j<=i;j++) if(a[j]!=null&&a[j]<m) m=a[j]; return m; }
+function stoch(K,n,d){ const h=K.map(x=>x.h),l=K.map(x=>x.l); const raw=K.map((k,i)=>{ if(i<n-1) return null; const hh=rollMax(h,n,i), ll=rollMin(l,n,i); return hh===ll?50:(k.c-ll)/(hh-ll)*100; }); const k=sma(raw,d); return {k, d:sma(k,d)}; }
+function stochRsi(c,rp,sp,kp,dp){ const r=rsi(c,rp); const raw=r.map((v,i)=>{ if(v==null) return null; let ok=true; for(let j=i-sp+1;j<=i;j++) if(j<0||r[j]==null) ok=false; if(!ok) return null; const hh=rollMax(r,sp,i), ll=rollMin(r,sp,i); return hh===ll?50:(v-ll)/(hh-ll)*100; }); const k=sma(raw,kp); return {k, d:sma(k,dp)}; }
+function macd(c,f,s,g){ const a=ema(c,f), b=ema(c,s); const m=c.map((_,i)=>a[i]!=null&&b[i]!=null?a[i]-b[i]:null); const sig=ema(m,g); return {m, sig, h:m.map((v,i)=>v!=null&&sig[i]!=null?v-sig[i]:null)}; }
+function adx(K,n){ const pdm=[0],ndm=[0],tr=[K[0].h-K[0].l]; for(let i=1;i<K.length;i++){ const u=K[i].h-K[i-1].h, d=K[i-1].l-K[i].l; pdm.push(u>d&&u>0?u:0); ndm.push(d>u&&d>0?d:0); tr.push(Math.max(K[i].h-K[i].l,Math.abs(K[i].h-K[i-1].c),Math.abs(K[i].l-K[i-1].c))); } const atr_=rma(tr,n), p=rma(pdm,n), m=rma(ndm,n); const pdi=p.map((v,i)=>v==null||!atr_[i]?null:100*v/atr_[i]), ndi=m.map((v,i)=>v==null||!atr_[i]?null:100*v/atr_[i]); const dx=pdi.map((v,i)=>v==null?null:(v+ndi[i]===0?0:100*Math.abs(v-ndi[i])/(v+ndi[i]))); return {adx:rma(dx,n), pdi, ndi}; }
+function obv(K){ let o=0; return K.map((k,i)=>{ if(i){ if(k.c>K[i-1].c) o+=k.v; else if(k.c<K[i-1].c) o-=k.v; } return o; }); }
+function mfi(K,n){ const tp=K.map(k=>(k.h+k.l+k.c)/3); return K.map((k,i)=>{ if(i<n) return null; let p=0,m=0; for(let j=i-n+1;j<=i;j++){ const f=tp[j]*K[j].v; if(tp[j]>tp[j-1]) p+=f; else if(tp[j]<tp[j-1]) m+=f; } return m===0?100:100-100/(1+p/m); }); }
+function deltaVol(K){ return K.map(k=> k.tb!=null && !isNaN(k.tb) ? 2*k.tb-k.v : (k.h===k.l?0:((k.c-k.l)-(k.h-k.c))/(k.h-k.l)*k.v)); }
+function cum(a){ let s=0; return a.map(v=>s+=v||0); }
+
+/* Heat index: modified stochastic composite 0..100 (green = oversold, red = overheated) */
+function heatIndex(K){
+  if(K.length<40) return K.map(()=>null);
+  const c=K.map(x=>x.c);
+  const st=stoch(K,S.stK,S.stD).k, sr=stochRsi(c,S.rsiP,S.rsiP,3,3).k, r=rsi(c,S.rsiP), b=bbands(c,S.bbP,S.bbK).pb;
+  const raw=c.map((_,i)=> st[i]==null||sr[i]==null||r[i]==null||b[i]==null?null: 0.35*st[i]+0.30*sr[i]+0.20*r[i]+0.15*clamp(b[i]*100,0,100));
+  return ema(raw, Math.max(1,S.heatSmooth|0));
+}
+
+/* ================= STRUCTURE ================= */
+function zigzag(K,dev){
+  const P=[]; let dir=0, ei=0, ep=K[0].c, hiI=0, loI=0;
+  for(let i=1;i<K.length;i++){
+    if(dir===0){
+      if(K[i].h>K[hiI].h) hiI=i; if(K[i].l<K[loI].l) loI=i;
+      if(K[hiI].h/K[loI].l-1>=dev){ if(hiI>loI){ P.push({i:loI,p:K[loI].l,t:"L"}); dir=1; ei=hiI; ep=K[hiI].h; } else { P.push({i:hiI,p:K[hiI].h,t:"H"}); dir=-1; ei=loI; ep=K[loI].l; } }
+      continue;
+    }
+    if(dir===1){ if(K[i].h>=ep){ ep=K[i].h; ei=i; } else if(K[i].l<=ep*(1-dev)){ P.push({i:ei,p:ep,t:"H"}); dir=-1; ep=K[i].l; ei=i; } }
+    else { if(K[i].l<=ep){ ep=K[i].l; ei=i; } else if(K[i].h>=ep*(1+dev)){ P.push({i:ei,p:ep,t:"L"}); dir=1; ep=K[i].h; ei=i; } }
+  }
+  const tail = dir===0? null : {i:ei,p:ep,t:dir===1?"H":"L",open:true};
+  return {P, tail};
+}
+function srLevels(K, price, atrV){
+  const zz=zigzag(K, clamp(2*atrV/price,0.006,0.08)).P;
+  const tol=Math.max(atrV*0.6, price*0.003);
+  const cl=[];
+  for(const p of zz){ const c=cl.find(x=>Math.abs(x.p-p.p)<=tol); if(c){ c.p=(c.p*c.n+p.p)/(c.n+1); c.n++; c.last=Math.max(c.last,p.i); } else cl.push({p:p.p,n:1,last:p.i}); }
+  const sup=cl.filter(x=>x.p<price).sort((a,b)=>b.p-a.p).slice(0,4);
+  const res=cl.filter(x=>x.p>price).sort((a,b)=>a.p-b.p).slice(0,4);
+  return {sup,res};
+}
+function fibLevels(K){
+  const n=Math.min(K.length,200), seg=K.slice(-n); let hi=0,lo=0;
+  seg.forEach((k,i)=>{ if(k.h>seg[hi].h) hi=i; if(k.l<seg[lo].l) lo=i; });
+  const H=seg[hi].h, L=seg[lo].l, up=lo<hi; // swing up: retrace from high
+  const lv=[0,0.236,0.382,0.5,0.618,0.786,1].map(r=>({r, p: up? H-(H-L)*r : L+(H-L)*r}));
+  return {H,L,up,lv};
+}
+
+/* ================= ELLIOTT ================= */
+const EW_LABELS=["0","1","2","3","4","5","A","B","C"];
+function fibScore(x,lo,hi,soft=0.35){ if(x>=lo&&x<=hi) return 1; const d = x<lo? (lo-x)/lo : (x-hi)/hi; return Math.max(0,1-d/soft); }
+function elliott(K, dev){
+  const zz=zigzag(K,dev); const pts=zz.P.slice(); if(zz.tail) pts.push(zz.tail);
+  const n=pts.length; let best=null;
+  for(let s=Math.max(0,n-10); s<=n-3; s++){
+    const q=pts.slice(s); const legs=q.length-1; if(legs<2||legs>8) continue;
+    const dir = q[1].p>q[0].p?1:-1;
+    const L=k=>Math.abs(q[k].p-q[k-1].p);
+    let ok=true, sc=0;
+    // start must be extreme of impulse part
+    const impEnd=Math.min(legs,5);
+    for(let k=1;k<=impEnd;k++) if(dir*(q[k].p-q[0].p)<=0) ok=false;
+    if(legs>=2){ if(dir*(q[2].p-q[0].p)<=0) ok=false; sc+=fibScore(L(2)/L(1),0.382,0.786); }
+    if(legs>=3){ sc+= legs>=4? fibScore(L(3)/L(1),1.236,2.8): (L(3)>=L(1)*0.6?0.5:0); }
+    if(legs>=4){ if(dir*(q[3].p-q[1].p)<=0) ok=false; const ov = S.ewStrict? dir*(q[4].p-q[1].p)<=0 : dir*(q[4].p-q[2].p)<=0; if(ov) ok=false; sc+=fibScore(L(4)/L(3),0.236,0.5); }
+    if(legs>=5){ sc+= legs>=6? Math.max(fibScore(L(5)/L(1),0.618,1.05),fibScore(L(5)/(Math.abs(q[3].p-q[0].p)),0.55,0.7)) : 0.4; }
+    if(legs>=6){ if(L(3)<L(1)&&L(3)<L(5)) ok=false; if(dir*(q[5].p-q[3].p)<=0) sc-=0.4; sc+=fibScore(L(6)/Math.abs(q[5].p-q[0].p),0.236,0.618); }
+    if(legs>=7){ if(dir*(q[7].p-q[5].p)>0) sc-=0.5; sc+=fibScore(L(7)/L(6),0.382,0.886); }
+    if(legs>=8){ sc+=Math.max(fibScore(L(8)/L(6),0.9,1.15),fibScore(L(8)/L(6),1.5,1.7)); }
+    if(!ok) continue;
+    const total = sc/Math.max(1,legs-1) + 0.12*Math.min(legs,6);
+    if(!best || total>best.score) best={s, q, legs, dir, score:total};
+  }
+  if(!best) return {ok:false, dev, pts};
+  const {q,legs,dir}=best; const L=k=>Math.abs(q[k].p-q[k-1].p);
+  const forming=EW_LABELS[legs]; const price=ST.price;
+  let zone=null, target=null, inval=null, bias=0, key="";
+  switch(forming){
+    case "2": zone=[q[1].p-dir*L(1)*0.5, q[1].p-dir*L(1)*0.618]; target=q[2-1].p-dir*L(1)*0.618+dir*L(1)*1.618; inval=q[0].p; bias=dir*0.35; key="ew2"; break;
+    case "3": target=q[2].p+dir*L(1)*1.618; zone=[q[2].p+dir*L(1)*1.0, q[2].p+dir*L(1)*2.618]; inval=q[2].p; bias=dir*0.9; key="ew3"; break;
+    case "4": zone=[q[3].p-dir*L(3)*0.236, q[3].p-dir*L(3)*0.382]; target=q[3].p-dir*L(3)*0.382+dir*L(1); inval=S.ewStrict?q[1].p:q[2].p; bias=dir*0.4; key="ew4"; break;
+    case "5": target=q[4].p+dir*L(1); zone=[q[4].p+dir*L(1)*0.618, q[4].p+dir*Math.abs(q[3].p-q[0].p)*0.618]; inval=q[4].p; bias=dir*0.15; key="ew5"; break;
+    case "A": zone=[q[4].p, q[4].p-dir*L(5)*0.2]; target=q[4].p; inval=q[5].p; bias=-dir*0.7; key="ewA"; break;
+    case "B": zone=[q[6].p+dir*L(6)*0.5, q[6].p+dir*L(6)*0.786]; target=q[6].p+dir*L(6)*0.618; inval=q[5].p; bias=-dir*0.3; key="ewB"; break;
+    case "C": target=q[7].p-dir*L(6); zone=[q[7].p-dir*L(6)*1.0, q[7].p-dir*L(6)*1.618]; inval=q[7].p; bias=-dir*0.35; key="ewC"; break;
+  }
+  if(target && price){ const prog = (forming==="C"&&dir*(price-target)<=0) || (forming==="5"&&dir*(price-target)>=0); if(prog) bias*=0.3; }
+  return {ok:true, dev, q, legs, dir, forming, zone, target, inval, bias:clamp(bias,-1,1), key, conf:clamp(best.score/1.6,0,1)};
+}
+
+/* ================= WHALES ================= */
+function analyzeBook(book, price, qUsd){
+  if(!book||!book.bids.length) return null;
+  const rng=S.bookRange/100;
+  const bids=book.bids.filter(x=>x[0]>=price*(1-rng)).map(x=>({p:x[0],q:x[1],n:x[0]*x[1]*qUsd}));
+  const asks=book.asks.filter(x=>x[0]<=price*(1+rng)).map(x=>({p:x[0],q:x[1],n:x[0]*x[1]*qUsd}));
+  const med=median(bids.concat(asks).map(x=>x.n));
+  const thr=Math.max(S.wallMult*med, S.wallMin);
+  const walls=bids.filter(x=>x.n>=thr).map(x=>({...x,s:"bid"})).concat(asks.filter(x=>x.n>=thr).map(x=>({...x,s:"ask"}))).sort((a,b)=>b.n-a.n).slice(0,14);
+  const imb=[0.5,1,2,5].map(r=>{ const b=sum(book.bids.filter(x=>x[0]>=price*(1-r/100)).map(x=>x[0]*x[1]*qUsd)), a=sum(book.asks.filter(x=>x[0]<=price*(1+r/100)).map(x=>x[0]*x[1]*qUsd)); return {r,b,a,v:(b+a)?(b-a)/(b+a):0}; });
+  const sup=walls.filter(w=>w.s==="bid").sort((a,b)=>b.p-a.p)[0]||null, res=walls.filter(w=>w.s==="ask").sort((a,b)=>a.p-b.p)[0]||null;
+  return {bids,asks,walls,imb,thr,sup,res,spread:(book.asks[0][0]-book.bids[0][0])/price*100};
+}
+function analyzeTrades(tr, qUsd){
+  if(!tr||!tr.length) return null;
+  let bv=0,sv=0,wb=0,ws=0; const big=[];
+  tr.forEach((x,i)=>{ const n=x.p*x.q*qUsd; if(x.buy) bv+=n; else sv+=n; if(n>=S.whaleTrade){ big.push({...x,n,i}); if(x.buy) wb+=n; else ws+=n; } });
+  // impact: price move after whale trade (next 30 trades), aligned with side
+  const imp=[]; for(const b of big){ const j=Math.min(tr.length-1,b.i+30); if(j>b.i){ const m=(tr[j].p/b.p-1)*100*(b.buy?1:-1); imp.push(m); } }
+  return {bv,sv,wb,ws,big:big.slice(-40).reverse(),delta:(bv-sv)/Math.max(1,bv+sv),wDelta:(wb-ws)/Math.max(1,wb+ws),impact:imp.length?sum(imp)/imp.length:null,impactN:imp.length, span:(tr[tr.length-1].t-tr[0].t)/60000};
+}
+
+/* ================= DERIVATIVES / LIQUIDATIONS ================= */
+function analyzeDeriv(d, K1h, price){
+  if(!d) return null;
+  const o={...d};
+  const oh=d.oiHist; if(oh.length>24){ o.oiChg24=(oh[oh.length-1].v/oh[oh.length-25].v-1)*100; }
+  if(K1h.length>24) o.pxChg24=(K1h[K1h.length-1].c/K1h[K1h.length-25].c-1)*100;
+  if(d.ls.length) o.lsNow=d.ls[d.ls.length-1].v;
+  if(d.top.length) o.topNow=d.top[d.top.length-1].v;
+  if(d.taker.length) o.takerNow=sum(d.taker.slice(-6).map(x=>x.v))/Math.min(6,d.taker.length);
+  if(d.fundHist.length) o.fundAvg=sum(d.fundHist.map(x=>x.v))/d.fundHist.length;
+  // regime
+  if(o.oiChg24!=null&&o.pxChg24!=null){ const a=o.oiChg24>0, b=o.pxChg24>0; o.regime = a&&b?"rLongs":a&&!b?"rShorts":!a&&b?"rCover":"rLiq"; }
+  // contrarian score
+  let sc=0; if(o.funding>0.03) sc-=clamp((o.funding-0.01)/0.08,0,1); if(o.funding<-0.01) sc+=clamp((-o.funding)/0.06,0,1);
+  if(o.lsNow){ if(o.lsNow>1.8) sc-=clamp((o.lsNow-1.5)/1.5,0,0.8); if(o.lsNow<0.9) sc+=clamp((1-o.lsNow)/0.4,0,0.8); }
+  if(o.takerNow){ sc+=clamp((o.takerNow-1)*1.5,-0.4,0.4); }
+  o.score=clamp(sc,-1,1);
+  o.map=liqMap(K1h, d.oiHist, price);
+  return o;
+}
+function liqMap(K, oiH, price){
+  const K2=K.slice(-336); if(!K2.length) return null;
+  const lev=[[5,.12],[10,.28],[20,.25],[25,.15],[50,.12],[100,.08]];
+  const bins=70, lo=price*0.75, hi=price*1.25, step=(hi-lo)/bins;
+  const L=Array(bins).fill(0), Sh=Array(bins).fill(0);
+  const oiByT=new Map(oiH.map(x=>[Math.round(x.t/3600),x.v]));
+  const pos=[]; // {lp, sp, w, i}
+  for(let i=1;i<K2.length;i++){
+    const k=K2[i]; const h=Math.round(k.t/3600);
+    let w; const a=oiByT.get(h), b=oiByT.get(h-1);
+    if(a!=null&&b!=null) w=Math.max(0,a-b); else w=k.qv*0.05;
+    if(!w) continue;
+    const e=(k.h+k.l+k.c)/3; const tb=k.tb!=null&&k.v? k.tb/k.v : 0.5;
+    for(const [lv,f] of lev){ pos.push({lp:e*(1-1/lv+0.005), sp:e*(1+1/lv-0.005), wl:w*f*tb, ws:w*f*(1-tb), i}); }
+  }
+  // remove liquidated: price traded through after opening
+  const minAfter=Array(K2.length).fill(Infinity), maxAfter=Array(K2.length).fill(-Infinity);
+  for(let i=K2.length-2;i>=0;i--){ minAfter[i]=Math.min(minAfter[i+1],K2[i+1].l); maxAfter[i]=Math.max(maxAfter[i+1],K2[i+1].h); }
+  for(const p of pos){
+    if(minAfter[p.i]>p.lp && p.lp<price && p.lp>=lo && p.lp<hi) L[Math.floor((p.lp-lo)/step)]+=p.wl;
+    if(maxAfter[p.i]<p.sp && p.sp>price && p.sp>=lo && p.sp<hi) Sh[Math.floor((p.sp-lo)/step)]+=p.ws;
+  }
+  const cl=(arr,side)=>arr.map((v,i)=>({p:lo+step*(i+0.5),v,side})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,3);
+  return {lo,hi,step,L,Sh,topL:cl(L,"long"),topS:cl(Sh,"short")};
+}
+
+/* ================= BACKTEST ================= */
+function signals(K, A, type){
+  const n=K.length, buy=Array(n).fill(false), sell=Array(n).fill(false);
+  for(let i=1;i<n;i++){
+    if(type==="heat"||type==="conf"){ const h=A.heat; if(h[i]==null||h[i-1]==null) continue; if(h[i-1]<S.heatBuy&&h[i]>=S.heatBuy) buy[i]=true; if(h[i-1]>S.heatSell&&h[i]<=S.heatSell) sell[i]=true; if(type==="conf"){ const r=A.rsi[i]; if(buy[i]&&!(r<50&&A.macd.h[i]>A.macd.h[i-1])) buy[i]=false; } }
+    else if(type==="avg"){ const h=A.hzRows.avg; if(h[i]==null||h[i-1]==null) continue; if(h[i-1]<S.heatBuy&&h[i]>=S.heatBuy) buy[i]=true; if(h[i-1]>S.heatSell&&h[i]<=S.heatSell) sell[i]=true; }
+    else if(type==="rsi"){ const r=A.rsi; if(r[i-1]<30&&r[i]>=30) buy[i]=true; if(r[i-1]>70&&r[i]<=70) sell[i]=true; }
+    else if(type==="macd"){ const m=A.macd; if(m.h[i-1]!=null&&m.h[i-1]<0&&m.h[i]>=0) buy[i]=true; if(m.h[i-1]!=null&&m.h[i-1]>0&&m.h[i]<=0) sell[i]=true; }
+  }
+  return {buy,sell};
+}
+function backtest(K, A, type){
+  const {buy,sell}=signals(K,A,type); const fee=S.btFee/100;
+  let eq=1, pos=null; const trades=[], curve=[];
+  for(let i=0;i<K.length;i++){
+    const k=K[i];
+    if(pos){
+      let exit=null, why="";
+      if(k.l<=pos.sl){ exit=Math.min(k.o,pos.sl); why="SL"; }
+      else if(k.h>=pos.tp){ exit=Math.max(k.o,pos.tp); why="TP"; }
+      else if(sell[i-1]){ exit=k.o; why="SIG"; }
+      else if(i-pos.i>=S.btHold){ exit=k.o; why="TIME"; }
+      if(exit!=null){ const r=(exit/pos.e)*(1-fee)/(1+fee)-1; eq*=1+r; trades.push({t0:K[pos.i].t,t1:k.t,e:pos.e,x:exit,r:r*100,why}); pos=null; }
+    }
+    if(!pos && i>0 && buy[i-1] && A.atr[i-1]){
+      const trendOk = !S.btTrend || (A.emaS[i-1]==null || K[i-1].c>A.emaS[i-1]);
+      if(trendOk){ pos={i, e:k.o, sl:k.o-S.btSL*A.atr[i-1], tp:k.o+S.btTP*A.atr[i-1]}; }
+    }
+    curve.push({t:k.t, v:pos? eq*(k.c/pos.e) : eq});
+  }
+  let peak=1, mdd=0; for(const c of curve){ peak=Math.max(peak,c.v); mdd=Math.min(mdd,c.v/peak-1); }
+  const wins=trades.filter(t=>t.r>0);
+  const hold=(K[K.length-1].c/K[0].c-1)*100;
+  const fwd=[3,6,12,24,48].map(h=>{ const rs=[]; buy.forEach((b,i)=>{ if(b&&i+h<K.length) rs.push((K[i+h].c/K[i].c-1)*100); }); return {h, n:rs.length, avg:rs.length?sum(rs)/rs.length:null, win:rs.length?rs.filter(x=>x>0).length/rs.length*100:null}; });
+  return {trades, curve, ret:(eq-1)*100, mdd:mdd*100, win:trades.length?wins.length/trades.length*100:null, hold, fwd, sigs:{buy,sell}};
+}
+
+/* ================= PROBABILITY HISTORY =================
+   Technical part of the forecast (Heat, trend, momentum) for every bar; order book, trades and derivatives
+   exist only for the present moment, so they are not part of the history line. */
+function probHistory(K, A){
+  const n=K.length, out=Array(n).fill(null), hz=A.hzRows?.avg||A.heat;
+  for(let i=1;i<n;i++){
+    const p=K[i].c, h=hz[i]!=null?hz[i]:A.heat[i], e50=A.emaM[i], e200=A.emaS[i], ad=A.adx.adx[i], hn=A.macd.h[i], hp=A.macd.h[i-1], r=A.rsi[i], pd=A.adx.pdi[i], nd=A.adx.ndi[i];
+    if(h==null||e50==null||hn==null||hp==null||r==null) continue;
+    const F=[];
+    F.push([clamp((50-h)/50*1.3,-1,1), S.wHeat]);
+    let tr=(p>e50?0.35:-0.35); if(e200!=null){ tr+=p>e200?0.35:-0.35; tr+=e50>e200?0.3:-0.3; } if(ad!=null) tr*=clamp(0.6+ad/50,0.6,1.3);
+    F.push([clamp(tr,-1,1), S.wTrend]);
+    let mo=(hn>0?0.3:-0.3)+(hn>hp?0.3:-0.3); mo+= r>70?-0.2: r<30?0.2 : (r-50)/50*0.6; if(pd!=null&&nd!=null) mo+= pd>nd?0.15:-0.15;
+    F.push([clamp(mo,-1,1), S.wMom]);
+    const W=sum(F.map(f=>f[1])); const sc=W? sum(F.map(f=>f[0]*f[1]))/W : 0;
+    out[i]=100/(1+Math.exp(-4*sc));
+  }
+  return out;
+}
+
+/* ================= FORECAST ================= */
+function forecast(A){
+  const F=[]; const add=(key,v,w,txt)=>F.push({key,v:clamp(v,-1,1),w,txt});
+  // heat (contrarian, weighted by horizon)
+  const hz=[A.hz.s,A.hz.m,A.hz.l]; const hw=[.25,.35,.4]; let hv=0, hws=0;
+  hz.forEach((h,i)=>{ if(h!=null){ hv+=hw[i]*(50-h)/50; hws+=hw[i]; } });
+  if(hws) add("fHeat", hv/hws*1.3, S.wHeat);
+  // trend
+  const p=ST.price, e50=last(A.emaM), e200=last(A.emaS), ad=last(A.adx.adx), pdi=last(A.adx.pdi), ndi=last(A.adx.ndi);
+  let tr=0; if(e50) tr+=p>e50?0.35:-0.35; if(e200) tr+=p>e200?0.35:-0.35; if(e50&&e200) tr+=e50>e200?0.3:-0.3;
+  if(A.d1Trend!=null) tr=tr*0.7+A.d1Trend*0.3;
+  if(ad!=null) tr*= clamp(0.6+ad/50,0.6,1.3);
+  add("fTrend", tr, S.wTrend);
+  // momentum
+  const h=A.macd.h, hn=last(h), hp=lastN(h,1), r=last(A.rsi);
+  let mo=0; if(hn!=null&&hp!=null){ mo+= hn>0?0.3:-0.3; mo+= hn>hp?0.3:-0.3; } if(r!=null) mo+= r>70?-0.2: r<30?0.2 : (r-50)/50*0.6;
+  if(pdi!=null&&ndi!=null) mo+= pdi>ndi?0.15:-0.15;
+  add("fMom", mo, S.wMom);
+  if(A.ew&&A.ew.ok) add("fEw", A.ew.bias*(0.5+A.ew.conf*0.5), S.wEw);
+  if(A.book) add("fBook", (A.book.imb[2].v*0.6+A.book.imb[1].v*0.4)*1.4, S.wBook);
+  let fl=0, fw=0; if(A.flow){ fl+=A.flow.delta*1.2+A.flow.wDelta*0.6; fw++; } const dv=A.delta.slice(-24), dvs=sum(dv), vv=sum(ST.k.slice(-24).map(k=>k.v)); if(vv){ fl+=dvs/vv*1.5; fw++; } if(fw) add("fFlow", fl/fw, S.wFlow);
+  if(A.drv) add("fDrv", A.drv.score, S.wDrv);
+  if(A.spike) add("fVol", A.spike.dir*clamp((A.spike.ratio-1)/3,0,1), S.wVol);
+  const W=sum(F.map(f=>f.w)); const score = W? sum(F.map(f=>f.v*f.w))/W : 0;
+  const agree = W? sum(F.filter(f=>Math.sign(f.v)===Math.sign(score)&&Math.abs(f.v)>0.05).map(f=>f.w))/W : 0;
+  const pUp = 1/(1+Math.exp(-4*score));
+  // range
+  const c=ST.k.map(k=>k.c); const rets=[]; for(let i=Math.max(1,c.length-150);i<c.length;i++) rets.push(Math.log(c[i]/c[i-1]));
+  const mu=sum(rets)/rets.length, sd=Math.sqrt(sum(rets.map(x=>(x-mu)**2))/rets.length);
+  const sig=sd*Math.sqrt(S.horizon);
+  const base=p*Math.exp(score*sig*0.9), bull=p*Math.exp(sig*(1+Math.max(0,score)*0.5)), bear=p*Math.exp(-sig*(1+Math.max(0,-score)*0.5));
+  const verdict = score>0.4?"vStrongBuy":score>0.13?"vBuy":score<-0.4?"vStrongSell":score<-0.13?"vSell":"vNeutral";
+  // trade plan
+  const atrV=last(A.atr); const sr=A.sr; let plan;
+  if(score>=0){
+    const s1=sr.sup[0]?.p, r1=sr.res[0]?.p, r2=sr.res[1]?.p;
+    const entry = s1 && s1>p-atrV*1.5 ? [s1, p] : [p-atrV*0.5, p];
+    const stop = Math.min(entry[0]-atrV*1.2, A.ew?.ok&&A.ew.inval<p&&A.ew.inval>p*0.85? A.ew.inval*0.997 : Infinity);
+    const tp1 = r1 && r1<bull*1.02 && r1>p+atrV*0.5 ? r1 : Math.max(p+atrV*2, Math.min(bull, p+atrV*3)); const tp2 = Math.max(tp1+atrV*0.8, r2&&r2<=bull*1.05&&r2>tp1? r2 : bull);
+    plan={side:"long", entry, stop, tp1, tp2, rr:(tp1-entry[1])/Math.max(1e-12,entry[1]-stop)};
+  } else {
+    const r1=sr.res[0]?.p, s1=sr.sup[0]?.p, s2=sr.sup[1]?.p;
+    const entry = r1 && r1<p+atrV*1.5 ? [p, r1] : [p, p+atrV*0.5];
+    const stop = entry[1]+atrV*1.2;
+    const tp1 = s1 && s1>bear*0.98 && s1<p-atrV*0.5 ? s1 : Math.min(p-atrV*2, Math.max(bear, p-atrV*3)); const tp2 = Math.min(tp1-atrV*0.8, s2&&s2>=bear*0.95&&s2<tp1? s2 : bear);
+    plan={side:"short", entry, stop, tp1, tp2, rr:(entry[0]-tp1)/Math.max(1e-12,stop-entry[0])};
+  }
+  return {F, score, agree, pUp, sig, base, bull, bear, verdict, plan};
+}
+/* ================= STATE / PIPELINE ================= */
+const ST = { k:[], h1:[], h4:[], d1:[], tick:null, book:null, trades:[], deriv:null, A:null, price:null, qUsd:1, sym:"", busy:false, ws:[], tape:[], liqs:[], liqTot:{long:0,short:0}, lastVerdict:{}, lastAlert:0, symCache:{} };
+const USDQ = ["USDT","USDC","FDUSD"];
+const fut = () => S.market==="fut";
+const quoteNow = () => fut()? "USDT" : S.quote;
+const symNow = () => EX[S.exch].sym(S.base, quoteNow(), fut());
+
+function setStatus(msg, err){ const el=$("status"); el.className="status"+(err?" err":""); el.innerHTML=msg; }
+
+async function run(silent){
+  if(ST.busy) return; ST.busy=true;
+  const ex=EX[S.exch], f=fut(), sym=symNow();
+  if(!silent) setStatus(`<span class="spin"></span>${t("loading",{s:pairName()})}`);
+  try{
+    const R = await Promise.allSettled([
+      ex.klines(sym,S.tf,S.bars,f),
+      ex.klines(sym,"1h",hzNeed("1h",500),f),
+      ex.klines(sym,"4h",hzNeed("4h",300),f),
+      ex.klines(sym,"1d",hzNeed("1d",300),f),
+      ex.ticker(sym,f), ex.depth(sym,f), ex.trades(sym,f), ex.deriv(S.base),
+      USDQ.includes(quoteNow())? Promise.resolve(null) : EX.binance.ticker(quoteNow()+"USDT",false)
+    ]);
+    const val=i=>R[i].status==="fulfilled"?R[i].value:null;
+    if(!val(0)||!val(0).length) throw new Error(t("errPair",{s:pairName()}));
+    const symChanged = ST.sym!==sym+S.tf+S.exch+S.market;
+    ST.k=val(0);
+    ST.h1 = val(1)&&val(1).length? val(1) : (S.tf==="1h"? ST.k : []);
+    ST.h4 = val(2)&&val(2).length? val(2) : (S.tf==="4h"? ST.k : []);
+    ST.d1 = val(3)&&val(3).length? val(3) : (S.tf==="1d"? ST.k : []);
+    ST.tick=val(4); ST.book=val(5); ST.trades=val(6)||[]; ST.deriv=val(7);
+    ST.qUsd = USDQ.includes(quoteNow())? 1 : (val(8)?.last||1);
+    ST.price = ST.tick?.last || ST.k[ST.k.length-1].c;
+    if(symChanged){ ST.sym=sym+S.tf+S.exch+S.market; ST.tape=[]; ST.liqs=[]; ST.liqTot={long:0,short:0}; connectWS(); }
+    compute();
+    renderAll(symChanged);
+    const miss=[]; if(!ST.book) miss.push(t("depth")); if(!ST.deriv) miss.push(t("tLq"));
+    setStatus(t("updated",{time:new Date().toLocaleTimeString()}) + (miss.length? " · "+t("noData")+": "+miss.join(", "):""));
+    checkAlerts();
+  }catch(e){ console.error(e); setStatus(esc(e.message||String(e)), true); }
+  finally{ ST.busy=false; }
+}
+function hzNeed(tf,min){ const span=S.bars*TF_SEC[S.tf]; return clamp(Math.ceil(span/TF_SEC[tf])+HZ_WARM+20, min, 1000); }
+const HZ_WARM=200;
+function pairName(){ return `${S.base}/${quoteNow()}${fut()?" PERP":""}`; }
+
+function compute(){
+  const K=ST.k, c=K.map(k=>k.c), A={};
+  A.emaF=ema(c,S.emaF); A.emaM=ema(c,S.emaM); A.emaS=ema(c,S.emaS);
+  A.bb=bbands(c,S.bbP,S.bbK); A.rsi=rsi(c,S.rsiP); A.macd=macd(c,S.macdF,S.macdS,S.macdG);
+  A.srsi=stochRsi(c,S.rsiP,S.rsiP,3,3); A.atr=atr(K,S.atrP); A.adx=adx(K,S.adxP); A.obv=obv(K); A.mfi=mfi(K,S.mfiP);
+  A.heat=heatIndex(K); A.delta=deltaVol(K); A.cvd=cum(A.delta); A.volSma=sma(K.map(k=>k.v),S.volSma);
+  const price=ST.price, atrV=last(A.atr)||price*0.01; A.atrPct=atrV/price*100;
+  A.hzRows={ h1:mapHeat(K,ST.h1,3600), h4:mapHeat(K,ST.h4,14400), d1:mapHeat(K,ST.d1,86400) };
+  const fb={ h1:()=>last(heatIndex(ST.h1)), h4:()=>last(heatIndex(ST.h4)), d1:()=>last(heatIndex(ST.d1)) };
+  const lv=k=>{ const r=A.hzRows[k]; const v=r[r.length-1]; return v!=null? v : (ST[k].length? fb[k]() : null); };
+  A.hz={ s:lv("h1"), m:lv("h4"), l:lv("d1") };
+  { const v=[A.hz.s,A.hz.m,A.hz.l].filter(x=>x!=null); A.hz.a = v.length? sum(v)/v.length : null; }
+  A.hzCov={}; ["h1","h4","d1"].forEach(k=>{ const r=A.hzRows[k]; const first=r.findIndex(x=>x!=null); A.hzCov[k]= first<0? 0 : (r.length-first)/r.length; });
+  { const have=["h1","h4","d1"].filter(k=>A.hzCov[k]>0);
+    A.hzRows.avg = K.map((_,i)=>{ const v=have.map(k=>A.hzRows[k][i]); return have.length&&v.every(x=>x!=null)? sum(v)/v.length : null; }); }
+  A.rsi1h = ST.h1.length? last(rsi(ST.h1.map(k=>k.c),14)) : null;
+  A.rsi1d = ST.d1.length? last(rsi(ST.d1.map(k=>k.c),14)) : null;
+  A.mtf=[["1h",ST.h1],["4h",ST.h4],["1d",ST.d1]].map(([tf,KK])=>{ if(!KK.length) return null; const cc=KK.map(k=>k.c); return {tf, rsi:last(rsi(cc,14)), heat:last(heatIndex(KK)), e50:last(ema(cc,50)), e200:last(ema(cc,200)), p:cc[cc.length-1], mh:last(macd(cc,12,26,9).h), chg:cc.length>1?(cc[cc.length-1]/cc[cc.length-2]-1)*100:null}; }).filter(Boolean);
+  const d1=A.mtf.find(x=>x.tf==="1d"); A.d1Trend = d1&&d1.e50&&d1.e200? ((d1.p>d1.e50?0.5:-0.5)+(d1.e50>d1.e200?0.5:-0.5)) : null;
+  const hz=[A.hz.s,A.hz.m,A.hz.l].filter(x=>x!=null);
+  A.conf = hz.length===3 && hz.every(h=>h<S.heatBuy)? "buy" : hz.length===3 && hz.every(h=>h>S.heatSell)? "sell" : hz.length===3 && hz.every(h=>h<40)? "lean-buy" : hz.length===3 && hz.every(h=>h>60)? "lean-sell" : null;
+  // volume spike on last 3 bars
+  A.spike=null;
+  for(let i=K.length-1;i>=Math.max(0,K.length-3);i--){ const vs=A.volSma[i-1]; if(!vs) continue; const r=K[i].v/vs; if(r>=S.volSpike && (!A.spike||r>A.spike.ratio)) A.spike={i, ratio:r, dir:K[i].c>=K[i].o?1:-1}; }
+  const dev = S.zzMode==="pct"? S.zzPct/100 : clamp(S.zzAtr*A.atrPct/100*(S.zzMode==="auto"?0.9:1), 0.008, 0.35);
+  A.ew = elliott(K, dev);
+  A.sr = srLevels(K, price, atrV); A.fib=fibLevels(K);
+  A.book = analyzeBook(ST.book, price, ST.qUsd); A.flow = analyzeTrades(ST.trades, ST.qUsd);
+  const usd = USDQ.includes(quoteNow());
+  A.drv = ST.deriv? analyzeDeriv(ST.deriv, usd? ST.h1 : [], usd? price : (ST.deriv.mark||price)) : null;
+  if(A.drv && !usd) A.drv.map=null;
+  ST.A=A;
+  A.fc = forecast(A);
+  A.prob = probHistory(K, A);
+  A.bt = backtest(K, A, $("btSig").value||"heat");
+}
+
+/* Heat of another timeframe drawn on the chart's candles, without look-ahead.
+   - chart TF >= horizon TF: value of the last horizon candle closed by the end of each bar;
+   - chart TF <  horizon TF: the horizon candle is rebuilt bar by bar from the chart candles (developing candle),
+     so the line moves every bar exactly as it would have looked live, instead of a staircase. */
+function mapHeat(K, HK, tfSec){
+  const out=Array(K.length).fill(null); if(!HK||HK.length<45) return out;
+  const bar=TF_SEC[S.tf];
+  if(bar>=tfSec){
+    const H=heatIndex(HK); let j=-1;
+    for(let i=0;i<K.length;i++){ const end=K[i].t+bar; while(j+1<HK.length && HK[j+1].t+tfSec<=end) j++; out[i]= j>=0? H[j] : null; }
+    out[K.length-1]=last(H);
+    return out;
+  }
+  let j=0, dev=null;
+  for(let i=0;i<K.length;i++){
+    const t=K[i].t;
+    while(j+1<HK.length && HK[j+1].t<=t) j++;
+    if(!(HK[j].t<=t && t<HK[j].t+tfSec)){ dev=null; continue; }
+    const k=K[i];
+    if(!dev || dev.t!==HK[j].t){ const first=k.t===HK[j].t; dev={t:HK[j].t, o:first?k.o:HK[j].o, h:k.h, l:k.l, c:k.c, v:k.v, tb:k.tb}; if(!first){ dev.h=Math.max(k.h,HK[j].o); dev.l=Math.min(k.l,HK[j].o); } }
+    else { dev.h=Math.max(dev.h,k.h); dev.l=Math.min(dev.l,k.l); dev.c=k.c; dev.v+=k.v; dev.tb=(dev.tb!=null&&k.tb!=null)? dev.tb+k.tb : null; }
+    if(j<45) continue;
+    const ser=HK.slice(Math.max(0,j-HZ_WARM), j); ser.push({...dev});
+    const h=heatIndex(ser); out[i]=h[h.length-1];
+  }
+  return out;
+}
+
+/* ================= CHARTS ================= */
+let CH, CS, LN={}, plines=[], syncing=false, CHARTS=[], HR={}, PN={}, xsync=false, TIDX=new Map(), ANCHOR=[];
+const HR_KEYS=["h1","h4","d1","avg"], HR_COL={h1:"#5B9CF5",h4:"#A58BF0",d1:"#3FC1D6",avg:"#F2B441"};
+const cssv = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function chartOpts(){
+  return { autoSize:true, layout:{background:{type:"solid",color:"transparent"}, textColor:cssv("--mute"), fontFamily:"Onest, system-ui, sans-serif", fontSize:12},
+    grid:{vertLines:{color:cssv("--line")+"66"}, horzLines:{color:cssv("--line")+"66"}},
+    rightPriceScale:{borderColor:cssv("--line"), minimumWidth:86}, timeScale:{borderColor:cssv("--line"), timeVisible:true, rightOffset:6},
+    crosshair:{mode:0}, localization:{locale:"en-US"} };
+}
+function initCharts(){
+  CH = LightweightCharts.createChart($("chart"), chartOpts());
+  CS = CH.addCandlestickSeries({borderVisible:false});
+  const L=(color,w=1,style=0)=>CH.addLineSeries({color, lineWidth:w, lineStyle:style, lastValueVisible:false, priceLineVisible:false, crosshairMarkerVisible:false});
+  LN.e1=L("#F2B441"); LN.e2=L("#5B9CF5"); LN.e3=L("#A58BF0",2);
+  LN.bu=L("#8798B0",1,2); LN.bm=L("#8798B0",1,1); LN.bl=L("#8798B0",1,2);
+  LN.ew=L("#A58BF0",2); LN.ewT=L("#A58BF0",1,2); LN.ewT.applyOptions({autoscaleInfoProvider:()=>null}); // a far wave target must not squash the candles
+  LN.fb=L("#2EBD8E",1,2); LN.fm=L("#F2B441",2,2); LN.fr=L("#EE5D5D",1,2);
+  const fix0100={autoscaleInfoProvider:()=>({priceRange:{minValue:0,maxValue:100}, margins:{above:6,below:6}})};
+  HR_KEYS.forEach(k=>{
+    const c=LightweightCharts.createChart($("hr_"+k), {...chartOpts(), timeScale:{...chartOpts().timeScale, visible:false}});
+    const an=c.addLineSeries({visible:false, lastValueVisible:false, priceLineVisible:false});
+    const base={priceLineVisible:false, lastValueVisible:false, crosshairMarkerVisible:false, lineWidth:1, ...fix0100};
+    const zHi=c.addBaselineSeries({...base, baseValue:{type:"price",price:S.heatSell}, topLineColor:"rgba(0,0,0,0)", bottomLineColor:"rgba(0,0,0,0)", bottomFillColor1:"rgba(0,0,0,0)", bottomFillColor2:"rgba(0,0,0,0)"});
+    const zLo=c.addBaselineSeries({...base, baseValue:{type:"price",price:S.heatBuy}, topLineColor:"rgba(0,0,0,0)", bottomLineColor:"rgba(0,0,0,0)", topFillColor1:"rgba(0,0,0,0)", topFillColor2:"rgba(0,0,0,0)"});
+    const s=c.addLineSeries({color:HR_COL[k], lineWidth:k==="avg"?3:2, priceLineVisible:false, lastValueVisible:true, priceFormat:{type:"price",precision:0,minMove:1}, ...fix0100});
+    HR[k]={c,s,an,zHi,zLo,lines:[]};
+  });
+  [CH,...HR_KEYS.map(k=>HR[k].c)].forEach(wireChart);
+  rebuildCharts();
+  applyChartTheme();
+}
+function applyChartTheme(){
+  if(!CH) return;
+  const o=chartOpts(); delete o.timeScale; CH.applyOptions(chartOpts()); [...HR_KEYS.map(k=>HR[k]?.c), ...Object.values(PN).map(p=>p.c)].forEach(c=>c&&c.applyOptions(o)); updateTimeAxes();
+  CS.applyOptions({upColor:cssv("--up"), downColor:cssv("--down"), wickUpColor:cssv("--up"), wickDownColor:cssv("--down")});
+}
+const toLine = (K,a) => { const r=[]; for(let i=0;i<K.length;i++) if(a[i]!=null&&isFinite(a[i])) r.push({time:K[i].t, value:a[i]}); return r; };
+function renderChart(fit){
+  const K=ST.k, A=ST.A, ov=S.ov, prec=decimals(ST.price);
+  const fmt={type:"price", precision:prec, minMove:+Math.pow(10,-prec).toFixed(prec)};
+  CS.applyOptions({priceFormat:fmt});
+  Object.values(LN).forEach(s=>s.applyOptions({priceFormat:fmt}));
+  const tfs0=TF_SEC[S.tf], ws=[]; for(let i=1;i<=S.horizon+2;i++) ws.push({time:K[K.length-1].t+tfs0*i});
+  CS.setData(K.map(k=>({time:k.t,open:k.o,high:k.h,low:k.l,close:k.c})).concat(ws));
+  ANCHOR=K.map(k=>({time:k.t})).concat(ws); HR_KEYS.forEach(k=>HR[k].an.setData(ANCHOR));
+  TIDX=new Map(K.map((k,i)=>[k.t,i]));
+  const up=cssv("--up"), dn=cssv("--down");
+  LN.e1.setData(ov.ema?toLine(K,A.emaF):[]); LN.e2.setData(ov.ema?toLine(K,A.emaM):[]); LN.e3.setData(ov.ema?toLine(K,A.emaS):[]);
+  LN.bu.setData(ov.bb?toLine(K,A.bb.up):[]); LN.bm.setData(ov.bb?toLine(K,A.bb.mid):[]); LN.bl.setData(ov.bb?toLine(K,A.bb.lo):[]);
+  // waves
+  const marks=[]; const ew=A.ew; const tfs=TF_SEC[S.tf];
+  if(ov.ew && ew.ok){
+    LN.ew.setData(ew.q.map(p=>({time:K[p.i].t, value:p.p})));
+    const lp=ew.q[ew.q.length-1];
+    LN.ewT.setData(ew.target? [{time:K[lp.i].t, value:lp.p}, {time:K[K.length-1].t+tfs*Math.max(6,Math.round(S.horizon*0.8)), value:ew.target}] : []);
+    ew.q.forEach((p,i)=>marks.push({time:K[p.i].t, position:p.t==="H"?"aboveBar":"belowBar", color:cssv("--violet"), shape:"circle", size:0.6, text:EW_LABELS[i]+(i===ew.legs?"?":"")}));
+  } else { LN.ew.setData([]); LN.ewT.setData([]); }
+  if(ov.sig){
+    const from=Math.max(0,K.length-400);
+    A.bt.sigs.buy.forEach((b,i)=>{ if(b&&i>=from) marks.push({time:K[i].t, position:"belowBar", color:up, shape:"arrowUp", text:""}); });
+    A.bt.sigs.sell.forEach((b,i)=>{ if(b&&i>=from) marks.push({time:K[i].t, position:"aboveBar", color:dn, shape:"arrowDown", text:""}); });
+  }
+  if(A.spike) marks.push({time:K[A.spike.i].t, position:A.spike.dir>0?"belowBar":"aboveBar", color:cssv("--accent"), shape:"square", size:0.6, text:"V×"+fn(A.spike.ratio,1)});
+  marks.sort((a,b)=>a.time-b.time); CS.setMarkers(marks);
+  // forecast cone
+  const fc=A.fc;
+  if(ov.fc){
+    const t0=K[K.length-1].t, t1=t0+tfs*S.horizon, p=ST.price;
+    LN.fb.setData([{time:t0,value:p},{time:t1,value:fc.bull}]); LN.fm.setData([{time:t0,value:p},{time:t1,value:fc.base}]); LN.fr.setData([{time:t0,value:p},{time:t1,value:fc.bear}]);
+    const pu=Math.round(fc.pUp*100);
+    LN.fb.applyOptions({lastValueVisible:true, title:"▲ "+pu+"%"}); LN.fr.applyOptions({lastValueVisible:true, title:"▼ "+(100-pu)+"%"}); LN.fm.applyOptions({lastValueVisible:true, title:t("base")});
+    LN.fb.setMarkers([{time:t1, position:"aboveBar", color:up, shape:"arrowUp", text:t("probRise")+" "+pu+"%"}]);
+    LN.fr.setMarkers([{time:t1, position:"belowBar", color:dn, shape:"arrowDown", text:t("probFall")+" "+(100-pu)+"%"}]);
+  } else { [LN.fb,LN.fm,LN.fr].forEach(l=>{ l.setData([]); l.setMarkers([]); l.applyOptions({lastValueVisible:false,title:""}); }); }
+  renderProbBadge();
+  // price lines
+  plines.forEach(l=>CS.removePriceLine(l)); plines=[];
+  const PL=(price,color,title,style=2,w=1)=>{ if(price&&isFinite(price)) plines.push(CS.createPriceLine({price,color,lineWidth:w,lineStyle:style,axisLabelVisible:true,title})); };
+  if(ov.sr){ A.sr.sup.slice(0,2).forEach(s=>PL(s.p,up,"S"+(s.n>1?"×"+s.n:""),0)); A.sr.res.slice(0,2).forEach(s=>PL(s.p,dn,"R"+(s.n>1?"×"+s.n:""),0)); }
+  if(ov.fib){ A.fib.lv.forEach(l=>PL(l.p,cssv("--blue"),"Fib "+l.r,1)); }
+  if(ov.walls && A.book){ A.book.walls.slice(0,6).forEach(w=>PL(w.p, w.s==="bid"?up:dn, (w.s==="bid"?"🐋 bid ":"🐋 ask ")+fbig(w.n),3)); }
+  if(ov.liq && A.drv?.map){ A.drv.map.topL.slice(0,2).forEach(x=>PL(x.p,dn,"Liq L",3)); A.drv.map.topS.slice(0,2).forEach(x=>PL(x.p,up,"Liq S",3)); }
+  if(ov.fc){ PL(fc.plan.stop,dn,"Stop",1); PL(fc.plan.tp1,up,"TP1",1); PL(fc.plan.tp2,up,"TP2",1); }
+  renderPanes(); renderHeatRows();
+  if(fit){ const n=K.length; CH.timeScale().setVisibleLogicalRange({from:Math.max(0,n-160), to:n+S.horizon+4}); }
+  renderLegend();
+}
+/* ================= INDICATOR PANES =================
+   Every indicator gets its own pane (own chart, own right-hand scale, own range and number format).
+   All panes share the candle index set (anchor), so they line up exactly under the price chart. */
+const PANE_ORDER=["vol","prob","heat","rsi","stoch","mfi","macd","adx","delta","cvd","obv"];
+const RANGE={
+  fixed100:()=>({priceRange:{minValue:0,maxValue:100}, margins:{above:6,below:6}}),
+  sym:o=>{ const r=o(); if(!r) return r; const m=Math.max(Math.abs(r.priceRange.minValue),Math.abs(r.priceRange.maxValue))||1; return {priceRange:{minValue:-m,maxValue:m}, margins:{above:4,below:4}}; },
+  zeroUp:o=>{ const r=o(); if(!r) return r; return {priceRange:{minValue:0,maxValue:Math.max(r.priceRange.maxValue,1e-12)}, margins:{above:6,below:0}}; },
+  adx:o=>{ const r=o(); return {priceRange:{minValue:0,maxValue:Math.max(60,r?r.priceRange.maxValue:60)}, margins:{above:6,below:4}}; },
+  auto:null
+};
+function fmtSmart(v){ if(v==null||!isFinite(v)) return ""; const a=Math.abs(v); if(a===0) return "0"; if(a>=1e4) return fbig(v); if(a>=100) return fn(v,0); if(a>=1) return fn(v,2); return fn(v, Math.min(10, Math.max(2, -Math.floor(Math.log10(a))+2))); }
+const FMT={ n0:{type:"custom",formatter:v=>fn(v,0),minMove:0.01}, n1:{type:"custom",formatter:v=>fn(v,1),minMove:0.01}, big:{type:"custom",formatter:v=>fbig(v),minMove:1e-8}, smart:{type:"custom",formatter:fmtSmart,minMove:1e-12} };
+function paneSpec(k){
+  const A=ST.A, K=ST.k, up=cssv("--up"), dn=cssv("--down"), mu=cssv("--mute"), ac=cssv("--accent"), bl=cssv("--blue"), vi=cssv("--violet");
+  const zc=(lo,hi,base)=>v=>v<=lo?up:v>=hi?dn:base;
+  switch(k){
+    case "vol": return {name:t("osc_vol"), range:"zeroUp", fmt:"big", s:[{kind:"hist", a:K.map(x=>x.v), color:i=>(K[i].c>=K[i].o?up:dn)+"aa", lab:"Vol"},{a:A.volSma, color:ac, w:1, lab:"SMA "+S.volSma}]};
+    case "prob": return {name:t("osc_prob")+" %", range:"fixed100", fmt:"n0", lv:[[60,up],[50,mu],[40,dn]], s:[{a:A.prob, colorFn:v=>v>=60?up:v<=40?dn:mu, w:2, lab:"▲"}]};
+    case "heat": return {name:"Heat "+S.tf, range:"fixed100", fmt:"n0", lv:[[S.heatSell,dn],[50,mu],[S.heatBuy,up]], s:[{a:A.heat, colorFn:v=>v<S.heatBuy?up:v>S.heatSell?dn:ac, w:2, lab:"Heat"}]};
+    case "rsi": return {name:"RSI "+S.rsiP, range:"fixed100", fmt:"n1", lv:[[70,dn],[50,mu],[30,up]], s:[{a:A.rsi, colorFn:v=>v>=70?dn:v<=30?up:vi, w:2, lab:"RSI"}]};
+    case "stoch": return {name:"Stoch RSI", range:"fixed100", fmt:"n0", lv:[[80,dn],[20,up]], s:[{a:A.srsi.k, color:bl, w:2, lab:"%K"},{a:A.srsi.d, color:ac, w:1, lab:"%D"}]};
+    case "mfi": return {name:"MFI "+S.mfiP, range:"fixed100", fmt:"n0", lv:[[80,dn],[50,mu],[20,up]], s:[{a:A.mfi, colorFn:v=>v>=80?dn:v<=20?up:vi, w:2, lab:"MFI"}]};
+    case "macd": { const h=A.macd.h; return {name:`MACD ${S.macdF}/${S.macdS}/${S.macdG}`, range:"sym", fmt:"smart", lv:[[0,mu]], s:[{kind:"hist", a:h, color:i=>{ const v=h[i], p=h[i-1]; const grow=p==null||Math.abs(v)>=Math.abs(p); return v>=0?(grow?up:up+"77"):(grow?dn:dn+"77"); }, lab:"Hist"},{a:A.macd.m, color:bl, w:2, lab:"MACD"},{a:A.macd.sig, color:ac, w:1, lab:"Signal"}]}; }
+    case "adx": return {name:"ADX "+S.adxP, range:"adx", fmt:"n1", lv:[[25,mu]], s:[{a:A.adx.adx, color:ac, w:2, lab:"ADX"},{a:A.adx.pdi, color:up, w:1, lab:"+DI"},{a:A.adx.ndi, color:dn, w:1, lab:"−DI"}]};
+    case "delta": return {name:t("osc_delta"), range:"sym", fmt:"big", lv:[[0,mu]], s:[{kind:"hist", a:A.delta, color:i=>(A.delta[i]>=0?up:dn)+"bb", lab:"Δ"}]};
+    case "cvd": return {name:"CVD", range:"auto", fmt:"big", s:[{a:A.cvd, color:ac, w:2, lab:"CVD"}]};
+    case "obv": return {name:"OBV", range:"auto", fmt:"big", s:[{a:A.obv, color:bl, w:2, lab:"OBV"}]};
+  }
+}
+function wireChart(c){
+  c.timeScale().subscribeVisibleLogicalRangeChange(r=>{ if(syncing||!r) return; syncing=true; CHARTS.forEach(x=>{ if(x!==c) x.timeScale().setVisibleLogicalRange(r); }); syncing=false; });
+  c.subscribeCrosshairMove(p=>crossSync(c,p));
+}
+function rebuildCharts(){ CHARTS=[CH, ...PANE_ORDER.filter(k=>PN[k]).map(k=>PN[k].c), ...HR_KEYS.map(k=>HR[k].c)]; }
+function ensurePane(k){
+  if(PN[k]) return PN[k];
+  const div=document.createElement("div"); div.className="pane2"; div.id="pn_"+k; div.innerHTML=`<div class="hlab" id="pl_${k}"></div>`;
+  $("panes").appendChild(div);
+  const o=chartOpts(); const c=LightweightCharts.createChart(div, {...o, timeScale:{...o.timeScale, visible:false}});
+  const an=c.addLineSeries({visible:false, lastValueVisible:false, priceLineVisible:false});
+  wireChart(c);
+  return PN[k]={c, an, div, series:[], lines:[], spec:null};
+}
+function dropPane(k){ const P=PN[k]; if(!P) return; try{ P.c.remove(); }catch(e){} P.div.remove(); delete PN[k]; }
+function renderPanes(){
+  const K=ST.k, A=ST.A; if(!A) return;
+  PANE_ORDER.forEach(k=>{ if(!S.panes[k]) dropPane(k); });
+  PANE_ORDER.filter(k=>S.panes[k]).forEach(k=>{
+    const P=ensurePane(k); $("panes").appendChild(P.div); // keeps the fixed order
+    P.series.forEach(x=>P.c.removeSeries(x.s)); P.series=[]; P.lines=[];
+    const sp=paneSpec(k); P.spec=sp;
+    const prov=RANGE[sp.range];
+    sp.s.forEach((d,si)=>{
+      const opt={priceLineVisible:false, lastValueVisible:true, priceFormat:FMT[sp.fmt], ...(prov?{autoscaleInfoProvider:prov}:{})};
+      const ser = d.kind==="hist"? P.c.addHistogramSeries({...opt, lastValueVisible:false}) : P.c.addLineSeries({...opt, color:d.color||cssv("--accent"), lineWidth:d.w||2, crosshairMarkerRadius:3});
+      const data=[]; for(let i=0;i<K.length;i++){ const v=d.a[i]; if(v==null||!isFinite(v)) continue; const pt={time:K[i].t, value:v}; if(d.kind==="hist") pt.color=d.color(i); else if(d.colorFn) pt.color=d.colorFn(v); data.push(pt); }
+      ser.setData(data); P.series.push({s:ser, a:d.a, d});
+    });
+    P.an.setData(ANCHOR);
+    const first=P.series.find(x=>x.d.kind!=="hist")||P.series[0];
+    (sp.lv||[]).forEach(([v,c])=>P.lines.push(first.s.createPriceLine({price:v,color:c,lineWidth:1,lineStyle:2,axisLabelVisible:false,title:""})));
+    paneLabel(k);
+  });
+  rebuildCharts(); updateTimeAxes();
+  const r=CH.timeScale().getVisibleLogicalRange(); if(r){ syncing=true; CHARTS.forEach(c=>{ if(c!==CH) c.timeScale().setVisibleLogicalRange(r); }); syncing=false; }
+}
+function paneLabel(k, i){
+  const P=PN[k]; if(!P||!P.spec) return; const n=ST.k.length;
+  const vals=P.series.map(x=>{ const idx= i==null? n-1 : i; const v=x.a[idx]; const col = x.d.kind==="hist"? x.d.color(idx) : x.d.colorFn? x.d.colorFn(v) : x.d.color; return v==null||!isFinite(v)? "" : `<span style="color:${col}">${esc(x.d.lab)} <b>${FMT[P.spec.fmt].formatter(v)}</b></span>`; }).filter(Boolean).join(" ");
+  $("pl_"+k).innerHTML=`<b>${esc(P.spec.name)}</b>${ib(k)} ${vals}`;
+}
+/* time axis only under the lowest visible chart */
+function updateTimeAxes(){
+  const order=[...PANE_ORDER.filter(k=>PN[k]).map(k=>PN[k].c), ...HR_KEYS.filter(k=>S.hrow[k]).map(k=>HR[k].c)];
+  const lastC=order[order.length-1];
+  CH.applyOptions({timeScale:{visible:!lastC}});
+  Object.values(PN).forEach(p=>p.c.applyOptions({timeScale:{visible:p.c===lastC}}));
+  HR_KEYS.forEach(k=>HR[k].c.applyOptions({timeScale:{visible:HR[k].c===lastC}}));
+}
+function zoneOf(v){ return v==null? null : v<S.heatBuy? "low" : v>S.heatSell? "high" : "mid"; }
+function heatLabel(k, i){
+  const A=ST.A, a=A.hzRows[k], v = i==null? a[a.length-1] : a[i], z=zoneOf(v);
+  const nm={h1:"Heat 1h", h4:"Heat 4h", d1:"Heat 1d", avg:t("hzAvgRow")}[k];
+  const zc= z==="low"?"up": z==="high"?"down":"n";
+  const cov = k!=="avg" && A.hzCov[k]>0 && A.hzCov[k]<0.97 ? ` <span class="mute">· ${esc(t("covPart",{p:fn(A.hzCov[k]*100,0)}))}</span>` : (k!=="avg"&&A.hzCov[k]===0? ` <span class="mute">· ${esc(t("noData"))}</span>`:"");
+  $("hl_"+k).innerHTML=`<i style="background:${HR_COL[k]}"></i><b>${esc(nm)}</b>${ib(k==="avg"?"hzAvg":"hz")} <span class="v">${fn(v,0)}</span>${z?` <span class="pill ${zc}">${esc(t(z==="low"?"heatLow":z==="high"?"heatHigh":"heatMid"))}</span>`:""}${cov}`;
+}
+function renderHeatRows(){
+  const K=ST.k, A=ST.A, up=cssv("--up"), dn=cssv("--down"), mu=cssv("--mute");
+  HR_KEYS.forEach(k=>{
+    const R=HR[k], a=A.hzRows[k]; $("hr_"+k).classList.toggle("off", !S.hrow[k]);
+    const pts=[]; for(let i=0;i<K.length;i++){ const v=a[i]; if(v==null) continue; const z=zoneOf(v); pts.push({time:K[i].t, value:v, color: z==="low"?up : z==="high"?dn : HR_COL[k]}); }
+    R.s.setData(pts);
+    const plain=pts.map(p=>({time:p.time,value:p.value}));
+    R.zHi.applyOptions({baseValue:{type:"price",price:S.heatSell}, topFillColor1:dn+"66", topFillColor2:dn+"14"}); R.zHi.setData(plain);
+    R.zLo.applyOptions({baseValue:{type:"price",price:S.heatBuy}, bottomFillColor1:up+"14", bottomFillColor2:up+"66"}); R.zLo.setData(plain);
+    R.lines.forEach(l=>R.s.removePriceLine(l));
+    R.lines=[[S.heatSell,dn,2],[50,mu,3],[S.heatBuy,up,2]].map(([v,c,st])=>R.s.createPriceLine({price:v,color:c,lineWidth:1,lineStyle:st,axisLabelVisible:v!==50,title:""}));
+    const m=[];
+    for(let i=Math.max(1,K.length-400);i<K.length;i++){ if(a[i]==null||a[i-1]==null) continue;
+      if(a[i-1]<S.heatBuy&&a[i]>=S.heatBuy) m.push({time:K[i].t,position:"belowBar",color:up,shape:"arrowUp",size:0.8});
+      if(a[i-1]>S.heatSell&&a[i]<=S.heatSell) m.push({time:K[i].t,position:"aboveBar",color:dn,shape:"arrowDown",size:0.8}); }
+    R.s.setMarkers(S.ov.sig? m : []);
+    heatLabel(k);
+  });
+  updateTimeAxes();
+  const r=CH.timeScale().getVisibleLogicalRange(); if(r){ syncing=true; HR_KEYS.forEach(k=>HR[k].c.timeScale().setVisibleLogicalRange(r)); syncing=false; }
+}
+/* crosshair: one vertical line across the price chart, the oscillator and all Heat rows; row labels show the hovered values */
+function crossSync(src, p){
+  if(xsync||!ST.A) return; xsync=true;
+  try{
+    const i = p&&p.time!=null? TIDX.get(p.time) : undefined;
+    CHARTS.forEach(c=>{ if(c===src) return;
+      if(i===undefined){ c.clearCrosshairPosition(); return; }
+      let ser=null, val=null;
+      if(c===CH){ ser=CS; val=ST.k[i].c; }
+      else { const hk=HR_KEYS.find(x=>HR[x].c===c);
+        if(hk){ ser=HR[hk].s; val=ST.A.hzRows[hk][i]; }
+        else { const pk=Object.keys(PN).find(x=>PN[x].c===c); const P=PN[pk]; const ref=P&&(P.series.find(x=>x.d.kind!=="hist")||P.series[0]); if(ref){ ser=ref.s; val=ref.a[i]; } } }
+      if(ser&&val!=null&&isFinite(val)) c.setCrosshairPosition(val, p.time, ser); else c.clearCrosshairPosition();
+    });
+    HR_KEYS.forEach(k=>heatLabel(k, i)); Object.keys(PN).forEach(k=>paneLabel(k, i));
+  }catch(e){} finally{ xsync=false; }
+}
+function renderProbBadge(){
+  const el=$("pBadge"); if(!S.ov.prob||!ST.A){ el.innerHTML=""; return; }
+  const fc=ST.A.fc, pu=Math.round(fc.pUp*100), pd=100-pu, vc= fc.score>0.13?"up":fc.score<-0.13?"down":"mute";
+  el.innerHTML=`${ib("probB")}<div class="row"><span class="up big">▲ ${pu}%</span><span class="down big">▼ ${pd}%</span></div>
+    <div class="split"><b style="width:${pu}%;background:var(--up)"></b><b style="width:${pd}%;background:var(--down)"></b></div>
+    <div class="row"><span class="up">${esc(t("probRise"))}</span><span class="down">${esc(t("probFall"))}</span></div>
+    <div class="sub">${esc(t("probOn",{h:S.horizon,tf:S.tf}))} · <span class="${vc}">${esc(t(fc.verdict))}</span></div>`;
+}
+function renderLegend(){
+  const items=[];
+  if(S.ov.ema) items.push(["#F2B441","EMA "+S.emaF],["#5B9CF5","EMA "+S.emaM],["#A58BF0","EMA "+S.emaS]);
+  if(S.ov.ew) items.push([cssv("--violet"),t("ovEw")]);
+  if(S.ov.fc) items.push([cssv("--up"),t("bull")],[cssv("--accent"),t("base")],[cssv("--down"),t("bear")]);
+  $("legend").innerHTML=items.map(([c,n])=>`<span><i style="background:${c}"></i>${esc(n)}</span>`).join("");
+}
+function buildToolbars(){
+  const ovKeys=["ema","bb","ew","sr","fib","fc","prob","walls","liq","sig"];
+  const hk=k=>k==="prob"?"probB":k;
+  $("ovl").innerHTML=ovKeys.map(k=>`<button class="tog" data-ov="${k}" aria-pressed="${!!S.ov[k]}" title="${esc(hint(hk(k))?.[1].split("\n")[0]||"")}">${esc(t("ov_"+k))}</button>`).join("")+`<button class="ib" data-tip="@ov" aria-label="${esc(t("guideOv"))}">?</button>`;
+  $("paneSel").innerHTML=`<span class="lbl">${esc(t("paneTitle"))}</span>`+PANE_ORDER.map(k=>`<button class="tog" data-pane="${k}" aria-pressed="${!!S.panes[k]}" title="${esc(hint(k)?.[1].split("\n")[0]||"")}">${esc(t("osc_"+k))}</button>`).join("")+`<button class="ib" data-tip="@panes" aria-label="${esc(t("guidePanes"))}">?</button>`;
+  const hn={h1:"1h",h4:"4h",d1:"1d",avg:t("hzAvgShort")};
+  $("hrHead").innerHTML=`<span class="lbl">${esc(t("hrTitle"))}</span>${ib("hz")}`+HR_KEYS.map(k=>`<button class="tog" data-hr="${k}" aria-pressed="${!!S.hrow[k]}">${esc(hn[k])}</button>`).join("")
+    +`<label>${esc(t("lvlLow"))}<input type="number" id="lvLow" min="1" max="49" step="1" value="${S.heatBuy}"></label><label>${esc(t("lvlHigh"))}<input type="number" id="lvHigh" min="51" max="99" step="1" value="${S.heatSell}"></label>`;
+}
+/* ================= UI RENDER ================= */
+if(typeof CanvasRenderingContext2D!=="undefined" && !CanvasRenderingContext2D.prototype.roundRect){ CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){ this.rect(x,y,w,h); }; }
+function renderAll(fit){
+  renderHero(); renderChart(fit); renderSummary(); renderInd(); renderEw(); renderWhales(); renderDeriv(); renderBt(); renderShare();
+  $("star").textContent = S.favs.includes(S.base)?"★":"☆";
+  document.title = `${S.base} ${fp(ST.price)} — Coin Lab`;
+}
+function heatColor(h){ if(h==null) return "var(--mute)"; return h<S.heatBuy?"var(--up)":h>S.heatSell?"var(--down)":"var(--text)"; }
+function renderHero(){
+  const A=ST.A, tk=ST.tick, q=quoteNow();
+  $("hName").textContent=pairName();
+  $("hSub").textContent=`${EX_NAMES[S.exch]} · ${t(fut()?"futures":"spot")} · ${S.tf}`;
+  $("hPrice").textContent=fp(ST.price);
+  $("hChg").innerHTML = tk? `<span class="${cls(tk.chg)}">${fpct(tk.chg)}</span> <span class="mute">24h</span>` : "";
+  const kv=[["high24",fp(tk?.high)],["low24",fp(tk?.low)],["vol24",fbig(tk?.qv)+" "+q],["rsi1h",fn(A.rsi1h,1)],["rsi1d",fn(A.rsi1d,1)],["atr",fn(A.atrPct,2)+"%"]];
+  if(window.CH) window.CH.linksInto($("chLinks"),{coin:S.base,q:quoteNow(),ex:S.exch,from:"lab"});
+  $("hKv").innerHTML=kv.map(([k,v])=>`<div><span>${esc(t(k))}</span><b>${v}</b></div>`).join("");
+  drawGauge(A.fc.score);
+  const vc = A.fc.score>0.13?"up":A.fc.score<-0.13?"down":"";
+  $("verdict").className="verdict "+vc; $("verdict").textContent=t(A.fc.verdict);
+  $("prob").textContent=t("probUp",{p:fn(A.fc.pUp*100,0), h:S.horizon, tf:S.tf});
+  $("conf").textContent=t("agree",{p:fn(A.fc.agree*100,0)});
+  const hz=[["hzS","1h",A.hz.s],["hzM","4h",A.hz.m],["hzL","1d",A.hz.l],["hzA","",A.hz.a]];
+  $("hz").innerHTML=hz.map(([k,tf,v])=>`<div class="hzrow"><span>${esc(t(k))} <span class="mute">${tf}</span></span><div class="bar"><s style="left:${S.heatBuy}%"></s><s style="left:${S.heatSell}%"></s>${v!=null?`<i style="left:${clamp(v,0,100)}%"></i>`:""}</div><b style="color:${heatColor(v)};text-align:right">${fn(v,0)}</b></div>`).join("")
+    + (A.conf? `<div class="note" style="margin-top:2px"><span class="pill ${A.conf.includes("buy")?"up":"down"}">${esc(t("conf_"+A.conf))}</span></div>`:"");
+  const P=A.fc.plan;
+  const pl=[[P.side==="long"?"planEntryL":"planEntryS", `${fp(P.entry[0])} – ${fp(P.entry[1])}`],["stop",fp(P.stop)],["tp1",fp(P.tp1)],["tp2",fp(P.tp2)],["rr",fn(P.rr,2)],["baseT",fp(A.fc.base)]];
+  $("plan").innerHTML=pl.map(([k,v])=>`<div><span>${esc(t(k))}</span><b>${v}</b></div>`).join("");
+}
+const EX_NAMES={binance:"Binance",bybit:"Bybit",okx:"OKX"};
+function drawGauge(score){
+  const cx=150, cy=150, r=118, seg=[["--down",180,144],["--down",144,108],["--mute",108,72],["--up",72,36],["--up",36,0]];
+  const P=a=>[cx+r*Math.cos(a*Math.PI/180), cy-r*Math.sin(a*Math.PI/180)];
+  const op=[1,.55,.5,.55,1];
+  let s=seg.map(([c,a1,a2],i)=>{ const [x1,y1]=P(a1-1), [x2,y2]=P(a2+1); return `<path d="M${x1} ${y1} A${r} ${r} 0 0 1 ${x2} ${y2}" stroke="var(${c})" stroke-opacity="${op[i]}" stroke-width="22" fill="none"/>`; }).join("");
+  const ang=180-(clamp(score,-1,1)+1)/2*180; const [nx,ny]=[cx+r*Math.cos(ang*Math.PI/180), cy-r*Math.sin(ang*Math.PI/180)];
+  const [ix,iy]=[cx+(r-26)*Math.cos(ang*Math.PI/180), cy-(r-26)*Math.sin(ang*Math.PI/180)];
+  s+=`<circle cx="${nx}" cy="${ny}" r="13" fill="var(--panel)" stroke="var(--text)" stroke-width="4"/>`;
+  s+=`<text x="${cx-r}" y="${cy+22}" text-anchor="middle" fill="var(--mute)" font-size="12">${esc(t("sell"))}</text><text x="${cx+r}" y="${cy+22}" text-anchor="middle" fill="var(--mute)" font-size="12">${esc(t("buy"))}</text>`;
+  s+=`<text x="${cx}" y="${cy-18}" text-anchor="middle" fill="var(--text)" font-size="46" font-weight="800" letter-spacing="-1">${score>0?"+":score<0?"−":""}${Math.abs(Math.round(score*100))}</text>`;
+  $("gauge").innerHTML=s;
+}
+function pill(v, inv){ const x=inv?-v:v; return x>0?`<span class="pill up">${esc(t("buy"))}</span>`:x<0?`<span class="pill down">${esc(t("sell"))}</span>`:`<span class="pill n">${esc(t("neutral"))}</span>`; }
+
+function renderSummary(){
+  const A=ST.A, fc=A.fc;
+  $("factors").innerHTML = fc.F.map(f=>{ const w=Math.abs(f.v)*50; const st = f.v>=0? `left:50%;width:${w}%;background:var(--up)` : `left:${50-w}%;width:${w}%;background:var(--down)`; return `<div class="scorebar"><span>${esc(t(f.key))}${ib(f.key)}</span><div class="sb"><i style="${st}"></i></div><b class="${cls(f.v)}" style="text-align:right">${f.v>0?"+":""}${Math.round(f.v*100)}</b></div>`; }).join("");
+  $("narr").innerHTML = `<h2>${esc(t("analysisFor",{s:pairName()}))}</h2>` + narrative().map(p=>`<p>${p}</p>`).join("");
+  // levels table
+  const p=ST.price, rows=[];
+  A.sr.res.forEach(x=>rows.push([t("res"),x.p,t("touches",{n:x.n})]));
+  A.sr.sup.forEach(x=>rows.push([t("sup"),x.p,t("touches",{n:x.n})]));
+  if(A.book){ A.book.walls.slice(0,6).forEach(w=>rows.push([w.s==="bid"?t("wallBid"):t("wallAsk"),w.p,fbig(w.n)+" $"])); }
+  if(A.ew.ok&&A.ew.target) rows.push([t("ewTarget"),A.ew.target,t("wave")+" "+A.ew.forming]);
+  if(A.ew.ok&&A.ew.inval) rows.push([t("ewInval"),A.ew.inval,""]);
+  if(A.drv?.map){ A.drv.map.topL.slice(0,2).forEach(x=>rows.push([t("liqL"),x.p,fbig(x.v)+" $"])); A.drv.map.topS.slice(0,2).forEach(x=>rows.push([t("liqS"),x.p,fbig(x.v)+" $"])); }
+  A.fib.lv.filter(l=>l.r>0&&l.r<1).forEach(l=>rows.push(["Fib "+l.r,l.p,""]));
+  rows.sort((a,b)=>b[1]-a[1]);
+  $("levelsTbl").innerHTML=`<table><thead><tr><th>${esc(t("type"))}</th><th>${esc(t("price"))}</th><th>${esc(t("dist"))}</th><th>${esc(t("note"))}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${fp(r[1])}</td><td class="${cls(r[1]-p)}">${fpct((r[1]/p-1)*100)}</td><td class="mute">${esc(r[2])}</td></tr>`).join("")}</tbody></table>`;
+}
+
+function narrative(){
+  const A=ST.A, fc=A.fc, p=ST.price, out=[];
+  out.push(t("nSum",{s:pairName(), v:`<b>${t(fc.verdict)}</b>`, sc:(fc.score>0?"+":"")+Math.round(fc.score*100), pu:fn(fc.pUp*100,0), h:S.horizon, tf:S.tf, base:fp(fc.base), bull:fp(fc.bull), bear:fp(fc.bear), sig:fn(fc.sig*100,1)}));
+  const e50=last(A.emaM), e200=last(A.emaS), ad=last(A.adx.adx);
+  const tr = e50&&e200? (p>e50&&e50>e200?"nTrendUp": p<e50&&e50<e200?"nTrendDown":"nTrendMixed") : "nTrendMixed";
+  out.push(t(tr,{e1:S.emaM,e2:S.emaS,adx:fn(ad,0), str:t(ad>=40?"adxStrong":ad>=25?"adxMid":"adxWeak")}) + (A.d1Trend!=null? " "+t(A.d1Trend>0?"nD1Up":A.d1Trend<0?"nD1Down":"nD1Flat"):""));
+  const r=last(A.rsi), hn=last(A.macd.h), hp=lastN(A.macd.h,1), sk=last(A.srsi.k);
+  out.push(t("nMom",{rsi:fn(r,1), rz:t(r>70?"rzOb":r<30?"rzOs":r>50?"rzBull":"rzBear"), macd:t(hn>0?(hn>hp?"mUpGrow":"mUpFade"):(hn<hp?"mDnGrow":"mDnFade")), sk:fn(sk,0)}));
+  out.push(t("nHeat",{s:fn(A.hz.s,0), m:fn(A.hz.m,0), l:fn(A.hz.l,0), a:fn(A.hz.a,0), lo:S.heatBuy, hi:S.heatSell, az:t(A.hz.a==null?"heatMid":A.hz.a<S.heatBuy?"heatLow":A.hz.a>S.heatSell?"heatHigh":"heatMid"), c: A.conf? `<b>${t("conf_"+A.conf)}</b>` : t("noConf")}));
+  if(A.ew.ok) out.push(t("nEw",{w:A.ew.forming, d:t(A.ew.dir>0?"up":"down"), txt:t(A.ew.key), tg:fp(A.ew.target), inv:fp(A.ew.inval), c:fn(A.ew.conf*100,0)})); else out.push(t("nEwNone"));
+  if(A.book){ const b=A.book; out.push(t("nBook",{i2:fpct(b.imb[2].v*100,0), side:t(b.imb[2].v>0.1?"bidsDom":b.imb[2].v<-0.1?"asksDom":"balanced"), sup:b.sup?`${fp(b.sup.p)} (${fbig(b.sup.n)} $)`:"—", res:b.res?`${fp(b.res.p)} (${fbig(b.res.n)} $)`:"—"})); }
+  if(A.flow){ const f=A.flow; out.push(t("nFlow",{m:fn(f.span,0), d:fpct(f.delta*100,0), wd:fpct(f.wDelta*100,0), n:f.big.length, imp: f.impact!=null? fpct(f.impact,3):"—"})); }
+  if(A.drv){ const d=A.drv; out.push(t("nDrv",{f:fn(d.funding,4), oi:fbig(d.oi), oic:fpct(d.oiChg24,1), ls:fn(d.lsNow,2), rg:d.regime?t(d.regime):"—", c:t(d.score>0.15?"drvBull":d.score<-0.15?"drvBear":"drvFlat")}) + (d.map&&d.map.topL[0]&&d.map.topS[0]? " "+t("nLiq",{l:fp(d.map.topL[0].p), s:fp(d.map.topS[0].p)}):"")); }
+  if(A.spike) out.push(t("nSpike",{r:fn(A.spike.ratio,1), d:t(A.spike.dir>0?"up":"down")}));
+  const P=fc.plan; out.push((Math.abs(fc.score)<0.13?t("planWeak")+" ":"")+t(P.side==="long"?"nPlanL":"nPlanS",{e1:fp(P.entry[0]), e2:fp(P.entry[1]), sl:fp(P.stop), t1:fp(P.tp1), t2:fp(P.tp2), rr:fn(P.rr,2)}) + (P.rr<1.5?" "+t("rrLow"):""));
+  out.push(`<span class="note">${esc(t("disclaimer"))}</span>`);
+  return out;
+}
+
+function renderInd(){
+  const A=ST.A, p=ST.price, K=ST.k;
+  const r=last(A.rsi), sk=last(A.srsi.k), sd=last(A.srsi.d), hn=last(A.macd.h), hp=lastN(A.macd.h,1), pb=last(A.bb.pb), bw=last(A.bb.w), ad=last(A.adx.adx), pdi=last(A.adx.pdi), ndi=last(A.adx.ndi), mf=last(A.mfi), he=last(A.heat);
+  const ob=A.obv, obS=ob.length>20? ob[ob.length-1]-ob[ob.length-21] : 0;
+  const rows=[
+    ["RSI "+S.rsiP, fn(r,1), r<30?1:r>70?-1:0, t(r<30?"rzOs":r>70?"rzOb":r>50?"rzBull":"rzBear"), "rsi"],
+    ["Stoch RSI", fn(sk,0)+" / "+fn(sd,0), sk<20&&sk>sd?1:sk>80&&sk<sd?-1:0, t(sk<20?"zoneLow":sk>80?"zoneHigh":"zoneMid"), "stoch"],
+    ["MACD "+S.macdF+"/"+S.macdS+"/"+S.macdG, fn(hn,decimals(p)), hn>0&&hn>hp?1:hn<0&&hn<hp?-1:0, t(hn>0?(hn>hp?"mUpGrow":"mUpFade"):(hn<hp?"mDnGrow":"mDnFade")), "macd"],
+    ["Bollinger %B", fn(pb*100,0)+"%", pb<0.05?1:pb>0.95?-1:0, t("bbW",{w:fn(bw,2)}), "bb"],
+    ["EMA "+S.emaF, fp(last(A.emaF)), p>last(A.emaF)?1:-1, t(p>last(A.emaF)?"above":"below"), "ema"],
+    ["EMA "+S.emaM, fp(last(A.emaM)), p>last(A.emaM)?1:-1, t(p>last(A.emaM)?"above":"below"), "ema"],
+    ["EMA "+S.emaS, fp(last(A.emaS)), last(A.emaS)==null?0:p>last(A.emaS)?1:-1, last(A.emaS)==null?t("needBars"):t(p>last(A.emaS)?"above":"below"), "ema"],
+    ["ADX / +DI / −DI", `${fn(ad,0)} / ${fn(pdi,0)} / ${fn(ndi,0)}`, ad>20?(pdi>ndi?1:-1):0, t(ad>=40?"adxStrong":ad>=25?"adxMid":"adxWeak"), "adx"],
+    ["MFI "+S.mfiP, fn(mf,0), mf<20?1:mf>80?-1:0, t(mf<20?"zoneLow":mf>80?"zoneHigh":"zoneMid"), "mfi"],
+    ["OBV (20)", fbig(obS), Math.sign(obS), t(obS>0?"accum":"distrib"), "obv"],
+    ["ATR "+S.atrP, fp(last(A.atr))+" ("+fn(A.atrPct,2)+"%)", 0, t("atrNote"), "atr"],
+    ["Heat Index", fn(he,0), he<S.heatBuy?1:he>S.heatSell?-1:0, t(he<S.heatBuy?"heatLow":he>S.heatSell?"heatHigh":"heatMid"), "heat"]
+  ];
+  $("indTbl").innerHTML=`<table><thead><tr><th>${esc(t("indicator"))}</th><th>${esc(t("value"))}</th><th>${esc(t("signal"))}</th><th>${esc(t("comment"))}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r[0])}${ib(r[4])}</td><td>${r[1]}</td><td>${pill(r[2])}</td><td class="mute" style="text-align:left">${esc(r[3])}</td></tr>`).join("")}</tbody></table>`;
+  $("mtfTbl").innerHTML=`<table><thead><tr><th>TF</th><th>RSI</th><th>Heat</th><th>EMA50</th><th>EMA200</th><th>MACD</th></tr></thead><tbody>${A.mtf.map(m=>`<tr><td>${m.tf}</td><td>${fn(m.rsi,1)}</td><td style="color:${heatColor(m.heat)}">${fn(m.heat,0)}</td><td class="${m.e50?cls(m.p-m.e50):"mute"}">${m.e50?(m.p>m.e50?"▲":"▼"):"—"}</td><td class="${m.e200?cls(m.p-m.e200):"mute"}">${m.e200?(m.p>m.e200?"▲":"▼"):"—"}</td><td class="${cls(m.mh)}">${m.mh>0?"+":"−"}</td></tr>`).join("")}</tbody></table>`;
+  const vs=last(A.volSma), lv=K[K.length-1].v, d24=sum(A.delta.slice(-24)), v24=sum(K.slice(-24).map(k=>k.v));
+  $("volBox").innerHTML=`<p>${t("nVol",{r:fn(lv/vs,2), n:S.volSma, d:fpct(v24?d24/v24*100:0,1), src:t(K[0].tb!=null&&!isNaN(K[0].tb)?"deltaReal":"deltaEst")})}</p>` + (A.spike?`<p><span class="pill ${A.spike.dir>0?"up":"down"}">${esc(t("spikeOn",{r:fn(A.spike.ratio,1)}))}</span></p>`:`<p class="note">${esc(t("noSpike",{x:S.volSpike}))}</p>`);
+}
+
+function renderEw(){
+  const A=ST.A, ew=A.ew, K=ST.k;
+  if(!ew.ok){ $("ewBox").innerHTML=`<h2>${esc(t("tEw"))}${ib("ew")}</h2><p>${t("nEwNone")}</p><p class="note">${esc(t("ewDev",{d:fn(ew.dev*100,2)}))}</p>`; $("ewTbl").innerHTML=""; return; }
+  const z=ew.zone? `${fp(Math.min(...ew.zone))} – ${fp(Math.max(...ew.zone))}`:"—";
+  $("ewBox").innerHTML=`<h2>${esc(t("tEw"))}${ib("ew")}</h2>
+   <p>${t("nEw",{w:ew.forming, d:t(ew.dir>0?"up":"down"), txt:t(ew.key), tg:fp(ew.target), inv:fp(ew.inval), c:fn(ew.conf*100,0)})}</p>
+   <div class="plan"><div><span>${esc(t("formingW"))}</span><b>${ew.forming}</b></div><div><span>${esc(t("zone"))}</span><b>${z}</b></div><div><span>${esc(t("ewTarget"))}</span><b>${fp(ew.target)}</b></div><div><span>${esc(t("ewInval"))}</span><b>${fp(ew.inval)}</b></div></div>
+   <p style="margin-top:12px">${esc(t("ewAdv_"+ew.forming+(ew.dir>0?"u":"d")))}</p>
+   <p class="note">${esc(t("ewDev",{d:fn(ew.dev*100,2)}))}</p>`;
+  $("ewTbl").innerHTML=`<table><thead><tr><th>${esc(t("wave"))}</th><th>${esc(t("time"))}</th><th>${esc(t("price"))}</th><th>${esc(t("len"))}</th></tr></thead><tbody>${ew.q.map((p,i)=>`<tr><td><b>${EW_LABELS[i]}${i===ew.legs?" ("+t("forming")+")":""}</b></td><td>${new Date(K[p.i].t*1000).toLocaleString([], {month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}</td><td>${fp(p.p)}</td><td class="${i?cls(p.p-ew.q[i-1].p):""}">${i?fpct((p.p/ew.q[i-1].p-1)*100,1):""}</td></tr>`).join("")}</tbody></table>`;
+}
+
+function cvSetup(cv){ const h=+(cv.dataset.h||(cv.dataset.h=cv.getAttribute("height"))); const w=cv.clientWidth; if(!w) return null; const d=window.devicePixelRatio||1; cv.width=w*d; cv.height=h*d; cv.style.height=h+"px"; const x=cv.getContext("2d"); x.scale(d,d); x.font="12px Onest, system-ui, sans-serif"; return {x,w,h}; }
+function drawDepth(){
+  const A=ST.A, b=A.book, c=cvSetup($("depthCv")); if(!c) return; const {x,w,h}=c; const p=ST.price;
+  if(!b){ x.fillStyle=cssv("--mute"); x.fillText(t("noData"),10,20); return; }
+  const lo=p*(1-S.bookRange/100), hi=p*(1+S.bookRange/100);
+  let cb=0; const B=b.bids.map(v=>({p:v.p,c:cb+=v.n})); let ca=0; const As=b.asks.map(v=>({p:v.p,c:ca+=v.n}));
+  const mx=Math.max(cb,ca)||1, X=v=>(v-lo)/(hi-lo)*w, Y=v=>h-20-(v/mx)*(h-34);
+  const area=(arr,col)=>{ if(!arr.length) return; x.beginPath(); x.moveTo(X(arr[0].p),h-20); arr.forEach(a=>x.lineTo(X(a.p),Y(a.c))); x.lineTo(X(arr[arr.length-1].p),h-20); x.closePath(); x.fillStyle=col+"40"; x.fill(); x.beginPath(); arr.forEach((a,i)=>i?x.lineTo(X(a.p),Y(a.c)):x.moveTo(X(a.p),Y(a.c))); x.strokeStyle=col; x.lineWidth=2; x.stroke(); };
+  area(B,cssv("--up")); area(As,cssv("--down"));
+  x.fillStyle=cssv("--accent"); b.walls.forEach(wl=>{ const xx=X(wl.p); x.fillRect(xx-1.5,h-20-10,3,10); });
+  x.strokeStyle=cssv("--text"); x.setLineDash([4,4]); x.beginPath(); x.moveTo(X(p),0); x.lineTo(X(p),h-20); x.stroke(); x.setLineDash([]);
+  x.fillStyle=cssv("--mute"); x.textAlign="left"; x.fillText(fp(lo),2,h-4); x.textAlign="center"; x.fillText(fp(p),w/2,h-4); x.textAlign="right"; x.fillText(fp(hi),w-2,h-4); x.textAlign="left"; x.fillText(fbig(mx)+" $",4,12);
+}
+function renderWhales(){
+  const A=ST.A, b=A.book, f=A.flow, p=ST.price;
+  drawDepth();
+  $("imbBox").innerHTML = b? b.imb.map(m=>{ const w=Math.abs(m.v)*50; const st=m.v>=0?`left:50%;width:${w}%;background:var(--up)`:`left:${50-w}%;width:${w}%;background:var(--down)`; return `<div class="scorebar"><span>${esc(t("imbAt",{r:m.r}))}</span><div class="sb"><i style="${st}"></i></div><b class="${cls(m.v)}" style="text-align:right">${fpct(m.v*100,0)}</b></div>`; }).join("") + `<p class="note">${esc(t("spread"))}: ${fn(b.spread,3)}% · ${esc(t("wallThr"))}: ${fbig(b.thr)} $</p>` : `<p class="note">${esc(t("noData"))}</p>`;
+  $("wallsTbl").innerHTML = b&&b.walls.length? `<table><thead><tr><th>${esc(t("side"))}</th><th>${esc(t("price"))}</th><th>${esc(t("size"))}</th><th>USD</th><th>${esc(t("dist"))}</th></tr></thead><tbody>${b.walls.map(w=>`<tr><td><span class="pill ${w.s==="bid"?"up":"down"}">${esc(t(w.s==="bid"?"wallBid":"wallAsk"))}</span></td><td>${fp(w.p)}</td><td>${fbig(w.q)}</td><td>${fbig(w.n)}</td><td class="${cls(w.p-p)}">${fpct((w.p/p-1)*100)}</td></tr>`).join("")}</tbody></table>` : `<p class="note">${esc(t("noWalls"))}</p>`;
+  $("flowBox").innerHTML = `<h2>${esc(t("flowTitle"))}</h2>` + (f? `<p>${t("nFlow",{m:fn(f.span,0), d:fpct(f.delta*100,0), wd:fpct(f.wDelta*100,0), n:f.big.length, imp:f.impact!=null?fpct(f.impact,3):"—"})}</p>
+    <div class="plan"><div><span>${esc(t("buyVol"))}</span><b class="up">${fbig(f.bv)} $</b></div><div><span>${esc(t("sellVol"))}</span><b class="down">${fbig(f.sv)} $</b></div><div><span>${esc(t("whaleBuy"))}</span><b class="up">${fbig(f.wb)} $</b></div><div><span>${esc(t("whaleSell"))}</span><b class="down">${fbig(f.ws)} $</b></div></div>
+    <p class="note" style="margin-top:10px">${esc(t("impactNote",{n:f.impactN}))}</p>` : `<p class="note">${esc(t("noData"))}</p>`);
+  renderTape();
+}
+function renderTape(){
+  const A=ST.A; const base=(A?.flow?.big||[]).map(x=>({...x}));
+  const rows=ST.tape.concat(base).slice(0,60);
+  $("tapeTbl").innerHTML = rows.length? `<table><thead><tr><th>${esc(t("time"))}</th><th>${esc(t("side"))}</th><th>${esc(t("price"))}</th><th>USD</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${new Date(r.t).toLocaleTimeString()}</td><td class="${r.buy?"up":"down"}">${esc(t(r.buy?"buyW":"sellW"))}</td><td>${fp(r.p)}</td><td><b>${fbig(r.n)}</b></td></tr>`).join("")}</tbody></table>` : `<p class="note">${esc(t("noWhales",{x:fbig(S.whaleTrade)}))}</p>`;
+}
+function renderDeriv(){
+  const d=ST.A.drv;
+  if(!d){ $("drvKv").innerHTML=`<div class="card note">${esc(t("noDeriv"))}</div>`; $("drvBox").innerHTML=""; const c=cvSetup($("liqCv")); if(c){c.x.fillStyle=cssv("--mute"); c.x.fillText(t("noData"),10,20);} renderLiqFeed(); return; }
+  const nf=d.nextFunding? new Date(+d.nextFunding).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"}) : "—";
+  const cards=[["funding", `<b class="${cls(-d.funding)}">${fn(d.funding,4)}%</b>`, t("nextF",{t:nf})+(d.fundAvg!=null?" · "+t("avg30",{v:fn(d.fundAvg,4)}):"")],
+    ["oi", `<b>${fbig(d.oi)} $</b>`, "24h: "+`<span class="${cls(d.oiChg24)}">${fpct(d.oiChg24,1)}</span>`],
+    ["ls", `<b>${fn(d.lsNow,2)}</b>`, d.ls.length? t("longsPct",{p:fn(d.ls[d.ls.length-1].l*100,1)}):""],
+    ["top", `<b>${fn(d.topNow,2)}</b>`, t("topNote")],
+    ["taker", `<b class="${cls((d.takerNow||1)-1)}">${fn(d.takerNow,2)}</b>`, t("takerNote")],
+    ["regime", `<b>${d.regime?esc(t(d.regime)):"—"}</b>`, t("oiPx",{oi:fpct(d.oiChg24,1), px:fpct(d.pxChg24,1)})]];
+  $("drvKv").innerHTML=cards.map(([k,v,s])=>`<div class="card"><div class="note">${esc(t(k))}${ib(k)}</div><div style="font-size:22px">${v}</div><div class="note">${s}</div></div>`).join("");
+  drawLiq();
+  $("drvBox").innerHTML=`<h2>${esc(t("drvTitle"))}</h2><p>${t("nDrv",{f:fn(d.funding,4), oi:fbig(d.oi), oic:fpct(d.oiChg24,1), ls:fn(d.lsNow,2), rg:d.regime?t(d.regime):"—", c:t(d.score>0.15?"drvBull":d.score<-0.15?"drvBear":"drvFlat")})}</p>`
+    + (d.map? `<p>${t("nLiqMap",{l:d.map.topL.map(x=>fp(x.p)).join(", ")||"—", s:d.map.topS.map(x=>fp(x.p)).join(", ")||"—"})}</p>`:"")
+    + `<p>${esc(t(d.funding>0.05?"fundHot":d.funding<-0.02?"fundCold":"fundOk"))}</p>`;
+  renderLiqFeed();
+}
+function drawLiq(){
+  const m=ST.A.drv?.map, c=cvSetup($("liqCv")); if(!c) return; const {x,w,h}=c;
+  if(!m){ x.fillStyle=cssv("--mute"); x.fillText(t("liqMapNoUsd"),10,20); return; }
+  const n=m.L.length, bh=(h-10)/n, mx=Math.max(...m.L,...m.Sh)||1, lw=78, bw=w-lw-10;
+  for(let i=0;i<n;i++){ const y=h-10-(i+1)*bh; const pr=m.lo+m.step*(i+0.5);
+    if(m.L[i]){ x.fillStyle=cssv("--down")+"cc"; x.fillRect(lw, y+1, bw*m.L[i]/mx, Math.max(1,bh-2)); }
+    if(m.Sh[i]){ x.fillStyle=cssv("--up")+"cc"; x.fillRect(lw, y+1, bw*m.Sh[i]/mx, Math.max(1,bh-2)); }
+    if(i%7===0){ x.fillStyle=cssv("--mute"); x.textAlign="right"; x.fillText(fp(pr),lw-6,y+bh/2+4); }
+  }
+  const yp=h-10-((ST.price-m.lo)/(m.hi-m.lo))*(h-10); x.strokeStyle=cssv("--accent"); x.setLineDash([5,4]); x.lineWidth=1.5; x.beginPath(); x.moveTo(lw,yp); x.lineTo(w,yp); x.stroke(); x.setLineDash([]);
+  x.fillStyle=cssv("--accent"); x.textAlign="right"; x.fillText(fp(ST.price),w-4,yp-4);
+}
+function renderLiqFeed(){
+  $("liqTot").innerHTML=t("liqTot",{l:fbig(ST.liqTot.long), s:fbig(ST.liqTot.short)});
+  $("liqTbl").innerHTML = ST.liqs.length? `<table><thead><tr><th>${esc(t("time"))}</th><th>${esc(t("side"))}</th><th>${esc(t("price"))}</th><th>USD</th></tr></thead><tbody>${ST.liqs.slice(0,80).map(r=>`<tr><td>${new Date(r.t).toLocaleTimeString()}</td><td class="${r.side==="long"?"down":"up"}">${esc(t(r.side==="long"?"liqLong":"liqShort"))}</td><td>${fp(r.p)}</td><td><b>${fbig(r.n)}</b></td></tr>`).join("")}</tbody></table>` : `<p class="note">${esc(t("liqWait"))}</p>`;
+}
+function renderBt(){
+  const b=ST.A.bt;
+  const kv=[["btRet",`<b class="${cls(b.ret)}">${fpct(b.ret,1)}</b>`],["btHoldR",`<b class="${cls(b.hold)}">${fpct(b.hold,1)}</b>`],["btWin",`<b>${b.win==null?"—":fn(b.win,0)+"%"}</b>`],["btN",`<b>${b.trades.length}</b>`],["btMdd",`<b class="down">${fpct(b.mdd,1)}</b>`],["btPer",`<b>${fn(ST.k.length,0)} × ${S.tf}</b>`]];
+  $("btKv").innerHTML=kv.map(([k,v])=>`<div><span>${esc(t(k))}</span>${v}</div>`).join("");
+  drawEq();
+  $("fwdTbl").innerHTML=`<table><thead><tr><th>${esc(t("bars"))}</th><th>${esc(t("signals"))}</th><th>${esc(t("avgRet"))}</th><th>${esc(t("hit"))}</th></tr></thead><tbody>${b.fwd.map(f=>`<tr><td>+${f.h}</td><td>${f.n}</td><td class="${cls(f.avg)}">${fpct(f.avg,2)}</td><td>${f.win==null?"—":fn(f.win,0)+"%"}</td></tr>`).join("")}</tbody></table>`;
+  $("btTbl").innerHTML = b.trades.length? `<table><thead><tr><th>${esc(t("entryT"))}</th><th>${esc(t("entry"))}</th><th>${esc(t("exit"))}</th><th>%</th><th>${esc(t("why"))}</th></tr></thead><tbody>${b.trades.slice().reverse().map(x=>`<tr><td>${new Date(x.t0*1000).toLocaleString([], {month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"})}</td><td>${fp(x.e)}</td><td>${fp(x.x)}</td><td class="${cls(x.r)}">${fpct(x.r,2)}</td><td>${esc(t("why_"+x.why))}</td></tr>`).join("")}</tbody></table>` : `<p class="note">${esc(t("noTrades"))}</p>`;
+}
+function drawEq(){
+  const b=ST.A.bt, c=cvSetup($("eqCv")); if(!c) return; const {x,w,h}=c; const K=ST.k;
+  const hold=K.map(k=>k.c/K[0].c); const all=b.curve.map(v=>v.v).concat(hold); const mn=Math.min(...all), mx=Math.max(...all);
+  const X=i=>i/(K.length-1)*(w-10)+5, Y=v=>h-14-(v-mn)/((mx-mn)||1)*(h-28);
+  const line=(arr,col,wd)=>{ x.beginPath(); arr.forEach((v,i)=>i?x.lineTo(X(i),Y(v)):x.moveTo(X(i),Y(v))); x.strokeStyle=col; x.lineWidth=wd; x.stroke(); };
+  x.strokeStyle=cssv("--line"); x.beginPath(); x.moveTo(0,Y(1)); x.lineTo(w,Y(1)); x.stroke();
+  line(hold,cssv("--mute"),1); line(b.curve.map(v=>v.v),cssv("--accent"),2);
+  x.fillStyle=cssv("--accent"); x.fillText(t("strategy"),8,14); x.fillStyle=cssv("--mute"); x.fillText(t("btHoldR"),8,28);
+}
+/* ================= SHARE CARD / TELEGRAM ================= */
+function postText(){
+  const A=ST.A, fc=A.fc, P=fc.plan, tk=ST.tick;
+  const L=[];
+  L.push(`🎯 ${pairName()} · ${EX_NAMES[S.exch]} · ${S.tf}`);
+  L.push(`💰 ${t("price")}: ${fp(ST.price)}${tk?` (${fpct(tk.chg)} 24h)`:""}`);
+  L.push(`📊 ${t("signal")}: ${t(fc.verdict)} · ${(fc.score>0?"+":"")+Math.round(fc.score*100)} · ${t("probUp",{p:fn(fc.pUp*100,0),h:S.horizon,tf:S.tf})}`);
+  L.push(`🌡 Heat: 1h ${fn(A.hz.s,0)} · 4h ${fn(A.hz.m,0)} · 1d ${fn(A.hz.l,0)} · ${t("hzAvgShort")} ${fn(A.hz.a,0)}${A.conf?" — "+t("conf_"+A.conf):""}`);
+  L.push(`📈 RSI 1h ${fn(A.rsi1h,0)} · RSI 1d ${fn(A.rsi1d,0)}`);
+  if(A.ew.ok) L.push(`🌊 ${t("tEw")}: ${t("wave")} ${A.ew.forming} (${t(A.ew.dir>0?"up":"down")}) → ${fp(A.ew.target)}`);
+  if(A.book) L.push(`🐋 ${t("imbAt",{r:2})}: ${fpct(A.book.imb[2].v*100,0)}${A.book.sup?` · ${t("wallBid")} ${fp(A.book.sup.p)}`:""}${A.book.res?` · ${t("wallAsk")} ${fp(A.book.res.p)}`:""}`);
+  if(A.drv) L.push(`⚡ Funding ${fn(A.drv.funding,4)}% · OI ${fbig(A.drv.oi)}$ (${fpct(A.drv.oiChg24,1)})`);
+  L.push(`🧭 ${t(P.side==="long"?"planEntryL":"planEntryS")}: ${fp(P.entry[0])}–${fp(P.entry[1])} · ${t("stop")}: ${fp(P.stop)} · TP1 ${fp(P.tp1)} · TP2 ${fp(P.tp2)}`);
+  L.push(`🔮 ${t("base")}: ${fp(fc.base)} · ${t("range")}: ${fp(fc.bear)} – ${fp(fc.bull)} (${S.horizon}×${S.tf})`);
+  L.push(""); L.push("CRYPTO HUNTERS · t.me/Cr_hunters"); L.push(t("nfa"));
+  return L.join("\n");
+}
+function renderShare(){
+  $("postTxt").textContent=postText();
+  drawCard();
+}
+function drawCard(){
+  const cv=$("shareCv"), x=cv.getContext("2d"), W=1200, H=675, A=ST.A, fc=A.fc;
+  const C={bg:"#0F1724",pn:"#151F30",ln:"#26354D",tx:"#E7EDF5",mu:"#8798B0",up:"#2EBD8E",dn:"#EE5D5D",ac:"#F2B441"};
+  const F=(s,wt=600)=>`${wt} ${s}px Onest, system-ui, sans-serif`;
+  x.fillStyle=C.bg; x.fillRect(0,0,W,H);
+  // spark
+  const K=ST.k.slice(-140), mn=Math.min(...K.map(k=>k.l), fc.bear), mx=Math.max(...K.map(k=>k.h), fc.bull);
+  const gx0=60, gx1=820, gy0=250, gy1=600, n=K.length+S.horizon; const X=i=>gx0+i/(n-1)*(gx1-gx0), Y=v=>gy1-(v-mn)/(mx-mn||1)*(gy1-gy0);
+  x.fillStyle=C.pn; x.beginPath(); x.roundRect(40,230,800,390,18); x.fill();
+  K.forEach((k,i)=>{ x.strokeStyle=k.c>=k.o?C.up:C.dn; x.fillStyle=x.strokeStyle; x.lineWidth=1; x.beginPath(); x.moveTo(X(i),Y(k.h)); x.lineTo(X(i),Y(k.l)); x.stroke(); const bw=Math.max(1.5,(gx1-gx0)/n*0.6); x.fillRect(X(i)-bw/2, Y(Math.max(k.o,k.c)), bw, Math.max(1,Math.abs(Y(k.o)-Y(k.c)))); });
+  const i0=K.length-1, i1=n-1; [[fc.bull,C.up],[fc.base,C.ac],[fc.bear,C.dn]].forEach(([v,c])=>{ x.setLineDash([8,6]); x.strokeStyle=c; x.lineWidth=2.5; x.beginPath(); x.moveTo(X(i0),Y(ST.price)); x.lineTo(X(i1),Y(v)); x.stroke(); x.setLineDash([]); x.fillStyle=c; x.font=F(16,700); x.textAlign="right"; x.fillText(fp(v),gx1+10,Y(v)-6); });
+  // header
+  x.textAlign="left"; x.fillStyle=C.ac; x.font=F(22,800); x.fillText("CRYPTO HUNTERS",40,58);
+  x.fillStyle=C.mu; x.font=F(18,500); x.fillText(`${EX_NAMES[S.exch]} · ${t(fut()?"futures":"spot")} · ${S.tf} · ${new Date().toLocaleString()}`,40,88);
+  x.fillStyle=C.tx; x.font=F(56,800); x.fillText(pairName(),40,160);
+  x.font=F(40,700); x.fillText(fp(ST.price),40,212);
+  const tk=ST.tick; if(tk){ x.font=F(40,700); const pw=x.measureText(fp(ST.price)).width; x.fillStyle=tk.chg>=0?C.up:C.dn; x.font=F(26,700); x.fillText(fpct(tk.chg)+" 24h", 40+Math.min(pw,560)+18 ,212); }
+  // verdict column
+  const vx=880; x.fillStyle=C.pn; x.beginPath(); x.roundRect(vx-20,40,320,580,18); x.fill();
+  x.fillStyle=C.mu; x.font=F(18,500); x.fillText(t("signal"),vx,80);
+  x.fillStyle=fc.score>0.13?C.up:fc.score<-0.13?C.dn:C.tx; x.font=F(36,800); x.fillText(t(fc.verdict),vx,124,280);
+  x.fillStyle=C.tx; x.font=F(20,600); x.fillText(t("probUp",{p:fn(fc.pUp*100,0),h:S.horizon,tf:S.tf}),vx,158,280);
+  const hz=[["1h",A.hz.s],["4h",A.hz.m],["1d",A.hz.l],[t("hzAvgShort"),A.hz.a]];
+  hz.forEach(([tf,v],i)=>{ const y=200+i*42; x.fillStyle=C.mu; x.font=F(17,500); x.fillText("Heat "+tf,vx,y); const g=x.createLinearGradient(vx,0,vx+270,0); g.addColorStop(0,C.up); g.addColorStop(.5,"#C9C25A"); g.addColorStop(1,C.dn); x.fillStyle=g; x.beginPath(); x.roundRect(vx,y+10,270,10,5); x.fill(); x.fillStyle=C.pn; [S.heatBuy,S.heatSell].forEach(lv=>x.fillRect(vx+lv/100*270-1,y+8,2,14)); if(v!=null){ x.fillStyle=C.tx; x.fillRect(vx+v/100*270-2,y+4,4,22); x.textAlign="right"; x.font=F(17,700); x.fillText(fn(v,0),vx+270,y); x.textAlign="left"; } });
+  const P=fc.plan; const rows=[[t(P.side==="long"?"planEntryL":"planEntryS"),`${fp(P.entry[0])}–${fp(P.entry[1])}`],[t("stop"),fp(P.stop)],["TP1",fp(P.tp1)],["TP2",fp(P.tp2)]];
+  if(A.ew.ok) rows.push([t("wave")+" "+A.ew.forming, "→ "+fp(A.ew.target)]);
+  rows.forEach(([k,v],i)=>{ const y=375+i*44; x.fillStyle=C.mu; x.font=F(16,500); x.fillText(k,vx,y); x.fillStyle=C.tx; x.font=F(20,700); x.fillText(v,vx,y+22,280); });
+  // watermark
+  x.save(); x.globalAlpha=0.09; x.fillStyle=C.tx; x.font=F(84,800); x.textAlign="center"; x.translate(440,430); x.rotate(-0.12); x.fillText("t.me/Cr_hunters",0,0); x.restore();
+  x.fillStyle=C.ac; x.font=F(20,700); x.textAlign="left"; x.fillText("t.me/Cr_hunters",40,650); x.fillStyle=C.mu; x.font=F(14,500); x.textAlign="right"; x.fillText(t("nfa"),W-40,650); x.textAlign="left";
+}
+async function tgSend(kind){
+  if(!S.tgToken||!S.tgChat){ toast(t("tgNeed")); openSettings(); return; }
+  try{
+    if(kind==="photo"){
+      const blob=await new Promise(r=>$("shareCv").toBlob(r,"image/png")); const fd=new FormData(); fd.append("chat_id",S.tgChat); fd.append("caption",postText().slice(0,1000)); fd.append("photo",blob,"card.png");
+      const r=await fetch(`https://api.telegram.org/bot${S.tgToken}/sendPhoto`,{method:"POST",body:fd}); if(!r.ok) throw new Error(r.status);
+    } else {
+      const r=await fetch(`https://api.telegram.org/bot${S.tgToken}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:S.tgChat,text:postText()})}); if(!r.ok) throw new Error(r.status);
+    }
+    toast(t("tgOk"));
+  }catch(e){ toast(t("tgErr")+" "+e.message); }
+}
+
+/* ================= LIVE (WebSocket) ================= */
+function closeWS(){ ST.ws.forEach(w=>{ try{ clearInterval(w._p); w.onclose=null; w.close(); }catch(e){} }); ST.ws=[]; }
+function openWS(cfg, onItems){
+  try{
+    const w=new WebSocket(cfg.url);
+    w.onopen=()=>{ if(cfg.sub) w.send(JSON.stringify(cfg.sub)); if(cfg.ping) w._p=setInterval(()=>{ try{ w.send(typeof cfg.ping==="string"?cfg.ping:JSON.stringify(cfg.ping)); }catch(e){} },20000); };
+    w.onmessage=e=>{ if(e.data==="pong") return; let m; try{ m=JSON.parse(e.data); }catch(_){ return; } const it=cfg.parse(m); if(it&&it.length) onItems(it); };
+    w.onclose=()=>{ clearInterval(w._p); setTimeout(()=>{ if(ST.ws.includes(w)){ ST.ws=ST.ws.filter(x=>x!==w); openWS(cfg,onItems); } }, 4000); };
+    ST.ws.push(w);
+  }catch(e){ console.warn(e); }
+}
+let uiTick=0;
+function connectWS(){
+  closeWS(); const ex=EX[S.exch], sym=symNow();
+  openWS(ex.wsTrades(sym,fut()), items=>{
+    for(const it of items){ ST.price=it.p; const n=it.p*it.q*ST.qUsd; if(n>=S.whaleTrade){ ST.tape.unshift({...it,n}); ST.tape.length=Math.min(ST.tape.length,60); } }
+    const now=Date.now(); if(now-uiTick>700){ uiTick=now; $("hPrice").textContent=fp(ST.price); if(document.querySelector("#p-wh.on")) renderTape(); }
+  });
+  openWS(ex.wsLiq(S.base), items=>{
+    const mul = USDQ.includes(quoteNow())?1:1; // liquidations are on USDT perps
+    for(const it of items){ const n=it.p*it.q*mul; ST.liqs.unshift({...it,n}); ST.liqTot[it.side]+=n; } ST.liqs.length=Math.min(ST.liqs.length,200);
+    if(document.querySelector("#p-lq.on")) renderLiqFeed();
+  });
+}
+
+/* ================= ALERTS ================= */
+function checkAlerts(){
+  const A=ST.A, key=S.exch+S.base+quoteNow()+S.tf, v=A.fc.verdict, prev=ST.lastVerdict[key]; ST.lastVerdict[key]=v;
+  if(!S.alerts || prev===undefined) return;
+  const msgs=[];
+  if(prev!==v && v!=="vNeutral") msgs.push(t("alVerdict",{s:pairName(), v:t(v)}));
+  if(A.conf==="buy"||A.conf==="sell") msgs.push(t("alConf",{s:pairName(), c:t("conf_"+A.conf)}));
+  if(A.spike && A.spike.i===ST.k.length-1) msgs.push(t("alSpike",{s:pairName(), r:fn(A.spike.ratio,1)}));
+  if(!msgs.length || Date.now()-ST.lastAlert < S.alertCd*60000) return;
+  ST.lastAlert=Date.now(); const text=msgs.join("\n");
+  if("Notification" in window && Notification.permission==="granted") new Notification("CRYPTO HUNTERS", {body:text});
+  toast(msgs[0]);
+  if(S.tgAuto && S.tgToken && S.tgChat) fetch(`https://api.telegram.org/bot${S.tgToken}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:S.tgChat,text:text+"\n\n"+postText()})}).catch(()=>{});
+}
+
+/* ================= HINTS ================= */
+function hintParams(k){
+  const p={n:S.volSma, x:S.volSpike, h:S.horizon, lo:S.heatBuy, hi:S.heatSell, f:S.macdF, s:S.macdS, g:S.macdG, a:S.emaF, b:S.emaM, c:S.emaS, k:S.bbK, m:S.wallMult, w:fbig(S.wallMin)};
+  p.p = {rsi:S.rsiP, mfi:S.mfiP, bb:S.bbP, atr:S.atrP}[k] ?? S.rsiP; return p;
+}
+function hint(k){ const H=(HINTS[S.lang]||HINTS.uk)[k] || HINTS.en[k]; if(!H) return null; const P=hintParams(k); const f=s=>s.replace(/\{(\w+)\}/g,(_,x)=>P[x]??""); return [f(H[0]), f(H[1])]; }
+const ib = k => `<button class="ib" data-tip="${k}" aria-label="${esc(hint(k)?.[0]||"?")}">i</button>`;
+const GUIDES={ "@ov":["ema","bb","ew","sr","fib","fc","probB","walls","liq","sig"], "@panes":["vol","prob","heat","rsi","stoch","mfi","macd","adx","delta","cvd","obv"] };
+let tipFor=null, tipKey=null;
+function showTip(key, anchor){
+  const el=$("tip");
+  if(tipKey===key && el.classList.contains("on")){ hideTip(); return; }
+  let title, body;
+  if(GUIDES[key]){ title=t(key==="@ov"?"guideOv":"guidePanes"); body=GUIDES[key].map(k=>{ const h=hint(k); return h? `<div class="gi"><b>${esc(h[0])}</b>${h[1].split("\n").map(x=>`<p>${esc(x)}</p>`).join("")}</div>`:""; }).join(""); }
+  else { const h=hint(key); if(!h) return; title=h[0]; body=h[1].split("\n").map(x=>`<p>${esc(x)}</p>`).join(""); }
+  el.innerHTML=`<h4><span>${esc(title)}</span><button type="button" aria-label="Close" data-tipclose>✕</button></h4>${body}`;
+  el.classList.add("on");
+  document.querySelectorAll('.ib[aria-expanded="true"]').forEach(b=>b.setAttribute("aria-expanded","false"));
+  anchor.setAttribute("aria-expanded","true"); tipFor=anchor; tipKey=key;
+  const mobile=window.innerWidth<700; el.classList.toggle("sheet", mobile);
+  placeTip();
+}
+function placeTip(){
+  const el=$("tip"); if(!el.classList.contains("on")||!tipFor) return;
+  if(window.innerWidth<700){ el.style.left=""; el.style.top=""; return; }
+  if(!tipFor.isConnected){ hideTip(); return; }
+  const r=tipFor.getBoundingClientRect(), w=el.offsetWidth, h=el.offsetHeight;
+  if(r.bottom<0||r.top>window.innerHeight){ hideTip(); return; }
+  let x=clamp(r.left+r.width/2-w/2, 8, window.innerWidth-w-8), y=r.bottom+8;
+  if(y+h>window.innerHeight-8) y=Math.max(8, r.top-h-8);
+  el.style.left=x+"px"; el.style.top=y+"px";
+}
+function hideTip(){ $("tip").classList.remove("on"); if(tipFor) tipFor.setAttribute("aria-expanded","false"); tipFor=null; tipKey=null; }
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-tip]");
+  if(b){ e.preventDefault(); e.stopPropagation(); showTip(b.dataset.tip, b); return; }
+  if(e.target.closest("[data-tipclose]")||!e.target.closest("#tip")) hideTip();
+}, true);
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") hideTip(); });
+window.addEventListener("scroll",placeTip,{passive:true}); window.addEventListener("resize",placeTip);
+
+/* ================= SETTINGS DRAWER ================= */
+const SCHEMA=[
+  ["gData",[["bars","n",120,1500,10],["refresh","n",0,3600,5]]],
+  ["gInd",[["emaF","n",2,400,1],["emaM","n",2,400,1],["emaS","n",2,400,1],["rsiP","n",2,50,1],["macdF","n",2,50,1],["macdS","n",3,100,1],["macdG","n",2,50,1],["bbP","n",5,100,1],["bbK","n",0.5,5,0.1],["atrP","n",2,100,1],["stK","n",3,100,1],["stD","n",1,10,1],["adxP","n",3,50,1],["mfiP","n",3,50,1]]],
+  ["gHeat",[["heatBuy","n",1,49,1],["heatSell","n",51,99,1],["heatSmooth","n",1,10,1],["hrH","n",100,500,10],["paneH","n",80,400,10],["volSpike","n",1.2,10,0.1],["volSma","n",5,100,1]]],
+  ["gEw",[["zzMode","s",["auto","atr","pct"]],["zzPct","n",0.5,50,0.5],["zzAtr","n",1,20,0.5],["ewStrict","c"]]],
+  ["gWh",[["wallMult","n",2,50,0.5],["wallMin","n",1000,10000000,1000],["whaleTrade","n",1000,10000000,1000],["bookRange","n",0.5,20,0.5]]],
+  ["gFc",[["horizon","n",3,200,1],["wHeat","n",0,3,0.1],["wTrend","n",0,3,0.1],["wMom","n",0,3,0.1],["wEw","n",0,3,0.1],["wBook","n",0,3,0.1],["wFlow","n",0,3,0.1],["wDrv","n",0,3,0.1],["wVol","n",0,3,0.1]]],
+  ["gBt",[["btSL","n",0.5,10,0.1],["btTP","n",0.5,20,0.1],["btFee","n",0,1,0.01],["btHold","n",2,500,1],["btTrend","c"]]],
+  ["gAl",[["alerts","c"],["alertCd","n",1,1440,1],["tgToken","p"],["tgChat","t"],["tgAuto","c"]]]
+];
+const REFETCH=new Set(["bars"]);
+function buildSettings(){
+  $("setBody").innerHTML=SCHEMA.map(([g,fs])=>`<fieldset><legend>${esc(t(g))}</legend>${fs.map(([k,ty,a,b,st])=>{
+    const id="s_"+k, lab=`<label for="${id}">${esc(t(id))}</label>`;
+    if(ty==="n") return `<div class="fld">${lab}<input id="${id}" data-k="${k}" type="number" min="${a}" max="${b}" step="${st}" value="${S[k]}"></div>`;
+    if(ty==="s") return `<div class="fld">${lab}<select id="${id}" data-k="${k}">${a.map(o=>`<option value="${o}" ${S[k]===o?"selected":""}>${esc(t("o_"+o))}</option>`).join("")}</select></div>`;
+    if(ty==="c") return `<div class="fld">${lab}<input id="${id}" data-k="${k}" type="checkbox" ${S[k]?"checked":""}></div>`;
+    return `<div class="fld">${lab}<input id="${id}" data-k="${k}" type="${ty==="p"?"password":"text"}" value="${esc(S[k]||"")}" autocomplete="off"></div>`;
+  }).join("")}</fieldset>`).join("") + `<p class="note" style="margin-top:16px">${esc(t("tgHelp"))}</p><div class="ctool"><button class="btn" id="tgTest">${esc(t("tgTest"))}</button><button class="btn" id="notifBtn">${esc(t("notifAllow"))}</button></div>`;
+  $("setBody").querySelectorAll("[data-k]").forEach(el=>el.addEventListener("change",()=>{
+    const k=el.dataset.k; let v = el.type==="checkbox"? el.checked : el.type==="number"? +el.value : el.value;
+    if(el.type==="number"){ if(!isFinite(v)) return; v=clamp(v,+el.min,+el.max); el.value=v; }
+    S[k]=v; save();
+    if(k==="heatBuy"&&$("lvLow")) $("lvLow").value=v; if(k==="heatSell"&&$("lvHigh")) $("lvHigh").value=v;
+    if(k==="refresh") setTimer();
+    if(k==="hrH"||k==="paneH"){ applyRowH(); return; }
+    if(k==="alerts"&&v&&"Notification" in window&&Notification.permission==="default") Notification.requestPermission();
+    if(!ST.k.length) return;
+    if(REFETCH.has(k)) run(); else if(!["tgToken","tgChat","tgAuto","alerts","alertCd","refresh"].includes(k)){ compute(); renderAll(false); }
+  }));
+  $("tgTest").onclick=()=>tgSend("text");
+  $("notifBtn").onclick=()=>{ if("Notification" in window) Notification.requestPermission().then(p=>toast(p)); };
+}
+function applyRowH(){ const st=document.documentElement.style; st.setProperty("--hrh", clamp(+S.hrH||200,100,500)+"px"); st.setProperty("--pnh", clamp(+S.paneH||150,80,400)+"px"); }
+function setLevels(lo,hi){
+  if(!isFinite(lo)||!isFinite(hi)) return; lo=clamp(Math.round(lo),1,49); hi=clamp(Math.round(hi),51,99);
+  S.heatBuy=lo; S.heatSell=hi; save();
+  $("lvLow").value=lo; $("lvHigh").value=hi; const a=$("s_heatBuy"), b=$("s_heatSell"); if(a) a.value=lo; if(b) b.value=hi;
+  if(ST.k.length){ compute(); renderAll(false); }
+}
+function openSettings(){ $("drawer").classList.add("open"); $("scrim").classList.add("on"); }
+function closeSettings(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("on"); }
+
+/* ================= I18N APPLY / CONTROLS ================= */
+function t(k,p){ const d=I18N[S.lang]||I18N.uk; let s = d[k] ?? I18N.en[k] ?? k; if(p) s=s.replace(/\{(\w+)\}/g,(_,x)=>p[x]??""); return s; }
+function applyI18n(){
+  document.documentElement.lang = S.lang==="uk"?"uk":S.lang;
+  document.querySelectorAll("[data-i]").forEach(el=>el.textContent=t(el.dataset.i));
+  const bs=$("btSig"); [...bs.options].forEach(o=>o.textContent=t("sig_"+o.value));
+  $("sym").placeholder=t("coinPh");
+  buildToolbars(); buildSettings(); renderFavs();
+  if(ST.A) renderAll(false);
+}
+function syncControls(){
+  $("sym").value=S.base; $("quote").value=S.quote; $("exch").value=S.exch; $("tf").value=S.tf; $("lang").value=S.lang;
+  $("quote").disabled=fut(); $("mkt").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.v===S.market)));
+}
+function setTheme(){ document.documentElement.dataset.theme=S.theme; applyChartTheme(); if(ST.A) renderAll(false); }
+function renderFavs(){
+  $("favs").innerHTML=S.favs.map(f=>`<button class="chip" data-fav="${esc(f)}"><b>${esc(f)}</b><span class="x" data-del="${esc(f)}" aria-label="remove">×</span></button>`).join("");
+}
+async function loadSymbols(){
+  const key=S.exch+quoteNow(); if(ST.symCache[key]) return fillSyms(ST.symCache[key]);
+  try{ const s=await EX[S.exch].symbols(quoteNow()); ST.symCache[key]=s.slice(0,400); fillSyms(ST.symCache[key]); }catch(e){}
+}
+function fillSyms(list){ $("symlist").innerHTML=list.map(s=>`<option value="${esc(s.b)}">`).join(""); }
+let timer=null;
+function setTimer(){ clearInterval(timer); if(S.refresh>0) timer=setInterval(()=>{ if(!document.hidden) run(true); }, Math.max(10,S.refresh)*1000); }
+function go(){ const v=$("sym").value.trim().toUpperCase().replace(/[^A-Z0-9]/g,""); if(!v) return; let b=v; for(const q of ["USDT","USDC","FDUSD","BTC"]) if(v.length>q.length&&v.endsWith(q)){ b=v.slice(0,-q.length); if(!fut()) S.quote=q; break; } S.base=b; save(); syncControls(); run(); }
+
+function bind(){
+  $("go").onclick=go; $("sym").addEventListener("keydown",e=>{ if(e.key==="Enter") go(); });
+  $("sym").addEventListener("change",()=>{ if(ST.symCache[S.exch+quoteNow()]?.some(s=>s.b===$("sym").value.toUpperCase())) go(); });
+  $("quote").onchange=e=>{ S.quote=e.target.value; save(); loadSymbols(); run(); };
+  $("exch").onchange=e=>{ S.exch=e.target.value; save(); loadSymbols(); run(); };
+  $("tf").onchange=e=>{ S.tf=e.target.value; save(); run(); };
+  $("mkt").onclick=e=>{ const b=e.target.closest("button"); if(!b) return; S.market=b.dataset.v; save(); syncControls(); loadSymbols(); run(); };
+  $("lang").onchange=e=>{ S.lang=e.target.value; save(); applyI18n(); };
+  $("themeBtn").onclick=()=>{ S.theme=S.theme==="dark"?"light":"dark"; save(); setTheme(); };
+  $("refresh").onclick=()=>run();
+  $("star").onclick=()=>{ const i=S.favs.indexOf(S.base); if(i>=0) S.favs.splice(i,1); else S.favs.push(S.base); save(); renderFavs(); $("star").textContent=S.favs.includes(S.base)?"★":"☆"; };
+  $("favs").onclick=e=>{ const d=e.target.closest("[data-del]"); if(d){ e.stopPropagation(); S.favs=S.favs.filter(f=>f!==d.dataset.del); save(); renderFavs(); return; } const c=e.target.closest("[data-fav]"); if(c){ S.base=c.dataset.fav; save(); syncControls(); run(); } };
+  $("openSet").onclick=openSettings; $("closeSet").onclick=closeSettings; $("scrim").onclick=closeSettings;
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSettings(); });
+  $("resetSet").onclick=()=>{ const keep={base:S.base,quote:S.quote,exch:S.exch,market:S.market,tf:S.tf,lang:S.lang,theme:S.theme,favs:S.favs,tgToken:S.tgToken,tgChat:S.tgChat}; S={...structuredClone(DEF),...keep}; save(); buildSettings(); buildToolbars(); setTimer(); applyRowH(); if(ST.k.length){ compute(); renderAll(false); } toast(t("resetDone")); };
+  $("ovl").onclick=e=>{ const b=e.target.closest("[data-ov]"); if(!b) return; const k=b.dataset.ov; S.ov[k]=!S.ov[k]; b.setAttribute("aria-pressed",String(S.ov[k])); save(); if(ST.A) renderChart(false); };
+  $("hrHead").onclick=e=>{ const b=e.target.closest("[data-hr]"); if(!b) return; const k=b.dataset.hr; S.hrow[k]=!S.hrow[k]; b.setAttribute("aria-pressed",String(S.hrow[k])); save(); if(ST.A) renderHeatRows(); };
+  $("hrHead").addEventListener("change",e=>{ if(e.target.id!=="lvLow"&&e.target.id!=="lvHigh") return; setLevels(+$("lvLow").value, +$("lvHigh").value); });
+  $("paneSel").onclick=e=>{ const b=e.target.closest("[data-pane]"); if(!b) return; const k=b.dataset.pane; S.panes[k]=!S.panes[k]; b.setAttribute("aria-pressed",String(S.panes[k])); save(); if(ST.A) renderPanes(); };
+  $("tabs").onclick=e=>{ const b=e.target.closest("[data-t]"); if(!b) return; document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",String(x===b))); document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("on", p.id==="p-"+b.dataset.t)); if(ST.A){ if(b.dataset.t==="wh") renderWhales(); if(b.dataset.t==="lq") renderDeriv(); if(b.dataset.t==="bt") drawEq(); if(b.dataset.t==="sh") renderShare(); } };
+  $("btRun").onclick=()=>{ if(!ST.A) return; ST.A.bt=backtest(ST.k,ST.A,$("btSig").value); renderBt(); renderChart(false); };
+  $("btSig").onchange=()=>$("btRun").click();
+  $("dlCard").onclick=()=>{ const a=document.createElement("a"); a.download=`${S.base}_${S.tf}_cryptohunters.png`; a.href=$("shareCv").toDataURL("image/png"); a.click(); };
+  $("tgCard").onclick=()=>tgSend("photo"); $("tgText").onclick=()=>tgSend("text");
+  $("cpText").onclick=()=>navigator.clipboard?.writeText(postText()).then(()=>toast(t("copied")));
+  let rz; window.addEventListener("resize",()=>{ clearTimeout(rz); rz=setTimeout(()=>{ if(!ST.A) return; drawDepth(); drawLiq(); drawEq(); },200); });
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden && ST.k.length && S.refresh>0) run(true); });
+}
+
+/* ================= INIT ================= */
+(function init(){
+  const tg=window.Telegram?.WebApp; if(tg&&tg.initData){ try{ tg.ready(); tg.expand(); }catch(e){} }
+  const qs=new URLSearchParams(location.search); if(qs.get("coin")){ S.base=qs.get("coin").toUpperCase(); } if(qs.get("tf")&&TF_SEC[qs.get("tf")]) S.tf=qs.get("tf"); if(qs.get("ex")&&EX[qs.get("ex")]) S.exch=qs.get("ex"); if(qs.get("q")&&["USDT","BTC","USDC","FDUSD"].includes(qs.get("q").toUpperCase())) S.quote=qs.get("q").toUpperCase();
+  if(window.CH) S.theme=window.CH.theme(S.theme); document.documentElement.dataset.theme=S.theme; applyRowH();
+  if(!window.LightweightCharts){ setStatus("Chart library failed to load", true); return; }
+  initCharts(); syncControls(); applyI18n(); bind(); setTimer(); loadSymbols(); run();
+})();
+</script>
+</body></html>
