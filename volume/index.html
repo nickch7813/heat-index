@@ -692,6 +692,7 @@ async function notify(list){
   for(const k in notified) if(now-notified[k].at>86400000) delete notified[k];
   store.set("notified",notified);
   if(!out.length) return;
+  if(window.CH){ const chs=[].concat(S.sound?["sound"]:[], S.tgOn&&S.tgToken&&S.tgChat?["telegram"]:[]); out.forEach(f=>window.CH.log({tool:"volume",kind:"spike",coin:baseOf(f.symbol),q:"USDT",ex:f.ex,mk:f.mk,tf:f.tf,r:+f.ratio.toFixed(2),c:+f.candle.toFixed(2),b:f.breakout||0,ch:chs})); }
   if(S.sound) beep();
   if(S.tgOn && S.tgToken && S.tgChat){
     for(const f of out.sort((a,b)=>b.ratio-a.ratio).slice(0,8)){

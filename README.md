@@ -24,6 +24,25 @@ Each tool opens a coin from its address:
 - Liquidation Radar: `#SOLUSDT`
 - Volume Spikes: `?coin=SOL`
 
+## Notification log
+
+The bell in the top bar of every tool opens one shared notification log. It collects Heat Index zone alerts, Coin Lab alerts and new volume spikes, with the time, the coin, how the notification was sent (on screen, browser, Telegram, sound) and a link to open the coin. The log is stored in the browser (the last 300 entries) and can be exported as CSV.
+
+## Alerts
+
+Open the bell in the top bar, then **Rules**, or tap **Alert** on any coin card. An alert watches one coin on Binance, Bybit or OKX for one of these conditions:
+
+- the price reaches a level (from either side), is above a level or below a level;
+- the price comes within a set percent of a level;
+- the 24h change rises or drops by a set percent;
+- RSI 14 on 15m, 1h, 4h or 1d goes below or above a level.
+
+An alert fires once or every time with a pause, and can carry a note. It is shown on screen and in the log, and can also play a sound, show a browser notification and send a message through your own Telegram bot (Settings tab). Alerts are checked in the browser every 15–120 s while at least one tab of any tool is open; one tab does the checking, so nothing is sent twice.
+
+## Hover hints
+
+Every button, switch, filter, field and column header has a hint that appears on mouse hover or keyboard focus, in Ukrainian, Russian or English to match the page. The hints live in `assets/tips.js` (CSS selector plus three languages per line), so a new hint is one added line.
+
 ## Screenshots
 
 Every tool can save a screenshot of a card or a section. Each image carries the `t.me/Cr_hunters` watermark.

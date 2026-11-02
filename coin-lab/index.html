@@ -1808,6 +1808,7 @@ function checkAlerts(){
   if(A.spike && A.spike.i===ST.k.length-1) msgs.push(t("alSpike",{s:pairName(), r:fn(A.spike.ratio,1)}));
   if(!msgs.length || Date.now()-ST.lastAlert < S.alertCd*60000) return;
   ST.lastAlert=Date.now(); const text=msgs.join("\n");
+  if(window.CH) window.CH.log({tool:"lab",coin:S.base,q:quoteNow(),ex:S.exch,tf:S.tf,lines:msgs,ch:["screen"].concat("Notification" in window&&Notification.permission==="granted"?["browser"]:[],S.tgAuto&&S.tgToken&&S.tgChat?["telegram"]:[])});
   if("Notification" in window && Notification.permission==="granted") new Notification("CRYPTO HUNTERS", {body:text});
   toast(msgs[0]);
   if(S.tgAuto && S.tgToken && S.tgChat) fetch(`https://api.telegram.org/bot${S.tgToken}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:S.tgChat,text:text+"\n\n"+postText()})}).catch(()=>{});

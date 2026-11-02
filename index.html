@@ -2255,7 +2255,7 @@ function checkAlert(c) {
   const h = S.alerts[keyOf(c)]; if (h == null) return;
   let z = alertZone(c, h);
   if (z && S.alertCfg.onlyTurn) { const f = c.tf[HZ[h][0][0]]; if (!f || f.turn !== (z === "buy" ? 1 : -1)) z = null; }
-  if (z && z !== c.alz && alertAllowed(c, z)) { S.alertLast[keyOf(c)] = Date.now(); savePrefs(); notifyFn(`${c.ex} · ${c.coin}/${c.q}: ${z} zone`, `Heat ${HN[h]} = ${Math.round(c.hz[h])}`); }
+  if (z && z !== c.alz && alertAllowed(c, z)) { S.alertLast[keyOf(c)] = Date.now(); savePrefs(); notifyFn(`${c.ex} · ${c.coin}/${c.q}: ${z} zone`, `Heat ${HN[h]} = ${Math.round(c.hz[h])}`, { c, z, h }); }
   c.alz = z;
 }
 
@@ -2431,9 +2431,14 @@ function toast(title, body) {
   $("#tt").textContent = title; $("#tb").textContent = body || "";
   const t = $("#toast"); t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 5000);
 }
-notifyFn = (title, body) => {
+notifyFn = (title, body, ctx) => {
   toast(title, body);
-  try { if ("Notification" in window && Notification.permission === "granted") new Notification(title, { body }); } catch (e) {}
+  let br = false;
+  try { if ("Notification" in window && Notification.permission === "granted") { new Notification(title, { body }); br = true; } } catch (e) {}
+  if (window.CH) {
+    const c = ctx && ctx.c, ch = br ? ["screen", "browser"] : ["screen"];
+    CH.log(c ? { tool: "heat", kind: "zone", coin: c.coin, q: c.q, ex: c.ex, z: ctx.z, hn: HN[ctx.h], v: Math.round(c.hz[ctx.h]), ch } : { tool: "heat", title, body, ch });
+  }
 };
 
 // ---- list
@@ -4095,7 +4100,7 @@ function toggleAlert(c) {
   S.alerts[k] = S.hz; c.alz = null;
   try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission(); } catch (e) {}
   const z = alertZone(c, S.hz);
-  if (z) { c.alz = z; notifyFn(`${c.ex} · ${c.coin}/${c.q}: ${z} zone`, `Heat ${HN[S.hz]} = ${Math.round(c.hz[S.hz])}`); }
+  if (z) { c.alz = z; notifyFn(`${c.ex} · ${c.coin}/${c.q}: ${z} zone`, `Heat ${HN[S.hz]} = ${Math.round(c.hz[S.hz])}`, { c, z, h: S.hz }); }
   else toast(`Alert on for ${c.coin} (${c.ex})`, `We'll notify you when Heat ${HN[S.hz]} reaches 25 or 75 while this page is open.`);
   savePrefs(); tickersTick(true); syncSoon();
 }
