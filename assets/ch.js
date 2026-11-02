@@ -1,14 +1,16 @@
 /* CRYPTO HUNTERS: the glue between the tools.
-   Load it in <head> of every tool, before the tool's own scripts:
-     <link rel="stylesheet" href="assets/ch.css"><script src="assets/ch.js" data-tool="heat"></script>
-   It gives every page the same top bar (brand, Telegram channel, tools), one shared light/dark theme,
-   links from a coin to the other tools (each tool opens in its own browser tab), and screenshots with the watermark. */
+   build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
+   on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
+   It gives every page the same top bar (brand, version, Telegram channel, tools), one shared light/dark theme,
+   links from a coin to the other tools (each tool opens in its own browser tab), notifications and hover hints,
+   and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.02";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.03";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
-  var ROOT = me ? me.src.replace(/assets\/ch\.js(\?.*)?$/, "") : "./";
+  var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
+    : me && me.src ? me.src.replace(/assets\/ch\.js(\?.*)?$/, "") : "./";
   var CHANNEL = "Cr_hunters", CHANNEL_URL = "https://t.me/" + CHANNEL, WATERMARK = "t.me/" + CHANNEL, BRAND = "CRYPTO HUNTERS";
   var REPO = "https://github.com/nickch7813/heat-index";
   // The logo is built in, so the header never depends on a separate image file (or its cache).
@@ -599,7 +601,7 @@
   // the aria-label of an icon-only control, the full text of a cut-off label. Mouse hover and keyboard focus only;
   // on touch screens the tools keep their own tap hints.
   var TIPS = null, tipEl = null, tipFor = null, tipT = null, tipOff = false;
-  function loadTips() { var s = document.createElement("script"); s.src = ROOT + "assets/tips.js?v=" + VERSION; s.onload = function () { TIPS = window.CH_TIPS || null; }; document.head.appendChild(s); }
+  function loadTips() { if (window.CH_TIPS) { TIPS = window.CH_TIPS; return; } var s = document.createElement("script"); s.src = ROOT + "assets/tips.js?v=" + VERSION; s.onload = function () { TIPS = window.CH_TIPS || null; }; document.head.appendChild(s); }
   function tipLang(e) { var l = lang(), i = l === "uk" ? 1 : l === "ru" ? 2 : 3; return e[i] || e[3] || e[1]; }
   function fromDict(el) {
     if (!TIPS) return null; var lists = [TIPS[TOOL] || [], TIPS.common || []];

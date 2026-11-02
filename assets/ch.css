@@ -70,7 +70,7 @@
 .ch-foot a{color:var(--ch-act);text-decoration:none}
 .ch-foot a:hover{text-decoration:underline}
 
-/* ---- base skin of every tool (the class is set on <body> by ch.js) ---- */
+/* ---- base skin of every tool (the class is set on the body by ch.js) ---- */
 body.ch-skin{font-family:var(--ch-font)!important;font-size:14px;line-height:1.45;-webkit-font-smoothing:auto}
 body.ch-skin :is(h1,h2,h3,h4,input,select,button,textarea,summary,.brand){font-family:inherit!important;font-stretch:normal!important}
 body.ch-skin :is(input,select,textarea){border-width:0.5px!important}
