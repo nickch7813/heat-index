@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="generator" content="Claude by Anthropic">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/ch.css">
-<script src="assets/ch.js" data-tool="heat"></script>
+<link rel="stylesheet" href="assets/ch.css?v=1.02">
+<script src="assets/ch.js?v=1.02" data-tool="heat" data-ver="1.02"></script>
 <title>Heat Index · market scanner, trend line and simulator</title>
 <script>
 (function(){try{var th=localStorage.getItem("heat.theme");document.documentElement.dataset.theme=th||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")}catch(e){document.documentElement.dataset.theme="light"}})();
@@ -3152,7 +3152,7 @@ function drawNav() {
   $("#sheet").hidden = !SHEET;
   $("#sheet .pn").setAttribute("aria-label", t("More sections"));
   $("#sheet .pn").innerHTML = NAVG.map(([g, ks]) => { const rest = ks.filter(k => !NAVBAR.includes(k)); return rest.length ? `<h3>${esc(t(g))}</h3><div class="g">${rest.map(sl).join("")}</div>` : ""; }).join("");
-  $("#rail").innerHTML = `<div class="brand" translate="no"><img src="assets/logo.svg" alt="" width="22" height="22" style="vertical-align:-5px;border-radius:6px;margin-right:8px">CRYPTO HUNTERS<small style="display:block;font-weight:400;color:var(--t3);font-size:12px;margin:2px 0 0 30px">Heat Index</small></div>` + NAVG.map(([g, ks]) => `<h3>${esc(t(g))}</h3>${ks.map(sl).join("")}`).join("");
+  $("#rail").innerHTML = `<div class="brand" translate="no"><span style="display:inline-block;width:22px;height:22px;vertical-align:-5px;margin-right:8px">${window.CH ? CH.logo.replace("<svg ", "<svg width=\"22\" height=\"22\" ") : ""}</span>CRYPTO HUNTERS<small style="display:block;font-weight:400;color:var(--t3);font-size:12px;margin:2px 0 0 30px">Heat Index</small></div>` + NAVG.map(([g, ks]) => `<h3>${esc(t(g))}</h3>${ks.map(sl).join("")}`).join("");
 }
 function drawNavIf() { const sig = [navCount("setups"), navCount("trades"), NAVV, SHEET, LANG].join("|"); if (sig !== NAVSIG) { NAVSIG = sig; drawNav(); } }
 $("#botbar").addEventListener("click", e => { if (e.target.closest("#moreBtn")) { SHEET = !SHEET; drawNav(); } });

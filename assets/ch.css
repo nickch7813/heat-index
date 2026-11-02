@@ -25,7 +25,7 @@
 .ch-in{max-width:var(--ch-w);margin:0 auto;padding:0 14px}
 .ch-row{display:flex;align-items:center;gap:10px;padding:8px 0 4px}
 .ch-brand{display:inline-flex;align-items:center;gap:8px;color:var(--ch-tx);text-decoration:none;font-weight:600;font-size:14px;letter-spacing:.04em;white-space:nowrap}
-.ch-brand img{width:26px;height:26px;border-radius:8px;display:block}
+.ch-brand img,.ch-logo,.ch-logo svg{width:26px;height:26px;border-radius:8px;display:block;flex:0 0 auto}
 .ch-brand span b{color:var(--ch-brand);font-weight:600}
 .ch-sp{flex:1}
 .ch-tg{display:inline-flex;align-items:center;gap:6px;color:var(--ch-act);background:var(--ch-acb);border:0.5px solid var(--ch-acd);border-radius:14px;padding:4px 10px 4px 8px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;min-height:28px}
@@ -177,3 +177,7 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
 .ch-tip[hidden]{display:none}
 @keyframes chTip{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.ch-tip{animation:none}}
+
+/* ---- version ---- */
+.ch-ver{font:500 11px/1 var(--ch-font);color:var(--ch-t3);border:0.5px solid var(--ch-bd2);border-radius:8px;padding:3px 6px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ch-ver.ch-old{color:var(--ch-ert);background:var(--ch-erb);border-color:transparent}
