@@ -357,6 +357,8 @@ bot: [
   ["[data-dir=both]", "Бот може відкривати і лонги, і шорти", "Бот может открывать и лонги, и шорты", "The bot may open longs and shorts"],
   ["[data-dir=long]", "Бот відкриває лише лонги", "Бот открывает только лонги", "The bot opens longs only"],
   ["[data-dir=short]", "Бот відкриває лише шорти", "Бот открывает только шорты", "The bot opens shorts only"],
+  ["[data-stop=on]", "Стоп-лосс на відстані 2×ATR: позиція закривається з обмеженою втратою, а після руху на 1,5 ATR у плюс стоп переноситься в беззбиток", "Стоп-лосс на расстоянии 2×ATR: позиция закрывается с ограниченной потерей, а после движения на 1,5 ATR в плюс стоп переносится в безубыток", "Stop-loss 2×ATR away: the position closes with a limited loss, and after a 1.5 ATR gain the stop moves to breakeven"],
+  ["[data-stop=off]", "Без стоп-лоссу: позиції закриваються лише за ціллю, розворотом індикаторів, простоєм або ліквідацією. Втрата не обмежена", "Без стоп-лосса: позиции закрываются только по цели, развороту индикаторов, простою или ликвидации. Потеря не ограничена", "No stop-loss: positions close only at the target, on an indicator flip, idling or liquidation. The loss is not capped"],
   [".pos", "Відкрита позиція бота: вхід, стоп, ціль і поточний результат", "Открытая позиция бота: вход, стоп, цель и текущий результат", "An open bot position: entry, stop, target and current result"],
   [".trade summary, #sc summary", "Розгорнути, щоб побачити, чому бот так вирішив", "Развернуть, чтобы увидеть, почему бот так решил", "Open to see why the bot decided this"],
   [".chip.g", "Чинник за угоду", "Фактор за сделку", "A factor in favor"],

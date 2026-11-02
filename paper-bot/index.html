@@ -550,6 +550,8 @@ bot: [
   ["[data-dir=both]", "Бот може відкривати і лонги, і шорти", "Бот может открывать и лонги, и шорты", "The bot may open longs and shorts"],
   ["[data-dir=long]", "Бот відкриває лише лонги", "Бот открывает только лонги", "The bot opens longs only"],
   ["[data-dir=short]", "Бот відкриває лише шорти", "Бот открывает только шорты", "The bot opens shorts only"],
+  ["[data-stop=on]", "Стоп-лосс на відстані 2×ATR: позиція закривається з обмеженою втратою, а після руху на 1,5 ATR у плюс стоп переноситься в беззбиток", "Стоп-лосс на расстоянии 2×ATR: позиция закрывается с ограниченной потерей, а после движения на 1,5 ATR в плюс стоп переносится в безубыток", "Stop-loss 2×ATR away: the position closes with a limited loss, and after a 1.5 ATR gain the stop moves to breakeven"],
+  ["[data-stop=off]", "Без стоп-лоссу: позиції закриваються лише за ціллю, розворотом індикаторів, простоєм або ліквідацією. Втрата не обмежена", "Без стоп-лосса: позиции закрываются только по цели, развороту индикаторов, простою или ликвидации. Потеря не ограничена", "No stop-loss: positions close only at the target, on an indicator flip, idling or liquidation. The loss is not capped"],
   [".pos", "Відкрита позиція бота: вхід, стоп, ціль і поточний результат", "Открытая позиция бота: вход, стоп, цель и текущий результат", "An open bot position: entry, stop, target and current result"],
   [".trade summary, #sc summary", "Розгорнути, щоб побачити, чому бот так вирішив", "Развернуть, чтобы увидеть, почему бот так решил", "Open to see why the bot decided this"],
   [".chip.g", "Чинник за угоду", "Фактор за сделку", "A factor in favor"],
@@ -558,7 +560,7 @@ bot: [
 };
 
 </script>
-<script id="ch-js" data-tool="bot" data-ver="1.03" data-root="../">
+<script id="ch-js" data-tool="bot" data-ver="1.04" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -567,7 +569,7 @@ bot: [
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.03";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.04";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -1403,6 +1405,7 @@ body.ch-skin .chip{border-width:0.5px}
 body.ch-skin .empty{border-width:0.5px;border-radius:12px}
 body.ch-skin .scrow .ch-links{margin:10px 0 2px}
 body.ch-skin footer#footer{padding-bottom:6px}
+body.ch-skin .row[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -1451,6 +1454,8 @@ body.ch-skin footer#footer{padding-bottom:6px}
       <div class="opts" id="levOpts"><button type="button" data-lev="1">×1</button><button type="button" data-lev="2">×2</button><button type="button" data-lev="3">×3</button><button type="button" data-lev="5">×5</button><button type="button" data-lev="10">×10</button></div></div>
     <div class="row fut"><div data-i="dirL"></div>
       <div class="opts" id="dirOpts"><button type="button" data-dir="both"><span data-i="dir_both"></span></button><button type="button" data-dir="long"><span data-i="dir_long"></span></button><button type="button" data-dir="short"><span data-i="dir_short"></span></button></div></div>
+    <div class="row"><div data-i="stopOptL"></div>
+      <div class="opts" id="stopOpts"><button type="button" data-stop="on"><span data-i="stopOn"></span><small>2×ATR</small></button><button type="button" data-stop="off"><span data-i="stopOff"></span></button></div></div>
     <p class="note" id="stNote"></p>
   </section>
 
@@ -1484,7 +1489,7 @@ uk:{
   confirmReset:v=>`Скинути рахунок (${v.mkt} ${v.ex}) і почати знову з 1000 USDT? Відкриті позиції буде анульовано.`,
   stTitle:"Стратегія", mktL:"Ринок", spot:"Спот", futures:"Ф’ючерси", mktSpot:"спот", mktFut:"ф’ючерси",
   tfL:"Таймфрейм", tf_scalp:"Скальпінг", tf_intra:"Інтрадей", tf_swing:"Свінг", tf_pos:"Позиційний",
-  levL:"Плече", dirL:"Напрямок", dir_both:"Лонг і шорт", dir_long:"Тільки лонг", dir_short:"Тільки шорт",
+  levL:"Плече", dirL:"Напрямок", dir_both:"Лонг і шорт", dir_long:"Тільки лонг", dir_short:"Тільки шорт", stopOptL:"Стоп-лосс", stopOn:"Увімкнено", stopOff:"Вимкнено", stopOffL:v=>`Стоп вимкнено (був би ${px(v.p)})`, szNoStop:v=>`Стоп-лосс вимкнено: позиція не закриється автоматично, якщо ціна піде проти мене. Вихід — ціль, розворот індикаторів, простій${v.fut?" або ліквідація":""}. Можлива втрата — до ${v.fut?"всієї маржі":"всієї суми позиції"}. Розмір розраховано так, ніби стоп стоїть на ${px(v.stop)} (2×ATR)`, szLiqNoStop:v=>`Ціна ліквідації ≈ ${px(v.liq)} (${pc(v.d,1)}). Стоп вимкнено, тож саме ліквідація обмежує втрату маржею`, szTargetNoStop:v=>`Ціль: ${px(v.tp)} (${pc(v.d,1)})`, noteNoStop:" Стоп-лосс вимкнено для всіх позицій: бот не закриває їх при русі ціни проти нього, лише за ціллю, розворотом індикаторів, простоєм або ліквідацією. Якщо ввімкнути стоп знову, позиції, ціна яких уже за стопом, закриються одразу.", lStopOff:"Стоп-лосс вимкнено: позиції закриваються лише за ціллю, розворотом, простоєм або ліквідацією", lStopOn:"Стоп-лосс знову ввімкнено", 
   noteSpot:v=>`На споті бот лише купує монети (лонг). Шорт і плече доступні в режимі ф’ючерсів. Аналіз на ${v.b}, ${v.m} і ${v.h}, скан кожні ${v.s}. Спот і ф’ючерси мають окремі рахунки по 1000 USDT.`,
   noteFut:v=>`Безстрокові ф’ючерси USDT-M: лонг і шорт із плечем, фандинг кожні 8 год, комісія ${v.fee}%. Аналіз на ${v.b}, ${v.m} і ${v.h}, скан кожні ${v.s}. Нове плече діє для наступних угод. Окремий рахунок 1000 USDT.`,
   sec:"с", portfolio:"Портфель", journal:"Журнал угод", journalSub:"Кожна угода з поясненням: чому ця монета, чому цей напрямок і чому така сума",
@@ -1585,7 +1590,7 @@ ru:{
   confirmReset:v=>`Сбросить счёт (${v.mkt} ${v.ex}) и начать заново с 1000 USDT? Открытые позиции будут аннулированы.`,
   stTitle:"Стратегия", mktL:"Рынок", spot:"Спот", futures:"Фьючерсы", mktSpot:"спот", mktFut:"фьючерсы",
   tfL:"Таймфрейм", tf_scalp:"Скальпинг", tf_intra:"Интрадей", tf_swing:"Свинг", tf_pos:"Позиционный",
-  levL:"Плечо", dirL:"Направление", dir_both:"Лонг и шорт", dir_long:"Только лонг", dir_short:"Только шорт",
+  levL:"Плечо", dirL:"Направление", dir_both:"Лонг и шорт", dir_long:"Только лонг", dir_short:"Только шорт", stopOptL:"Стоп-лосс", stopOn:"Включён", stopOff:"Выключен", stopOffL:v=>`Стоп выключен (был бы ${px(v.p)})`, szNoStop:v=>`Стоп-лосс выключен: позиция не закроется автоматически, если цена пойдёт против меня. Выход — цель, разворот индикаторов, простой${v.fut?" или ликвидация":""}. Возможная потеря — до ${v.fut?"всей маржи":"всей суммы позиции"}. Размер рассчитан так, будто стоп стоит на ${px(v.stop)} (2×ATR)`, szLiqNoStop:v=>`Цена ликвидации ≈ ${px(v.liq)} (${pc(v.d,1)}). Стоп выключен, поэтому именно ликвидация ограничивает потерю маржой`, szTargetNoStop:v=>`Цель: ${px(v.tp)} (${pc(v.d,1)})`, noteNoStop:" Стоп-лосс выключен для всех позиций: бот не закрывает их при движении цены против него, только по цели, развороту индикаторов, простою или ликвидации. Если включить стоп снова, позиции, цена которых уже за стопом, закроются сразу.", lStopOff:"Стоп-лосс выключен: позиции закрываются только по цели, развороту, простою или ликвидации", lStopOn:"Стоп-лосс снова включён", 
   noteSpot:v=>`На споте бот только покупает монеты (лонг). Шорт и плечо доступны в режиме фьючерсов. Анализ на ${v.b}, ${v.m} и ${v.h}, скан каждые ${v.s}. У спота и фьючерсов отдельные счета по 1000 USDT.`,
   noteFut:v=>`Бессрочные фьючерсы USDT-M: лонг и шорт с плечом, фандинг каждые 8 ч, комиссия ${v.fee}%. Анализ на ${v.b}, ${v.m} и ${v.h}, скан каждые ${v.s}. Новое плечо действует для следующих сделок. Отдельный счёт 1000 USDT.`,
   sec:"с", portfolio:"Портфель", journal:"Журнал сделок", journalSub:"Каждая сделка с объяснением: почему эта монета, почему это направление и почему такая сумма",
@@ -1686,7 +1691,7 @@ en:{
   confirmReset:v=>`Reset the ${v.ex} ${v.mkt} account and start over from 1000 USDT? Open positions will be discarded.`,
   stTitle:"Strategy", mktL:"Market", spot:"Spot", futures:"Futures", mktSpot:"spot", mktFut:"futures",
   tfL:"Timeframe", tf_scalp:"Scalping", tf_intra:"Intraday", tf_swing:"Swing", tf_pos:"Position",
-  levL:"Leverage", dirL:"Direction", dir_both:"Long and short", dir_long:"Long only", dir_short:"Short only",
+  levL:"Leverage", dirL:"Direction", dir_both:"Long and short", dir_long:"Long only", dir_short:"Short only", stopOptL:"Stop-loss", stopOn:"On", stopOff:"Off", stopOffL:v=>`Stop off (would be ${px(v.p)})`, szNoStop:v=>`Stop-loss is off: the position will not close automatically if the price moves against me. Exits are the target, an indicator flip, idling${v.fut?" or liquidation":""}. The loss can reach ${v.fut?"the whole margin":"the whole position"}. Size is computed as if the stop sat at ${px(v.stop)} (2×ATR)`, szLiqNoStop:v=>`Liquidation price ≈ ${px(v.liq)} (${pc(v.d,1)}). With the stop off, liquidation is what limits the loss to the margin`, szTargetNoStop:v=>`Target: ${px(v.tp)} (${pc(v.d,1)})`, noteNoStop:" Stop-loss is off for every position: the bot does not close them when the price moves against it, only at the target, on an indicator flip, idling or liquidation. If you turn the stop back on, positions already past their stop close at once.", lStopOff:"Stop-loss off: positions close only at the target, on a flip, idling or liquidation", lStopOn:"Stop-loss back on", 
   noteSpot:v=>`On spot the bot only buys coins (long). Shorts and leverage are available in futures mode. Analysis on ${v.b}, ${v.m} and ${v.h}, scan every ${v.s}. Spot and futures have separate 1000 USDT accounts.`,
   noteFut:v=>`USDT-M perpetual futures: long and short with leverage, funding every 8 h, ${v.fee}% fee. Analysis on ${v.b}, ${v.m} and ${v.h}, scan every ${v.s}. New leverage applies to the next trades. Separate 1000 USDT account.`,
   sec:"s", portfolio:"Portfolio", journal:"Trade journal", journalSub:"Every trade explained: why this coin, why this direction and why this amount",
@@ -1862,7 +1867,7 @@ const TFS = {
 const START=1000, MAX_POS=6, TH=45, CLOSE_TH=25, TOPN=40, RESERVE=0.10, RISK_MAX=0.02, MMR=0.005, H8=8*3600e3;
 const STABLE=new Set(["USDC","FDUSD","TUSD","BUSD","DAI","USDP","EUR","AEUR","USDE","XUSD","PYUSD","USD1","BFUSD","EURI","USTC","PAXG","XAUT","WBTC","WBETH","BNSOL","USDD","USDR","USDQ","RLUSD"]);
 const fresh = () => ({cash:START,pos:{},trades:[],hist:[{t:Date.now(),eq:START}],log:[],running:true,lastScan:0,scan:[],universe:0,
-  tf:"swing",lev:3,dirMode:"both",lastFund:Math.floor(Date.now()/H8)*H8});
+  tf:"swing",lev:3,dirMode:"both",stopOn:true,lastFund:Math.floor(Date.now()/H8)*H8});
 let EXN = (()=>{ try{ const s=localStorage.getItem("paperbot.ex"); if(EX[s]) return s; }catch(e){} return "binance"; })();
 let MKT = (()=>{ try{ const s=localStorage.getItem("paperbot.mkt"); if(s==="spot"||s==="futures") return s; }catch(e){} return "spot"; })();
 const accKey = () => `paperbot.v3.${EXN}.${MKT}`;
@@ -1994,9 +1999,9 @@ function openPos(a,dir,rank,n){
   S.pos[a.sym]={sym:a.sym,base:a.base,dir,lev,qty,entry:price,margin,notional,stop,tp,liq,atr:a.atr,t:Date.now(),score:a.score,be:false,last:price,feeIn:fee,fund:0,fr:a.fr??0,tf:S.tf};
   const sizing=[{k:"szBase",v:{fut,extra,pct,eq}}, fut?{k:"szLev",v:{lev}}:null, levCut?{k:"szLevCut",v:levCut}:null, lim?{k:lim}:null,
     {k:"szTotal",v:{fut,dir,size:margin,margin,notional,pctEq:margin/eq,qty,base:a.base,price}},
-    {k:"szStop",v:{stop,d:stopD,dir,risk,riskPct:risk/eq,tf:tfc.b}},
-    fut?{k:"szLiq",v:{liq,d:liq/price-1}}:null,
-    {k:"szTarget",v:{tp,d:dir*stopD*1.5}},
+    S.stopOn===false?{k:"szNoStop",v:{stop,fut}}:{k:"szStop",v:{stop,d:stopD,dir,risk,riskPct:risk/eq,tf:tfc.b}},
+    fut?{k:S.stopOn===false?"szLiqNoStop":"szLiq",v:{liq,d:liq/price-1}}:null,
+    {k:S.stopOn===false?"szTargetNoStop":"szTarget",v:{tp,d:dir*stopD*1.5}},
     {k:"szFee",v:{ex:EX[EXN].name,fee,rate:feeR}},
     fut&&a.fr!==undefined?{k:"szFund",v:{fr:a.fr,pay:notional*a.fr*dir}}:null].filter(Boolean);
   S.trades.unshift({t:Date.now(),side:"open",mkt:MKT,dir,lev,base:a.base,sym:a.sym,price,qty,value:notional,margin,fee,score:a.score,
@@ -2020,9 +2025,9 @@ function checkExits(){
   if(!S.running) return;
   for(const s in S.pos){ const p=S.pos[s], x=prices[s]; if(!x) continue; p.last=x; const d=p.dir||1;
     if(p.liq && (d>0?x<=p.liq:x>=p.liq)) closePos(s,"rLiq",{k:"dLiq",v:{liq:p.liq}},p.liq);
-    else if(d>0?x<=p.stop:x>=p.stop) p.be ? closePos(s,"rBE",{k:"dBE",v:{stop:p.stop}}) : closePos(s,"rStop",{k:"dStop",v:{stop:p.stop}});
+    else if(S.stopOn!==false && (d>0?x<=p.stop:x>=p.stop)) p.be ? closePos(s,"rBE",{k:"dBE",v:{stop:p.stop}}) : closePos(s,"rStop",{k:"dStop",v:{stop:p.stop}});
     else if(d>0?x>=p.tp:x<=p.tp) closePos(s,"rTarget",{k:"dTarget",v:{tp:p.tp}});
-    else if(!p.be && d*(x-p.entry)>=1.5*p.atr){ p.stop=d>0?Math.max(p.stop,p.entry*1.003):Math.min(p.stop,p.entry*0.997); p.be=true; log("lBE",{base:p.base,stop:p.stop}); }
+    else if(S.stopOn!==false && !p.be && d*(x-p.entry)>=1.5*p.atr){ p.stop=d>0?Math.max(p.stop,p.entry*1.003):Math.min(p.stop,p.entry*0.997); p.be=true; log("lBE",{base:p.base,stop:p.stop}); }
   }
 }
 /* Фандинг кожні 8 годин: лонги платять при додатній ставці, шорти отримують, і навпаки */
@@ -2145,7 +2150,7 @@ function renderPositions(){
     return `<div class="pos"><div class="r1"><span class="l"><span class="coin">${p.base}</span>${dirTag(p.dir||1,p.lev||1,fut)}</span><span class="${cls(pnl)}"><b>${sgn(pnl)}</b> (${pc(pnl/M)})</span></div>
     <div class="meta">${meta}</div>
     <div class="range" role="img" aria-label="${T("rangeAria")}"><b style="left:${fe*100}%"></b><i style="left:${f*100}%"></i></div>
-    <div class="rl"><span>${T("stopL",{p:p.stop,be:p.be})}</span><span>${T("target",{p:p.tp})}</span></div>${window.CH?CH.links({coin:p.base,q:"USDT",ex:EXN,from:"bot"}):""}</div>`; }).join("");
+    <div class="rl"><span>${S.stopOn===false?T("stopOffL",{p:p.stop}):T("stopL",{p:p.stop,be:p.be})}</span><span>${T("target",{p:p.tp})}</span></div>${window.CH?CH.links({coin:p.base,q:"USDT",ex:EXN,from:"bot"}):""}</div>`; }).join("");
 }
 const facHTML = (F,dir=1) => F.map(f=>{ const q=f.p*dir; return `<span class="p ${cls(q)}">${q>0?"+":"−"}${Math.abs(q)}</span><span>${ftxt(f)}</span>`; }).join("");
 const tx = x => typeof x==="string" ? x : x ? T(x.k,x.v||{}) : "";
@@ -2186,9 +2191,9 @@ function renderScan(){
 function renderStrategy(){
   const tfc=TFC(), fut=FUT(), s=tfc.scan/1000, sTxt=s>=60?`${s/60} ${T("uMin")}`:`${s} ${T("sec")}`;
   const set=(id,attr,val)=>document.querySelectorAll(`#${id} button`).forEach(b=>b.setAttribute("aria-pressed",b.dataset[attr]===String(val)));
-  set("mktOpts","mkt",MKT); set("tfOpts","tf",S.tf); set("levOpts","lev",S.lev); set("dirOpts","dir",S.dirMode);
+  set("mktOpts","mkt",MKT); set("tfOpts","tf",S.tf); set("levOpts","lev",S.lev); set("dirOpts","dir",S.dirMode); set("stopOpts","stop",S.stopOn===false?"off":"on");
   document.querySelectorAll(".row.fut").forEach(r=>r.hidden=!fut);
-  $("stNote").textContent=fut?T("noteFut",{fee:num(EX[EXN].fee.futures*100,3),b:tfc.b,m:tfc.m,h:tfc.h,s:sTxt}):T("noteSpot",{b:tfc.b,m:tfc.m,h:tfc.h,s:sTxt});
+  $("stNote").textContent=fut?T("noteFut",{fee:num(EX[EXN].fee.futures*100,3),b:tfc.b,m:tfc.m,h:tfc.h,s:sTxt}):T("noteSpot",{b:tfc.b,m:tfc.m,h:tfc.h,s:sTxt}); if(S.stopOn===false) $("stNote").textContent+=T("noteNoStop");
 }
 function render(){ renderHero(); renderPositions(); if(heavy){ renderTrades(); renderScan(); renderStrategy(); heavy=false; } }
 
@@ -2213,13 +2218,14 @@ function switchAccount(){
 $("runBtn").onclick=()=>{ S.running=!S.running; log(S.running?"lRun":"lPause"); save(); render(); };
 $("scanBtn").onclick=()=>scan();
 $("resetBtn").onclick=()=>{ if(!confirm(T("confirmReset",{ex:EX[EXN].name,mkt:T(FUT()?"mktFut":"mktSpot")}))) return;
-  const keep={tf:S.tf,lev:S.lev,dirMode:S.dirMode}; S={...fresh(),...keep}; seedPrices(); log("lReset"); heavy=true; save(); render(); nextScan=Date.now()+500; };
+  const keep={tf:S.tf,lev:S.lev,dirMode:S.dirMode,stopOn:S.stopOn!==false}; S={...fresh(),...keep}; seedPrices(); log("lReset"); heavy=true; save(); render(); nextScan=Date.now()+500; };
 document.querySelectorAll("#langSeg button").forEach(b=>b.onclick=()=>{ LANG=b.dataset.lang; try{ localStorage.setItem("paperbot.lang",LANG); }catch(e){} applyStatic(); });
 document.querySelectorAll("#exSeg button").forEach(b=>b.onclick=()=>{ if(b.dataset.ex===EXN) return; save(); EXN=b.dataset.ex; try{ localStorage.setItem("paperbot.ex",EXN); }catch(e){} switchAccount(); });
 document.querySelectorAll("#mktOpts button").forEach(b=>b.onclick=()=>{ if(b.dataset.mkt===MKT) return; save(); MKT=b.dataset.mkt; try{ localStorage.setItem("paperbot.mkt",MKT); }catch(e){} switchAccount(); });
 document.querySelectorAll("#tfOpts button").forEach(b=>b.onclick=()=>{ if(b.dataset.tf===S.tf) return; S.tf=b.dataset.tf; S.scan=[]; nextScan=Date.now()+300; save(); applyStatic(); });
 document.querySelectorAll("#levOpts button").forEach(b=>b.onclick=()=>{ S.lev=+b.dataset.lev; save(); heavy=true; render(); });
 document.querySelectorAll("#dirOpts button").forEach(b=>b.onclick=()=>{ S.dirMode=b.dataset.dir; save(); heavy=true; render(); });
+document.querySelectorAll("#stopOpts button").forEach(b=>b.onclick=()=>{ const on=b.dataset.stop==="on"; if(on===(S.stopOn!==false)) return; S.stopOn=on; log(on?"lStopOn":"lStopOff"); save(); heavy=true; render(); if(on) checkExits(); });
 $("themeBtn").onclick=()=>{ const r=document.documentElement, dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;
   r.dataset.theme=dark?"light":"dark"; try{ localStorage.setItem("paperbot.theme",r.dataset.theme); }catch(e){} drawChart(); };
 try{ const th=localStorage.getItem("paperbot.theme")||localStorage.getItem("paperbot.v1.theme"); const th2=window.CH?CH.theme(th):th; if(th2) document.documentElement.dataset.theme=th2; }catch(e){}

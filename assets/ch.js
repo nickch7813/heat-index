@@ -6,7 +6,7 @@
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.03";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.04";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
