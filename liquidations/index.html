@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#16181d">
 <link rel="manifest" href="../manifest.webmanifest"><link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
-<script>(function(){var c=(new URLSearchParams(location.search).get("coin")||"").toUpperCase().replace(/[^A-Z0-9]/g,"");if(c&&!location.hash)history.replaceState(null,"",location.pathname+"#"+c+(c.endsWith("USDT")?"":"USDT"));})();</script>
+<script>(function(){var c=(new URLSearchParams(location.search).get("coin")||"").toUpperCase().replace(/[^A-Z0-9]/g,"");if(c&&!location.hash){var ex=new URLSearchParams(location.search).get("ex");history.replaceState(null,"",location.pathname+(ex?"?ex="+encodeURIComponent(ex):"")+"#"+c+(c.endsWith("USDT")?"":"USDT"));}})();</script>
 <style id="ch-css">
 /* CRYPTO HUNTERS: the shared look of every tool.
    The colors are the ones of Heat Index (the main app), so all tools read as one product.
@@ -260,6 +260,7 @@ common: [
 ],
 
 scan: [
+  ["#exSeg [data-ex]", "Біржа, монети якої сканувати: Binance або Bybit", "Биржа, монеты которой сканировать: Binance или Bybit", "Exchange whose coins to scan: Binance or Bybit"],
   ["#tfSeg [data-tf]", "Таймфрейм свічок для сигналів; тренд береться зі старшого таймфрейму", "Таймфрейм свечей для сигналов; тренд берётся со старшего таймфрейма", "Candle timeframe of the signals; the trend comes from the higher timeframe"],
   ["#topN", "Скільки найбільших монет Binance за обсягом сканувати (обрані додаються завжди)", "Сколько крупнейших монет Binance по объёму сканировать (избранные добавляются всегда)", "How many of the largest Binance coins to scan (favorites are always added)"],
   ["#minM", "Скільки з 8 сигналів мають дивитися в один бік, щоб монета потрапила в список", "Сколько из 8 сигналов должны смотреть в одну сторону, чтобы монета попала в список", "How many of the 8 signals must point the same way for a coin to be listed"],
@@ -506,6 +507,7 @@ whales: [
 ],
 
 liq: [
+  ["#exSeg [data-ex]", "Ф’ючерси якої біржі аналізувати: Binance або Bybit. На Bybit немає даних про позиції топ-трейдерів і обсяг агресивних покупок, тому ці частини порожні", "Фьючерсы какой биржи анализировать: Binance или Bybit. У Bybit нет данных о позициях топ-трейдеров и объёме агрессивных покупок, поэтому эти части пустые", "Which exchange's futures to analyse: Binance or Bybit. Bybit has no top-trader positions or taker buy/sell volume, so those parts stay empty"],
   ["#langSel", "Мова інтерфейсу", "Язык интерфейса", "Interface language"],
   ["#themeBtn", "Світла або темна тема", "Светлая или тёмная тема", "Light or dark theme"],
   ["#q", "Пошук монети; Enter — відкрити її аналіз", "Поиск монеты; Enter — открыть её анализ", "Search a coin; Enter opens its analysis"],
@@ -618,7 +620,7 @@ bot: [
 };
 
 </script>
-<script id="ch-js" data-tool="liq" data-ver="1.10" data-root="../">
+<script id="ch-js" data-tool="liq" data-ver="1.11" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -627,7 +629,7 @@ bot: [
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.10";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.11";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -694,7 +696,7 @@ bot: [
     var base = ROOT + t.path; if (!o || !o.coin) return base;
     var coin = String(o.coin).toUpperCase(), q = String(o.q || "USDT").toUpperCase(), ex = normEx(o.ex);
     if (id === "heat") return base + "#/chart/" + EXN[ex] + "/" + encodeURIComponent(coin) + (q === "BTC" ? "" : "/USDT");
-    if (id === "liq") return base + "#" + encodeURIComponent(coin) + "USDT";
+    if (id === "liq") return base + (ex === "bybit" ? "?ex=bybit" : "") + "#" + encodeURIComponent(coin) + "USDT";
     if (id === "volume") return base + "?coin=" + encodeURIComponent(coin);
     if (id === "whales" && ex === "okx") ex = "binance";
     return base + "?coin=" + encodeURIComponent(coin) + "&q=" + encodeURIComponent(q) + "&ex=" + ex;
@@ -1741,6 +1743,9 @@ body.ch-skin .stats{background:var(--ch-bd)}
 body.ch-skin .dhead h2{font-weight:500!important}
 body.ch-skin .risk .big b,body.ch-skin .stat b{font-weight:600}
 body.ch-skin .monitorcam{margin-left:auto}
+body.ch-skin #exSeg{display:inline-flex;border:0.5px solid var(--ch-bd2);border-radius:8px;overflow:hidden}
+body.ch-skin #exSeg button{border:0;background:none;color:var(--ch-t2);font-size:13px;padding:5px 11px;cursor:pointer;min-height:30px}
+body.ch-skin #exSeg button.on{background:var(--ch-acb);color:var(--ch-act);font-weight:500}
 </style>
 </head>
 <body>
@@ -1768,6 +1773,7 @@ body.ch-skin .monitorcam{margin-left:auto}
     <div class="controls">
       <input type="search" id="q" list="symList" data-i18n-ph="searchPh" autocomplete="off">
       <datalist id="symList"></datalist>
+      <span class="seg" id="exSeg" role="group" aria-label="Exchange"><button type="button" data-ex="binance">Binance</button><button type="button" data-ex="bybit">Bybit</button></span>
       <button class="btn" id="favOnly" type="button" data-i18n="favOnly" aria-pressed="false"></button>
       <label><span data-i18n="coins"></span> <select id="topN"><option>30</option><option>60</option><option>100</option><option>150</option></select></label>
       <label><span data-i18n="minVol"></span> <select id="minVol">
@@ -2329,6 +2335,7 @@ let LANG = store.get('lang', null) || detectLang();
 if (!I18N[LANG]) LANG = 'uk';
 function t(k, v) {
   let s = I18N[LANG][k] ?? I18N.uk[k] ?? k;
+  if (typeof LEX !== 'undefined' && LEX === 'bybit' && typeof s === 'string') s = s.replace(/Binance USDT-M/g, 'Bybit USDT Perpetual').replace(/Binance/g, 'Bybit');
   if (v) s = s.replace(/\{(\w+)\}/g, (_, x) => (v[x] ?? ''));
   return s;
 }
@@ -2351,7 +2358,63 @@ const S = {
 };
 
 /* ---------- helpers ---------- */
+
+/* ---------- exchange: Binance or Bybit ---------- */
+const LEX = (() => { const q = new URLSearchParams(location.search).get('ex'); const v = (q || store.get('ex', 'binance')).toLowerCase(); return v === 'bybit' ? 'bybit' : 'binance'; })();
+store.set('ex', LEX);
+const EXNAME = LEX === 'bybit' ? 'Bybit' : 'Binance';
+const BYBIT = 'https://api.bybit.com';
+const BY_IV = { '5m': '5', '15m': '15', '30m': '30', '1h': '60', '4h': '240', '1d': 'D' };
+const BY_P = { '5m': '5min', '15m': '15min', '30m': '30min', '1h': '1h', '4h': '4h', '1d': '1d' };
+async function by(path) {
+  const r = await fetch(BYBIT + path);
+  if (!r.ok) { const e = new Error('HTTP ' + r.status); e.status = r.status; throw e; }
+  const j = await r.json(); if (j.retCode !== 0) { const e = new Error(j.retMsg || 'Bybit error'); e.status = 400; throw e; }
+  return j.result;
+}
+async function byKl(sym, iv, limit) {
+  const r = await by(`/v5/market/kline?category=linear&symbol=${sym}&interval=${BY_IV[iv] || '60'}&limit=${Math.min(1000, limit)}`);
+  const per = PER[iv] || 36e5;
+  return (r.list || []).slice().reverse().map(k => [+k[0], k[1], k[2], k[3], k[4], k[5], +k[0] + per - 1, k[6]]);
+}
+async function bybitApi(path) {
+  const u = new URL('https://x' + path), p = u.pathname, q = Object.fromEntries(u.searchParams);
+  if (p === '/fapi/v1/exchangeInfo') {
+    const out = []; let cur = '';
+    for (let i = 0; i < 5; i++) { const r = await by(`/v5/market/instruments-info?category=linear&limit=1000${cur ? '&cursor=' + encodeURIComponent(cur) : ''}`);
+      (r.list || []).forEach(s => out.push({ symbol: s.symbol, status: s.status === 'Trading' ? 'TRADING' : s.status, contractType: s.contractType === 'LinearPerpetual' ? 'PERPETUAL' : s.contractType, quoteAsset: s.quoteCoin, baseAsset: s.baseCoin }));
+      cur = r.nextPageCursor; if (!cur) break; }
+    return { symbols: out };
+  }
+  if (p === '/fapi/v1/ticker/24hr' || p === '/fapi/v1/premiumIndex') {
+    const r = await by(`/v5/market/tickers?category=linear${q.symbol ? '&symbol=' + q.symbol : ''}`);
+    const L = (r.list || []).map(x => p === '/fapi/v1/premiumIndex'
+      ? { symbol: x.symbol, markPrice: x.markPrice, indexPrice: x.indexPrice, lastFundingRate: x.fundingRate, nextFundingTime: +x.nextFundingTime }
+      : { symbol: x.symbol, lastPrice: x.lastPrice, priceChangePercent: String(+x.price24hPcnt * 100), quoteVolume: x.turnover24h, volume: x.volume24h, highPrice: x.highPrice24h, lowPrice: x.lowPrice24h, openPrice: x.prevPrice24h });
+    return q.symbol ? (L[0] || {}) : L;
+  }
+  if (p === '/fapi/v1/klines') return byKl(q.symbol, q.interval, +q.limit || 500);
+  if (p === '/futures/data/openInterestHist') {
+    // Bybit gives at most 200 points a page: walk the pages, and value the contracts at the candle close
+    const need = Math.min(500, +q.limit || 200), rows = []; let cur = '';
+    for (let i = 0; i < 4 && rows.length < need; i++) { const r = await by(`/v5/market/open-interest?category=linear&symbol=${q.symbol}&intervalTime=${BY_P[q.period] || '1h'}&limit=200${cur ? '&cursor=' + encodeURIComponent(cur) : ''}`);
+      rows.push(...(r.list || [])); cur = r.nextPageCursor; if (!cur) break; }
+    const kl = await byKl(q.symbol, q.period, need + 5), px = new Map(kl.map(k => [k[0], +k[4]])), lastPx = kl.length ? +kl[kl.length - 1][4] : 0;
+    return rows.slice(0, need).reverse().map(x => { const t = +x.timestamp, oi = +x.openInterest, c = px.get(t) || lastPx; return { symbol: q.symbol, sumOpenInterest: String(oi), sumOpenInterestValue: String(oi * c), timestamp: t }; });
+  }
+  if (p === '/futures/data/globalLongShortAccountRatio') {
+    const r = await by(`/v5/market/account-ratio?category=linear&symbol=${q.symbol}&period=${BY_P[q.period] || '1h'}&limit=${Math.min(500, +q.limit || 200)}`);
+    return (r.list || []).slice().reverse().map(x => ({ symbol: q.symbol, longShortRatio: String(+x.buyRatio / Math.max(1e-9, +x.sellRatio)), longAccount: x.buyRatio, shortAccount: x.sellRatio, timestamp: +x.timestamp }));
+  }
+  if (p === '/fapi/v1/depth') { const r = await by(`/v5/market/orderbook?category=linear&symbol=${q.symbol}&limit=500`); return { bids: r.b || [], asks: r.a || [] }; }
+  if (p === '/fapi/v1/fundingRate') { const r = await by(`/v5/market/funding/history?category=linear&symbol=${q.symbol}&limit=${Math.min(200, +q.limit || 200)}`);
+    return (r.list || []).slice().reverse().map(x => ({ symbol: x.symbol, fundingRate: x.fundingRate, fundingTime: +x.fundingRateTimestamp })); }
+  // top trader position ratio and taker buy/sell volume have no public Bybit equivalent
+  const e = new Error('n/a on Bybit'); e.status = 404; throw e;
+}
+
 async function api(path) {
+  if (LEX === 'bybit') return bybitApi(path);
   const r = await fetch(API + path);
   if (!r.ok) { const e = new Error('HTTP ' + r.status); e.status = r.status; throw e; }
   return r.json();
@@ -2422,7 +2485,33 @@ function trimLiq() {
   const cut = Date.now() - 2 * 36e5;
   if (S.liq.length > 6000 || (S.liq[0] && S.liq[0].t < cut)) S.liq = S.liq.filter(x => x.t >= cut).slice(-6000);
 }
+
+// Bybit sends liquidations per coin (topic allLiquidation.SYMBOL): subscribe to the coins of the monitor, in batches
+let byWs = null, byPing = null, bySubs = new Set();
+function bybitSubscribe(syms) {
+  if (!byWs || byWs.readyState !== 1) return;
+  const add = syms.filter(s => !bySubs.has(s));
+  for (let i = 0; i < add.length; i += 10) { const part = add.slice(i, i + 10); byWs.send(JSON.stringify({ op: 'subscribe', args: part.map(s => 'allLiquidation.' + s) })); part.forEach(s => bySubs.add(s)); }
+}
+function connectBybitWS() {
+  try { byWs = new WebSocket('wss://stream.bybit.com/v5/public/linear'); } catch (e) { return; }
+  bySubs = new Set();
+  byWs.onopen = () => { wsBackoff = 1000; clearInterval(byPing); byPing = setInterval(() => { try { byWs.send('{"op":"ping"}'); } catch (e) {} }, 20000);
+    bybitSubscribe([...new Set([...S.rows.map(r => r.sym), ...S.fav, ...(S.dSym ? [S.dSym] : [])])]); };
+  byWs.onmessage = ev => {
+    let d; try { d = JSON.parse(ev.data); } catch (e) { return; }
+    if (!d || !d.topic || !Array.isArray(d.data)) return;
+    for (const x of d.data) { const px = +x.p, q = +x.v; if (!(px > 0 && q > 0)) continue;
+      // S is the side of the liquidated position: Buy = a long was liquidated
+      pushLiq({ s: x.s, side: x.S === 'Buy' ? 'L' : 'S', usd: px * q, price: px, t: +x.T || Date.now() }); }
+    trimLiq();
+  };
+  byWs.onclose = () => { clearInterval(byPing); setTimeout(connectBybitWS, wsBackoff); wsBackoff = Math.min(wsBackoff * 2, 30000); };
+  byWs.onerror = () => { try { byWs.close(); } catch (e) {} };
+}
+
 function connectWS() {
+  if (LEX === 'bybit') return connectBybitWS();
   try { ws = new WebSocket(WS_URL); } catch (e) { return; }
   ws.onopen = () => { wsBackoff = 1000; };
   ws.onmessage = ev => {
@@ -2438,7 +2527,7 @@ function connectWS() {
   ws.onerror = () => { try { ws.close(); } catch (e) {} };
 }
 async function loadServerLiq() {
-  if (!RADAR_SERVER) return;
+  if (!RADAR_SERVER || LEX === 'bybit') return;
   try {
     const r = await fetch(`${RADAR_SERVER.replace(/\/$/, '')}/liq?since=${Date.now() - 2 * 36e5}`);
     if (!r.ok) return;
@@ -2551,7 +2640,7 @@ async function loadMonitor() {
       ]).finally(() => { done++; $('#prog').style.width = (done / list.length * 100) + '%'; });
       if (!kl.length) return;
       r.a = analyze(buildSeries(kl, oi, ls, PER['1h']), r.fr, PER['1h']);
-      fresh.push(r);
+      fresh.push(r); if (LEX === 'bybit') bybitSubscribe([r.sym]);
       if (first && Date.now() - lastPaint > 700) { lastPaint = Date.now(); renderTable(fresh); setStat('#stat', 'counted', { a: fresh.length, b: list.length }); }
     });
     if (!fresh.length) throw new Error(t('noneLoaded'));
@@ -2569,6 +2658,7 @@ async function loadMonitor() {
 /* ---------- detail ---------- */
 function setTfButtons() { document.querySelectorAll('#tfSeg button').forEach(b => b.classList.toggle('on', b.dataset.tf === S.tf)); }
 async function loadDetail(sym) {
+  if (LEX === 'bybit') bybitSubscribe([sym]);
   if (S.dLoading) return;
   S.dLoading = true; showErr(null);
   setStat('#dStat', 'building');
@@ -2908,7 +2998,7 @@ function route() {
     $('#monitor').classList.add('hidden'); $('#detail').classList.remove('hidden');
     if (S.dSym !== h) {
       S.dSym = h; S.detail = null; S.dLoading = false; S.tipHTML = null;
-      $('#dSym').textContent = base(h); if (window.CH) CH.linksInto($('#chLinks'), { coin: base(h), q: 'USDT', ex: 'binance', from: 'liq' }); $('#dPx').textContent = ''; $('#dChg').textContent = '';
+      $('#dSym').textContent = base(h); if (window.CH) CH.linksInto($('#chLinks'), { coin: base(h), q: 'USDT', ex: LEX, from: 'liq' }); $('#dPx').textContent = ''; $('#dChg').textContent = '';
       $('#heatTip').textContent = t('tipDefault'); $('#dFeed').innerHTML = ''; $('#dPanic').innerHTML = ''; $('#sigTbl').innerHTML = '';
       const cv = $('#heat'); cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
     }
@@ -2977,6 +3067,8 @@ if (tg) {
 }
 applyTheme(window.CH ? CH.theme(store.get('theme', tg && tg.colorScheme === 'light' ? 'light' : 'dark')) : store.get('theme', tg && tg.colorScheme === 'light' ? 'light' : 'dark'));
 applyI18n();
+document.querySelectorAll('#exSeg [data-ex]').forEach(b => { b.classList.toggle('on', b.dataset.ex === LEX); b.setAttribute('aria-pressed', String(b.dataset.ex === LEX));
+  b.addEventListener('click', () => { if (b.dataset.ex === LEX) return; store.set('ex', b.dataset.ex); const u = new URL(location.href); u.searchParams.set('ex', b.dataset.ex); location.href = u.href; }); });
 connectWS();
 loadServerLiq();
 setInterval(renderFeeds, 1000);

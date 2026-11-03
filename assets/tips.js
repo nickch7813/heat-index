@@ -34,6 +34,7 @@ common: [
 ],
 
 scan: [
+  ["#exSeg [data-ex]", "Біржа, монети якої сканувати: Binance або Bybit", "Биржа, монеты которой сканировать: Binance или Bybit", "Exchange whose coins to scan: Binance or Bybit"],
   ["#tfSeg [data-tf]", "Таймфрейм свічок для сигналів; тренд береться зі старшого таймфрейму", "Таймфрейм свечей для сигналов; тренд берётся со старшего таймфрейма", "Candle timeframe of the signals; the trend comes from the higher timeframe"],
   ["#topN", "Скільки найбільших монет Binance за обсягом сканувати (обрані додаються завжди)", "Сколько крупнейших монет Binance по объёму сканировать (избранные добавляются всегда)", "How many of the largest Binance coins to scan (favorites are always added)"],
   ["#minM", "Скільки з 8 сигналів мають дивитися в один бік, щоб монета потрапила в список", "Сколько из 8 сигналов должны смотреть в одну сторону, чтобы монета попала в список", "How many of the 8 signals must point the same way for a coin to be listed"],
@@ -280,6 +281,7 @@ whales: [
 ],
 
 liq: [
+  ["#exSeg [data-ex]", "Ф’ючерси якої біржі аналізувати: Binance або Bybit. На Bybit немає даних про позиції топ-трейдерів і обсяг агресивних покупок, тому ці частини порожні", "Фьючерсы какой биржи анализировать: Binance или Bybit. У Bybit нет данных о позициях топ-трейдеров и объёме агрессивных покупок, поэтому эти части пустые", "Which exchange's futures to analyse: Binance or Bybit. Bybit has no top-trader positions or taker buy/sell volume, so those parts stay empty"],
   ["#langSel", "Мова інтерфейсу", "Язык интерфейса", "Interface language"],
   ["#themeBtn", "Світла або темна тема", "Светлая или тёмная тема", "Light or dark theme"],
   ["#q", "Пошук монети; Enter — відкрити її аналіз", "Поиск монеты; Enter — открыть её анализ", "Search a coin; Enter opens its analysis"],

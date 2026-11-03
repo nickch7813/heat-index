@@ -2,9 +2,9 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **1.10**
+Version: **1.11**
 
-A set of free browser tools for scanning the crypto market and analysing single coins on Binance, Bybit and OKX. Every tool works in the browser and as a Telegram Mini App, shares one look and one light/dark theme, and links to the others: from any coin card you can open the same coin in another tool, each in its own tab.
+A set of free browser tools for scanning the crypto market and analysing single coins on Binance, Bybit and OKX (every tool works with Binance and Bybit; Heat Index and Coin Lab also with OKX). Every tool works in the browser and as a Telegram Mini App, shares one look and one light/dark theme, and links to the others: from any coin card you can open the same coin in another tool, each in its own tab.
 
 | Folder | Tool |
 |---|---|
@@ -13,7 +13,7 @@ A set of free browser tools for scanning the crypto market and analysing single 
 | `coin-lab/` | **Coin Lab**: a detailed analysis and forecast for one coin |
 | `elliott/` | **Elliott Waves**: automatic wave count with trade ideas |
 | `whales/` | **Whale Sonar**: large orders in the order book and how the price reacts |
-| `liquidations/` | **Liquidation Radar**: estimated liquidation zones on Binance USDT futures |
+| `liquidations/` | **Liquidation Radar**: estimated liquidation zones on Binance or Bybit USDT perpetuals |
 | `volume/` | **Volume Spikes**: coins whose volume suddenly jumps far above normal |
 | `paper-bot/` | **Paper Bot**: a trading bot on a virtual account, with statistics, an event log and a strategy tester on history |
 | `server/` | Optional news server (`news-proxy.js`) |

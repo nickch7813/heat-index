@@ -259,6 +259,7 @@ common: [
 ],
 
 scan: [
+  ["#exSeg [data-ex]", "Біржа, монети якої сканувати: Binance або Bybit", "Биржа, монеты которой сканировать: Binance или Bybit", "Exchange whose coins to scan: Binance or Bybit"],
   ["#tfSeg [data-tf]", "Таймфрейм свічок для сигналів; тренд береться зі старшого таймфрейму", "Таймфрейм свечей для сигналов; тренд берётся со старшего таймфрейма", "Candle timeframe of the signals; the trend comes from the higher timeframe"],
   ["#topN", "Скільки найбільших монет Binance за обсягом сканувати (обрані додаються завжди)", "Сколько крупнейших монет Binance по объёму сканировать (избранные добавляются всегда)", "How many of the largest Binance coins to scan (favorites are always added)"],
   ["#minM", "Скільки з 8 сигналів мають дивитися в один бік, щоб монета потрапила в список", "Сколько из 8 сигналов должны смотреть в одну сторону, чтобы монета попала в список", "How many of the 8 signals must point the same way for a coin to be listed"],
@@ -505,6 +506,7 @@ whales: [
 ],
 
 liq: [
+  ["#exSeg [data-ex]", "Ф’ючерси якої біржі аналізувати: Binance або Bybit. На Bybit немає даних про позиції топ-трейдерів і обсяг агресивних покупок, тому ці частини порожні", "Фьючерсы какой биржи анализировать: Binance или Bybit. У Bybit нет данных о позициях топ-трейдеров и объёме агрессивных покупок, поэтому эти части пустые", "Which exchange's futures to analyse: Binance or Bybit. Bybit has no top-trader positions or taker buy/sell volume, so those parts stay empty"],
   ["#langSel", "Мова інтерфейсу", "Язык интерфейса", "Interface language"],
   ["#themeBtn", "Світла або темна тема", "Светлая или тёмная тема", "Light or dark theme"],
   ["#q", "Пошук монети; Enter — відкрити її аналіз", "Поиск монеты; Enter — открыть её анализ", "Search a coin; Enter opens its analysis"],
@@ -617,7 +619,7 @@ bot: [
 };
 
 </script>
-<script id="ch-js" data-tool="scan" data-ver="1.10" data-root="../">
+<script id="ch-js" data-tool="scan" data-ver="1.11" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -626,7 +628,7 @@ bot: [
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.10";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.11";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -693,7 +695,7 @@ bot: [
     var base = ROOT + t.path; if (!o || !o.coin) return base;
     var coin = String(o.coin).toUpperCase(), q = String(o.q || "USDT").toUpperCase(), ex = normEx(o.ex);
     if (id === "heat") return base + "#/chart/" + EXN[ex] + "/" + encodeURIComponent(coin) + (q === "BTC" ? "" : "/USDT");
-    if (id === "liq") return base + "#" + encodeURIComponent(coin) + "USDT";
+    if (id === "liq") return base + (ex === "bybit" ? "?ex=bybit" : "") + "#" + encodeURIComponent(coin) + "USDT";
     if (id === "volume") return base + "?coin=" + encodeURIComponent(coin);
     if (id === "whales" && ex === "okx") ex = "binance";
     return base + "?coin=" + encodeURIComponent(coin) + "&q=" + encodeURIComponent(q) + "&ex=" + ex;
@@ -1599,7 +1601,7 @@ bot: [
 
 </script>
 <title>Сканер збігів · CRYPTO HUNTERS</title>
-<meta name="description" content="Монети, де одночасно сходяться сигнали Heat Index, хвиль Елліотта, тренду, імпульсу, обсягу, стакану, фандингу й новин.">
+<meta name="description" content="Binance і Bybit. Монети, де одночасно сходяться сигнали Heat Index, хвиль Елліотта, тренду, імпульсу, обсягу, стакану, фандингу й новин.">
 <style>
 :root{color-scheme:light dark}
 *{box-sizing:border-box}
@@ -1655,6 +1657,7 @@ details.help li{margin:4px 0;color:var(--ch-t2);font-size:13px}
   <h1 data-i="title"></h1>
   <p class="sub" data-i="sub"></p>
   <div class="ctl">
+    <label><span data-i="ex"></span><span class="seg" id="exSeg"><button data-ex="binance">Binance</button><button data-ex="bybit">Bybit</button></span></label>
     <label><span data-i="tf"></span><span class="seg" id="tfSeg"><button data-tf="1h">1h</button><button data-tf="4h">4h</button><button data-tf="1d">1d</button></span></label>
     <label><span data-i="top"></span><select id="topN"><option>30</option><option>50</option><option>80</option></select></label>
     <label><span data-i="min"></span><select id="minM"><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
@@ -1998,8 +2001,8 @@ const EW = (() => {
 /* ===== Confluence scanner: the signals of every CRYPTO HUNTERS tool, computed together for each coin ===== */
 const I18N = {
 uk: { title:"Сканер збігів", sub:"Монети, де одночасно сходяться кілька незалежних сигналів: перегрів, тренд, хвилі Елліотта, імпульс, обсяг, стакан, фандинг і новини. Чим більше збігів в один бік, тим сильніший кандидат.",
-  tf:"Таймфрейм", top:"Скільки монет", min:"Мін. збігів", side:"Напрямок", all:"Усі", L:"Лонг", S:"Шорт", favOnly:"Лише обрані", lang:"Мова", theme:"Тема", go:"Сканувати",
-  loading:"Завантажую ринок…", prog:"Аналізую {i} з {n}…", done:"{n} монет Binance, таймфрейм {tf}, {t}. Показано {m} з мін. {k} збігами.", err:"Помилка: {e}", none:"Немає монет з такою кількістю збігів. Зменште поріг або змініть таймфрейм.",
+  ex:"Біржа", tf:"Таймфрейм", top:"Скільки монет", min:"Мін. збігів", side:"Напрямок", all:"Усі", L:"Лонг", S:"Шорт", favOnly:"Лише обрані", lang:"Мова", theme:"Тема", go:"Сканувати",
+  loading:"Завантажую ринок…", prog:"Аналізую {i} з {n}…", done:"{n} монет {ex}, таймфрейм {tf}, {t}. Показано {m} з мін. {k} збігами.", err:"Помилка: {e}", none:"Немає монет з такою кількістю збігів. Зменште поріг або змініть таймфрейм.",
   btc:"BTC: {t}", btcUp:"висхідний тренд", btcDn:"низхідний тренд", fng:"Збігів у лонг: {l} · у шорт: {s}",
   s_heat:"Heat", s_trend:"Тренд", s_ew:"Елліотт", s_mom:"Імпульс", s_vol:"Обсяг", s_book:"Стакан", s_fund:"Фандинг", s_news:"Новини",
   d_heat:v=>`Heat ${v.v}: ${v.d>0?"перепроданість, можливий відскок":v.d<0?"перегрів, можливий відкат":"нейтрально"}`,
@@ -2012,14 +2015,14 @@ uk: { title:"Сканер збігів", sub:"Монети, де одночас�
   d_news:v=>v.n?`Новин за 24 год: ${v.n}${v.i?`, важливих негативних: ${v.i}`:""}`:"Новин немає",
   corr:"Кореляція з BTC", chg:"24 год",
   howT:"Як працює сканер",
-  how:["Для 30–80 найбільших монет Binance (пари до USDT) завантажуються свічки вибраного й старшого таймфрейму, фандинг ф’ючерсів, новини й стакан для найсильніших кандидатів.",
+  how:["Для 30–80 найбільших монет вибраної біржі (Binance або Bybit, пари до USDT) завантажуються свічки вибраного й старшого таймфрейму, фандинг ф’ючерсів, новини й стакан для найсильніших кандидатів.",
     "Кожен із 8 сигналів голосує за лонг, шорт або утримується: Heat (перепроданість чи перегрів), тренд (ціна відносно EMA50 старшого таймфрейму), хвилі Елліотта (напрямок прогнозу), імпульс (RSI і перетин стохастика в крайній зоні), сплеск обсягу, перевага заявок у стакані, фандинг (перевантажена сторона), новини.",
     "Напрямок монети — той, за який проголосувало більше сигналів. Список відсортовано за кількістю збігів, а при рівності — за силою сигналів.",
     "Збіг сигналів — це кандидат, а не гарантія. Перевіряйте монету в інструментах (кнопки під карткою), ставте стоп і дивіться на кореляцію з BTC: монети з ρ вище 0,8 рухаються майже як біткоїн.",
     "Сигнали Heat і тренд часто суперечать один одному: перепроданість буває саме в низхідному тренді. Найсильніші ситуації — коли тренд старшого таймфрейму і відкат на молодшому дивляться в один бік."] },
 ru: { title:"Сканер совпадений", sub:"Монеты, где одновременно сходятся несколько независимых сигналов: перегрев, тренд, волны Эллиотта, импульс, объём, стакан, фандинг и новости. Чем больше совпадений в одну сторону, тем сильнее кандидат.",
-  tf:"Таймфрейм", top:"Сколько монет", min:"Мин. совпадений", side:"Направление", all:"Все", L:"Лонг", S:"Шорт", favOnly:"Только избранные", lang:"Язык", theme:"Тема", go:"Сканировать",
-  loading:"Загружаю рынок…", prog:"Анализирую {i} из {n}…", done:"{n} монет Binance, таймфрейм {tf}, {t}. Показано {m} с мин. {k} совпадениями.", err:"Ошибка: {e}", none:"Нет монет с таким числом совпадений. Уменьшите порог или смените таймфрейм.",
+  ex:"Биржа", tf:"Таймфрейм", top:"Сколько монет", min:"Мин. совпадений", side:"Направление", all:"Все", L:"Лонг", S:"Шорт", favOnly:"Только избранные", lang:"Язык", theme:"Тема", go:"Сканировать",
+  loading:"Загружаю рынок…", prog:"Анализирую {i} из {n}…", done:"{n} монет {ex}, таймфрейм {tf}, {t}. Показано {m} с мин. {k} совпадениями.", err:"Ошибка: {e}", none:"Нет монет с таким числом совпадений. Уменьшите порог или смените таймфрейм.",
   btc:"BTC: {t}", btcUp:"восходящий тренд", btcDn:"нисходящий тренд", fng:"Совпадений в лонг: {l} · в шорт: {s}",
   s_heat:"Heat", s_trend:"Тренд", s_ew:"Эллиотт", s_mom:"Импульс", s_vol:"Объём", s_book:"Стакан", s_fund:"Фандинг", s_news:"Новости",
   d_heat:v=>`Heat ${v.v}: ${v.d>0?"перепроданность, возможен отскок":v.d<0?"перегрев, возможен откат":"нейтрально"}`,
@@ -2032,14 +2035,14 @@ ru: { title:"Сканер совпадений", sub:"Монеты, где од�
   d_news:v=>v.n?`Новостей за 24 ч: ${v.n}${v.i?`, важных негативных: ${v.i}`:""}`:"Новостей нет",
   corr:"Корреляция с BTC", chg:"24 ч",
   howT:"Как работает сканер",
-  how:["Для 30–80 крупнейших монет Binance (пары к USDT) загружаются свечи выбранного и старшего таймфрейма, фандинг фьючерсов, новости и стакан для сильнейших кандидатов.",
+  how:["Для 30–80 крупнейших монет выбранной биржи (Binance или Bybit, пары к USDT) загружаются свечи выбранного и старшего таймфрейма, фандинг фьючерсов, новости и стакан для сильнейших кандидатов.",
     "Каждый из 8 сигналов голосует за лонг, шорт или воздерживается: Heat (перепроданность или перегрев), тренд (цена относительно EMA50 старшего таймфрейма), волны Эллиотта (направление прогноза), импульс (RSI и пересечение стохастика в крайней зоне), всплеск объёма, перевес заявок в стакане, фандинг (перегруженная сторона), новости.",
     "Направление монеты — то, за которое проголосовало больше сигналов. Список отсортирован по числу совпадений, а при равенстве — по силе сигналов.",
     "Совпадение сигналов — это кандидат, а не гарантия. Проверяйте монету в инструментах (кнопки под карточкой), ставьте стоп и смотрите на корреляцию с BTC: монеты с ρ выше 0,8 движутся почти как биткоин.",
     "Сигналы Heat и тренд часто противоречат друг другу: перепроданность бывает именно в нисходящем тренде. Самые сильные ситуации — когда тренд старшего таймфрейма и откат на младшем смотрят в одну сторону."] },
 en: { title:"Confluence Scanner", sub:"Coins where several independent signals line up at once: heat, trend, Elliott waves, momentum, volume, order book, funding and news. The more signals agree, the stronger the candidate.",
-  tf:"Timeframe", top:"Coins", min:"Min. matches", side:"Direction", all:"All", L:"Long", S:"Short", favOnly:"Favorites only", lang:"Language", theme:"Theme", go:"Scan",
-  loading:"Loading the market…", prog:"Analysing {i} of {n}…", done:"{n} Binance coins, timeframe {tf}, {t}. Showing {m} with at least {k} matches.", err:"Error: {e}", none:"No coins with that many matches. Lower the threshold or change the timeframe.",
+  ex:"Exchange", tf:"Timeframe", top:"Coins", min:"Min. matches", side:"Direction", all:"All", L:"Long", S:"Short", favOnly:"Favorites only", lang:"Language", theme:"Theme", go:"Scan",
+  loading:"Loading the market…", prog:"Analysing {i} of {n}…", done:"{n} {ex} coins, timeframe {tf}, {t}. Showing {m} with at least {k} matches.", err:"Error: {e}", none:"No coins with that many matches. Lower the threshold or change the timeframe.",
   btc:"BTC: {t}", btcUp:"uptrend", btcDn:"downtrend", fng:"Long matches: {l} · short: {s}",
   s_heat:"Heat", s_trend:"Trend", s_ew:"Elliott", s_mom:"Momentum", s_vol:"Volume", s_book:"Book", s_fund:"Funding", s_news:"News",
   d_heat:v=>`Heat ${v.v}: ${v.d>0?"oversold, a bounce is possible":v.d<0?"overheated, a pullback is possible":"neutral"}`,
@@ -2052,7 +2055,7 @@ en: { title:"Confluence Scanner", sub:"Coins where several independent signals l
   d_news:v=>v.n?`News in 24 h: ${v.n}${v.i?`, important negative: ${v.i}`:""}`:"No news",
   corr:"Correlation with BTC", chg:"24 h",
   howT:"How the scanner works",
-  how:["For the 30–80 largest Binance coins (USDT pairs) it loads candles of the chosen and the higher timeframe, futures funding, news, and the order book of the strongest candidates.",
+  how:["For the 30–80 largest coins of the chosen exchange (Binance or Bybit, USDT pairs) it loads candles of the chosen and the higher timeframe, futures funding, news, and the order book of the strongest candidates.",
     "Each of 8 signals votes long, short or abstains: heat (oversold or overheated), trend (price against the higher-timeframe EMA50), Elliott waves (direction of the forecast), momentum (RSI and a stochastic cross in an extreme zone), a volume spike, the order-book balance, funding (the crowded side), news.",
     "A coin's direction is the one more signals voted for. The list is sorted by the number of matches, then by signal strength.",
     "A confluence is a candidate, not a guarantee. Check the coin in the tools (buttons under the card), use a stop, and watch the correlation with BTC: coins with ρ above 0.8 move almost like Bitcoin.",
@@ -2061,7 +2064,7 @@ en: { title:"Confluence Scanner", sub:"Coins where several independent signals l
 const HTF = { "1h": "4h", "4h": "1d", "1d": "1w" }, SIGS = ["heat", "trend", "ew", "mom", "vol", "book", "fund", "news"];
 const store = { get(k, d) { try { const v = localStorage.getItem("sc_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem("sc_" + k, JSON.stringify(v)); } catch (e) {} } };
 const navL = (navigator.language || "uk").slice(0, 2);
-const S = { lang: store.get("lang", ["uk", "ru"].includes(navL) ? navL : "en"), tf: store.get("tf", "4h"), top: store.get("top", 50), min: store.get("min", 4), side: store.get("side", "all"), favOnly: store.get("favOnly", false), rows: [], ctx: null, open: new Set(), busy: false, at: 0 };
+const S = { ex: ((window.CH && CH.param().ex) || store.get("ex", "binance")) === "bybit" ? "bybit" : "binance", lang: store.get("lang", ["uk", "ru"].includes(navL) ? navL : "en"), tf: store.get("tf", "4h"), top: store.get("top", 50), min: store.get("min", 4), side: store.get("side", "all"), favOnly: store.get("favOnly", false), rows: [], ctx: null, open: new Set(), busy: false, at: 0 };
 const DL = window.CH ? CH.param() : {};
 const T = (k, v) => { const e = (I18N[S.lang] || I18N.en)[k] ?? I18N.en[k]; return typeof e === "function" ? e(v || {}) : e == null ? k : String(e).replace(/\{(\w+)\}/g, (_, x) => v && v[x] != null ? v[x] : ""); };
 const $ = id => document.getElementById(id);
@@ -2072,7 +2075,26 @@ const pct = (x, d = 1) => (x > 0 ? "+" : "") + x.toFixed(d) + "%";
 async function getJ(u) { const c = new AbortController(), t = setTimeout(() => c.abort(), 15000); try { const r = await fetch(u, { signal: c.signal }); if (!r.ok) throw new Error("HTTP " + r.status); return await r.json(); } finally { clearTimeout(t); } }
 const BASES = ["https://api.binance.com", "https://data-api.binance.vision"];
 async function bin(path) { let e; for (const b of BASES) { try { return await getJ(b + path); } catch (x) { e = x; } } throw e; }
-const klines = async (sym, tf, n) => (await bin(`/api/v3/klines?symbol=${sym}&interval=${tf}&limit=${n}`)).map(k => [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]);
+const BYIV = { "1h": "60", "4h": "240", "1d": "D", "1w": "W" };
+async function byb(path) { const j = await getJ("https://api.bybit.com" + path); if (j.retCode !== 0) throw new Error(j.retMsg || "Bybit"); return j.result; }
+const klines = async (sym, tf, n) => S.ex === "bybit"
+  ? ((await byb(`/v5/market/kline?category=spot&symbol=${sym}&interval=${BYIV[tf]}&limit=${n}`)).list || []).map(k => [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]).reverse()
+  : (await bin(`/api/v3/klines?symbol=${sym}&interval=${tf}&limit=${n}`)).map(k => [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]);
+// tickers in one shape for both exchanges
+async function tickers() {
+  if (S.ex === "bybit") return ((await byb("/v5/market/tickers?category=spot")).list || []).map(t => ({ symbol: t.symbol, quoteVolume: +t.turnover24h, priceChangePercent: +t.price24hPcnt * 100, count: 1e9 }));
+  return (await bin("/api/v3/ticker/24hr")).map(t => ({ symbol: t.symbol, quoteVolume: +t.quoteVolume, priceChangePercent: +t.priceChangePercent, count: +t.count }));
+}
+async function fundingAll() {
+  const f = {};
+  if (S.ex === "bybit") ((await byb("/v5/market/tickers?category=linear")).list || []).forEach(x => f[x.symbol] = +x.fundingRate);
+  else (await getJ("https://fapi.binance.com/fapi/v1/premiumIndex")).forEach(x => f[x.symbol] = +x.lastFundingRate);
+  return f;
+}
+async function depth(sym) {
+  if (S.ex === "bybit") { const r = await byb(`/v5/market/orderbook?category=spot&symbol=${sym}&limit=200`); return { bids: r.b || [], asks: r.a || [] }; }
+  return bin(`/api/v3/depth?symbol=${sym}&limit=100`);
+}
 async function pool(arr, n, fn) { let i = 0; await Promise.all(Array(Math.min(n, arr.length)).fill(0).map(async () => { while (i < arr.length) { const j = i++; try { await fn(arr[j], j); } catch (e) {} } })); }
 
 // ---- indicators ----
@@ -2115,7 +2137,7 @@ function vote(x) {
 }
 async function applyBook(x) {
   try {
-    const b = await bin(`/api/v3/depth?symbol=${x.sym}&limit=100`), p = x.price;
+    const b = await depth(x.sym), p = x.price;
     const bv = b.bids.filter(q => +q[0] >= p * 0.98).reduce((s, q) => s + q[0] * q[1], 0), av = b.asks.filter(q => +q[0] <= p * 1.02).reduce((s, q) => s + q[0] * q[1], 0);
     if (bv && av) { const r = bv / av; x.G.book = { d: r >= 1.4 ? 1 : r <= 0.7 ? -1 : 0, s: Math.min(1, Math.abs(Math.log(r)) / 1.2), r: r.toFixed(2) }; }
   } catch (e) {}
@@ -2124,13 +2146,13 @@ async function applyBook(x) {
 async function scan() {
   if (S.busy) return; S.busy = true; $("go").disabled = true; status(T("loading")); bar(0);
   try {
-    const tick = (await bin("/api/v3/ticker/24hr")).filter(t => /USDT$/.test(t.symbol) && !/^(USDC|FDUSD|TUSD|BUSD|DAI|USDP|EUR|AEUR|USDE|XUSD|PYUSD|USD1|BFUSD|EURI|PAXG|WBTC|WBETH)USDT$/.test(t.symbol) && !/(UP|DOWN|BULL|BEAR)USDT$/.test(t.symbol) && +t.quoteVolume > 5e6 && +t.count > 1000);
+    const tick = (await tickers()).filter(t => /USDT$/.test(t.symbol) && !/^(USDC|FDUSD|TUSD|BUSD|DAI|USDP|EUR|AEUR|USDE|XUSD|PYUSD|USD1|BFUSD|EURI|PAXG|WBTC|WBETH)USDT$/.test(t.symbol) && !/(UP|DOWN|BULL|BEAR)USDT$/.test(t.symbol) && +t.quoteVolume > 5e6 && +t.count > 1000);
     tick.sort((a, b) => +b.quoteVolume - +a.quoteVolume);
     let uni = tick.slice(0, S.top);
     const favs = window.CH ? CH.favs() : [];
     favs.forEach(c => { const t = tick.find(x => x.symbol === c + "USDT"); if (t && !uni.includes(t)) uni.push(t); });
     if (!uni.find(t => t.symbol === "BTCUSDT")) { const b = tick.find(t => t.symbol === "BTCUSDT"); if (b) uni.unshift(b); }
-    let fund = {}; try { (await getJ("https://fapi.binance.com/fapi/v1/premiumIndex")).forEach(x => fund[x.symbol] = +x.lastFundingRate); } catch (e) {}
+    let fund = {}; try { fund = await fundingAll(); } catch (e) {}
     if (window.CH && CH.news) { try { await CH.news.load(); } catch (e) {} }
     const btcK = await klines("BTCUSDT", S.tf, 300), btcH = await klines("BTCUSDT", HTF[S.tf], 120), btc = btcK.map(k => k[4]);
     const out = []; let done = 0;
@@ -2156,12 +2178,13 @@ function render() {
   document.querySelectorAll("[data-i]").forEach(el => el.textContent = T(el.dataset.i));
   document.querySelectorAll("#sideSeg button").forEach(b => { b.textContent = T(b.dataset.s); b.setAttribute("aria-pressed", String(S.side === b.dataset.s)); });
   document.querySelectorAll("#tfSeg button").forEach(b => b.setAttribute("aria-pressed", String(S.tf === b.dataset.tf)));
+  document.querySelectorAll("#exSeg button").forEach(b => b.setAttribute("aria-pressed", String(S.ex === b.dataset.ex)));
   $("topN").value = String(S.top); $("minM").value = String(S.min); $("favOnly").checked = S.favOnly; $("lang").value = S.lang;
   $("how").innerHTML = (I18N[S.lang] || I18N.en).how.map(x => `<li>${esc(x)}</li>`).join("");
   if (!S.rows.length) { $("list").innerHTML = S.busy ? "" : `<div class="empty">${esc(T("go"))} ↑</div>`; $("ctx").innerHTML = ""; return; }
   const favs = window.CH ? CH.favs() : [];
   const list = S.rows.filter(x => x.m >= S.min && x.side !== "N" && (S.side === "all" || x.side === S.side) && (!S.favOnly || favs.includes(x.base)));
-  status(T("done", { n: S.rows.length, tf: S.tf, t: new Date(S.at).toLocaleTimeString(S.lang, { hour: "2-digit", minute: "2-digit" }), m: list.length, k: S.min }));
+  status(T("done", { n: S.rows.length, ex: S.ex === "bybit" ? "Bybit" : "Binance", tf: S.tf, t: new Date(S.at).toLocaleTimeString(S.lang, { hour: "2-digit", minute: "2-digit" }), m: list.length, k: S.min }));
   const nL = S.rows.filter(x => x.side === "L" && x.m >= S.min).length, nS = S.rows.filter(x => x.side === "S" && x.m >= S.min).length;
   $("ctx").innerHTML = S.ctx ? `<span>${esc(T("btc", { t: T(S.ctx.btc > 0 ? "btcUp" : S.ctx.btc < 0 ? "btcDn" : "all") }))}</span><span>${esc(T("fng", { l: nL, s: nS }))}</span>` : "";
   $("list").innerHTML = list.length ? list.map(x => {
@@ -2172,10 +2195,11 @@ function render() {
       <span class="side ${x.side}">${esc(T(x.side))} ${x.m}/${SIGS.length}</span></div>
       <div class="sigs">${chips}</div>
       <div class="meta"><span>${esc(T("corr"))} <b>${window.CH ? CH.corrText(x.corr) : "—"}</b></span></div>
-      ${det}${window.CH ? CH.links({ coin: x.base, q: "USDT", ex: "binance", from: "scan" }) : ""}</div>`;
+      ${det}${window.CH ? CH.links({ coin: x.base, q: "USDT", ex: S.ex, from: "scan" }) : ""}</div>`;
   }).join("") : `<div class="empty">${esc(T("none"))}</div>`;
 }
 document.addEventListener("click", e => {
+  const eb = e.target.closest("#exSeg button"); if (eb) { if (eb.dataset.ex === S.ex) return; S.ex = eb.dataset.ex; store.set("ex", S.ex); S.rows = []; render(); scan(); return; }
   const tb = e.target.closest("#tfSeg button"); if (tb) { S.tf = tb.dataset.tf; store.set("tf", S.tf); S.rows = []; render(); scan(); return; }
   const sb = e.target.closest("#sideSeg button"); if (sb) { S.side = sb.dataset.s; store.set("side", S.side); render(); return; }
   if (e.target.closest("#go")) { scan(); return; }

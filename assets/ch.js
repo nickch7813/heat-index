@@ -6,7 +6,7 @@
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.10";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.11";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -73,7 +73,7 @@
     var base = ROOT + t.path; if (!o || !o.coin) return base;
     var coin = String(o.coin).toUpperCase(), q = String(o.q || "USDT").toUpperCase(), ex = normEx(o.ex);
     if (id === "heat") return base + "#/chart/" + EXN[ex] + "/" + encodeURIComponent(coin) + (q === "BTC" ? "" : "/USDT");
-    if (id === "liq") return base + "#" + encodeURIComponent(coin) + "USDT";
+    if (id === "liq") return base + (ex === "bybit" ? "?ex=bybit" : "") + "#" + encodeURIComponent(coin) + "USDT";
     if (id === "volume") return base + "?coin=" + encodeURIComponent(coin);
     if (id === "whales" && ex === "okx") ex = "binance";
     return base + "?coin=" + encodeURIComponent(coin) + "&q=" + encodeURIComponent(q) + "&ex=" + ex;

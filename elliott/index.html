@@ -259,6 +259,7 @@ common: [
 ],
 
 scan: [
+  ["#exSeg [data-ex]", "Біржа, монети якої сканувати: Binance або Bybit", "Биржа, монеты которой сканировать: Binance или Bybit", "Exchange whose coins to scan: Binance or Bybit"],
   ["#tfSeg [data-tf]", "Таймфрейм свічок для сигналів; тренд береться зі старшого таймфрейму", "Таймфрейм свечей для сигналов; тренд берётся со старшего таймфрейма", "Candle timeframe of the signals; the trend comes from the higher timeframe"],
   ["#topN", "Скільки найбільших монет Binance за обсягом сканувати (обрані додаються завжди)", "Сколько крупнейших монет Binance по объёму сканировать (избранные добавляются всегда)", "How many of the largest Binance coins to scan (favorites are always added)"],
   ["#minM", "Скільки з 8 сигналів мають дивитися в один бік, щоб монета потрапила в список", "Сколько из 8 сигналов должны смотреть в одну сторону, чтобы монета попала в список", "How many of the 8 signals must point the same way for a coin to be listed"],
@@ -505,6 +506,7 @@ whales: [
 ],
 
 liq: [
+  ["#exSeg [data-ex]", "Ф’ючерси якої біржі аналізувати: Binance або Bybit. На Bybit немає даних про позиції топ-трейдерів і обсяг агресивних покупок, тому ці частини порожні", "Фьючерсы какой биржи анализировать: Binance или Bybit. У Bybit нет данных о позициях топ-трейдеров и объёме агрессивных покупок, поэтому эти части пустые", "Which exchange's futures to analyse: Binance or Bybit. Bybit has no top-trader positions or taker buy/sell volume, so those parts stay empty"],
   ["#langSel", "Мова інтерфейсу", "Язык интерфейса", "Interface language"],
   ["#themeBtn", "Світла або темна тема", "Светлая или тёмная тема", "Light or dark theme"],
   ["#q", "Пошук монети; Enter — відкрити її аналіз", "Поиск монеты; Enter — открыть её анализ", "Search a coin; Enter opens its analysis"],
@@ -617,7 +619,7 @@ bot: [
 };
 
 </script>
-<script id="ch-js" data-tool="elliott" data-ver="1.10" data-root="../">
+<script id="ch-js" data-tool="elliott" data-ver="1.11" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -626,7 +628,7 @@ bot: [
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.10";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.11";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -693,7 +695,7 @@ bot: [
     var base = ROOT + t.path; if (!o || !o.coin) return base;
     var coin = String(o.coin).toUpperCase(), q = String(o.q || "USDT").toUpperCase(), ex = normEx(o.ex);
     if (id === "heat") return base + "#/chart/" + EXN[ex] + "/" + encodeURIComponent(coin) + (q === "BTC" ? "" : "/USDT");
-    if (id === "liq") return base + "#" + encodeURIComponent(coin) + "USDT";
+    if (id === "liq") return base + (ex === "bybit" ? "?ex=bybit" : "") + "#" + encodeURIComponent(coin) + "USDT";
     if (id === "volume") return base + "?coin=" + encodeURIComponent(coin);
     if (id === "whales" && ex === "okx") ex = "binance";
     return base + "?coin=" + encodeURIComponent(coin) + "&q=" + encodeURIComponent(q) + "&ex=" + ex;
