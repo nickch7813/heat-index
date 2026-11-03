@@ -2,7 +2,7 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **1.04**
+Version: **1.09**
 
 A set of free browser tools for scanning the crypto market and analysing single coins on Binance, Bybit and OKX. Every tool works in the browser and as a Telegram Mini App, shares one look and one light/dark theme, and links to the others: from any coin card you can open the same coin in another tool, each in its own tab.
 
@@ -40,6 +40,12 @@ Open the bell in the top bar, then **Rules**, or tap **Alert** on any coin card.
 - RSI 14 on 15m, 1h, 4h or 1d goes below or above a level.
 
 An alert fires once or every time with a pause, and can carry a note. It is shown on screen and in the log, and can also play a sound, show a browser notification and send a message through your own Telegram bot (Settings tab). Alerts are checked in the browser every 15–120 s while at least one tab of any tool is open; one tab does the checking, so nothing is sent twice.
+
+## News
+
+Every coin card has a news badge: how many headlines mention the coin in the last 24 hours, red when one of them is important negative news (hack, exploit, delisting, lawsuit, halted withdrawals), amber when negative headlines dominate, green when positive ones do. A tap opens the list with links. The Paper Bot uses the same feed as a filter (it can be switched off): no long on a coin with important negative news in the last 12 hours, a long is closed when such news comes after the entry, and a short gets extra weight only if the price is already falling.
+
+By default the news comes from the free Free Crypto News API (no key). `server/news-proxy.js` is an optional small server (Node 18+, no packages) that gathers CryptoPanic (with your API key), Binance listing and delisting announcements and the RSS feeds of CoinDesk, Cointelegraph, Decrypt and The Block into one feed; put its address into Notifications → Settings → News. Headlines are matched to coins and scored by keywords, so a headline can now and then be misread: the list shows the headline itself.
 
 ## Hover hints
 

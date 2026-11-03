@@ -189,6 +189,22 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
 .ch-ver{font:500 11px/1 var(--ch-font);color:var(--ch-t3);border:0.5px solid var(--ch-bd2);border-radius:8px;padding:3px 6px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .ch-ver.ch-old{color:var(--ch-ert);background:var(--ch-erb);border-color:transparent}
 
+/* ---- news ---- */
+:root .ch-links .ch-nw{display:inline-flex;align-items:center;gap:4px;padding:3px 9px 3px 7px;border:0.5px solid var(--ch-bd2);border-radius:14px;color:var(--ch-t2);background:transparent;font:12px/1.3 var(--ch-font);cursor:pointer;min-height:26px;white-space:nowrap;font-weight:400}
+.ch-links .ch-nw svg{width:13px;height:13px}
+:root .ch-links .ch-nw.zero{color:var(--ch-t3)}
+:root .ch-links .ch-nw.pos{color:var(--ch-okt);background:var(--ch-okb);border-color:transparent}
+:root .ch-links .ch-nw.neg{color:var(--ch-warn);border-color:var(--ch-warn)}
+:root .ch-links .ch-nw.imp{color:var(--ch-ert);background:var(--ch-erb);border-color:transparent;font-weight:600}
+:root .ch-links .ch-nw:focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px}
+.ch-nwi .ch-nh{display:block;color:var(--ch-tx);text-decoration:none;font-weight:500;font-size:14px;line-height:1.4}
+.ch-nwi .ch-nh:hover{color:var(--ch-act)}
+.ch-ni{font-size:11px;color:var(--ch-ert);background:var(--ch-erb);border-radius:6px;padding:0 6px}
+.ch-nt{font-size:11px;border-radius:6px;padding:0 6px;color:var(--ch-t3);border:0.5px solid var(--ch-bd)}
+.ch-nt.t-1{color:var(--ch-warn);border-color:var(--ch-warn)}
+.ch-nt.t1{color:var(--ch-okt);background:var(--ch-okb);border-color:transparent}
+.ch-sh{margin:10px 0 0;font:500 14px/1.3 var(--ch-font);color:var(--ch-tx)}
+
 </style>
 <script id="ch-tips">
 /* CRYPTO HUNTERS: hover hints. [CSS selector, Ukrainian, Russian, English].
@@ -202,6 +218,7 @@ common: [
   [".ch-links a[target=ch_whales]", "Відкрити стакан монети: великі заявки китів і реакція ціни", "Открыть стакан монеты: крупные заявки китов и реакция цены", "Open the order book of the coin: whale orders and how the price reacts"],
   [".ch-links a[target=ch_liq]", "Відкрити зони ліквідацій монети на ф’ючерсах Binance", "Открыть зоны ликвидаций монеты на фьючерсах Binance", "Open the liquidation zones of the coin on Binance futures"],
   [".ch-links a[target=ch_volume]", "Знайти сплески об’єму цієї монети", "Найти всплески объёма этой монеты", "Find volume spikes of this coin"],
+  ["[data-ch-news]", "Новини про монету за 24 години. Червоний — є важлива негативна новина (злам, делістинг, позов), жовтий — переважають негативні, зелений — позитивні. Натисніть, щоб прочитати", "Новости о монете за 24 часа. Красный — есть важная негативная новость (взлом, делистинг, иск), жёлтый — преобладают негативные, зелёный — позитивные. Нажмите, чтобы прочитать", "News on the coin in 24 hours. Red: important negative news (hack, delisting, lawsuit), amber: mostly negative, green: positive. Tap to read"],
   [".ch-nav a", "Відкрити інструмент у новій вкладці", "Открыть инструмент в новой вкладке", "Open the tool in a new tab"],
   [".ch-nav span", "Ви зараз тут", "Вы сейчас здесь", "You are here"],
   [".ch-brand", "CRYPTO HUNTERS: на головну, Heat Index", "CRYPTO HUNTERS: на главную, Heat Index", "CRYPTO HUNTERS: home, Heat Index"],
@@ -552,6 +569,13 @@ bot: [
   ["[data-dir=short]", "Бот відкриває лише шорти", "Бот открывает только шорты", "The bot opens shorts only"],
   ["[data-stop=on]", "Стоп-лосс на відстані 2×ATR: позиція закривається з обмеженою втратою, а після руху на 1,5 ATR у плюс стоп переноситься в беззбиток", "Стоп-лосс на расстоянии 2×ATR: позиция закрывается с ограниченной потерей, а после движения на 1,5 ATR в плюс стоп переносится в безубыток", "Stop-loss 2×ATR away: the position closes with a limited loss, and after a 1.5 ATR gain the stop moves to breakeven"],
   ["[data-stop=off]", "Без стоп-лоссу: позиції закриваються лише за ціллю, розворотом індикаторів, простоєм або ліквідацією. Втрата не обмежена", "Без стоп-лосса: позиции закрываются только по цели, развороту индикаторов, простою или ликвидации. Потеря не ограничена", "No stop-loss: positions close only at the target, on an indicator flip, idling or liquidation. The loss is not capped"],
+  ["[data-news=on]", "Бот не купує монету з важливою негативною новиною за 12 год, закриває лонг, якщо така новина вийшла після входу, і посилює шорт, лише коли ціна вже падає", "Бот не покупает монету с важной негативной новостью за 12 ч, закрывает лонг, если такая новость вышла после входа, и усиливает шорт, только когда цена уже падает", "The bot does not buy a coin with important negative news in 12 h, closes a long if such news comes after entry, and strengthens a short only if the price is already falling"],
+  ["[data-news=off]", "Бот не зважає на новини", "Бот не учитывает новости", "The bot ignores news"],
+  ["[data-mode=std]", "Стандартний відбір: вхід від оцінки 45, сильний сигнал ±70 можна брати й проти тренду", "Стандартный отбор: вход от оценки 45, сильный сигнал ±70 можно брать и против тренда", "Standard selection: entry from a score of 45, a strong ±70 signal may go against the trend"],
+  ["[data-mode=strict]", "Суворий відбір: вхід від 55, лише за трендом, не проти біткоїна, пауза після збитку, половина фіксується на 1R", "Строгий отбор: вход от 55, только по тренду, не против биткоина, пауза после убытка, половина фиксируется на 1R", "Strict selection: entry from 55, with the trend only, not against Bitcoin, a pause after a loss, half taken at 1R"],
+  ["#stCsv", "Завантажити всі закриті угоди таблицею для Excel чи Google Sheets", "Скачать все закрытые сделки таблицей для Excel или Google Sheets", "Download every closed trade as a table for Excel or Google Sheets"],
+  ["[data-lg]", "Показати лише цей тип подій", "Показать только этот тип событий", "Show only this kind of event"],
+  [".sti", "Показник за всіма закритими угодами цього рахунку", "Показатель по всем закрытым сделкам этого счёта", "Figure over every closed trade of this account"],
   [".pos", "Відкрита позиція бота: вхід, стоп, ціль і поточний результат", "Открытая позиция бота: вход, стоп, цель и текущий результат", "An open bot position: entry, stop, target and current result"],
   [".trade summary, #sc summary", "Розгорнути, щоб побачити, чому бот так вирішив", "Развернуть, чтобы увидеть, почему бот так решил", "Open to see why the bot decided this"],
   [".chip.g", "Чинник за угоду", "Фактор за сделку", "A factor in favor"],
@@ -560,7 +584,7 @@ bot: [
 };
 
 </script>
-<script id="ch-js" data-tool="elliott" data-ver="1.04" data-root="../">
+<script id="ch-js" data-tool="elliott" data-ver="1.09" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -569,7 +593,7 @@ bot: [
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.04";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.09";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -601,11 +625,11 @@ bot: [
   ];
   var L = {
     uk: { heat: ["Heat Index", "Heat"], lab: ["Coin Lab", "Coin Lab"], elliott: ["Хвилі Елліотта", "Хвилі"], whales: ["Китовий сонар", "Кити"], liq: ["Радар ліквідацій", "Ліквідації"], volume: ["Сплески об’ємів", "Об’єми"], bot: ["Бот-трейдер", "Бот"],
-      an: "Аналіз:", open: "Відкрити {c} у «{t}» (нова вкладка)", tools: "Інструменти", tg: "Телеграм-канал", cam: "Скріншот", wait: "Готую зображення…", save: "Зберегти", share: "Поділитися", copy: "Копіювати", copied: "Скопійовано", close: "Закрити", fail: "Не вдалося створити зображення: {e}", hint: "На телефоні можна також утримати зображення, щоб зберегти його.", nfa: "Не фінансова порада", src: "Код", log: "Журнал сповіщень", logAll: "Усі", logEmpty: "Поки що сповіщень немає. Тут збираються сповіщення з усіх інструментів: сигнали зон Heat Index (дзвіночок на картці монети), сповіщення Coin Lab і нові сплески об’ємів.", notif: "Сповіщення", tLog: "Журнал", tRules: "Правила", tSet: "Налаштування", alerts: "Цінові сповіщення", alAdd: "Сповіщення", alAddT: "Налаштувати сповіщення для {c}", now: "Зараз", dist: "до цілі {d}%", waiting: "Чекає першої перевірки", active: "Активне", off: "Вимкнене", firedOff: "Спрацювало", once: "Один раз", every: "Щоразу, пауза {m} хв", repeatEvery: "Щоразу, з паузою", lastFired: "Спрацювало: {t}", edit: "Змінити", del: "Видалити", delQ: "Видалити це сповіщення?", rulesEmpty: "Ще немає жодного сповіщення. Створіть перше: наприклад, коли ціна досягне певного рівня або підійде до нього ближче ніж на 1%.", rulesHint: "Ціни перевіряються кожні {s} с, поки відкрита хоча б одна вкладка будь-якого інструмента.", newRule: "Нове сповіщення", cancel: "Скасувати", save2: "Зберегти", k_reach: "ціна досягне {v}", k_above: "ціна вище {v}", k_below: "ціна нижче {v}", k_near: "ціна ближче ніж на {d}% до {v}", k_up24: "зростання за 24 год від {v}", k_dn24: "падіння за 24 год від {v}", k_rsiLo: "RSI {tf} нижче {v}", k_rsiHi: "RSI {tf} вище {v}", o_reach: "Ціна досягне рівня", o_above: "Ціна вище рівня", o_below: "Ціна нижче рівня", o_near: "Наближення до ціни", o_up24: "Зростання за 24 год, %", o_dn24: "Падіння за 24 год, %", o_rsiLo: "RSI нижче рівня (перепроданість)", o_rsiHi: "RSI вище рівня (перекупленість)", h_reach: "Спрацює, коли ціна дійде до рівня з будь-якого боку: вгору, якщо рівень вищий за поточну ціну, вниз, якщо нижчий.", h_above: "Спрацює, коли ціна буде на рівні або вище.", h_below: "Спрацює, коли ціна буде на рівні або нижче.", h_near: "Спрацює, коли ціна підійде до рівня ближче, ніж на вказаний відсоток, з будь-якого боку. Зручно, щоб встигнути підготуватися до входу чи виходу.", h_up24: "Спрацює, коли зміна ціни за 24 години досягне вказаного зростання.", h_dn24: "Спрацює, коли ціна за 24 години впаде на вказаний відсоток або більше.", h_rsiLo: "RSI 14 на вибраному таймфреймі, з поточною свічкою. 30 і нижче вважається перепроданістю.", h_rsiHi: "RSI 14 на вибраному таймфреймі, з поточною свічкою. 70 і вище вважається перекупленістю.", fCoin: "Монета", fQuote: "Котирування", fEx: "Біржа", fKind: "Умова", fPrice: "Ціна, {q}", fRsi: "Рівень RSI", fPct: "Відсоток", fNear: "Відстань, %", fTf: "Таймфрейм", fRepeat: "Повтор", fCd: "Пауза, хв", fNote: "Нотатка (необов’язково)", fNoteP: "напр. план входу", fCoinNeed: "Введіть тікер монети, напр. BTC", fValNeed: "Вкажіть значення більше нуля", fRsiNeed: "RSI має бути від 1 до 99", loading: "Завантажую ціну…", noPair: "Пару {p} не знайдено на {e}", errData: "Немає даних", onoff: "Увімкнути або вимкнути", sSound: "Звуковий сигнал", sBrowser: "Сповіщення браузера", perm_default: "Браузер ще не дав дозволу на сповіщення.", perm_granted: "Дозвіл браузера є.", perm_denied: "Браузер заборонив сповіщення для цього сайту. Дозвольте їх у налаштуваннях сайту в браузері.", perm_unsupported: "Тут сповіщення браузера недоступні (наприклад, усередині Telegram), але на екрані, звуком і в Telegram-бот усе працює.", allow: "Дозволити", sTg: "Надсилати в Telegram через свого бота", sToken: "Токен бота", sChat: "Chat ID або @канал", sTgHint: "Створіть бота в @BotFather, додайте його в чат чи канал і вкажіть його ID.", test: "Перевірити", tgTestMsg: "тестове сповіщення", tgOk: "Надіслано", tgFail: "Помилка: {e}", sEvery: "Як часто перевіряти", sec: "кожні {s} с", sNote: "Перевірка йде прямо в браузері, поки відкрита хоча б одна вкладка будь-якого інструмента CRYPTO HUNTERS. Якщо закрити всі вкладки, сповіщення не прийдуть.", testAll: "Тестове сповіщення", verOk: "Версія сайту {v}. Якщо після оновлення на GitHub тут стара версія, браузер показує сторінку з кешу", verOld: "Сторінка версії {p}, а скрипт версії {v}: браузер узяв частину файлів з кешу. Оновіть сторінку", logClear: "Очистити", logClearQ: "Видалити всі записи журналу?", logCsv: "CSV", logOpen: "Відкрити", logNew: "нове", buy: "зона купівлі", sell: "зона продажу", spike: "Сплеск об’єму ×{r}", candle: "свічка", brkUp: "пробій угору", brkDn: "пробій униз", spot: "спот", futures: "ф’ючерси", chScreen: "На екрані", chBrowser: "Браузер", chTelegram: "Telegram", chSound: "Звук", chLog: "Лише журнал", logHint: "Журнал зберігається в цьому браузері, до 300 останніх записів.", today: "сьогодні", yesterday: "вчора" },
+      an: "Аналіз:", open: "Відкрити {c} у «{t}» (нова вкладка)", tools: "Інструменти", tg: "Телеграм-канал", cam: "Скріншот", wait: "Готую зображення…", save: "Зберегти", share: "Поділитися", copy: "Копіювати", copied: "Скопійовано", close: "Закрити", fail: "Не вдалося створити зображення: {e}", hint: "На телефоні можна також утримати зображення, щоб зберегти його.", nfa: "Не фінансова порада", src: "Код", log: "Журнал сповіщень", logAll: "Усі", logEmpty: "Поки що сповіщень немає. Тут збираються сповіщення з усіх інструментів: сигнали зон Heat Index (дзвіночок на картці монети), сповіщення Coin Lab і нові сплески об’ємів.", notif: "Сповіщення", tLog: "Журнал", tRules: "Правила", tSet: "Налаштування", alerts: "Цінові сповіщення", alAdd: "Сповіщення", alAddT: "Налаштувати сповіщення для {c}", now: "Зараз", dist: "до цілі {d}%", waiting: "Чекає першої перевірки", active: "Активне", off: "Вимкнене", firedOff: "Спрацювало", once: "Один раз", every: "Щоразу, пауза {m} хв", repeatEvery: "Щоразу, з паузою", lastFired: "Спрацювало: {t}", edit: "Змінити", del: "Видалити", delQ: "Видалити це сповіщення?", rulesEmpty: "Ще немає жодного сповіщення. Створіть перше: наприклад, коли ціна досягне певного рівня або підійде до нього ближче ніж на 1%.", rulesHint: "Ціни перевіряються кожні {s} с, поки відкрита хоча б одна вкладка будь-якого інструмента.", newRule: "Нове сповіщення", cancel: "Скасувати", save2: "Зберегти", k_reach: "ціна досягне {v}", k_above: "ціна вище {v}", k_below: "ціна нижче {v}", k_near: "ціна ближче ніж на {d}% до {v}", k_up24: "зростання за 24 год від {v}", k_dn24: "падіння за 24 год від {v}", k_rsiLo: "RSI {tf} нижче {v}", k_rsiHi: "RSI {tf} вище {v}", o_reach: "Ціна досягне рівня", o_above: "Ціна вище рівня", o_below: "Ціна нижче рівня", o_near: "Наближення до ціни", o_up24: "Зростання за 24 год, %", o_dn24: "Падіння за 24 год, %", o_rsiLo: "RSI нижче рівня (перепроданість)", o_rsiHi: "RSI вище рівня (перекупленість)", h_reach: "Спрацює, коли ціна дійде до рівня з будь-якого боку: вгору, якщо рівень вищий за поточну ціну, вниз, якщо нижчий.", h_above: "Спрацює, коли ціна буде на рівні або вище.", h_below: "Спрацює, коли ціна буде на рівні або нижче.", h_near: "Спрацює, коли ціна підійде до рівня ближче, ніж на вказаний відсоток, з будь-якого боку. Зручно, щоб встигнути підготуватися до входу чи виходу.", h_up24: "Спрацює, коли зміна ціни за 24 години досягне вказаного зростання.", h_dn24: "Спрацює, коли ціна за 24 години впаде на вказаний відсоток або більше.", h_rsiLo: "RSI 14 на вибраному таймфреймі, з поточною свічкою. 30 і нижче вважається перепроданістю.", h_rsiHi: "RSI 14 на вибраному таймфреймі, з поточною свічкою. 70 і вище вважається перекупленістю.", fCoin: "Монета", fQuote: "Котирування", fEx: "Біржа", fKind: "Умова", fPrice: "Ціна, {q}", fRsi: "Рівень RSI", fPct: "Відсоток", fNear: "Відстань, %", fTf: "Таймфрейм", fRepeat: "Повтор", fCd: "Пауза, хв", fNote: "Нотатка (необов’язково)", fNoteP: "напр. план входу", fCoinNeed: "Введіть тікер монети, напр. BTC", fValNeed: "Вкажіть значення більше нуля", fRsiNeed: "RSI має бути від 1 до 99", loading: "Завантажую ціну…", noPair: "Пару {p} не знайдено на {e}", errData: "Немає даних", onoff: "Увімкнути або вимкнути", sSound: "Звуковий сигнал", sBrowser: "Сповіщення браузера", perm_default: "Браузер ще не дав дозволу на сповіщення.", perm_granted: "Дозвіл браузера є.", perm_denied: "Браузер заборонив сповіщення для цього сайту. Дозвольте їх у налаштуваннях сайту в браузері.", perm_unsupported: "Тут сповіщення браузера недоступні (наприклад, усередині Telegram), але на екрані, звуком і в Telegram-бот усе працює.", allow: "Дозволити", sTg: "Надсилати в Telegram через свого бота", sToken: "Токен бота", sChat: "Chat ID або @канал", sTgHint: "Створіть бота в @BotFather, додайте його в чат чи канал і вкажіть його ID.", test: "Перевірити", tgTestMsg: "тестове сповіщення", tgOk: "Надіслано", tgFail: "Помилка: {e}", sEvery: "Як часто перевіряти", sec: "кожні {s} с", sNote: "Перевірка йде прямо в браузері, поки відкрита хоча б одна вкладка будь-якого інструмента CRYPTO HUNTERS. Якщо закрити всі вкладки, сповіщення не прийдуть.", testAll: "Тестове сповіщення", verOk: "Версія сайту {v}. Якщо після оновлення на GitHub тут стара версія, браузер показує сторінку з кешу", verOld: "Сторінка версії {p}, а скрипт версії {v}: браузер узяв частину файлів з кешу. Оновіть сторінку", nwBadge: "Новини про {c} за 24 год: {n}, важливих негативних: {i}. Натисніть, щоб прочитати", nwNone: "Про {c} за 24 год новин немає", nwTitle: "Новини: {c}", nwReload: "Оновити", nwSrc: "Джерело: {s}, оновлено {t}", nwSrvName: "ваш сервер новин", nwErr: "Новини недоступні ({e})", nwHint: "Якщо джерело блокує запити з браузера, вкажіть свій сервер новин у Сповіщення → Налаштування.", nwEmpty: "За останні 3 дні новин про {c} немає.", nwImp: "важлива негативна", nwNeg: "негативна", nwPos: "позитивна", nwNeu: "нейтральна", nwSet: "Новини", nwOn: "Показувати новини на картках монет", nwSrv: "Свій сервер новин (необов’язково)", nwSrvHint: "Адреса сервера з server/news-proxy.js: він збирає CryptoPanic, оголошення Binance і RSS. Без нього використовується безкоштовне Free Crypto News.", logClear: "Очистити", logClearQ: "Видалити всі записи журналу?", logCsv: "CSV", logOpen: "Відкрити", logNew: "нове", buy: "зона купівлі", sell: "зона продажу", spike: "Сплеск об’єму ×{r}", candle: "свічка", brkUp: "пробій угору", brkDn: "пробій униз", spot: "спот", futures: "ф’ючерси", chScreen: "На екрані", chBrowser: "Браузер", chTelegram: "Telegram", chSound: "Звук", chLog: "Лише журнал", logHint: "Журнал зберігається в цьому браузері, до 300 останніх записів.", today: "сьогодні", yesterday: "вчора" },
     ru: { heat: ["Heat Index", "Heat"], lab: ["Coin Lab", "Coin Lab"], elliott: ["Волны Эллиотта", "Волны"], whales: ["Китовый сонар", "Киты"], liq: ["Радар ликвидаций", "Ликвидации"], volume: ["Всплески объёмов", "Объёмы"], bot: ["Бот-трейдер", "Бот"],
-      an: "Анализ:", open: "Открыть {c} в «{t}» (новая вкладка)", tools: "Инструменты", tg: "Телеграм-канал", cam: "Скриншот", wait: "Готовлю изображение…", save: "Сохранить", share: "Поделиться", copy: "Копировать", copied: "Скопировано", close: "Закрыть", fail: "Не удалось создать изображение: {e}", hint: "На телефоне можно также удержать изображение, чтобы сохранить его.", nfa: "Не финансовый совет", src: "Код", log: "Журнал уведомлений", logAll: "Все", logEmpty: "Пока уведомлений нет. Здесь собираются уведомления всех инструментов: сигналы зон Heat Index (колокольчик на карточке монеты), уведомления Coin Lab и новые всплески объёмов.", notif: "Уведомления", tLog: "Журнал", tRules: "Правила", tSet: "Настройки", alerts: "Ценовые уведомления", alAdd: "Уведомление", alAddT: "Настроить уведомление для {c}", now: "Сейчас", dist: "до цели {d}%", waiting: "Ждёт первой проверки", active: "Активно", off: "Выключено", firedOff: "Сработало", once: "Один раз", every: "Каждый раз, пауза {m} мин", repeatEvery: "Каждый раз, с паузой", lastFired: "Сработало: {t}", edit: "Изменить", del: "Удалить", delQ: "Удалить это уведомление?", rulesEmpty: "Пока нет ни одного уведомления. Создайте первое: например, когда цена достигнет уровня или подойдёт к нему ближе чем на 1%.", rulesHint: "Цены проверяются каждые {s} с, пока открыта хотя бы одна вкладка любого инструмента.", newRule: "Новое уведомление", cancel: "Отмена", save2: "Сохранить", k_reach: "цена достигнет {v}", k_above: "цена выше {v}", k_below: "цена ниже {v}", k_near: "цена ближе чем на {d}% к {v}", k_up24: "рост за 24 ч от {v}", k_dn24: "падение за 24 ч от {v}", k_rsiLo: "RSI {tf} ниже {v}", k_rsiHi: "RSI {tf} выше {v}", o_reach: "Цена достигнет уровня", o_above: "Цена выше уровня", o_below: "Цена ниже уровня", o_near: "Приближение к цене", o_up24: "Рост за 24 ч, %", o_dn24: "Падение за 24 ч, %", o_rsiLo: "RSI ниже уровня (перепроданность)", o_rsiHi: "RSI выше уровня (перекупленность)", h_reach: "Сработает, когда цена дойдёт до уровня с любой стороны: вверх, если уровень выше текущей цены, вниз, если ниже.", h_above: "Сработает, когда цена будет на уровне или выше.", h_below: "Сработает, когда цена будет на уровне или ниже.", h_near: "Сработает, когда цена подойдёт к уровню ближе указанного процента с любой стороны. Удобно, чтобы успеть подготовиться ко входу или выходу.", h_up24: "Сработает, когда изменение цены за 24 часа достигнет указанного роста.", h_dn24: "Сработает, когда цена за 24 часа упадёт на указанный процент или больше.", h_rsiLo: "RSI 14 на выбранном таймфрейме, с текущей свечой. 30 и ниже считается перепроданностью.", h_rsiHi: "RSI 14 на выбранном таймфрейме, с текущей свечой. 70 и выше считается перекупленностью.", fCoin: "Монета", fQuote: "Котировка", fEx: "Биржа", fKind: "Условие", fPrice: "Цена, {q}", fRsi: "Уровень RSI", fPct: "Процент", fNear: "Расстояние, %", fTf: "Таймфрейм", fRepeat: "Повтор", fCd: "Пауза, мин", fNote: "Заметка (необязательно)", fNoteP: "напр. план входа", fCoinNeed: "Введите тикер монеты, напр. BTC", fValNeed: "Укажите значение больше нуля", fRsiNeed: "RSI должен быть от 1 до 99", loading: "Загружаю цену…", noPair: "Пара {p} не найдена на {e}", errData: "Нет данных", onoff: "Включить или выключить", sSound: "Звуковой сигнал", sBrowser: "Уведомления браузера", perm_default: "Браузер ещё не дал разрешения на уведомления.", perm_granted: "Разрешение браузера есть.", perm_denied: "Браузер запретил уведомления для этого сайта. Разрешите их в настройках сайта в браузере.", perm_unsupported: "Здесь уведомления браузера недоступны (например, внутри Telegram), но на экране, звуком и в Telegram-бот всё работает.", allow: "Разрешить", sTg: "Отправлять в Telegram через своего бота", sToken: "Токен бота", sChat: "Chat ID или @канал", sTgHint: "Создайте бота в @BotFather, добавьте его в чат или канал и укажите его ID.", test: "Проверить", tgTestMsg: "тестовое уведомление", tgOk: "Отправлено", tgFail: "Ошибка: {e}", sEvery: "Как часто проверять", sec: "каждые {s} с", sNote: "Проверка идёт прямо в браузере, пока открыта хотя бы одна вкладка любого инструмента CRYPTO HUNTERS. Если закрыть все вкладки, уведомления не придут.", testAll: "Тестовое уведомление", verOk: "Версия сайта {v}. Если после обновления на GitHub здесь старая версия, браузер показывает страницу из кэша", verOld: "Страница версии {p}, а скрипт версии {v}: браузер взял часть файлов из кэша. Обновите страницу", logClear: "Очистить", logClearQ: "Удалить все записи журнала?", logCsv: "CSV", logOpen: "Открыть", logNew: "новое", buy: "зона покупки", sell: "зона продажи", spike: "Всплеск объёма ×{r}", candle: "свеча", brkUp: "пробой вверх", brkDn: "пробой вниз", spot: "спот", futures: "фьючерсы", chScreen: "На экране", chBrowser: "Браузер", chTelegram: "Telegram", chSound: "Звук", chLog: "Только журнал", logHint: "Журнал хранится в этом браузере, до 300 последних записей.", today: "сегодня", yesterday: "вчера" },
+      an: "Анализ:", open: "Открыть {c} в «{t}» (новая вкладка)", tools: "Инструменты", tg: "Телеграм-канал", cam: "Скриншот", wait: "Готовлю изображение…", save: "Сохранить", share: "Поделиться", copy: "Копировать", copied: "Скопировано", close: "Закрыть", fail: "Не удалось создать изображение: {e}", hint: "На телефоне можно также удержать изображение, чтобы сохранить его.", nfa: "Не финансовый совет", src: "Код", log: "Журнал уведомлений", logAll: "Все", logEmpty: "Пока уведомлений нет. Здесь собираются уведомления всех инструментов: сигналы зон Heat Index (колокольчик на карточке монеты), уведомления Coin Lab и новые всплески объёмов.", notif: "Уведомления", tLog: "Журнал", tRules: "Правила", tSet: "Настройки", alerts: "Ценовые уведомления", alAdd: "Уведомление", alAddT: "Настроить уведомление для {c}", now: "Сейчас", dist: "до цели {d}%", waiting: "Ждёт первой проверки", active: "Активно", off: "Выключено", firedOff: "Сработало", once: "Один раз", every: "Каждый раз, пауза {m} мин", repeatEvery: "Каждый раз, с паузой", lastFired: "Сработало: {t}", edit: "Изменить", del: "Удалить", delQ: "Удалить это уведомление?", rulesEmpty: "Пока нет ни одного уведомления. Создайте первое: например, когда цена достигнет уровня или подойдёт к нему ближе чем на 1%.", rulesHint: "Цены проверяются каждые {s} с, пока открыта хотя бы одна вкладка любого инструмента.", newRule: "Новое уведомление", cancel: "Отмена", save2: "Сохранить", k_reach: "цена достигнет {v}", k_above: "цена выше {v}", k_below: "цена ниже {v}", k_near: "цена ближе чем на {d}% к {v}", k_up24: "рост за 24 ч от {v}", k_dn24: "падение за 24 ч от {v}", k_rsiLo: "RSI {tf} ниже {v}", k_rsiHi: "RSI {tf} выше {v}", o_reach: "Цена достигнет уровня", o_above: "Цена выше уровня", o_below: "Цена ниже уровня", o_near: "Приближение к цене", o_up24: "Рост за 24 ч, %", o_dn24: "Падение за 24 ч, %", o_rsiLo: "RSI ниже уровня (перепроданность)", o_rsiHi: "RSI выше уровня (перекупленность)", h_reach: "Сработает, когда цена дойдёт до уровня с любой стороны: вверх, если уровень выше текущей цены, вниз, если ниже.", h_above: "Сработает, когда цена будет на уровне или выше.", h_below: "Сработает, когда цена будет на уровне или ниже.", h_near: "Сработает, когда цена подойдёт к уровню ближе указанного процента с любой стороны. Удобно, чтобы успеть подготовиться ко входу или выходу.", h_up24: "Сработает, когда изменение цены за 24 часа достигнет указанного роста.", h_dn24: "Сработает, когда цена за 24 часа упадёт на указанный процент или больше.", h_rsiLo: "RSI 14 на выбранном таймфрейме, с текущей свечой. 30 и ниже считается перепроданностью.", h_rsiHi: "RSI 14 на выбранном таймфрейме, с текущей свечой. 70 и выше считается перекупленностью.", fCoin: "Монета", fQuote: "Котировка", fEx: "Биржа", fKind: "Условие", fPrice: "Цена, {q}", fRsi: "Уровень RSI", fPct: "Процент", fNear: "Расстояние, %", fTf: "Таймфрейм", fRepeat: "Повтор", fCd: "Пауза, мин", fNote: "Заметка (необязательно)", fNoteP: "напр. план входа", fCoinNeed: "Введите тикер монеты, напр. BTC", fValNeed: "Укажите значение больше нуля", fRsiNeed: "RSI должен быть от 1 до 99", loading: "Загружаю цену…", noPair: "Пара {p} не найдена на {e}", errData: "Нет данных", onoff: "Включить или выключить", sSound: "Звуковой сигнал", sBrowser: "Уведомления браузера", perm_default: "Браузер ещё не дал разрешения на уведомления.", perm_granted: "Разрешение браузера есть.", perm_denied: "Браузер запретил уведомления для этого сайта. Разрешите их в настройках сайта в браузере.", perm_unsupported: "Здесь уведомления браузера недоступны (например, внутри Telegram), но на экране, звуком и в Telegram-бот всё работает.", allow: "Разрешить", sTg: "Отправлять в Telegram через своего бота", sToken: "Токен бота", sChat: "Chat ID или @канал", sTgHint: "Создайте бота в @BotFather, добавьте его в чат или канал и укажите его ID.", test: "Проверить", tgTestMsg: "тестовое уведомление", tgOk: "Отправлено", tgFail: "Ошибка: {e}", sEvery: "Как часто проверять", sec: "каждые {s} с", sNote: "Проверка идёт прямо в браузере, пока открыта хотя бы одна вкладка любого инструмента CRYPTO HUNTERS. Если закрыть все вкладки, уведомления не придут.", testAll: "Тестовое уведомление", verOk: "Версия сайта {v}. Если после обновления на GitHub здесь старая версия, браузер показывает страницу из кэша", verOld: "Страница версии {p}, а скрипт версии {v}: браузер взял часть файлов из кэша. Обновите страницу", nwBadge: "Новости о {c} за 24 ч: {n}, важных негативных: {i}. Нажмите, чтобы прочитать", nwNone: "О {c} за 24 ч новостей нет", nwTitle: "Новости: {c}", nwReload: "Обновить", nwSrc: "Источник: {s}, обновлено {t}", nwSrvName: "ваш сервер новостей", nwErr: "Новости недоступны ({e})", nwHint: "Если источник блокирует запросы из браузера, укажите свой сервер новостей в Уведомления → Настройки.", nwEmpty: "За последние 3 дня новостей о {c} нет.", nwImp: "важная негативная", nwNeg: "негативная", nwPos: "позитивная", nwNeu: "нейтральная", nwSet: "Новости", nwOn: "Показывать новости на карточках монет", nwSrv: "Свой сервер новостей (необязательно)", nwSrvHint: "Адрес сервера из server/news-proxy.js: он собирает CryptoPanic, объявления Binance и RSS. Без него используется бесплатный Free Crypto News.", logClear: "Очистить", logClearQ: "Удалить все записи журнала?", logCsv: "CSV", logOpen: "Открыть", logNew: "новое", buy: "зона покупки", sell: "зона продажи", spike: "Всплеск объёма ×{r}", candle: "свеча", brkUp: "пробой вверх", brkDn: "пробой вниз", spot: "спот", futures: "фьючерсы", chScreen: "На экране", chBrowser: "Браузер", chTelegram: "Telegram", chSound: "Звук", chLog: "Только журнал", logHint: "Журнал хранится в этом браузере, до 300 последних записей.", today: "сегодня", yesterday: "вчера" },
     en: { heat: ["Heat Index", "Heat"], lab: ["Coin Lab", "Coin Lab"], elliott: ["Elliott Waves", "Elliott"], whales: ["Whale Sonar", "Whales"], liq: ["Liquidation Radar", "Liquidations"], volume: ["Volume Spikes", "Volume"], bot: ["Paper Bot", "Bot"],
-      an: "Analyze:", open: "Open {c} in {t} (new tab)", tools: "Tools", tg: "Telegram channel", cam: "Screenshot", wait: "Preparing the image…", save: "Save", share: "Share", copy: "Copy", copied: "Copied", close: "Close", fail: "Could not create the image: {e}", hint: "On a phone you can also long-press the image to save it.", nfa: "Not financial advice", src: "Code", log: "Notification log", logAll: "All", logEmpty: "No notifications yet. Notifications from every tool are collected here: Heat Index zone signals (the bell on a coin card), Coin Lab alerts and new volume spikes.", notif: "Notifications", tLog: "Log", tRules: "Rules", tSet: "Settings", alerts: "Price alerts", alAdd: "Alert", alAddT: "Set an alert for {c}", now: "Now", dist: "{d}% to target", waiting: "Waiting for the first check", active: "Active", off: "Off", firedOff: "Fired", once: "Once", every: "Every time, {m} min pause", repeatEvery: "Every time, with a pause", lastFired: "Fired: {t}", edit: "Edit", del: "Delete", delQ: "Delete this alert?", rulesEmpty: "No alerts yet. Create the first one: for example, when the price reaches a level or comes within 1% of it.", rulesHint: "Prices are checked every {s} s while at least one tab of any tool is open.", newRule: "New alert", cancel: "Cancel", save2: "Save", k_reach: "price reaches {v}", k_above: "price above {v}", k_below: "price below {v}", k_near: "price within {d}% of {v}", k_up24: "24h rise of {v} or more", k_dn24: "24h drop of {v} or more", k_rsiLo: "RSI {tf} below {v}", k_rsiHi: "RSI {tf} above {v}", o_reach: "Price reaches a level", o_above: "Price above a level", o_below: "Price below a level", o_near: "Price comes close to a level", o_up24: "24h rise, %", o_dn24: "24h drop, %", o_rsiLo: "RSI below a level (oversold)", o_rsiHi: "RSI above a level (overbought)", h_reach: "Fires when the price gets to the level from either side: up if the level is above the current price, down if it is below.", h_above: "Fires when the price is at or above the level.", h_below: "Fires when the price is at or below the level.", h_near: "Fires when the price comes closer to the level than the given percent, from either side. Handy to get ready for an entry or exit.", h_up24: "Fires when the 24h price change reaches the given rise.", h_dn24: "Fires when the price has dropped by the given percent or more over 24 hours.", h_rsiLo: "RSI 14 on the chosen timeframe, current candle included. 30 and below is usually read as oversold.", h_rsiHi: "RSI 14 on the chosen timeframe, current candle included. 70 and above is usually read as overbought.", fCoin: "Coin", fQuote: "Quote", fEx: "Exchange", fKind: "Condition", fPrice: "Price, {q}", fRsi: "RSI level", fPct: "Percent", fNear: "Distance, %", fTf: "Timeframe", fRepeat: "Repeat", fCd: "Pause, min", fNote: "Note (optional)", fNoteP: "e.g. entry plan", fCoinNeed: "Enter a coin ticker, e.g. BTC", fValNeed: "Enter a value above zero", fRsiNeed: "RSI must be between 1 and 99", loading: "Loading the price…", noPair: "{p} was not found on {e}", errData: "No data", onoff: "Turn on or off", sSound: "Sound", sBrowser: "Browser notifications", perm_default: "The browser has not been asked for permission yet.", perm_granted: "The browser allows notifications.", perm_denied: "The browser blocked notifications for this site. Allow them in the site settings of your browser.", perm_unsupported: "Browser notifications are not available here (for example inside Telegram), but on-screen, sound and Telegram bot alerts work.", allow: "Allow", sTg: "Send to Telegram through my bot", sToken: "Bot token", sChat: "Chat ID or @channel", sTgHint: "Create a bot in @BotFather, add it to a chat or channel and enter its ID.", test: "Test", tgTestMsg: "test notification", tgOk: "Sent", tgFail: "Error: {e}", sEvery: "How often to check", sec: "every {s} s", sNote: "Checks run right in the browser while at least one tab of any CRYPTO HUNTERS tool is open. If every tab is closed, no alerts arrive.", testAll: "Test notification", verOk: "Site version {v}. If an old version shows here after a GitHub update, the browser is using its cache", verOld: "The page is version {p} but the script is {v}: the browser took some files from its cache. Reload the page", logClear: "Clear", logClearQ: "Delete every entry of the log?", logCsv: "CSV", logOpen: "Open", logNew: "new", buy: "buy zone", sell: "sell zone", spike: "Volume spike ×{r}", candle: "candle", brkUp: "breakout up", brkDn: "breakdown", spot: "spot", futures: "futures", chScreen: "On screen", chBrowser: "Browser", chTelegram: "Telegram", chSound: "Sound", chLog: "Log only", logHint: "The log is kept in this browser, up to the last 300 entries.", today: "today", yesterday: "yesterday" }
+      an: "Analyze:", open: "Open {c} in {t} (new tab)", tools: "Tools", tg: "Telegram channel", cam: "Screenshot", wait: "Preparing the image…", save: "Save", share: "Share", copy: "Copy", copied: "Copied", close: "Close", fail: "Could not create the image: {e}", hint: "On a phone you can also long-press the image to save it.", nfa: "Not financial advice", src: "Code", log: "Notification log", logAll: "All", logEmpty: "No notifications yet. Notifications from every tool are collected here: Heat Index zone signals (the bell on a coin card), Coin Lab alerts and new volume spikes.", notif: "Notifications", tLog: "Log", tRules: "Rules", tSet: "Settings", alerts: "Price alerts", alAdd: "Alert", alAddT: "Set an alert for {c}", now: "Now", dist: "{d}% to target", waiting: "Waiting for the first check", active: "Active", off: "Off", firedOff: "Fired", once: "Once", every: "Every time, {m} min pause", repeatEvery: "Every time, with a pause", lastFired: "Fired: {t}", edit: "Edit", del: "Delete", delQ: "Delete this alert?", rulesEmpty: "No alerts yet. Create the first one: for example, when the price reaches a level or comes within 1% of it.", rulesHint: "Prices are checked every {s} s while at least one tab of any tool is open.", newRule: "New alert", cancel: "Cancel", save2: "Save", k_reach: "price reaches {v}", k_above: "price above {v}", k_below: "price below {v}", k_near: "price within {d}% of {v}", k_up24: "24h rise of {v} or more", k_dn24: "24h drop of {v} or more", k_rsiLo: "RSI {tf} below {v}", k_rsiHi: "RSI {tf} above {v}", o_reach: "Price reaches a level", o_above: "Price above a level", o_below: "Price below a level", o_near: "Price comes close to a level", o_up24: "24h rise, %", o_dn24: "24h drop, %", o_rsiLo: "RSI below a level (oversold)", o_rsiHi: "RSI above a level (overbought)", h_reach: "Fires when the price gets to the level from either side: up if the level is above the current price, down if it is below.", h_above: "Fires when the price is at or above the level.", h_below: "Fires when the price is at or below the level.", h_near: "Fires when the price comes closer to the level than the given percent, from either side. Handy to get ready for an entry or exit.", h_up24: "Fires when the 24h price change reaches the given rise.", h_dn24: "Fires when the price has dropped by the given percent or more over 24 hours.", h_rsiLo: "RSI 14 on the chosen timeframe, current candle included. 30 and below is usually read as oversold.", h_rsiHi: "RSI 14 on the chosen timeframe, current candle included. 70 and above is usually read as overbought.", fCoin: "Coin", fQuote: "Quote", fEx: "Exchange", fKind: "Condition", fPrice: "Price, {q}", fRsi: "RSI level", fPct: "Percent", fNear: "Distance, %", fTf: "Timeframe", fRepeat: "Repeat", fCd: "Pause, min", fNote: "Note (optional)", fNoteP: "e.g. entry plan", fCoinNeed: "Enter a coin ticker, e.g. BTC", fValNeed: "Enter a value above zero", fRsiNeed: "RSI must be between 1 and 99", loading: "Loading the price…", noPair: "{p} was not found on {e}", errData: "No data", onoff: "Turn on or off", sSound: "Sound", sBrowser: "Browser notifications", perm_default: "The browser has not been asked for permission yet.", perm_granted: "The browser allows notifications.", perm_denied: "The browser blocked notifications for this site. Allow them in the site settings of your browser.", perm_unsupported: "Browser notifications are not available here (for example inside Telegram), but on-screen, sound and Telegram bot alerts work.", allow: "Allow", sTg: "Send to Telegram through my bot", sToken: "Bot token", sChat: "Chat ID or @channel", sTgHint: "Create a bot in @BotFather, add it to a chat or channel and enter its ID.", test: "Test", tgTestMsg: "test notification", tgOk: "Sent", tgFail: "Error: {e}", sEvery: "How often to check", sec: "every {s} s", sNote: "Checks run right in the browser while at least one tab of any CRYPTO HUNTERS tool is open. If every tab is closed, no alerts arrive.", testAll: "Test notification", verOk: "Site version {v}. If an old version shows here after a GitHub update, the browser is using its cache", verOld: "The page is version {p} but the script is {v}: the browser took some files from its cache. Reload the page", nwBadge: "News on {c} in 24h: {n}, important negative: {i}. Tap to read", nwNone: "No news on {c} in 24h", nwTitle: "News: {c}", nwReload: "Refresh", nwSrc: "Source: {s}, updated {t}", nwSrvName: "your news server", nwErr: "News unavailable ({e})", nwHint: "If the source blocks requests from the browser, set your own news server in Notifications → Settings.", nwEmpty: "No news on {c} in the last 3 days.", nwImp: "important negative", nwNeg: "negative", nwPos: "positive", nwNeu: "neutral", nwSet: "News", nwOn: "Show news on coin cards", nwSrv: "Own news server (optional)", nwSrvHint: "Address of a server running server/news-proxy.js: it gathers CryptoPanic, Binance announcements and RSS. Without it the free Free Crypto News is used.", logClear: "Clear", logClearQ: "Delete every entry of the log?", logCsv: "CSV", logOpen: "Open", logNew: "new", buy: "buy zone", sell: "sell zone", spike: "Volume spike ×{r}", candle: "candle", brkUp: "breakout up", brkDn: "breakdown", spot: "spot", futures: "futures", chScreen: "On screen", chBrowser: "Browser", chTelegram: "Telegram", chSound: "Sound", chLog: "Log only", logHint: "The log is kept in this browser, up to the last 300 entries.", today: "today", yesterday: "yesterday" }
   };
   function lang() { var l = (document.documentElement.lang || "en").slice(0, 2).toLowerCase(); return L[l] ? l : "en"; }
   function tr(k, p) { var s = L[lang()][k]; if (s == null) s = L.en[k]; if (Array.isArray(s)) return s; s = String(s); if (p) s = s.replace(/\{(\w+)\}/g, function (_, x) { return p[x] == null ? "" : p[x]; }); return s; }
@@ -648,7 +672,7 @@ bot: [
     return '<div class="ch-links" translate="no" data-ch><em>' + esc(tr("an")) + "</em>" + list.map(function (id) {
       var nm = tr(id)[1];
       return '<a href="' + esc(url(id, o)) + '" target="ch_' + id + '" data-ch-href title="' + esc(tr("open", { c: coin, t: tr(id)[0] })) + '">' + icon(id) + "<span>" + esc(nm) + "</span></a>";
-    }).join("") + '<button type="button" class="ch-al" data-ch-alert data-coin="' + esc(coin) + '" data-q="' + esc(q) + '" data-ex="' + esc(normEx(o.ex)) + '" title="' + esc(tr("alAddT", { c: coin })) + '">' + BELL + "<span>" + esc(tr("alAdd")) + "</span></button></div>";
+    }).join("") + '<button type="button" class="ch-al" data-ch-alert data-coin="' + esc(coin) + '" data-q="' + esc(q) + '" data-ex="' + esc(normEx(o.ex)) + '" title="' + esc(tr("alAddT", { c: coin })) + '">' + BELL + "<span>" + esc(tr("alAdd")) + "</span></button>" + badgeHTML(coin) + "</div>";
   }
   function linksInto(el, o) { if (!el) return; var h = links(o); if (el.__ch !== h) { el.innerHTML = h; el.__ch = h; } }
 
@@ -1073,6 +1097,7 @@ bot: [
       S.sound = fm.elements.sound.checked; S.browser = fm.elements.browser.checked; S.tg = fm.elements.tg.checked;
       S.tgToken = fm.elements.tgToken.value.trim(); S.tgChat = fm.elements.tgChat.value.trim(); S.every = +fm.elements.every.value || 30;
       jset(SET_KEY, S); schedule();
+      if (t.name === "newsOn" || t.name === "newsSrv") { var NS = newsSet(); NS.on = fm.elements.newsOn.checked; NS.server = fm.elements.newsSrv.value.trim(); jset(NEWS_SET, NS); newsPaint(); if (NS.on) newsLoad(true).then(function () { if (panelOpen() && tab === "set") renderPanel(); }); }
       if (t.name === "browser" && S.browser) askBrowser();
       if (t.name === "sound" && S.sound) beep();
       if (t.name === "tg") renderPanel();
@@ -1108,7 +1133,11 @@ bot: [
       '<label class="ch-chk"><input type="checkbox" name="tg"' + (S.tg ? " checked" : "") + "><span>" + esc(tr("sTg")) + "</span></label>" +
       (S.tg ? '<div class="ch-f2"><label>' + esc(tr("sToken")) + '<input name="tgToken" value="' + esc(S.tgToken) + '" autocomplete="off" spellcheck="false" placeholder="123456:ABC…"></label><label>' + esc(tr("sChat")) + '<input name="tgChat" value="' + esc(S.tgChat) + '" autocomplete="off" spellcheck="false" placeholder="@channel / -100…"></label></div><p class="ch-fh">' + esc(tr("sTgHint")) + ' <button type="button" data-l="tgtest">' + esc(tr("test")) + '</button> <span id="chTgSt"></span></p>' : '<input type="hidden" name="tgToken" value="' + esc(S.tgToken) + '"><input type="hidden" name="tgChat" value="' + esc(S.tgChat) + '">') +
       "<label>" + esc(tr("sEvery")) + '<select name="every">' + [15, 30, 60, 120].map(function (s) { return opt(s, tr("sec", { s: s }), S.every); }).join("") + "</select></label>" +
-      '<p class="ch-fh">' + esc(tr("sNote")) + "</p></form>";
+      '<p class="ch-fh">' + esc(tr("sNote")) + "</p>" +
+      '<h3 class="ch-sh">' + esc(tr("nwSet")) + "</h3>" +
+      '<label class="ch-chk"><input type="checkbox" name="newsOn"' + (newsSet().on ? " checked" : "") + "><span>" + esc(tr("nwOn")) + "</span></label>" +
+      "<label>" + esc(tr("nwSrv")) + '<input name="newsSrv" value="' + esc(newsSet().server) + '" placeholder="https://my-server.onrender.com" autocomplete="off" spellcheck="false"></label>' +
+      '<p class="ch-fh">' + esc(tr("nwSrvHint")) + " " + esc((function () { var c = newsCache(); return c.at ? tr("nwSrc", { s: c.src === "server" ? tr("nwSrvName") : "Free Crypto News", t: when(c.at) }) : c.err ? tr("nwErr", { e: c.err }) : ""; })()) + "</p></form>";
     F.innerHTML = '<span class="ch-lh"></span><button type="button" data-l="testall">' + esc(tr("testAll")) + "</button>";
   }
   async function onPanelClick(e) {
@@ -1158,6 +1187,127 @@ bot: [
   }, true);
   var BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0"/></svg>';
 
+
+  // ---------- news: a badge on every coin card, a list per coin, and a filter for the bot ----------
+  // Sources, in order: the person's own news server (server/news-proxy.js: CryptoPanic, Binance announcements, RSS),
+  // then the free Free Crypto News API (no key). Headlines are matched to coins by ticker and name and scored by
+  // keywords: "important negative" = hack, exploit, delisting, bankruptcy, halted withdrawals, charges, depeg...
+  // The cache lives in localStorage of the site, so every tool and tab shares one download (refreshed every 5 minutes).
+  var NEWS_KEY = "ch.news", NEWS_SET = "ch.newsSet", NEWS_TTL = 5 * 60e3, NEWS_FREE = "https://cryptocurrency.cv/api/news?limit=100";
+  var NAMES = { BTC: ["bitcoin"], ETH: ["ethereum", "ether"], SOL: ["solana"], XRP: ["ripple", "xrp"], BNB: ["bnb", "binance coin"], DOGE: ["dogecoin"], ADA: ["cardano"], TRX: ["tron"], TON: ["toncoin"],
+    AVAX: ["avalanche"], LINK: ["chainlink"], DOT: ["polkadot"], LTC: ["litecoin"], BCH: ["bitcoin cash"], SHIB: ["shiba inu"], NEAR: ["near protocol"], SUI: ["sui network"], APT: ["aptos"], ARB: ["arbitrum"],
+    OP: ["optimism"], UNI: ["uniswap"], AAVE: ["aave"], ATOM: ["cosmos hub", "cosmos"], XLM: ["stellar"], HBAR: ["hedera"], ICP: ["internet computer"], FIL: ["filecoin"], ETC: ["ethereum classic"],
+    INJ: ["injective"], PEPE: ["pepe"], WLD: ["worldcoin"], SEI: ["sei network"], TIA: ["celestia"], RENDER: ["render network"], FET: ["fetch.ai", "artificial superintelligence alliance"], JUP: ["jupiter"],
+    PYTH: ["pyth network"], ENA: ["ethena"], ONDO: ["ondo finance"], TAO: ["bittensor"], KAS: ["kaspa"], XMR: ["monero"], LDO: ["lido"], CRV: ["curve finance"], SAND: ["the sandbox"], MANA: ["decentraland"],
+    AXS: ["axie infinity"], STX: ["stacks"], IMX: ["immutable"], ALGO: ["algorand"], VET: ["vechain"], EGLD: ["multiversx"], HYPE: ["hyperliquid"], BONK: ["bonk"], WIF: ["dogwifhat"], FLOKI: ["floki"], TRUMP: ["official trump"] };
+  var NAME_RE = {}; Object.keys(NAMES).forEach(function (k) { NAME_RE[k] = new RegExp("(^|[^a-z0-9])(" + NAMES[k].map(function (n) { return n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|") + ")([^a-z0-9]|$)"); });
+  // tickers that are also ordinary words or regions: they count only as $TICKER or by the project name
+  var AMBIG = { ONE: 1, GAS: 1, US: 1, ME: 1, AI: 1, IT: 1, ALL: 1, NOW: 1, NEW: 1, TOP: 1, BIG: 1, CAT: 1, DOG: 1, MOVE: 1, SUN: 1, ACE: 1, KEY: 1, LOW: 1, HIGH: 1, PEOPLE: 1, MASK: 1, GOAL: 1, FUN: 1, HOT: 1, SAFE: 1, REAL: 1, OPEN: 1, POWER: 1, STORJ: 0, LINK: 1, NEAR: 1, SUI: 1, OP: 1, UNI: 1, SEI: 1, ATOM: 1, SAND: 1 };
+  var KW = {
+    imp: [/\bhack(ed|ers?)?\b/, /\bexploit(ed)?\b/, /\bdrain(ed)?\b/, /\bstolen\b/, /\bbreach\b/, /\bdelist(s|ed|ing)?\b/, /\bbankrupt(cy)?\b/, /\binsolven(t|cy)\b/,
+      /\b(halts?|suspends?|freezes?|pauses?) (all )?withdrawals?\b/, /\brug ?pull\b/, /\b(sec|cftc|doj) (sues|charges|sued|charged)\b/, /\bcharged with\b/, /\bfraud\b/, /\barrest(ed)?\b/, /\bde-?peg(ged|s)?\b/,
+      /\bshut(s|ting)? down\b/, /\bcollapse[sd]?\b/, /\bseized?\b/, /\bvulnerabilit(y|ies)\b/, /\battack(ed)?\b/],
+    neg: [/\bplunge[sd]?\b/, /\bcrash(es|ed)?\b/, /\bdump(s|ed|ing)?\b/, /\bsell-?off\b/, /\bliquidat(ed|ions?)\b/, /\bban(s|ned)?\b/, /\bprobe\b/, /\binvestigat(ion|es|ed)\b/, /\bfined?\b/,
+      /\boutage\b/, /\bunlock(s)?\b/, /\blawsuit\b/, /\bwarns?\b/, /\bslump(s|ed)?\b/, /\b(falls?|drops?|tumbles?|sinks?|slips?|declines?|loses|slides?)\b/, /\bbearish\b/, /\boutflows?\b/, /\bdowngrade[sd]?\b/, /\blayoffs?\b/, /\bdelay(s|ed)?\b/],
+    pos: [/\bsurge[sd]?\b/, /\brall(y|ies|ied)\b/, /\bsoar(s|ed)?\b/, /\b(will )?list(s|ed|ing)? on\b/, /\bpartnership\b/, /\betf (approv|launch)/, /\binflows?\b/, /\bbullish\b/, /\bupgrade[sd]?\b/,
+      /\brecord high\b/, /\ball-time high\b/, /\bath\b/, /\badoption\b/, /\bjumps?\b/, /\bgains?\b/, /\bapprov(al|ed|es)\b/, /\bbuy(s|ing)? back\b/, /\baccumulat(es|ing|ion)\b/]
+  };
+  function newsSet() { return Object.assign({ on: true, server: "" }, jget(NEWS_SET, {})); }
+  function newsCache() { var c = jget(NEWS_KEY, null); return c && Array.isArray(c.items) ? c : { at: 0, items: [], src: "" }; }
+  function coinsOf(title) {
+    var out = {}, T0 = String(title || ""), low = " " + T0.toLowerCase() + " ";
+    var m, re = /\$([A-Z][A-Z0-9]{1,9})\b/g; while ((m = re.exec(T0))) out[m[1]] = 1;
+    re = /\b([A-Z][A-Z0-9]{2,9})\b/g; while ((m = re.exec(T0))) if (!AMBIG[m[1]] && m[1].length >= 3 && !/^(USD|USDT|USDC|ETF|SEC|CEO|CFTC|DOJ|NFT|DEX|CEX|API|FED|GDP|CPI|FOMC|IPO|AML|KYC|TVL|DAO|EU|UK|USA|ATH|AMA|DEFI|WEB3|NEWS|LIVE|BREAKING|LATEST|TODAY|NEW|JUST)$/.test(m[1])) out[m[1]] = 1;
+    for (var k in NAME_RE) if (NAME_RE[k].test(low)) out[k] = 1;
+    if (out.BTC && /bitcoin cash/i.test(T0) && !/\bbitcoin\b(?! cash)/i.test(T0)) delete out.BTC;
+    return Object.keys(out);
+  }
+  function classify(title, extra) {
+    var t = String(title || "").toLowerCase(), hit = function (a) { return a.some(function (r) { return r.test(t); }); };
+    var imp = hit(KW.imp), neg = imp || hit(KW.neg), pos = !neg && hit(KW.pos);
+    if (extra && extra.kind === "delisting") { imp = true; neg = true; pos = false; }
+    if (extra && extra.kind === "listing") { pos = true; }
+    if (extra && extra.votes) { var v = extra.votes; if ((v.negative || 0) + (v.disliked || 0) > (v.positive || 0) + (v.liked || 0) + 2) neg = true; if ((v.important || 0) >= 3 && neg) imp = true; }
+    return { imp: imp, tone: neg ? -1 : pos ? 1 : 0 };
+  }
+  function normItem(x) {
+    var title = x.title || x.headline || x.name || "", url = x.url || x.link || x.original_url || x.source_url || "";
+    var at = Date.parse(x.published || x.publishedAt || x.published_at || x.pubDate || x.date || x.created_at || x.time || "") || (typeof x.releaseDate === "number" ? x.releaseDate : 0);
+    if (!title || !at) return null;
+    var src = typeof x.source === "string" ? x.source : x.source && (x.source.title || x.source.name || x.source.domain) || x.sourceName || x.source_name || "";
+    var coins = Array.isArray(x.coins) && x.coins.length ? x.coins.map(function (c) { return String(c.code || c.symbol || c).toUpperCase(); }) : coinsOf(title);
+    var c = classify(title, x);
+    return { t: String(title).slice(0, 300), u: String(url), s: String(src).slice(0, 60), at: at, c: coins.slice(0, 8), imp: c.imp, tone: c.tone, k: x.kind || "" };
+  }
+  function listOf(j) { return Array.isArray(j) ? j : j && (j.articles || j.news || j.results || j.items || j.data && (Array.isArray(j.data) ? j.data : j.data.articles || j.data.items)) || []; }
+  var newsBusy = null;
+  async function newsLoad(force) {
+    var S0 = newsSet(), c = newsCache();
+    if (!S0.on) return c;
+    if (!force && Date.now() - c.at < NEWS_TTL && c.items.length) return c;
+    if (newsBusy) return newsBusy;
+    newsBusy = (async function () {
+      var tries = [], err = "";
+      if (S0.server) tries.push(["server", S0.server.replace(/\/+$/, "") + "/news"]);
+      tries.push(["free", NEWS_FREE]);
+      for (var i = 0; i < tries.length; i++) {
+        try {
+          var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 12000);
+          var r = await fetch(tries[i][1], { signal: ctl.signal, cache: "no-store" }); clearTimeout(to);
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          var items = listOf(await r.json()).map(normItem).filter(Boolean);
+          if (!items.length) throw new Error("empty");
+          var seen = {}, uniq = items.filter(function (x) { var k = x.t.toLowerCase().replace(/\W+/g, "").slice(0, 80); if (seen[k]) return false; seen[k] = 1; return true; });
+          uniq.sort(function (a, b) { return b.at - a.at; });
+          c = { at: Date.now(), items: uniq.slice(0, 300), src: tries[i][0], err: "" };
+          jset(NEWS_KEY, c); newsPaint(); return c;
+        } catch (e) { err = (tries[i][0] + ": " + (e && e.name === "AbortError" ? "timeout" : (e && e.message) || e)); }
+      }
+      c = Object.assign({}, newsCache(), { err: err, tried: Date.now() }); jset(NEWS_KEY, c); return c;
+    })();
+    try { return await newsBusy; } finally { newsBusy = null; }
+  }
+  // the news of one coin in the last hours: count, tone, important negatives
+  function newsFor(coin, hours) {
+    coin = String(coin || "").toUpperCase(); var since = Date.now() - (hours || 24) * 3600e3;
+    var L = newsCache().items.filter(function (x) { return x.at >= since && x.c.indexOf(coin) >= 0; });
+    var neg = L.filter(function (x) { return x.tone < 0; }).length, pos = L.filter(function (x) { return x.tone > 0; }).length, imp = L.filter(function (x) { return x.imp && x.tone < 0; });
+    return { coin: coin, n: L.length, neg: neg, pos: pos, imp: imp.length, lastImp: imp[0] || null, items: L, tone: imp.length ? -2 : neg > pos ? -1 : pos > neg ? 1 : 0 };
+  }
+  function badgeHTML(coin) {
+    var S0 = newsSet(); if (!S0.on) return "";
+    var f = newsFor(coin, 24), cls = f.tone === -2 ? "imp" : f.tone < 0 ? "neg" : f.tone > 0 ? "pos" : "";
+    var lab = f.n ? (f.imp ? "⚠ " : "") + f.n : "0";
+    return '<button type="button" class="ch-nw ' + cls + (f.n ? "" : " zero") + '" data-ch-news data-coin="' + esc(coin) + '" title="' + esc(f.n ? tr("nwBadge", { n: f.n, i: f.imp, c: coin }) : tr("nwNone", { c: coin })) + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h11v14H7a2 2 0 0 1-2-2zM16 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5"/></svg><span>' + lab + "</span></button>";
+  }
+  // after a download, refresh every badge on the page
+  function newsPaint() { document.querySelectorAll(".ch-nw[data-coin]").forEach(function (b) { var w = document.createElement("div"); w.innerHTML = badgeHTML(b.dataset.coin); if (w.firstChild) b.replaceWith(w.firstChild); }); document.querySelectorAll(".ch-links").forEach(function (el) { el.__ch = null; }); }
+  addEventListener("storage", function (e) { if (e.key === NEWS_KEY) newsPaint(); });
+  function newsModal(coin) {
+    var m = document.getElementById("chNews");
+    if (!m) {
+      m = document.createElement("div"); m.id = "chNews"; m.className = "ch-log"; m.hidden = true; m.setAttribute("translate", "no"); m.setAttribute("data-html2canvas-ignore", "true");
+      m.innerHTML = '<section class="ch-lp" role="dialog" aria-modal="true" aria-labelledby="chNewsT"><header><h2 id="chNewsT"></h2><button type="button" class="ch-x" data-n="close"></button></header><div class="ch-ll"></div><footer><span class="ch-lh"></span><button type="button" data-n="reload"></button></footer></section>';
+      m.addEventListener("click", function (e) { var b = e.target.closest("[data-n]"); if (e.target === m || (b && b.dataset.n === "close")) { m.hidden = true; document.documentElement.classList.remove("ch-lock"); } if (b && b.dataset.n === "reload") { b.disabled = true; newsLoad(true).then(function () { b.disabled = false; newsModal(m.dataset.coin); }); } });
+      addEventListener("keydown", function (e) { if (e.key === "Escape" && !m.hidden) { m.hidden = true; document.documentElement.classList.remove("ch-lock"); } });
+      document.body.appendChild(m);
+    }
+    m.dataset.coin = coin; var f = newsFor(coin, 72), c = newsCache();
+    m.querySelector("h2").textContent = tr("nwTitle", { c: coin }); m.querySelector(".ch-x").textContent = "✕"; m.querySelector(".ch-x").setAttribute("aria-label", tr("close"));
+    m.querySelector('[data-n="reload"]').textContent = tr("nwReload");
+    m.querySelector(".ch-lh").textContent = c.at ? tr("nwSrc", { s: c.src === "server" ? tr("nwSrvName") : "Free Crypto News", t: when(c.at) }) : (c.err ? tr("nwErr", { e: c.err }) : tr("loading"));
+    var TONE = { "-1": "nwNeg", "1": "nwPos", "0": "nwNeu" };
+    m.querySelector(".ch-ll").innerHTML = f.items.length ? f.items.map(function (x) {
+      var tag = x.imp && x.tone < 0 ? '<span class="ch-ni">' + esc(tr("nwImp")) + "</span>" : '<span class="ch-nt t' + x.tone + '">' + esc(tr(TONE[String(x.tone)])) + "</span>";
+      return '<article class="ch-le ch-nwi' + (x.imp && x.tone < 0 ? " ch-new" : "") + '"><div class="ch-lm"><span>' + esc(x.s || "—") + "</span>" + tag + "<time>" + esc(when(x.at)) + "</time></div>" +
+        (x.u ? '<a class="ch-nh" href="' + esc(x.u) + '" target="_blank" rel="noopener">' + esc(x.t) + " ↗</a>" : "<b>" + esc(x.t) + "</b>") + "</article>";
+    }).join("") : '<p class="ch-l0">' + esc(c.at ? tr("nwEmpty", { c: coin }) : c.err ? tr("nwErr", { e: c.err }) + " " + tr("nwHint") : tr("loading")) + "</p>";
+    m.hidden = false; document.documentElement.classList.add("ch-lock"); var x0 = m.querySelector(".ch-x"); if (x0) x0.focus();
+    if (!c.at || Date.now() - c.at > NEWS_TTL) newsLoad().then(function () { if (!m.hidden && m.dataset.coin === coin && newsCache().at !== c.at) newsModal(coin); });
+  }
+  addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("[data-ch-news]"); if (b) { e.preventDefault(); e.stopPropagation(); newsModal(b.dataset.coin); } }, true);
+  setTimeout(function () { newsLoad(); setInterval(newsLoad, NEWS_TTL); }, 1500);
 
   // ---------- hover hints for every tool ----------
   // Sources, first found wins: an entry of assets/tips.js matching the element (or one of its parents), its title,
@@ -1264,8 +1414,8 @@ bot: [
     tool: TOOL, root: ROOT, logo: LOGO, version: VERSION, channel: CHANNEL_URL, watermark: WATERMARK,
     theme: function (fallback) { return saved() || fallback || null; },
     url: url, links: links, linksInto: linksInto, param: param,
-    mark: mark, frame: frame, shot: shot, cam: cam, showCanvas: showCanvas, t: tr,
-    log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
+    mark: mark, frame: frame, shot: shot, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
+    news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
   };
 })();
 
@@ -1347,6 +1497,25 @@ body.ch-skin :is(h2){font-weight:500!important;letter-spacing:0!important}
 body.ch-skin :is(h3){font-weight:500!important}
 body.ch-skin b, body.ch-skin strong{font-weight:600}
 body.ch-skin ::placeholder{color:var(--ch-t3)}
+.fch{flex-basis:100%;font-size:12px;color:var(--muted);margin-top:4px}
+.lad{font-size:.86rem;margin:0 0 6px;padding-left:10px;border-left:3px solid var(--line)}
+.ladh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ladh b:first-child{font-weight:500}
+.ladp{margin-left:auto;font-size:1rem;font-weight:600}
+.lad .ls{border-top:1px solid var(--line);padding:5px 0}
+.lad .ls:first-of-type{margin-top:6px}
+.lad .ls summary{display:flex;align-items:baseline;gap:8px;cursor:pointer;list-style:none}
+.lad .ls summary::-webkit-details-marker{display:none}
+.lad .ls summary i{font-style:normal;width:14px;text-align:center;font-weight:700;color:var(--muted)}
+.lad .ls.ok summary i{color:var(--green)}
+.lad .ls.warn summary i{color:var(--wave)}
+.lad .ls summary span{flex:0 0 auto}
+.lad .ls summary small{margin-left:auto;color:var(--muted);text-align:right}
+.lad .ls.ok summary small{color:var(--text)}
+.lad .ls.warn summary small{color:var(--wave)}
+.lad .ls p{margin:4px 0 2px 22px;color:var(--muted);font-size:.82rem;line-height:1.45}
+.lad .ladn{margin:8px 0 2px;color:var(--muted);font-size:.82rem}
+.lad-s .ladh{gap:6px}
 
 html:root:root{--bg:var(--ch-bg);--surface:var(--ch-bg);--line:var(--ch-bd);--text:var(--ch-tx);--muted:var(--ch-t2);--green:var(--ch-up);--red:var(--ch-dn);--wave:var(--ch-warn);--chip:var(--ch-s1);--ch-w:760px}
 body.ch-skin main{padding-top:12px}
@@ -1380,17 +1549,26 @@ body.ch-skin .sheet{border:0.5px solid var(--ch-bd2)}
 <script>
 // ===== Elliott Wave core (pure functions) =====
 const EW = (() => {
+  const OPT = {};
+  // ===== Elliott wave engine v2 (CRYPTO HUNTERS 1.05) =====
+  // 1. Swings are found by ZigZag at several degrees (the swing size is a multiple of the average candle range),
+  //    so small noise does not break the count and large waves are not missed.
+  // 2. At every degree the latest swings are matched against wave patterns that end with the leg in progress:
+  //    impulse waves 1-5, the A-B-C correction after an impulse, and a stand-alone A-B-C zigzag.
+  //    Hard rules (wave 2 never beyond the start of 1, wave 3 never the shortest, wave 4 out of wave 1) remove counts;
+  //    guidelines (Fibonacci ratios, alternation, momentum divergence, time ratios, a significant start) score them.
+  // 3. Each count predicts the next move with a Fibonacci price target and time (path), and an invalidation level.
   const fit = (x, ideals, tol) => Math.max(...ideals.map(t => Math.exp(-(((x - t) / tol) ** 2))));
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
   function atrPct(h, l, c) {
     const n = c.length, from = Math.max(1, n - 100);
     let s = 0;
-    for (let i = from; i < n; i++)
-      s += Math.max(h[i] - l[i], Math.abs(h[i] - c[i - 1]), Math.abs(l[i] - c[i - 1])) / c[i - 1];
+    for (let i = from; i < n; i++) s += Math.max(h[i] - l[i], Math.abs(h[i] - c[i - 1]), Math.abs(l[i] - c[i - 1])) / c[i - 1];
     return s / Math.max(1, n - from);
   }
 
-  // ZigZag over highs/lows; last pivot is the unfinished (current) leg
+  // ZigZag over highs/lows; the last pivot is the unfinished (current) leg
   function zigzag(h, l, dev) {
     const piv = [];
     let dir = 0, hiI = 0, hiP = h[0], loI = 0, loP = l[0], eI = 0, eP = 0;
@@ -1412,114 +1590,292 @@ const EW = (() => {
     return piv;
   }
 
-  // v = sign-adjusted prices (bull space). Returns score 0..1 or 0 if rules broken.
-  function impulseScore(v) {
+  function rsiArr(c, n = 14) {
+    const out = Array(c.length).fill(null); if (c.length <= n) return out;
+    let g = 0, l = 0;
+    for (let i = 1; i <= n; i++) { const d = c[i] - c[i - 1]; if (d > 0) g += d; else l -= d; }
+    g /= n; l /= n; out[n] = l === 0 ? 100 : 100 - 100 / (1 + g / l);
+    for (let i = n + 1; i < c.length; i++) { const d = c[i] - c[i - 1]; g = (g * (n - 1) + Math.max(d, 0)) / n; l = (l * (n - 1) + Math.max(-d, 0)) / n; out[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l); }
+    return out;
+  }
+
+  // Quality of a complete 5-wave impulse in bull space (v: 6 prices, t: 6 bar indices). 0 = rules broken.
+  function impulseScore(v, t) {
     const w1 = v[1] - v[0], w2 = v[1] - v[2], w3 = v[3] - v[2], w4 = v[3] - v[4], w5 = v[5] - v[4];
     if (!(w1 > 0 && w2 > 0 && w3 > 0 && w4 > 0 && w5 > 0)) return 0;
-    if (v[2] <= v[0] || v[3] <= v[1] || v[4] <= v[1] || v[5] <= v[3]) return 0; // core rules
-    if (w3 < w1 && w3 < w5) return 0;                                           // wave 3 never shortest
-    const s = 0.25 * fit(w2 / w1, [0.5, 0.618], 0.2) + 0.3 * fit(w3 / w1, [1.618, 2.618, 1], 0.5)
-            + 0.2 * fit(w4 / w3, [0.382, 0.236, 0.5], 0.15) + 0.25 * fit(w5 / w1, [1, 0.618, 1.618], 0.35);
-    return 0.4 + 0.6 * s;
+    if (v[2] <= v[0] || v[3] <= v[1] || v[4] <= v[1] || v[5] <= v[3]) return 0;   // core rules
+    if (w3 < w1 && w3 < w5) return 0;                                              // wave 3 is never the shortest
+    const r2 = w2 / w1, r4 = w4 / w3;
+    let s = 0.22 * fit(r2, [0.5, 0.618], 0.18) + 0.26 * fit(w3 / w1, [1.618, 2.618, 2, 1.272], 0.35)
+          + 0.18 * fit(r4, [0.382, 0.236, 0.5], 0.13) + 0.18 * Math.max(fit(w5 / w1, [1, 0.618, 1.618], 0.3), fit(w5 / (v[3] - v[0]), [0.618, 0.382], 0.15));
+    s += 0.08 * clamp(Math.abs(r2 - r4) / 0.25, 0, 1);                             // alternation of 2 and 4
+    if (t) {
+      const T1 = t[1] - t[0], T3 = t[3] - t[2], T5 = t[5] - t[4];
+      s += 0.08 * (T3 >= Math.min(T1, T5) ? 1 : 0.3);                              // wave 3 is rarely the shortest in time
+    }
+    return 0.35 + 0.65 * clamp(s, 0, 1);
   }
 
   // Raw index in bull space: 0 = strong buy, 100 = strong sell
-  const RAW = { w2: 15, w3: 35, w4: 28, w5: 78, A: 68, B: 72, ABC: 18 };
+  const QQ = q => (OPT.qa ?? 0.45) + (1 - (OPT.qa ?? 0.45)) * q;
+  const RAW = { w1: 32, w2: 15, w3: 32, w4: 26, w5: 74, A: 66, B: 76, C: 62, ABC: 16, cB: 70, cC: 58, cABC: 22 };
   const NAMES = {
-    w2: 'Wave 2 pullback', w3: 'Wave 3 in progress', w4: 'Wave 4 pullback', w5: 'Wave 5, late stage',
-    A: 'Wave A after the top', B: 'Wave B bounce', ABC: 'ABC correction complete'
+    w1: 'Wave 1 of a new trend', w2: 'Wave 2 pullback', w3: 'Wave 3 in progress', w4: 'Wave 4 pullback', w5: 'Wave 5, late stage',
+    A: 'Wave A after the top', B: 'Wave B bounce', C: 'Wave C in progress', ABC: 'ABC correction complete',
+    cB: 'Bounce B in a correction', cC: 'Wave C of a correction', cABC: 'Correction A-B-C complete'
   };
 
-  function scenarios(piv) {
+  // ctx: { c, rsi } of the same bars (optional; enables momentum checks)
+  function scenarios(piv, ctx) {
     const n = piv.length, out = [];
+    if (n < 3) return out;
+    const rsi = ctx && ctx.rsi;
     for (const sign of [1, -1]) {
-      const startType = sign === 1 ? 'L' : 'H';
-      const V = k => sign * piv[k].p;
-      const add = (key, start, len, conf, target, invalid, labels) => {
-        if (conf <= 0) return;
-        out.push({ key, sign, conf: Math.min(1, conf), target: sign * target, invalid: sign * invalid,
-          points: labels.map((lab, j) => ({ i: piv[start + j].i, p: piv[start + j].p, lab })) });
+      const up = sign === 1 ? 'L' : 'H';
+      const V = k => sign * piv[k].p, I = k => piv[k].i;
+      const R = k => rsi && rsi[I(k)] != null ? 50 + sign * (rsi[I(k)] - 50) : null;   // momentum in bull space
+      // the start of a pattern should be the extreme of the swings before it
+      const sig = (s, span) => {
+        let worse = 0;
+        for (let k = Math.max(0, s - span); k < s; k++) if (V(k) < V(s) - 1e-12) worse++;
+        return worse === 0 ? 1 : worse === 1 ? 0.7 : 0.45;
       };
-      const ctxLow = s => { // wave 1 should start from a meaningful extreme
-        let ok = 1;
-        for (let k = Math.max(0, s - 6); k < s; k++) if (V(k) < V(s)) ok = 0.65;
-        return ok;
+      const add = (key, s, len, conf, o) => {
+        if (!(conf > 0)) return;
+        const pts = [];
+        for (let j = 0; j < len; j++) pts.push({ i: I(s + j), p: piv[s + j].p, lab: o.labels[j] });
+        out.push({ key, sign, s, conf: Math.min(1, conf), target: sign * o.target, invalid: sign * o.invalid, points: pts,
+          path: o.path.map(q => ({ p: sign * q.p, bars: Math.max(1, Math.round(q.bars)) })), done: !!o.done });
       };
-      // Wave 2 (current leg)
-      if (n >= 3 && piv[n - 3].t === startType) {
+      const last = n - 1, now = piv[last].i;   // bar of the latest extreme (the leg in progress)
+      const legT = (a, b) => Math.max(1, I(b) - I(a));
+
+      // ----- impulse waves -----
+      // wave 2: 0-1-2, current leg is 2
+      if (n >= 3 && piv[n - 3].t === up) {
         const s = n - 3, v = [V(s), V(s + 1), V(s + 2)], w1 = v[1] - v[0], r = (v[1] - v[2]) / w1;
-        if (w1 > 0 && v[2] > v[0] && r >= 0.236 && r <= 0.886)
-          add('w2', s, 3, (0.3 + 0.45 * fit(r, [0.5, 0.618], 0.15)) * ctxLow(s), v[2] + 1.618 * w1, v[0], ['0', '1', '2']);
+        if (w1 > 0 && v[2] > v[0] && r >= 0.236 && r <= 0.886) {
+          const T1 = legT(s, s + 1);
+          add('w2', s, 3, (0.3 + 0.45 * fit(r, [0.5, 0.618], 0.15)) * sig(s, 6), {
+            labels: ['0', '1', '2'], target: v[2] + 1.618 * w1, invalid: v[0],
+            path: [{ p: v[2] + 1.618 * w1, bars: 1.4 * T1 }] });
+        }
       }
-      // Wave 3 (current leg)
-      if (n >= 4 && piv[n - 4].t === startType) {
+      // wave 3: 0-1-2-3, current leg is 3
+      if (n >= 4 && piv[n - 4].t === up) {
         const s = n - 4, v = [0, 1, 2, 3].map(j => V(s + j)), w1 = v[1] - v[0], r2 = (v[1] - v[2]) / w1, e = (v[3] - v[2]) / w1;
-        if (w1 > 0 && v[2] > v[0] && v[3] > v[1] && r2 >= 0.236 && r2 <= 0.886)
-          add('w3', s, 4, (0.35 + 0.2 * fit(r2, [0.5, 0.618], 0.2) + 0.2 * Math.min(1, e / 1.618)) * ctxLow(s),
-            v[2] + 1.618 * w1, v[2], ['0', '1', '2', '3']);
+        if (w1 > 0 && v[2] > v[0] && v[3] > v[1] && r2 >= 0.236 && r2 <= 0.886) {
+          const ext = e < 1.5 ? 1.618 : e < 2.4 ? 2.618 : e * 1.15, T1 = legT(s, s + 1), el = legT(s + 2, s + 3);
+          const left = Math.max(0.3 * T1, 1.6 * T1 - el);
+          let c = 0.34 + 0.2 * fit(r2, [0.5, 0.618], 0.2) + 0.22 * Math.min(1, e / 1.618);
+          if (e > 3.2) c *= 0.7;   // very stretched: more likely a higher degree or a finished wave
+          add('w3', s, 4, c * sig(s, 6), {
+            labels: ['0', '1', '2', '3'], target: v[2] + ext * w1, invalid: v[2],
+            path: [{ p: v[2] + ext * w1, bars: left }] });
+        }
       }
-      // Wave 4 (current leg)
-      if (n >= 5 && piv[n - 5].t === startType) {
+      // wave 4: 0-1-2-3-4, current leg is 4
+      if (n >= 5 && piv[n - 5].t === up) {
         const s = n - 5, v = [0, 1, 2, 3, 4].map(j => V(s + j));
         const w1 = v[1] - v[0], w3 = v[3] - v[2], r2 = (v[1] - v[2]) / w1, r4 = (v[3] - v[4]) / w3;
-        if (w1 > 0 && w3 > 0 && v[2] > v[0] && v[3] > v[1] && v[4] > v[1] && r4 >= 0.146 && r4 <= 0.618)
-          add('w4', s, 5, (0.35 + 0.2 * fit(r4, [0.382, 0.236], 0.12) + 0.15 * fit(r2, [0.5, 0.618], 0.2) + 0.1 * fit(w3 / w1, [1.618, 2.618], 0.5)) * ctxLow(s),
-            v[4] + Math.max(w1, 0.618 * w3) * 0.9, v[1], ['0', '1', '2', '3', '4']);
+        if (w1 > 0 && w3 > 0 && v[2] > v[0] && v[3] > v[1] && v[4] > v[1] && w3 >= 0.9 * w1 && r4 >= 0.146 && r4 <= 0.618) {
+          const t5 = v[4] + Math.max(0.618 * w1, Math.min(w1, 0.618 * (v[3] - v[0]))), T1 = legT(s, s + 1);
+          let c = 0.34 + 0.2 * fit(r4, [0.382, 0.236], 0.12) + 0.12 * fit(r2, [0.5, 0.618], 0.2) + 0.12 * fit(w3 / w1, [1.618, 2.618], 0.5)
+            + 0.06 * clamp(Math.abs(r2 - r4) / 0.25, 0, 1);
+          add('w4', s, 5, c * sig(s, 7), {
+            labels: ['0', '1', '2', '3', '4'], target: Math.max(t5, v[3] * 1.0001), invalid: v[1],
+            path: [{ p: Math.max(t5, v[3] + 0.1 * w1), bars: T1 }] });
+        }
       }
-      // Wave 5 (current leg = full impulse)
-      if (n >= 6 && piv[n - 6].t === startType) {
-        const s = n - 6, v = [0, 1, 2, 3, 4, 5].map(j => V(s + j)), q = impulseScore(v);
-        add('w5', s, 6, q * 0.9, v[4], v[4], ['0', '1', '2', '3', '4', '5']); // target = wave-4 area after correction
+      // wave 5: full impulse, current leg is 5
+      if (n >= 6 && piv[n - 6].t === up) {
+        const s = n - 6, v = [0, 1, 2, 3, 4, 5].map(j => V(s + j)), t = [0, 1, 2, 3, 4, 5].map(j => I(s + j));
+        const q = impulseScore(v, t);
+        if (q) {
+          const w1 = v[1] - v[0], w5 = v[5] - v[4], full = v[5] - v[0];
+          const r3 = R(s + 3), r5 = R(s + 5), div = r3 != null && r5 != null && r5 < r3 - 2;   // lower momentum on the new high
+          const ripe = clamp((w5 / w1 - 0.5) / 0.5, 0, 1);
+          const done = div && w5 >= 0.618 * w1;
+          const end5 = done ? v[5] : Math.max(v[5], v[4] + w1);
+          const corr = end5 - 0.382 * (end5 - v[0]);
+          const Timp = legT(s, s + 5);
+          add('w5', s, 6, q * (0.62 + 0.18 * ripe + (div ? 0.14 : 0)) * sig(s, 8), {
+            labels: ['0', '1', '2', '3', '4', '5'], target: done ? corr : end5, invalid: v[4], done,
+            path: done ? [{ p: corr, bars: 0.38 * Timp }] : [{ p: end5, bars: Math.max(2, legT(s, s + 1) - legT(s + 4, s + 5)) }, { p: corr, bars: 0.38 * Timp }] });
+        }
       }
-      // Wave A after completed impulse
-      if (n >= 7 && piv[n - 7].t === startType) {
-        const s = n - 7, v = [0, 1, 2, 3, 4, 5, 6].map(j => V(s + j)), q = impulseScore(v.slice(0, 6));
-        if (q && v[6] < v[5]) add('A', s, 7, q * 0.85, v[4], v[5], ['0', '1', '2', '3', '4', '5', 'A']);
+      // wave A after a complete impulse
+      if (n >= 7 && piv[n - 7].t === up) {
+        const s = n - 7, v = [...Array(7)].map((_, j) => V(s + j)), t = [...Array(6)].map((_, j) => I(s + j)), q = impulseScore(v.slice(0, 6), t);
+        const a = v[5] - v[6], full = v[5] - v[0];
+        if (q && a > 0 && a <= 0.9 * full) {
+          const TA = legT(s + 5, s + 6), bEnd = v[6] + 0.5 * a, cEnd = bEnd - a;
+          add('A', s, 7, QQ(q) * (0.7 + 0.2 * fit(a / full, [0.382, 0.236, 0.5], 0.15)) * sig(s, 8), {
+            labels: ['0', '1', '2', '3', '4', '5', 'A'], target: Math.min(v[4], v[6] - 0.1 * a), invalid: v[5],
+            path: [{ p: Math.min(v[4], v[6] - 0.15 * a), bars: 0.5 * TA }, { p: bEnd, bars: 0.6 * TA }, { p: cEnd, bars: TA }] });
+        }
       }
-      // Wave B bounce
-      if (n >= 8 && piv[n - 8].t === startType) {
-        const s = n - 8, v = [...Array(8)].map((_, j) => V(s + j)), q = impulseScore(v.slice(0, 6));
+      // wave B bounce
+      if (n >= 8 && piv[n - 8].t === up) {
+        const s = n - 8, v = [...Array(8)].map((_, j) => V(s + j)), t = [...Array(6)].map((_, j) => I(s + j)), q = impulseScore(v.slice(0, 6), t);
         const a = v[5] - v[6], rb = (v[7] - v[6]) / a;
-        if (q && a > 0 && v[7] < v[5] && rb > 0.2)
-          add('B', s, 8, q * (0.55 + 0.3 * fit(rb, [0.5, 0.618, 0.382], 0.2)), v[7] - a, v[5], ['0', '1', '2', '3', '4', '5', 'A', 'B']);
+        if (q && a > 0 && v[7] < v[5] && rb > 0.236) {
+          const TA = legT(s + 5, s + 6);
+          add('B', s, 8, QQ(q) * (0.55 + 0.3 * fit(rb, [0.5, 0.618, 0.382], 0.2)) * sig(s, 8), {
+            labels: ['0', '1', '2', '3', '4', '5', 'A', 'B'], target: v[7] - a, invalid: v[5],
+            path: [{ p: v[7] - a, bars: TA }] });
+        }
       }
-      // ABC complete (current leg = C)
-      if (n >= 9 && piv[n - 9].t === startType) {
-        const s = n - 9, v = [...Array(9)].map((_, j) => V(s + j)), q = impulseScore(v.slice(0, 6));
-        const a = v[5] - v[6], c = v[7] - v[8], depth = (v[5] - v[8]) / (v[5] - v[0]);
-        if (q && a > 0 && c > 0 && v[7] < v[5] && v[8] < v[7] && c / a >= 0.618 && c / a <= 1.786 && depth >= 0.236 && depth <= 0.886)
-          add('ABC', s, 9, q * (0.45 + 0.35 * fit(c / a, [1, 1.618, 0.618], 0.3) + 0.15 * fit(depth, [0.382, 0.5, 0.618], 0.2)),
-            v[5], v[8], ['0', '1', '2', '3', '4', '5', 'A', 'B', 'C']);
+      // wave C: in progress or complete
+      if (n >= 9 && piv[n - 9].t === up) {
+        const s = n - 9, v = [...Array(9)].map((_, j) => V(s + j)), t = [...Array(6)].map((_, j) => I(s + j)), q = impulseScore(v.slice(0, 6), t);
+        const a = v[5] - v[6], c = v[7] - v[8], depth = (v[5] - v[8]) / (v[5] - v[0]), ca = c / a;
+        if (q && a > 0 && c > 0 && v[7] < v[5] && v[8] < v[7] && ca <= 2.0 && depth <= 0.95) {
+          const TA = legT(s + 5, s + 6);
+          const rA = R(s + 6), rC = R(s + 8), div = rA != null && rC != null && rC > rA + 2;   // higher momentum on the lower low
+          if (ca >= 0.9 || (ca >= 0.618 && div)) {
+            const up1 = v[7] + 0.618 * (v[5] - v[8]) * 0.5 + 0.5 * (v[7] - v[8]);
+            add('ABC', s, 9, QQ(q) * (0.45 + 0.3 * fit(ca, [1, 1.618, 0.618], 0.3) + 0.12 * fit(depth, [0.382, 0.5, 0.618], 0.2) + (div ? 0.12 : 0)) * sig(s, 8), {
+              labels: ['0', '1', '2', '3', '4', '5', 'A', 'B', 'C'], target: Math.max(v[7], up1), invalid: v[8], done: true,
+              path: [{ p: Math.max(v[7], up1), bars: TA * 1.2 }] });
+          } else {
+            const cT = v[7] - a;
+            add('C', s, 9, QQ(q) * (0.5 + 0.25 * clamp(ca / 0.9, 0, 1)) * sig(s, 8), {
+              labels: ['0', '1', '2', '3', '4', '5', 'A', 'B', 'C'], target: cT, invalid: v[7],
+              path: [{ p: cT, bars: Math.max(1, TA - legT(s + 7, s + 8)) }] });
+          }
+        }
+      }
+      // wave 1 of a new trend after a finished correction (current leg breaks above the start of C... )
+      if (OPT.noStand) continue;
+      // ----- stand-alone A-B-C zigzag against the trend (no impulse needed) -----
+      // In bull space the correction goes down: X (high), A (low), B (lower high), C (current low)
+      const dn = sign === 1 ? 'H' : 'L';
+      if (n >= 4 && piv[n - 4].t === dn) {
+        const s = n - 4, v = [0, 1, 2, 3].map(j => V(s + j)), a = v[0] - v[1], b = v[2] - v[1], c = v[2] - v[3];
+        // the preceding move up must be larger than the correction (it is a correction of that move)
+        const pre = s >= 1 && piv[s - 1].t === up ? v[0] - V(s - 1) : 0;
+        if (a > 0 && b > 0 && c > 0 && v[2] < v[0] && b / a >= 0.236 && b / a <= 0.886 && pre > 0.9 * a && v[3] > V(s - 1)) {
+          const ca = c / a, TA = legT(s, s + 1);
+          const rA = R(s + 1), rC = R(s + 3), div = rA != null && rC != null && rC > rA + 2;
+          const base = (0.32 + 0.12 * fit(b / a, [0.5, 0.618, 0.382], 0.2)) * clamp(pre / (2 * a), 0.5, 1);
+          if (ca >= 0.9 || (ca >= 0.618 && div)) {
+            add('cABC', s, 4, base * (0.75 + 0.25 * fit(ca, [1, 1.618, 1.272], 0.25) + (div ? 0.1 : 0)), {
+              labels: ['', 'A', 'B', 'C'], target: v[0], invalid: v[3] - 0.236 * a, done: true,
+              path: [{ p: v[2], bars: 0.8 * TA }, { p: v[0], bars: 1.6 * TA }] });
+          } else {
+            add('cC', s, 4, base * 0.9, {
+              labels: ['', 'A', 'B', 'C'], target: v[2] - a, invalid: v[2],
+              path: [{ p: v[2] - a, bars: Math.max(1, TA - legT(s + 2, s + 3)) }] });
+          }
+        }
+      }
+      if (n >= 3 && piv[n - 3].t === dn) {
+        const s = n - 3, v = [0, 1, 2].map(j => V(s + j)), a = v[0] - v[1], b = (v[2] - v[1]) / a;
+        const pre = s >= 1 && piv[s - 1].t === up ? v[0] - V(s - 1) : 0;
+        if (a > 0 && b >= 0.236 && b < 1 && pre > 1.2 * a) {
+          add('cB', s, 3, (0.26 + 0.14 * fit(b, [0.5, 0.618], 0.2)) * clamp(pre / (2.5 * a), 0.5, 1), {
+            labels: ['', 'A', 'B'], target: v[2] - a, invalid: v[0],
+            path: [{ p: v[2] - a, bars: legT(s, s + 1) }] });
+        }
+      }
+      // wave 1 of a new trend: a finished correction (X-A-B-C), then the current leg up through B
+      if (n >= 5 && piv[n - 5].t === dn) {
+        const s = n - 5, v = [0, 1, 2, 3, 4].map(j => V(s + j)), a = v[0] - v[1], c = v[2] - v[3], w = v[4] - v[3];
+        if (a > 0 && c > 0 && v[2] < v[0] && c / a >= 0.8 && c / a <= 2 && v[4] > v[2]) {
+          const T = legT(s + 3, s + 4);
+          add('w1', s, 5, (0.3 + 0.15 * fit(c / a, [1, 1.618], 0.3)) * clamp(w / c, 0.5, 1.2), {
+            labels: ['', 'A', 'B', 'C', '1'], target: v[4] - 0.5 * w, invalid: v[3],
+            path: [{ p: v[4] - 0.5 * w, bars: 0.6 * T }, { p: v[4] - 0.5 * w + 1.618 * w, bars: 1.6 * T }] });
+        }
       }
     }
+    // A move that starts right where a complete 5-wave impulse in the other direction ended is, as a rule,
+    // a correction of that impulse rather than a new trend: impulse counts there lose weight, corrective ones gain.
+    const IMP = { w1: 1, w2: 1, w3: 1, w4: 1, w5: 1 }, CORR = { A: 1, B: 1, C: 1, ABC: 1, cB: 1, cC: 1, cABC: 1 };
+    for (const sc of out) {
+      const s = sc.s, sg = -sc.sign;
+      let after = false;
+      if (s >= 5) {
+        const v = [...Array(6)].map((_, j) => sg * piv[s - 5 + j].p), t = [...Array(6)].map((_, j) => piv[s - 5 + j].i);
+        if ((sg === 1 ? piv[s - 5].t === 'L' : piv[s - 5].t === 'H') && impulseScore(v, t) > 0) after = true;
+      }
+      sc.afterImpulse = after;
+      if (after && IMP[sc.key]) sc.conf *= OPT.impPen ?? 0.72;
+      // a corrective count of sign s is the correction of a bull (s=1) impulse: it needs that impulse before it
+      if (CORR[sc.key] && sc.points.length >= 7) sc.conf = Math.min(1, sc.conf * (OPT.corrBoost ?? 1.1));
+    }
     return out;
+  }
+
+  // Count at one swing degree; returns scenarios with the pivots used
+  function countAt(h, l, c, rsi, dev) {
+    const piv = zigzag(h, l, dev);
+    return scenarios(piv, { c, rsi }).map(s => Object.assign(s, { dev, piv }));
   }
 
   function analyze(k, sensitivity = 3) {
     const h = k.map(x => +x[2]), l = k.map(x => +x[3]), c = k.map(x => +x[4]);
     if (c.length < 60) return null;
-    const dev = Math.min(0.3, Math.max(0.012, sensitivity * atrPct(h, l, c)));
-    const piv = zigzag(h, l, dev);
-    const sc = scenarios(piv).sort((a, b) => b.conf - a.conf);
+    const atr = atrPct(h, l, c), rsi = rsiArr(c);
+    const base = Math.min(0.3, Math.max(0.012, sensitivity * atr));
+    const degs = (OPT.degs || [0.6, 1, 1.6]).map(m => Math.min(0.35, Math.max(0.01, base * m)));
+    let all = [];
+    degs.forEach((dev, di) => {
+      countAt(h, l, c, rsi, dev).forEach(s => {
+        const span = s.points[s.points.length - 1].i - s.points[0].i;
+        // counts that explain more of the chart are more meaningful; tiny ones are noise
+        const cover = clamp(span / (c.length * 0.25), 0.35, 1);
+        s.score = s.conf * (0.75 + 0.25 * cover) * (di === (OPT.baseDi ?? 1) ? 1 : (OPT.otherW ?? 0.85));
+        all.push(s);
+      });
+    });
     const price = c[c.length - 1];
-    if (!sc.length) return { price, index: 50, conf: 0, label: 'No clear wave count', trend: 0, bias: 0, piv, dev, best: null };
-    const b = sc[0];
+    const basePiv = zigzag(h, l, base);
+    if (!all.length) return { price, index: 50, conf: 0, label: 'No clear wave count', trend: 0, bias: 0, piv: basePiv, dev: base, best: null };
+    all.sort((a, b) => b.score - a.score);
+    // the count is taken at the base swing degree; the other degrees only confirm or question it
+    // (when the base degree has no valid count, the best count of another degree is used)
+    const baseDev = degs[OPT.baseDi ?? 1];
+    const b = all.find(s => s.dev === baseDev) || all[0];
+    // agreement: other degrees that see the same wave in the same direction raise confidence; a strong opposite count lowers it
+    const same = all.filter(s => s !== b && s.sign === b.sign && s.key === b.key).length;
+    const opp = all.find(s => s.sign !== b.sign && s.score > 0.8 * b.score);
+    b.conf = clamp(b.conf * (1 + 0.08 * Math.min(2, same)) * (opp ? 0.85 : 1), 0, 1);
+    const alt = all.find(s => s.key !== b.key || s.sign !== b.sign) || null;
     const rawBull = RAW[b.key], blended = 50 + (rawBull - 50) * b.conf;
     const index = Math.round(b.sign === 1 ? blended : 100 - blended);
-    return {
-      price, index, conf: b.conf, piv, dev, best: b, alt: sc[1] || null,
-      label: NAMES[b.key], trend: b.sign,
-      bias: index < 40 ? 1 : index > 60 ? -1 : 0
-    };
+    const m = c.length - 1, rNow = rsi[m], rPrev = rsi[Math.max(0, m - 3)];
+    // momentum of the last bars: confirms or questions the turn the count expects
+    let kf = 0; { const L = 14; let hh = -Infinity, ll = Infinity; for (let j = m - L + 1; j <= m; j++) { hh = Math.max(hh, h[j]); ll = Math.min(ll, l[j]); }
+      const st = j => { let a = -Infinity, z = Infinity; for (let q = j - L + 1; q <= j; q++) { a = Math.max(a, h[q]); z = Math.min(z, l[q]); } return a > z ? (c[j] - z) / (a - z) : 0.5; };
+      const k3 = (st(m) + st(m - 1) + st(m - 2)) / 3, d3 = (k3 + (st(m - 1) + st(m - 2) + st(m - 3)) / 3 + (st(m - 2) + st(m - 3) + st(m - 4)) / 3) / 3; kf = k3 - d3; }
+    return { price, index, conf: b.conf, piv: b.piv, dev: b.dev, best: b, alt, label: NAMES[b.key], trend: b.sign, bias: index < 40 ? 1 : index > 60 ? -1 : 0,
+      mom: { rsi: rNow, slope: rNow != null && rPrev != null ? rNow - rPrev : 0, kd: kf } };
   }
-  return { analyze, zigzag, impulseScore, scenarios };
+
+  // The next move of the count: direction, first target, stop (invalidation) and the projected path
+  function forecastPath(a) {
+    const b = a && a.best; if (!b || !b.path || !b.path.length) return null;
+    const p0 = a.price, first = b.path[0];
+    let dir = Math.sign(first.p - p0);
+    if (!dir) return null;
+    // the invalidation must be on the other side of the price, otherwise the count is already broken
+    if (dir > 0 ? b.invalid >= p0 : b.invalid <= p0) return null;
+    if (OPT.confirm === 'kd' && a.mom && dir * a.mom.kd < 0) return null;
+    if (OPT.confirm === 'rsi' && a.mom && dir * a.mom.slope < 0) return null;
+    if (OPT.minConf && b.conf < OPT.minConf) return null;
+    return { dir, target: first.p, stop: b.invalid, path: b.path, bars: first.bars };
+  }
+
+  return { analyze, zigzag, impulseScore, scenarios, forecastPath, rsiArr, RAW, NAMES };
 })();
 
 // ===== Translations =====
 const I18N = {
   en: {
     'rev.title': 'Trend reversal probability', 'rev.dirUp': 'reversal up', 'rev.dirDn': 'reversal down', 'pane.rev': 'Reversal probability, %', 'pane.ews': 'Elliott wave stochastic', 'ews.short': 'EWS', 'ews.bull': 'bullish cross {n} bars ago', 'ews.bear': 'bearish cross {n} bars ago', 'ews.none': 'no cross', 'ews.confUp': 'Elliott wave stochastic: bullish cross in the oversold zone confirms a reversal up', 'ews.confDn': 'Elliott wave stochastic: bearish cross in the overbought zone confirms a reversal down', 'why.rev': 'Trend reversal probability {p}%, {d}', 'rev.hist': 'Check on this chart: readings above 60% were followed by a turn within {h} bars in {r}% of cases ({n} signals), versus {b}% for a random bar.', 'rev.histNone': 'Too few readings above 60% on this chart to check them against history.', 'sort.rev': 'Reversal probability',
-    'sort.fc': 'Growth forecast', 'fc.title': 'Forecast:', 'fc.up': 'up to {t} ({p}%) in {time}', 'fc.down': 'down to {t} ({p}%) in {time}', 'fc.flat': 'sideways, the signals disagree', 'fc.hours': '≈ {a}–{b} h', 'fc.days': '≈ {a}–{b} days', 'fc.strong': 'strong', 'fc.moderate': 'moderate', 'fc.weak': 'weak', 'fc.agree': 'Sources agreeing with the forecast: {n} of 3', 'src.elliott': 'Elliott waves', 'src.heat': 'Heat index', 'src.hs': 'short', 'src.hm': 'mid', 'src.hl': 'long', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (growth zone)', 'why.heatHigh': ' (overheated)', 'why.heatMid': ' (neutral)', 'why.heatAgainst': 'Heat index is overheated, buying now is risky',
+    'sort.fc': 'Growth forecast', 'fc.title': 'Forecast:', 'fc.up': 'up to {t} ({p}%) in {time}', 'fc.down': 'down to {t} ({p}%) in {time}', 'fc.flat': 'sideways, the signals disagree', 'fc.hours': '≈ {a}–{b} h', 'fc.days': '≈ {a}–{b} days', 'fc.strong': 'strong', 'fc.moderate': 'moderate', 'fc.weak': 'weak', 'fc.agree': 'Sources agreeing with the forecast: {n} of 3', 'fc.stop': 'Wrong if the price goes past {s}', 'fc.hist': 'On this chart such forecasts reached the target {h} times of {n} ({r}%)', 'fc.histNone': 'Too few past forecasts on this chart to check them', "lad.title": "Confirmation of a {d}", "lad.up": "turn up", "lad.dn": "turn down", "lad.count": "{k} of {n}", "lad.struct": "Wave structure complete", "lad.struct.ok": "yes: {w}", "lad.struct.no": "no: the count is “{w}”", "lad.five.none": "not yet: the move has just begun", "lad.vol.none": "not enough bars yet", "lad.struct.why": "The count must say the move can end here: wave 5, a finished A-B-C, the end of wave 2 or 4. It is a condition, not a signal: the move may still extend.", "lad.div": "Momentum divergence", "lad.div.ok": "yes: RSI {r1} → {r2} on a new extreme", "lad.div.no": "no", "lad.div.why": "The price makes a new extreme but RSI does not: the push is losing strength. Usually seen at the end of wave 5 and wave C.", "lad.cross": "Stochastic cross in the extreme zone", "lad.cross.ok": "yes", "lad.cross.no": "not yet", "lad.cross.why": "The Elliott wave stochastic (EWS) crosses in the new direction below 25 for a turn up or above 75 for a turn down. The first moment a turn is worth noticing.", "lad.break": "Break of the key level", "lad.break.ok": "yes: past {lv}", "lad.break.no": "not yet: level {lv}", "lad.break.why": "The price closes past the last swing against the old move (for an A-B-C it is the top of the last bounce). The strongest price confirmation that the old move is over.", "lad.five": "Five waves, not three", "lad.five.ok": "yes: the move is five waves", "lad.five.warn": "careful: three waves and a pullback, looks like a bounce", "lad.five.no": "not yet: {n} inner waves", "lad.five.why": "A new trend starts with a five-wave impulse. A move of three waves that fades is usually only a bounce (wave B) inside the old trend. The most typical Elliott test.", "lad.hl": "Higher low (lower high)", "lad.hl.ok": "yes", "lad.hl.no": "not yet", "lad.hl.why": "The first pullback stops short of the extreme and the price then goes past the top of the first move. This is new wave 2 completing, and a reversal by classic chart rules too.", "lad.vol": "Volume backs the new move", "lad.vol.ok": "yes: ×{r} vs the old move", "lad.vol.no": "no: ×{r}", "lad.vol.why": "The new move trades more than the old one, mostly on candles in its direction. Big players take part in the turn.", "lad.prob": "The model with the confirmations: {p}% (without them: {base}).", "lad.final": "Together, the estimate at the top: {p}%.", "lad.hist": "On this chart, {k}+ confirmations were followed by a full swing in the new direction in {r}% of cases ({n}).", "lad.histNone": "Too few cases with {k}+ confirmations on this chart to check them.", "lad.howT": "How to use it", "lad.how": "The steps go from the earliest to the most reliable. Entering after 2–3 gives a better price but more false signals; after 5–6 it is safer but part of the move is gone. The stop goes past the extreme the turn starts from: if it breaks, the count is wrong. The probability is the model with each confirmation added, and the line below it shows how often the same number of confirmations really led to a turn on this coin.", 'src.elliott': 'Elliott waves', 'src.heat': 'Heat index', 'src.hs': 'short', 'src.hm': 'mid', 'src.hl': 'long', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (growth zone)', 'why.heatHigh': ' (overheated)', 'why.heatMid': ' (neutral)', 'why.heatAgainst': 'Heat index is overheated, buying now is risky',
     search: 'Search coin, for example SOL', analyze: 'Analyze {c}/{p}, volume {v}', analyzing: 'Counting waves…', noData: 'Not enough data', moreFound: 'Also on the exchange, below the volume filter:', lowVol: '«{q}» is below the minimum volume filter. Analyze it anyway:', notListed: 'No coin «{q}» on {ex}.',
     shot: 'Screenshot', share: 'Share', download: 'Save image', close: 'Close', shotHint: 'If the buttons do not work in your app, long-press the image and choose Save.',
     title: 'Elliott Wave Index', sub: 'Automatic wave count with trade recommendations for every coin on {ex}. 0 is a buy zone, 100 is a sell zone.',
@@ -1539,7 +1895,7 @@ const I18N = {
     target: 'Target', invalid: 'Invalidation', conf: 'Confidence', volume: 'Volume',
     alt: 'Alternative: {w}, {d}, {c}%', up: 'uptrend count', down: 'downtrend count',
     'w.w2': 'Wave 2 pullback', 'w.w3': 'Wave 3 in progress', 'w.w4': 'Wave 4 pullback', 'w.w5': 'Wave 5, late stage',
-    'w.A': 'Wave A after the impulse', 'w.B': 'Wave B bounce', 'w.ABC': 'ABC correction complete', 'w.none': 'No clear wave count',
+    'w.A': 'Wave A after the impulse', 'w.B': 'Wave B bounce', 'w.ABC': 'ABC correction complete', 'w.w1': 'Wave 1 of a new trend', 'w.C': 'Wave C in progress', 'w.cB': 'Bounce B inside a correction', 'w.cC': 'Wave C of a correction', 'w.cABC': 'Correction A-B-C complete', 'w.none': 'No clear wave count',
     'htf.4h': '4-hour chart', 'htf.1d': 'Daily chart', 'htf.1w': 'Weekly chart',
     'why.noWave': 'No clear wave structure, the market is choppy', 'why.count': '{w}, {d}, confidence {c}%',
     'why.htf': '{tf}: {w}, index {i}', 'why.htfUp': ' (supports growth)', 'why.htfDown': ' (points down)', 'why.htfFlat': ' (neutral)',
@@ -1553,7 +1909,7 @@ const I18N = {
   },
   uk: {
     'rev.title': 'Ймовірність розвороту тренду', 'rev.dirUp': 'розворот вгору', 'rev.dirDn': 'розворот вниз', 'pane.rev': 'Ймовірність розвороту, %', 'pane.ews': 'Хвильовий стохастик', 'ews.short': 'EWS', 'ews.bull': 'бичачий перетин {n} св. тому', 'ews.bear': 'ведмежий перетин {n} св. тому', 'ews.none': 'перетину немає', 'ews.confUp': 'Хвильовий стохастик: бичачий перетин у зоні перепроданості підтверджує розворот вгору', 'ews.confDn': 'Хвильовий стохастик: ведмежий перетин у зоні перекупленості підтверджує розворот вниз', 'why.rev': 'Ймовірність розвороту тренду {p}%, {d}', 'rev.hist': 'Перевірка на цьому графіку: після показників понад 60% розворот протягом {h} свічок стався в {r}% випадків ({n} сигналів), тоді як для випадкової свічки це {b}%.', 'rev.histNone': 'На цьому графіку замало показників понад 60%, щоб перевірити їх на історії.', 'sort.rev': 'Ймовірність розвороту',
-    'sort.fc': 'Прогноз росту', 'fc.title': 'Прогноз:', 'fc.up': 'ріст до {t} ({p}%) за {time}', 'fc.down': 'падіння до {t} ({p}%) за {time}', 'fc.flat': 'бокова, сигнали суперечать один одному', 'fc.hours': '≈ {a}–{b} год', 'fc.days': '≈ {a}–{b} дн.', 'fc.strong': 'сильний', 'fc.moderate': 'помірний', 'fc.weak': 'слабкий', 'fc.agree': 'Джерел, що підтверджують прогноз: {n} з 3', 'src.elliott': 'Хвилі Елліота', 'src.heat': 'Heat index', 'src.hs': 'корот.', 'src.hm': 'серед.', 'src.hl': 'довг.', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (зона росту)', 'why.heatHigh': ' (перегрів)', 'why.heatMid': ' (нейтрально)', 'why.heatAgainst': 'Heat index показує перегрів, купувати зараз ризиковано',
+    'sort.fc': 'Прогноз росту', 'fc.title': 'Прогноз:', 'fc.up': 'ріст до {t} ({p}%) за {time}', 'fc.down': 'падіння до {t} ({p}%) за {time}', 'fc.flat': 'бокова, сигнали суперечать один одному', 'fc.hours': '≈ {a}–{b} год', 'fc.days': '≈ {a}–{b} дн.', 'fc.strong': 'сильний', 'fc.moderate': 'помірний', 'fc.weak': 'слабкий', 'fc.agree': 'Джерел, що підтверджують прогноз: {n} з 3', 'fc.stop': 'Прогноз хибний, якщо ціна піде за {s}', 'fc.hist': 'На цьому графіку такі прогнози дійшли до цілі {h} раз з {n} ({r}%)', 'fc.histNone': 'Замало минулих прогнозів на цьому графіку, щоб їх перевірити', "lad.title": "Підтвердження {d}", "lad.up": "розвороту вгору", "lad.dn": "розвороту вниз", "lad.count": "{k} з {n}", "lad.struct": "Хвильова структура завершена", "lad.struct.ok": "так: {w}", "lad.struct.no": "ні: зараз «{w}»", "lad.five.none": "ще ні: рух тільки почався", "lad.vol.none": "ще замало свічок", "lad.struct.why": "Розмітка має показувати, що рух може тут закінчитися: хвиля 5, завершена A-B-C, кінець хвилі 2 чи 4. Це умова, а не сигнал: рух ще може продовжитися.", "lad.div": "Дивергенція імпульсу", "lad.div.ok": "так: RSI {r1} → {r2} на новому екстремумі", "lad.div.no": "ні", "lad.div.why": "Ціна робить новий екстремум, а RSI — ні: поштовх слабне. Зазвичай буває в кінці хвилі 5 і хвилі C.", "lad.cross": "Перетин стохастика в крайній зоні", "lad.cross.ok": "так", "lad.cross.no": "ще ні", "lad.cross.why": "Хвильовий стохастик (EWS) перетинається в новий бік нижче 25 для розвороту вгору або вище 75 для розвороту вниз. Перший момент, коли розворот варто помічати.", "lad.break": "Пробій ключового рівня", "lad.break.ok": "так: за {lv}", "lad.break.no": "ще ні: рівень {lv}", "lad.break.why": "Ціна закривається за останнім коливанням проти старого руху (для A-B-C це вершина останнього відскоку). Найсильніше цінове підтвердження, що старий рух закінчився.", "lad.five": "П’ять хвиль, а не три", "lad.five.ok": "так: рух із п’яти хвиль", "lad.five.warn": "обережно: три хвилі й відкат, схоже на відскок", "lad.five.no": "ще ні: {n} внутрішніх хвиль", "lad.five.why": "Новий тренд починається з п’ятихвильового імпульсу. Рух із трьох хвиль, що згасає, зазвичай лише відскок (хвиля B) у старому тренді. Найхарактерніша перевірка за Елліоттом.", "lad.hl": "Вищий мінімум (нижчий максимум)", "lad.hl.ok": "так", "lad.hl.no": "ще ні", "lad.hl.why": "Перший відкат не доходить до екстремуму, а потім ціна йде за вершину першого руху. Це завершення нової хвилі 2 і розворот також за класичним теханалізом.", "lad.vol": "Обсяг підтримує новий рух", "lad.vol.ok": "так: ×{r} проти старого руху", "lad.vol.no": "ні: ×{r}", "lad.vol.why": "Новий рух торгується активніше за старий, здебільшого на свічках у його бік. У розвороті беруть участь великі гравці.", "lad.prob": "Модель з підтвердженнями: {p}% (без них: {base}).", "lad.final": "Разом — оцінка вгорі: {p}%.", "lad.hist": "На цьому графіку після {k}+ підтверджень повний рух у новий бік був у {r}% випадків ({n}).", "lad.histNone": "Замало випадків з {k}+ підтвердженнями на цьому графіку, щоб перевірити.", "lad.howT": "Як цим користуватися", "lad.how": "Сходинки йдуть від найранішої до найнадійнішої. Вхід після 2–3 дає кращу ціну, але більше хибних сигналів; після 5–6 надійніше, але частина руху вже пройдена. Стоп ставлять за екстремумом, від якого почався розворот: якщо його пробито, розмітка хибна. Ймовірність — це модель, до якої додано кожне підтвердження, а рядок під нею показує, як часто така сама кількість підтверджень справді закінчувалась розворотом на цій монеті.", 'src.elliott': 'Хвилі Елліота', 'src.heat': 'Heat index', 'src.hs': 'корот.', 'src.hm': 'серед.', 'src.hl': 'довг.', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (зона росту)', 'why.heatHigh': ' (перегрів)', 'why.heatMid': ' (нейтрально)', 'why.heatAgainst': 'Heat index показує перегрів, купувати зараз ризиковано',
     search: 'Пошук монети, наприклад SOL', analyze: 'Аналізувати {c}/{p}, об\u2019єм {v}', analyzing: 'Рахуємо хвилі…', noData: 'Замало даних', moreFound: 'Також є на біржі, нижче фільтра об\u2019єму:', lowVol: '«{q}» не проходить за мінімальним об\u2019ємом. Можна проаналізувати все одно:', notListed: 'Монети «{q}» на {ex} немає.',
     shot: 'Скріншот', share: 'Поділитися', download: 'Зберегти зображення', close: 'Закрити', shotHint: 'Якщо кнопки не працюють у вашому застосунку, затисніть зображення пальцем і виберіть «Зберегти».',
     title: 'Індекс хвиль Елліота', sub: 'Автоматичний підрахунок хвиль і торгові рекомендації для всіх монет на {ex}. 0 означає зону купівлі, 100 означає зону продажу.',
@@ -1573,7 +1929,7 @@ const I18N = {
     target: 'Ціль', invalid: 'Скасування', conf: 'Впевненість', volume: 'Об\u2019єм',
     alt: 'Альтернатива: {w}, {d}, {c}%', up: 'висхідний рахунок', down: 'низхідний рахунок',
     'w.w2': 'Відкат хвилі 2', 'w.w3': 'Хвиля 3 триває', 'w.w4': 'Відкат хвилі 4', 'w.w5': 'Хвиля 5, пізня стадія',
-    'w.A': 'Хвиля A після імпульсу', 'w.B': 'Відскок хвилі B', 'w.ABC': 'Корекція ABC завершена', 'w.none': 'Чіткого рахунку хвиль немає',
+    'w.A': 'Хвиля A після імпульсу', 'w.B': 'Відскок хвилі B', 'w.ABC': 'Корекція ABC завершена', 'w.w1': 'Хвиля 1 нового тренду', 'w.C': 'Хвиля C триває', 'w.cB': 'Відскок B у корекції', 'w.cC': 'Хвиля C корекції', 'w.cABC': 'Корекція A-B-C завершена', 'w.none': 'Чіткого рахунку хвиль немає',
     'htf.4h': 'Графік 4 години', 'htf.1d': 'Денний графік', 'htf.1w': 'Тижневий графік',
     'why.noWave': 'Чіткої хвильової структури немає, ринок пиляє', 'why.count': '{w}, {d}, впевненість {c}%',
     'why.htf': '{tf}: {w}, індекс {i}', 'why.htfUp': ' (підтримує ріст)', 'why.htfDown': ' (вказує вниз)', 'why.htfFlat': ' (нейтрально)',
@@ -1587,7 +1943,7 @@ const I18N = {
   },
   ru: {
     'rev.title': 'Вероятность разворота тренда', 'rev.dirUp': 'разворот вверх', 'rev.dirDn': 'разворот вниз', 'pane.rev': 'Вероятность разворота, %', 'pane.ews': 'Волновой стохастик', 'ews.short': 'EWS', 'ews.bull': 'бычье пересечение {n} св. назад', 'ews.bear': 'медвежье пересечение {n} св. назад', 'ews.none': 'пересечения нет', 'ews.confUp': 'Волновой стохастик: бычье пересечение в зоне перепроданности подтверждает разворот вверх', 'ews.confDn': 'Волновой стохастик: медвежье пересечение в зоне перекупленности подтверждает разворот вниз', 'why.rev': 'Вероятность разворота тренда {p}%, {d}', 'rev.hist': 'Проверка на этом графике: после показателей выше 60% разворот в течение {h} свечей случился в {r}% случаев ({n} сигналов), тогда как для случайной свечи это {b}%.', 'rev.histNone': 'На этом графике слишком мало показателей выше 60%, чтобы проверить их на истории.', 'sort.rev': 'Вероятность разворота',
-    'sort.fc': 'Прогноз роста', 'fc.title': 'Прогноз:', 'fc.up': 'рост до {t} ({p}%) за {time}', 'fc.down': 'падение до {t} ({p}%) за {time}', 'fc.flat': 'боковик, сигналы противоречат друг другу', 'fc.hours': '≈ {a}–{b} ч', 'fc.days': '≈ {a}–{b} дн.', 'fc.strong': 'сильный', 'fc.moderate': 'умеренный', 'fc.weak': 'слабый', 'fc.agree': 'Источников, подтверждающих прогноз: {n} из 3', 'src.elliott': 'Волны Эллиотта', 'src.heat': 'Heat index', 'src.hs': 'корот.', 'src.hm': 'сред.', 'src.hl': 'длин.', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (зона роста)', 'why.heatHigh': ' (перегрев)', 'why.heatMid': ' (нейтрально)', 'why.heatAgainst': 'Heat index показывает перегрев, покупать сейчас рискованно',
+    'sort.fc': 'Прогноз роста', 'fc.title': 'Прогноз:', 'fc.up': 'рост до {t} ({p}%) за {time}', 'fc.down': 'падение до {t} ({p}%) за {time}', 'fc.flat': 'боковик, сигналы противоречат друг другу', 'fc.hours': '≈ {a}–{b} ч', 'fc.days': '≈ {a}–{b} дн.', 'fc.strong': 'сильный', 'fc.moderate': 'умеренный', 'fc.weak': 'слабый', 'fc.agree': 'Источников, подтверждающих прогноз: {n} из 3', 'fc.stop': 'Прогноз ошибочен, если цена уйдёт за {s}', 'fc.hist': 'На этом графике такие прогнозы дошли до цели {h} раз из {n} ({r}%)', 'fc.histNone': 'Слишком мало прошлых прогнозов на этом графике, чтобы их проверить', "lad.title": "Подтверждение {d}", "lad.up": "разворота вверх", "lad.dn": "разворота вниз", "lad.count": "{k} из {n}", "lad.struct": "Волновая структура завершена", "lad.struct.ok": "да: {w}", "lad.struct.no": "нет: сейчас «{w}»", "lad.five.none": "ещё нет: движение только началось", "lad.vol.none": "ещё мало свечей", "lad.struct.why": "Разметка должна показывать, что движение может здесь закончиться: волна 5, завершённая A-B-C, конец волны 2 или 4. Это условие, а не сигнал: движение ещё может продолжиться.", "lad.div": "Дивергенция импульса", "lad.div.ok": "да: RSI {r1} → {r2} на новом экстремуме", "lad.div.no": "нет", "lad.div.why": "Цена делает новый экстремум, а RSI — нет: толчок слабеет. Обычно бывает в конце волны 5 и волны C.", "lad.cross": "Пересечение стохастика в крайней зоне", "lad.cross.ok": "да", "lad.cross.no": "ещё нет", "lad.cross.why": "Волновой стохастик (EWS) пересекается в новую сторону ниже 25 для разворота вверх или выше 75 для разворота вниз. Первый момент, когда разворот стоит замечать.", "lad.break": "Пробой ключевого уровня", "lad.break.ok": "да: за {lv}", "lad.break.no": "ещё нет: уровень {lv}", "lad.break.why": "Цена закрывается за последним колебанием против старого движения (для A-B-C это вершина последнего отскока). Самое сильное ценовое подтверждение, что старое движение закончилось.", "lad.five": "Пять волн, а не три", "lad.five.ok": "да: движение из пяти волн", "lad.five.warn": "осторожно: три волны и откат, похоже на отскок", "lad.five.no": "ещё нет: {n} внутренних волн", "lad.five.why": "Новый тренд начинается с пятиволнового импульса. Движение из трёх волн, которое затухает, обычно лишь отскок (волна B) в старом тренде. Самая характерная проверка по Эллиотту.", "lad.hl": "Более высокий минимум (более низкий максимум)", "lad.hl.ok": "да", "lad.hl.no": "ещё нет", "lad.hl.why": "Первый откат не доходит до экстремума, а затем цена уходит за вершину первого движения. Это завершение новой волны 2 и разворот также по классическому теханализу.", "lad.vol": "Объём поддерживает новое движение", "lad.vol.ok": "да: ×{r} против старого движения", "lad.vol.no": "нет: ×{r}", "lad.vol.why": "Новое движение торгуется активнее старого, в основном на свечах в его сторону. В развороте участвуют крупные игроки.", "lad.prob": "Модель с подтверждениями: {p}% (без них: {base}).", "lad.final": "Вместе — оценка вверху: {p}%.", "lad.hist": "На этом графике после {k}+ подтверждений полное движение в новую сторону было в {r}% случаев ({n}).", "lad.histNone": "Слишком мало случаев с {k}+ подтверждениями на этом графике, чтобы проверить.", "lad.howT": "Как этим пользоваться", "lad.how": "Ступени идут от самой ранней к самой надёжной. Вход после 2–3 даёт лучшую цену, но больше ложных сигналов; после 5–6 надёжнее, но часть движения уже пройдена. Стоп ставят за экстремумом, от которого начался разворот: если он пробит, разметка ошибочна. Вероятность — это модель, к которой добавлено каждое подтверждение, а строка под ней показывает, как часто такое же количество подтверждений действительно заканчивалось разворотом на этой монете.", 'src.elliott': 'Волны Эллиотта', 'src.heat': 'Heat index', 'src.hs': 'корот.', 'src.hm': 'сред.', 'src.hl': 'длин.', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (зона роста)', 'why.heatHigh': ' (перегрев)', 'why.heatMid': ' (нейтрально)', 'why.heatAgainst': 'Heat index показывает перегрев, покупать сейчас рискованно',
     search: 'Поиск монеты, например SOL', analyze: 'Анализировать {c}/{p}, объём {v}', analyzing: 'Считаем волны…', noData: 'Мало данных', moreFound: 'Также есть на бирже, ниже фильтра объёма:', lowVol: '«{q}» не проходит по минимальному объёму. Можно проанализировать всё равно:', notListed: 'Монеты «{q}» на {ex} нет.',
     shot: 'Скриншот', share: 'Поделиться', download: 'Сохранить изображение', close: 'Закрыть', shotHint: 'Если кнопки не работают в вашем приложении, зажмите изображение пальцем и выберите «Сохранить».',
     title: 'Индекс волн Эллиотта', sub: 'Автоматический подсчёт волн и торговые рекомендации для всех монет на {ex}. 0 означает зону покупки, 100 означает зону продажи.',
@@ -1607,7 +1963,7 @@ const I18N = {
     target: 'Цель', invalid: 'Отмена', conf: 'Уверенность', volume: 'Объём',
     alt: 'Альтернатива: {w}, {d}, {c}%', up: 'восходящий счёт', down: 'нисходящий счёт',
     'w.w2': 'Откат волны 2', 'w.w3': 'Волна 3 продолжается', 'w.w4': 'Откат волны 4', 'w.w5': 'Волна 5, поздняя стадия',
-    'w.A': 'Волна A после импульса', 'w.B': 'Отскок волны B', 'w.ABC': 'Коррекция ABC завершена', 'w.none': 'Чёткого счёта волн нет',
+    'w.A': 'Волна A после импульса', 'w.B': 'Отскок волны B', 'w.ABC': 'Коррекция ABC завершена', 'w.w1': 'Волна 1 нового тренда', 'w.C': 'Волна C продолжается', 'w.cB': 'Отскок B в коррекции', 'w.cC': 'Волна C коррекции', 'w.cABC': 'Коррекция A-B-C завершена', 'w.none': 'Чёткого счёта волн нет',
     'htf.4h': 'График 4 часа', 'htf.1d': 'Дневной график', 'htf.1w': 'Недельный график',
     'why.noWave': 'Чёткой волновой структуры нет, рынок пилит', 'why.count': '{w}, {d}, уверенность {c}%',
     'why.htf': '{tf}: {w}, индекс {i}', 'why.htfUp': ' (поддерживает рост)', 'why.htfDown': ' (указывает вниз)', 'why.htfFlat': ' (нейтрально)',
@@ -1647,7 +2003,7 @@ const EX = {
         price: +x.lastPrice, vol: +x.quoteVolume, chg: +x.priceChangePercent }));
     },
     async klines(sym, tf) {
-      return (await getJSON(this.bases, `/api/v3/klines?symbol=${sym}&interval=${tf}&limit=300`)).map(k => [k[0], +k[1], +k[2], +k[3], +k[4]]);
+      return (await getJSON(this.bases, `/api/v3/klines?symbol=${sym}&interval=${tf}&limit=500`)).map(k => [k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]);
     }
   },
   bybit: {
@@ -1674,8 +2030,8 @@ const EX = {
         price: +x.lastPrice, vol: +x.turnover24h, chg: +x.price24hPcnt * 100 }));
     },
     async klines(sym, tf) {
-      const r = await this.v5(`/v5/market/kline?category=spot&symbol=${sym}&interval=${this.tf[tf]}&limit=300`);
-      return r.list.map(k => [+k[0], +k[1], +k[2], +k[3], +k[4]]).reverse(); // Bybit returns newest first
+      const r = await this.v5(`/v5/market/kline?category=spot&symbol=${sym}&interval=${this.tf[tf]}&limit=500`);
+      return r.list.map(k => [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]).reverse(); // Bybit returns newest first
     }
   }
 };
@@ -1724,7 +2080,7 @@ function heatAt(h, l, c, end) {
 // second-to-last confirmed ZigZag pivot, so it spans the last complete swing plus the leg in progress.
 // %K = 3-bar average of the raw value, %D = 3-bar average of %K. A %K/%D cross below 25 confirms a turn up,
 // a cross above 75 confirms a turn down.
-const PHASE_REV = { w2: 0.6, w3: 0.15, w4: 0.5, w5: 0.75, A: 0.45, B: 0.55, ABC: 0.7 };
+const PHASE_REV = { w1: 0.35, w2: 0.6, w3: 0.15, w4: 0.5, w5: 0.75, A: 0.45, B: 0.55, C: 0.4, ABC: 0.7, cB: 0.55, cC: 0.4, cABC: 0.7 };
 const clamp01 = v => Math.max(0, Math.min(1, v));
 function buildHistory(k, dev) {
   const h = k.map(b => +b[2]), l = k.map(b => +b[3]), c = k.map(b => +b[4]), n = c.length;
@@ -1794,32 +2150,176 @@ function reversalCheck(H, piv) {
   return { sig, rate: sig ? Math.round(hit / sig * 100) : 0, base: all ? Math.round(base / all * 100) : 0, win };
 }
 
-// ===== Forecast: Elliott count + heat index + higher timeframe =====
+// ===== Forecast: the next move of the wave count, checked by heat and the higher timeframe =====
+// The direction and the price target come from the count itself (where the next wave should go, by Fibonacci ratios
+// of the waves already made); heat index and the higher timeframe confirm or question it. The time comes from the
+// durations of the waves of the same count. On an opened card the forecast is also replayed on the chart's own past.
 const TF_HOURS = { '1h': 1, '4h': 4, '1d': 24 };
 function forecast(x) {
-  const b = x.best;
+  const b = x.best, fp = EW.forecastPath(x);
+  const heatV = x.heat ? (50 - x.heat.composite) / 50 : 0, htfV = x.htf ? (50 - x.htf.index) / 50 : 0;
   const src = [
-    { k: 'elliott', v: (50 - x.index) / 50, w: 0.5 },
-    { k: 'heat', v: x.heat ? (50 - x.heat.composite) / 50 : 0, w: 0.3 },
-    { k: 'htf', v: x.htf ? (50 - x.htf.index) / 50 : 0, w: 0.2 }
+    { k: 'elliott', v: fp ? fp.dir * Math.max(0.2, x.conf) : (50 - x.index) / 50, w: 0.5 },
+    { k: 'heat', v: heatV, w: 0.3 },
+    { k: 'htf', v: htfV, w: 0.2 }
   ];
-  const score = src.reduce((a, s) => a + s.v * s.w, 0); // -1 (down) .. +1 (up)
-  const dir = score > 0.12 ? 1 : score < -0.12 ? -1 : 0;
-  const agree = src.filter(s => Math.sign(Math.round(s.v * 5)) === dir).length;
-  const F = { dir, score, src, agree, strength: Math.abs(score) >= 0.45 && agree === 3 ? 'strong' : Math.abs(score) >= 0.25 ? 'moderate' : 'weak' };
-  if (!dir) return F;
-  // target: the Elliott target when it points the same way, otherwise one typical swing
-  F.target = b && Math.sign(b.target - x.price) === dir ? b.target : x.price * (1 + dir * x.dev);
-  F.pct = (F.target / x.price - 1) * 100;
-  // time: average leg length of the current count (wave 3 usually lasts longer)
-  let bars = 20;
-  if (b && b.points.length > 1) {
-    const legs = b.points.slice(1).map((p, j) => p.i - b.points[j].i);
-    bars = Math.max(3, Math.round(legs.reduce((a, v) => a + v, 0) / legs.length * (b.key === 'w2' ? 1.4 : 1)));
+  let dir, score;
+  if (fp) {
+    dir = fp.dir;
+    // heat and the higher timeframe both clearly against the count: not enough to call it
+    if (heatV * dir < -0.35 && htfV * dir < -0.2 && x.conf < 0.55) dir = 0;
+    score = dir ? dir * (0.5 * Math.max(0.2, x.conf) + 0.3 * Math.max(0, heatV * dir) + 0.2 * Math.max(0, htfV * dir)) : 0;
+  } else {
+    score = src.reduce((a, s) => a + s.v * s.w, 0);
+    dir = score > 0.18 ? 1 : score < -0.18 ? -1 : 0;
   }
-  F.bars = bars; F.barsLo = Math.max(2, Math.round(bars * 0.7)); F.barsHi = Math.round(bars * 1.4);
+  const agree = dir ? src.filter(s => s.v * dir > 0.08).length : 0;
+  const F = { dir, score, src, agree, strength: 'weak' };
+  if (!dir) return F;
+  F.strength = fp && x.conf >= 0.55 && agree === 3 ? 'strong' : (fp && x.conf >= 0.4 && agree >= 2) || (!fp && agree === 3) ? 'moderate' : 'weak';
+  if (fp) {
+    F.target = fp.target; F.stop = fp.stop; F.bars = Math.max(2, fp.bars);
+    let at = 0; F.path = fp.path.map(q => ({ p: q.p, at: (at += Math.max(1, q.bars)) }));
+  } else {
+    F.target = x.price * (1 + dir * x.dev); F.bars = 12; F.path = [{ p: F.target, at: 12 }];
+  }
+  F.pct = (F.target / x.price - 1) * 100;
+  F.barsLo = Math.max(1, Math.round(F.bars * 0.7)); F.barsHi = Math.max(F.barsLo + 1, Math.round(F.bars * 1.4));
   return F;
 }
+// Replays the forecast on the chart's own history, as if each past moment were "now": did the price reach
+// the first target before the invalidation level? Counted only once per distinct count.
+function fcBacktest(x) {
+  if (x.fcHist !== undefined) return x.fcHist;
+  const k = x.k, n = k.length, sens = +S.sens, from = Math.max(120, n - 360), step = Math.max(3, Math.floor((n - from) / 40));
+  let hit = 0, stop = 0, open = 0, seen = new Set();
+  for (let i = from; i < n - 3; i += step) {
+    const a = EW.analyze(k.slice(0, i + 1), sens), fp = a && EW.forecastPath(a); if (!fp) continue;
+    const id = a.best.key + a.best.sign + a.best.points[0].i; if (seen.has(id)) continue; seen.add(id);
+    let res = 0;
+    for (let j = i + 1; j < Math.min(n, i + 1 + Math.max(6, Math.round(fp.bars * 2.5))); j++) {
+      const hi = +k[j][2], lo = +k[j][3];
+      if (fp.dir > 0 ? lo <= fp.stop : hi >= fp.stop) { res = -1; break; }
+      if (fp.dir > 0 ? hi >= fp.target : lo <= fp.target) { res = 1; break; }
+    }
+    if (res > 0) hit++; else if (res < 0) stop++; else open++;
+  }
+  x.fcHist = { hit, stop, open, n: hit + stop, rate: hit + stop ? Math.round(hit / (hit + stop) * 100) : null };
+  return x.fcHist;
+}
+
+// ===== Reversal confirmation ladder =====
+// For the swing in progress the tool asks seven questions, from the earliest (weakest) to the latest (strongest)
+// confirmation that the price has turned. Each answered "yes" raises the probability of a reversal; the probability
+// is then checked on the chart's own history: how often did the same number of confirmations lead to a real turn.
+const LAD = ['struct', 'div', 'cross', 'break', 'five', 'hl', 'vol'];
+const LAD_W = { struct: 0.35, div: 0.4, cross: 0.45, break: 0.8, five: 0.6, hl: 0.8, vol: 0.3 };
+function ladArrays(k) {
+  const c = k.map(b => +b[4]);
+  return { o: k.map(b => +b[1]), h: k.map(b => +b[2]), l: k.map(b => +b[3]), c, v: k.map(b => +b[5] || 0), rsi: EW.rsiArr(c) };
+}
+// rsi near a pivot: the extreme value within two bars, as the turn rarely sits on the exact bar
+const rsiAt = (A, i, d) => { let r = null; for (let j = Math.max(0, i - 2); j <= Math.min(A.rsi.length - 1, i + 2); j++) if (A.rsi[j] != null) r = r == null ? A.rsi[j] : d > 0 ? Math.min(r, A.rsi[j]) : Math.max(r, A.rsi[j]); return r; };
+function ladderAt(A, end, an, X) {
+  const P = an && an.piv; if (!P || P.length < 3) return null;
+  const E = P[P.length - 1], prev = P[P.length - 2], same = P[P.length - 3];
+  const d = E.t === 'L' ? 1 : -1, iL = E.i, pL = E.p, dev = an.dev;
+  const S = {};
+  // 1. the count says the swing should end here
+  const fp = EW.forecastPath(an);
+  S.struct = { st: fp && fp.dir === d ? 'ok' : 'no', w: an.best ? an.best.key : 'none' };
+  // 2. divergence: a new extreme without a new momentum extreme
+  const r1 = rsiAt(A, same.i, d), r2 = rsiAt(A, iL, d);
+  const newExt = d > 0 ? pL < same.p : pL > same.p;
+  S.div = { st: newExt && r1 != null && r2 != null && (d > 0 ? r2 > r1 + 2 : r2 < r1 - 2) ? 'ok' : 'no', r1: r1 && Math.round(r1), r2: r2 && Math.round(r2), ext: newExt };
+  // 3. the Elliott wave stochastic crossed in the turn's direction in the extreme zone
+  let cr = false; for (let j = Math.max(0, iL - 3); j <= end; j++) if (X[j] === d) cr = true;
+  S.cross = { st: cr ? 'ok' : 'no' };
+  // inner swings of the leg in progress
+  const md = Math.max(0.004, dev / 3), from = prev.i;
+  const mp = EW.zigzag(A.h.slice(from, end + 1), A.l.slice(from, end + 1), md).map(q => ({ i: q.i + from, p: q.p, t: q.t, tentative: q.tentative }));
+  // 4. break of the last inner swing against the leg (for an A-B-C it is the top of the last bounce)
+  const opp = d > 0 ? 'H' : 'L', before = mp.filter(q => q.i < iL && q.t === opp && !q.tentative);
+  const level = before.length ? before[before.length - 1].p : prev.p;
+  let broke = false; for (let j = iL + 1; j <= end; j++) if (d > 0 ? A.c[j] > level : A.c[j] < level) broke = true;
+  S.break = { st: broke ? 'ok' : 'no', lv: level };
+  // 5. five waves or three: how the move from the extreme is built
+  const after = mp.filter(q => q.i > iL), legs = after.length;
+  let five = 'no';
+  if (legs >= 5) { const v = [pL, ...after.slice(0, 5).map(q => q.p)].map(p => d * p); five = EW.impulseScore(v) > 0 ? 'ok' : 'no'; }
+  if (five !== 'ok' && legs >= 3) { const end1 = after[0].p, cur = A.c[end]; if (d > 0 ? cur < end1 : cur > end1) five = 'warn'; }
+  S.five = { st: five, n: legs };
+  // 6. a higher low (or a lower high) and a new high after it
+  let hl = false;
+  for (let a = 0; a < after.length; a++) {
+    const q = after[a]; if (q.t !== (d > 0 ? 'L' : 'H') || q.tentative) continue;
+    if (d > 0 ? q.p <= pL : q.p >= pL) continue;
+    let top = d > 0 ? -Infinity : Infinity; for (let j = iL; j < q.i; j++) top = d > 0 ? Math.max(top, A.h[j]) : Math.min(top, A.l[j]);
+    for (let j = q.i + 1; j <= end; j++) if (d > 0 ? A.c[j] > top : A.c[j] < top) { hl = true; break; }
+    if (hl) break;
+  }
+  S.hl = { st: hl ? 'ok' : 'no' };
+  // 7. volume: the new move trades more than the old one, mostly on candles in its direction
+  let vNew = 0, nNew = 0, vWith = 0, vOld = 0, nOld = 0;
+  for (let j = iL + 1; j <= end; j++) { vNew += A.v[j]; nNew++; if ((A.c[j] - A.o[j]) * d > 0) vWith += A.v[j]; }
+  for (let j = Math.max(0, prev.i); j <= iL; j++) { vOld += A.v[j]; nOld++; }
+  const vr = nNew && nOld && vOld ? (vNew / nNew) / (vOld / nOld) : 0;
+  S.vol = { st: nNew >= 3 && vr >= 1.15 && vWith >= 0.55 * vNew ? 'ok' : 'no', r: vr ? +vr.toFixed(2) : null, has: vOld > 0 };
+  const ok = LAD.filter(k => S[k].st === 'ok').length, warn = LAD.filter(k => S[k].st === 'warn').length;
+  return { d, iL, pL, S, ok, warn, bars: end - iL };
+}
+const logit = p => Math.log(p / (1 - p)), sigm = z => 1 / (1 + Math.exp(-z));
+function ladProb(L, base) {
+  let z = logit(Math.max(0.05, Math.min(0.95, (base == null ? 30 : base) / 100)));
+  LAD.forEach(k => { if (L.S[k].st === 'ok') z += LAD_W[k]; if (L.S[k].st === 'warn') z -= 0.7; });
+  return Math.round(Math.max(3, Math.min(97, sigm(z) * 100)));
+}
+// History of this chart: at every past bar, how many confirmations had the swing, and did it turn
+function ladHistory(x) {
+  if (x.ladHist !== undefined) return x.ladHist;
+  const k = x.k, n = k.length, A = ladArrays(k), sens = +S.sens, from = Math.max(150, n - 260);
+  const ep = new Map();
+  for (let i = from; i < n - 2; i++) {
+    const an = EW.analyze(k.slice(0, i + 1), sens); if (!an || !an.piv || an.piv.length < 3) continue;
+    const L = ladderAt(A, i, an, x.hist.X); if (!L) continue;
+    const s = L.ok - L.warn, key = L.iL + ':' + L.d;
+    // outcome: a full swing in the new direction before the extreme is broken
+    let out = 0; const goal = L.pL * (1 + L.d * an.dev);
+    for (let j = i + 1; j < n; j++) {
+      if (L.d > 0 ? A.l[j] < L.pL : A.h[j] > L.pL) { out = -1; break; }
+      if (L.d > 0 ? A.h[j] >= goal : A.l[j] <= goal) { out = 1; break; }
+    }
+    if (!out) continue;
+    const e = ep.get(key) || {}; for (let q = 0; q <= s; q++) if (e[q] === undefined) e[q] = out; ep.set(key, e);
+  }
+  const by = Array(8).fill(0).map(() => [0, 0]);
+  ep.forEach(e => { for (const q in e) { if (q < 0) continue; by[q][e[q] > 0 ? 0 : 1]++; } });
+  x.ladHist = by;
+  return by;
+}
+function ladderHTML(x) {
+  const L = x.lad; if (!L) return '';
+  const open = S.open.has(x.sym), dirTxt = T(L.d > 0 ? 'lad.up' : 'lad.dn');
+  const base = x.rev && x.rev.dir === L.d ? x.rev.p : null, pm = ladProb(L, base);
+  let hist = '', p = pm;
+  if (open) {
+    // on an opened card the model is corrected by this coin's own history (the more cases, the more weight)
+    const by = ladHistory(x), s = Math.max(0, L.ok - L.warn), row = by[Math.min(7, s)] || [0, 0], m = row[0] + row[1];
+    if (m >= 4) { const hr = row[0] / m * 100; p = Math.round((pm * 8 + hr * m) / (8 + m)); hist = T('lad.hist', { k: s, r: Math.round(hr), n: m }); }
+    else hist = T('lad.histNone', { k: s });
+  }
+  const steps = LAD.map((key, j) => {
+    const st = L.S[key], ic = st.st === 'ok' ? '✓' : st.st === 'warn' ? '!' : '·';
+    const dk = key === 'vol' && st.r == null ? 'lad.vol.none' : key === 'five' && !st.n ? 'lad.five.none' : 'lad.' + key + '.' + st.st;
+    const det = T(dk, Object.assign({ lv: fmt(st.lv, x.quote), w: T('w.' + (st.w || 'none')), r1: st.r1, r2: st.r2, n: st.n, r: st.r }, {}));
+    return `<details class="ls ${st.st}"><summary><i>${ic}</i><span>${j + 1}. ${T('lad.' + key)}</span><small>${det}</small></summary><p>${T('lad.' + key + '.why')}</p></details>`;
+  }).join('');
+  const head = `<div class="ladh"><b>${T('lad.title', { d: dirTxt })}</b><span class="tag">${T('lad.count', { k: L.ok, n: LAD.length })}</span><b class="ladp" style="color:${p >= 60 ? (L.d > 0 ? 'var(--green)' : 'var(--red)') : 'var(--text)'}">${p}%</b></div>`;
+  if (!open) return `<div class="lad lad-s">${head}</div>`;
+  return `<div class="lad">${head}${steps}<p class="ladn">${T('lad.prob', { p: pm, base: base == null ? '—' : base + '%' })} ${hist} ${p !== pm ? T('lad.final', { p }) : ''}</p>
+    <details class="ls"><summary><span>${T('lad.howT')}</span></summary><p>${T('lad.how')}</p></details></div>`;
+}
+
 const fcTime = F => {
   const hrs = TF_HOURS[S.tf], a = F.barsLo * hrs, b = F.barsHi * hrs;
   return b < 48 ? T('fc.hours', { a, b }) : T('fc.days', { a: Math.max(1, Math.round(a / 24)), b: Math.max(1, Math.round(b / 24)) });
@@ -1844,11 +2344,12 @@ function recommend(x) {
   if (x.index <= 40) {
     // stop sits at the invalidation level, but never closer than half a swing below price
     const stop = Math.min(b.key === 'w5' ? b.points[b.points.length - 1].p : b.invalid, x.price * (1 - x.dev / 2));
-    const risk = x.price - stop, reward = b.target - x.price;
+    const ups = (b.path || []).map(q => q.p).filter(p => p > x.price), tgt = ups.length ? Math.max(...ups) : b.target;
+    const risk = x.price - stop, reward = tgt - x.price;
     if (risk <= 0) { R.why.push(['why.broken']); return R; }
     if (reward <= 0) { R.why.push(['why.reached']); return R; }
     const rr = reward / risk;
-    R.plan = { entry: x.price, stop, target: b.target, rr };
+    R.plan = { entry: x.price, stop, target: tgt, rr };
     if (heat >= 75) R.why.push(['why.heatAgainst']);
     if (x.index <= 30 && x.conf >= 0.6 && rr >= 2 && hi <= 50 && heat <= 60) { R.code = 'strong'; R.why.push(['why.rr', { v: rr.toFixed(1) }]); }
     else if (x.conf >= 0.5 && rr >= 1.5 && hi <= 60 && heat < 75) { R.code = 'buy'; R.why.push(['why.rr', { v: rr.toFixed(1) }]); }
@@ -1861,7 +2362,7 @@ function recommend(x) {
     if (x.conf >= 0.6 && (hi >= 55 || heat >= 75)) { R.code = 'exit'; R.why.push(['why.exit']); }
     else if (x.conf >= 0.5) { R.code = 'tp'; R.why.push(['why.tp']); }
     else R.why.push(['why.weakDown']);
-    R.down = b.target;
+    { const dn = (b.path || []).map(q => q.p).filter(p => p < x.price); R.down = dn.length ? Math.min(...dn) : b.target; }
   } else R.why.push(['why.noEdge']);
   return R;
 }
@@ -1895,6 +2396,7 @@ async function analyzeCoin(ex, c, tf, sens) {
     row.rev = { p: Hs.P[n - 1], dir: Hs.RD[n - 1] };
     row.ews = { k: Hs.K[n - 1], d: Hs.D[n - 1], cross: lc };
     row.revCheck = reversalCheck(Hs, a.piv);
+    try { row.lad = ladderAt(ladArrays(k), k.length - 1, a, Hs.X); } catch (e) { row.lad = null; }
     row.rec = recommend(row);
     row.fc = forecast(row);
     return row;
@@ -1998,6 +2500,7 @@ function render() {
       ${rec.down && showPlan ? `<div class="plan"><span>${T('pullbackTo')} <b>${fmt(rec.down, q)}</b></span></div>` : ''}
       ${fcHTML(x)}
       ${revHTML(x)}
+      ${ladderHTML(x)}
       <div><span class="wave">${T('w.' + keyOf(x))}</span>${trend ? `<span class="tag">${trend}</span>` : ''}</div>
       <div class="meta">${b ? `<span>${T('target')} <b>${fmt(b.target, q)}</b></span><span>${T('invalid')} <b>${fmt(b.invalid, q)}</b></span><span>${T('conf')} <b>${Math.round(x.conf * 100)}%</b></span>` : ''}<span>${T('volume')} <b>${fmtVol(x.vol)} ${esc(q)}</b></span></div>
       ${window.CH ? CH.links({ coin: x.coin, q: x.quote, ex: S.ex, from: 'elliott' }) : ''}
@@ -2082,8 +2585,8 @@ function paintChart(g, x, W, H) {
   let lo = Infinity, hi = -Infinity;
   bars.forEach(b => { lo = Math.min(lo, +b[3]); hi = Math.max(hi, +b[2]); });
   if (x.best) [x.best.target, x.best.invalid, x.rec.plan ? x.rec.plan.stop : x.best.invalid].forEach(v => { lo = Math.min(lo, v); hi = Math.max(hi, v); });
-  const F = x.fc && x.fc.dir ? x.fc : null, future = F ? F.barsHi + 2 : 0;
-  if (F) { lo = Math.min(lo, F.target); hi = Math.max(hi, F.target); }
+  const F = x.fc && x.fc.dir ? x.fc : null, future = F ? Math.max(F.barsHi, ...(F.path || []).map(q => q.at)) + 2 : 0;
+  if (F) { [F.target, ...(F.path || []).map(q => q.p)].forEach(v => { lo = Math.min(lo, v); hi = Math.max(hi, v); }); }
   const slots = bars.length + future;
   const X = i => (i - from + 0.5) * (W - padR) / slots, Y = p => padT + (hi - p) / (hi - lo) * (H - padT - padB);
   const bw = Math.max(1, (W - padR) / slots * 0.6);
@@ -2092,8 +2595,9 @@ function paintChart(g, x, W, H) {
     g.fillStyle = col; g.globalAlpha = 0.12; g.beginPath();
     g.moveTo(X(last), Y(x.price)); g.lineTo(X(last + F.barsLo), Y(F.target)); g.lineTo(X(last + F.barsHi), Y(F.target)); g.closePath(); g.fill();
     g.globalAlpha = 1; g.strokeStyle = col; g.lineWidth = 2; g.setLineDash([6, 4]);
-    g.beginPath(); g.moveTo(X(last), Y(x.price)); g.lineTo(X(last + F.bars), Y(F.target)); g.stroke(); g.setLineDash([]); g.lineWidth = 1;
-    g.beginPath(); g.arc(X(last + F.bars), Y(F.target), 4, 0, 7); g.fill();
+    const P = F.path && F.path.length ? F.path : [{ p: F.target, at: F.bars }];
+    g.beginPath(); g.moveTo(X(last), Y(x.price)); P.forEach(q => g.lineTo(X(last + q.at), Y(q.p))); g.stroke(); g.setLineDash([]); g.lineWidth = 1;
+    P.forEach((q, j) => { g.beginPath(); g.arc(X(last + q.at), Y(q.p), j ? 3 : 4, 0, 7); g.fill(); });
     g.strokeStyle = C('--line'); g.beginPath(); g.moveTo(X(last) + 4, padT); g.lineTo(X(last) + 4, H - padB); g.stroke();
   }
   bars.forEach((b, j) => {
@@ -2153,8 +2657,13 @@ function fcText(x) {
 }
 function fcHTML(x) {
   const F = x.fc;
+  let more = '';
+  if (F.dir && S.open.has(x.sym)) {
+    const H = fcBacktest(x);
+    more = `<div class="fch">${F.stop != null ? T('fc.stop', { s: fmt(F.stop, x.quote) }) + ' · ' : ''}${H.n >= 3 ? T('fc.hist', { h: H.hit, n: H.n, r: H.rate }) : T('fc.histNone')}</div>`;
+  }
   return `<div class="fc ${F.dir > 0 ? 'up' : F.dir < 0 ? 'dn' : ''}"><span class="fcl">${T('fc.title')}</span> <b>${fcText(x)}</b>
-    <span class="tag">${T('fc.' + F.strength)}</span></div>`;
+    <span class="tag">${T('fc.' + F.strength)}</span>${more}</div>`;
 }
 function fcSources(x) {
   const F = x.fc, h = x.heat;
@@ -2333,7 +2842,7 @@ search.addEventListener('input', () => { S.q = search.value; render(); });
 search.addEventListener('keydown', e => { if (e.key === 'Escape') { search.value = ''; S.q = ''; render(); } });
 const list = document.getElementById('list');
 list.addEventListener('click', e => {
-  if (e.target.closest('.ch-links')) return;
+  if (e.target.closest('.ch-links, .lad .ls')) return;
   const an = e.target.closest('[data-an]');
   if (an) return analyzeOnDemand(an.dataset.an, an);
   const sb = e.target.closest('[data-shot]');
