@@ -2,19 +2,21 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **1.09**
+Version: **1.10**
 
 A set of free browser tools for scanning the crypto market and analysing single coins on Binance, Bybit and OKX. Every tool works in the browser and as a Telegram Mini App, shares one look and one light/dark theme, and links to the others: from any coin card you can open the same coin in another tool, each in its own tab.
 
 | Folder | Tool |
 |---|---|
 | `/` (index.html) | **Heat Index**: the main market scanner with Heat, trend, reversal risk, setups and a simulator |
+| `scanner/` | **Confluence Scanner**: coins where heat, trend, Elliott waves, momentum, volume, order book, funding and news agree |
 | `coin-lab/` | **Coin Lab**: a detailed analysis and forecast for one coin |
 | `elliott/` | **Elliott Waves**: automatic wave count with trade ideas |
 | `whales/` | **Whale Sonar**: large orders in the order book and how the price reacts |
 | `liquidations/` | **Liquidation Radar**: estimated liquidation zones on Binance USDT futures |
 | `volume/` | **Volume Spikes**: coins whose volume suddenly jumps far above normal |
-| `paper-bot/` | **Paper Bot**: a trading bot on a virtual account |
+| `paper-bot/` | **Paper Bot**: a trading bot on a virtual account, with statistics, an event log and a strategy tester on history |
+| `server/` | Optional news server (`news-proxy.js`) |
 | `assets/` | Source of the shared style, script, hints and logo. They are built into every page, so the pages work even without this folder |
 
 ## Links to a coin
@@ -40,6 +42,13 @@ Open the bell in the top bar, then **Rules**, or tap **Alert** on any coin card.
 - RSI 14 on 15m, 1h, 4h or 1d goes below or above a level.
 
 An alert fires once or every time with a pause, and can carry a note. It is shown on screen and in the log, and can also play a sound, show a browser notification and send a message through your own Telegram bot (Settings tab). Alerts are checked in the browser every 15–120 s while at least one tab of any tool is open; one tab does the checking, so nothing is sent twice.
+
+## Shared favorites, calendar, correlation, app install
+
+- **Favorites** are one list for every tool: the star under any coin card, or the favorite buttons of Heat Index, Coin Lab, Liquidation Radar and Volume Spikes, all change the same list.
+- **Events calendar** (calendar button in the top bar): Fed rate decisions, Binance listings and delistings from the news feed, and CoinMarketCal events through the news server. A coin with an event in the next 7 days gets a badge on its card.
+- **Correlation with BTC** (ρ and β over 120 candles) in Coin Lab, the Confluence Scanner and the Paper Bot positions. In strict mode the bot opens at most three same-direction positions that move like Bitcoin, and pauses entries around Fed decisions.
+- **Install as an app** (PWA): `manifest.webmanifest` and `sw.js` at the root; the Install button appears in the top bar when the browser offers it.
 
 ## News
 

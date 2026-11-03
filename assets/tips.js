@@ -10,6 +10,10 @@ common: [
   [".ch-links a[target=ch_liq]", "Відкрити зони ліквідацій монети на ф’ючерсах Binance", "Открыть зоны ликвидаций монеты на фьючерсах Binance", "Open the liquidation zones of the coin on Binance futures"],
   [".ch-links a[target=ch_volume]", "Знайти сплески об’єму цієї монети", "Найти всплески объёма этой монеты", "Find volume spikes of this coin"],
   ["[data-ch-news]", "Новини про монету за 24 години. Червоний — є важлива негативна новина (злам, делістинг, позов), жовтий — переважають негативні, зелений — позитивні. Натисніть, щоб прочитати", "Новости о монете за 24 часа. Красный — есть важная негативная новость (взлом, делистинг, иск), жёлтый — преобладают негативные, зелёный — позитивные. Нажмите, чтобы прочитать", "News on the coin in 24 hours. Red: important negative news (hack, delisting, lawsuit), amber: mostly negative, green: positive. Tap to read"],
+  ["[data-ch-fav]", "Обрані монети спільні для всіх інструментів: зірочка тут додає монету в обрані Heat Index, Coin Lab, Радара ліквідацій і Сплесків об’ємів", "Избранные монеты общие для всех инструментов: звёздочка здесь добавляет монету в избранное Heat Index, Coin Lab, Радара ликвидаций и Всплесков объёмов", "Favorites are shared by every tool: this star adds the coin to the favorites of Heat Index, Coin Lab, Liquidation Radar and Volume Spikes"],
+  [".ch-links .ch-ev", "Найближча подія щодо монети: лістинг, делістинг, оновлення мережі. Натисніть, щоб побачити календар", "Ближайшее событие по монете: листинг, делистинг, обновление сети. Нажмите, чтобы увидеть календарь", "The next event for the coin: listing, delisting, network upgrade. Tap to see the calendar"],
+  [".ch-calb", "Календар подій: рішення ФРС, лістинги й делістинги Binance, події монет", "Календарь событий: решения ФРС, листинги и делистинги Binance, события монет", "Events calendar: Fed decisions, Binance listings and delistings, coin events"],
+  [".ch-inst", "Встановити сайт як застосунок: іконка на головному екрані, відкриття без адресного рядка", "Установить сайт как приложение: иконка на главном экране, открытие без адресной строки", "Install the site as an app: an icon on the home screen, opens without the address bar"],
   [".ch-nav a", "Відкрити інструмент у новій вкладці", "Открыть инструмент в новой вкладке", "Open the tool in a new tab"],
   [".ch-nav span", "Ви зараз тут", "Вы сейчас здесь", "You are here"],
   [".ch-brand", "CRYPTO HUNTERS: на головну, Heat Index", "CRYPTO HUNTERS: на главную, Heat Index", "CRYPTO HUNTERS: home, Heat Index"],
@@ -27,6 +31,16 @@ common: [
   [".ch-set [name=every]", "Частіше означає швидше сповіщення, але більше запитів до біржі", "Чаще значит быстрее уведомление, но больше запросов к бирже", "More often means faster alerts but more requests to the exchange"],
   ["[data-l=csv]", "Завантажити весь журнал таблицею для Excel чи Google Sheets", "Скачать весь журнал таблицей для Excel или Google Sheets", "Download the whole log as a table for Excel or Google Sheets"],
   ["[data-l=testall]", "Надіслати пробне сповіщення всіма увімкненими способами", "Отправить пробное уведомление всеми включёнными способами", "Send a test notification through every channel that is on"]
+],
+
+scan: [
+  ["#tfSeg [data-tf]", "Таймфрейм свічок для сигналів; тренд береться зі старшого таймфрейму", "Таймфрейм свечей для сигналов; тренд берётся со старшего таймфрейма", "Candle timeframe of the signals; the trend comes from the higher timeframe"],
+  ["#topN", "Скільки найбільших монет Binance за обсягом сканувати (обрані додаються завжди)", "Сколько крупнейших монет Binance по объёму сканировать (избранные добавляются всегда)", "How many of the largest Binance coins to scan (favorites are always added)"],
+  ["#minM", "Скільки з 8 сигналів мають дивитися в один бік, щоб монета потрапила в список", "Сколько из 8 сигналов должны смотреть в одну сторону, чтобы монета попала в список", "How many of the 8 signals must point the same way for a coin to be listed"],
+  ["#sideSeg [data-s]", "Показати монети лише з цим напрямком збігу", "Показать монеты только с этим направлением совпадения", "Show only coins whose signals agree in this direction"],
+  [".sg", "Сигнал: зелений — за напрямок монети, червоний — проти, сірий — нейтральний. Натисніть картку, щоб побачити деталі", "Сигнал: зелёный — за направление монеты, красный — против, серый — нейтральный. Нажмите карточку, чтобы увидеть детали", "Signal: green agrees with the coin's direction, red disagrees, grey is neutral. Tap the card for details"],
+  [".side", "Напрямок, за який проголосувала більшість сигналів, і кількість збігів з 8", "Направление, за которое проголосовало большинство сигналов, и число совпадений из 8", "The direction most signals voted for and the number of matches out of 8"],
+  ["#go", "Перерахувати сигнали зараз (самостійно — кожні 5 хвилин)", "Пересчитать сигналы сейчас (сам — каждые 5 минут)", "Recalculate now (it also refreshes every 5 minutes)"]
 ],
 
 heat: [
@@ -367,6 +381,9 @@ bot: [
   ["#stCsv", "Завантажити всі закриті угоди таблицею для Excel чи Google Sheets", "Скачать все закрытые сделки таблицей для Excel или Google Sheets", "Download every closed trade as a table for Excel or Google Sheets"],
   ["[data-lg]", "Показати лише цей тип подій", "Показать только этот тип событий", "Show only this kind of event"],
   [".sti", "Показник за всіма закритими угодами цього рахунку", "Показатель по всем закрытым сделкам этого счёта", "Figure over every closed trade of this account"],
+  ["#btGo", "Прогнати бота на історії Binance з поточними налаштуваннями стратегії", "Прогнать бота на истории Binance с текущими настройками стратегии", "Run the bot over Binance history with the current strategy settings"],
+  ["#btDays", "Скільки днів історії тестувати", "Сколько дней истории тестировать", "How many days of history to test"],
+  ["#btN", "Скільки найбільших монет брати в тест", "Сколько крупнейших монет брать в тест", "How many of the largest coins to test"],
   [".pos", "Відкрита позиція бота: вхід, стоп, ціль і поточний результат", "Открытая позиция бота: вход, стоп, цель и текущий результат", "An open bot position: entry, stop, target and current result"],
   [".trade summary, #sc summary", "Розгорнути, щоб побачити, чому бот так вирішив", "Развернуть, чтобы увидеть, почему бот так решил", "Open to see why the bot decided this"],
   [".chip.g", "Чинник за угоду", "Фактор за сделку", "A factor in favor"],

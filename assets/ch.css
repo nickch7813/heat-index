@@ -197,3 +197,18 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
 .ch-nt.t-1{color:var(--ch-warn);border-color:var(--ch-warn)}
 .ch-nt.t1{color:var(--ch-okt);background:var(--ch-okb);border-color:transparent}
 .ch-sh{margin:10px 0 0;font:500 14px/1.3 var(--ch-font);color:var(--ch-tx)}
+
+/* ---- favorites, events, install ---- */
+:root .ch-links .ch-fv{border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t3);border-radius:14px;min-height:26px;min-width:30px;padding:2px 8px;font-size:14px;line-height:1;cursor:pointer}
+:root .ch-links .ch-fv.on{color:var(--ch-brand);border-color:var(--ch-brand)}
+:root .ch-links .ch-ev{display:inline-flex;align-items:center;gap:4px;border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;min-height:26px;padding:3px 9px;font:12px/1.3 var(--ch-font);cursor:pointer;white-space:nowrap}
+:root .ch-links .ch-ev.bad{color:var(--ch-ert);background:var(--ch-erb);border-color:transparent}
+:root .ch-links :is(.ch-fv,.ch-ev):focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px}
+:root .ch-inst{display:inline-flex;align-items:center;gap:4px;border:0.5px solid var(--ch-acd);background:var(--ch-acb);color:var(--ch-act);border-radius:14px;padding:4px 10px;font:500 12px/1.2 var(--ch-font);cursor:pointer;min-height:30px;white-space:nowrap}
+:root .ch-inst[hidden]{display:none}
+@media (max-width:420px){:root .ch-inst span{display:none}}
+.ch-ek{font-size:11px;border-radius:6px;padding:0 6px;border:0.5px solid var(--ch-bd2);color:var(--ch-t2)}
+.ch-ek.k-fomc{color:var(--ch-act);background:var(--ch-acb);border-color:transparent}
+.ch-ek.k-delisting{color:var(--ch-ert);background:var(--ch-erb);border-color:transparent}
+.ch-ek.k-listing{color:var(--ch-okt);background:var(--ch-okb);border-color:transparent}
+.ch-evi .ch-nh{display:block;color:var(--ch-tx);text-decoration:none;font-weight:500;font-size:14px;line-height:1.4}

@@ -5,6 +5,7 @@
 // Run:   node server/news-proxy.js            (Node 18 or newer, no packages needed)
 // Env:   PORT=8787
 //        CRYPTOPANIC_TOKEN=...  CRYPTOPANIC_PLAN=developer|growth|enterprise   (optional, paid CryptoPanic API)
+//        COINMARKETCAL_KEY=...  (optional: coin events for the calendar, GET /events)
 // Use:   GET /news  ->  { articles: [{ title, url, source, published, coins, kind, votes }], sources: {...} }
 //        then put the server address into Notifications -> Settings -> News on the site.
 "use strict";
@@ -63,6 +64,19 @@ async function fromCryptoPanic() {
     published: p.published_at, coins: (p.instruments || p.currencies || []).map(c => c.code).filter(Boolean), kind: "news", votes: p.votes || null }));
 }
 
+const CMC_KEY = process.env.COINMARKETCAL_KEY || "";
+let evCache = { at: 0, body: null };
+async function buildEvents() {
+  if (!CMC_KEY) return { updated: new Date().toISOString(), events: [], note: "set COINMARKETCAL_KEY" };
+  const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), 12000);
+  try {
+    const r = await fetch("https://developers.coinmarketcal.com/v1/events?max=100&page=1", { signal: ctl.signal, headers: { "x-api-key": CMC_KEY, accept: "application/json", "accept-encoding": "deflate, gzip" } });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json(), list = j.body || j.data || [];
+    return { updated: new Date().toISOString(), events: list.map(e => ({ title: (e.title && (e.title.en || e.title)) || "", date: e.date_event || e.date, coins: (e.coins || []).map(c => c.symbol).filter(Boolean),
+      category: ((e.categories || [])[0] || {}).name || "event", url: e.source || e.proof || "" })) };
+  } finally { clearTimeout(to); }
+}
 let cache = { at: 0, body: null };
 async function build() {
   const jobs = [["binance", fromBinance()], ["cryptopanic", fromCryptoPanic()], ...RSS.map(([n, u]) => [n, get(u).then(x => parseRss(x, n))])];
@@ -77,6 +91,10 @@ http.createServer(async (req, res) => {
   const head = { "access-control-allow-origin": "*", "access-control-allow-methods": "GET, OPTIONS", "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=60" };
   if (req.method === "OPTIONS") { res.writeHead(204, head); return res.end(); }
   const path = new URL(req.url, "http://x").pathname.replace(/\/+$/, "");
+  if (path === "/events") {
+    try { if (!evCache.body || Date.now() - evCache.at > 30 * 60e3) evCache = { at: Date.now(), body: JSON.stringify(await buildEvents()) }; res.writeHead(200, head); return res.end(evCache.body); }
+    catch (e) { res.writeHead(502, head); return res.end(JSON.stringify({ error: String(e && e.message || e), events: [] })); }
+  }
   if (path !== "/news" && path !== "") { res.writeHead(404, head); return res.end('{"error":"not found"}'); }
   try {
     if (!cache.body || Date.now() - cache.at > TTL) { cache = { at: Date.now(), body: JSON.stringify(await build()) }; }

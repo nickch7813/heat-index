@@ -1,0 +1,21 @@
+{
+  "name": "CRYPTO HUNTERS",
+  "short_name": "CRYPTO HUNTERS",
+  "description": "Heat Index, Coin Lab, Elliott Waves, Whale Sonar, Liquidation Radar, Volume Spikes, Confluence Scanner and Paper Bot. t.me/Cr_hunters",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#16181d",
+  "theme_color": "#16181d",
+  "lang": "uk",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Сканер збігів", "url": "./scanner/" },
+    { "name": "Coin Lab", "url": "./coin-lab/" },
+    { "name": "Бот-трейдер", "url": "./paper-bot/" }
+  ]
+}
