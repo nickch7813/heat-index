@@ -262,6 +262,7 @@ scan: [
   ["#exSeg [data-ex]", "Біржа, монети якої сканувати: Binance або Bybit", "Биржа, монеты которой сканировать: Binance или Bybit", "Exchange whose coins to scan: Binance or Bybit"],
   ["#tfSeg [data-tf]", "Таймфрейм свічок для сигналів; тренд береться зі старшого таймфрейму", "Таймфрейм свечей для сигналов; тренд берётся со старшего таймфрейма", "Candle timeframe of the signals; the trend comes from the higher timeframe"],
   ["#topN", "Скільки найбільших монет Binance за обсягом сканувати (обрані додаються завжди)", "Сколько крупнейших монет Binance по объёму сканировать (избранные добавляются всегда)", "How many of the largest Binance coins to scan (favorites are always added)"],
+  ["#adz", "Зони перепроданості й перекупленості для кожної монети з її історії замість однакових 25/75 і 30/70 для всіх", "Зоны перепроданности и перекупленности для каждой монеты из её истории вместо одинаковых 25/75 и 30/70 для всех", "Oversold and overbought zones per coin from its history instead of the same 25/75 and 30/70 for all"],
   ["#minM", "Скільки з 8 сигналів мають дивитися в один бік, щоб монета потрапила в список", "Сколько из 8 сигналов должны смотреть в одну сторону, чтобы монета попала в список", "How many of the 8 signals must point the same way for a coin to be listed"],
   ["#sideSeg [data-s]", "Показати монети лише з цим напрямком збігу", "Показать монеты только с этим направлением совпадения", "Show only coins whose signals agree in this direction"],
   [".sg", "Сигнал: зелений — за напрямок монети, червоний — проти, сірий — нейтральний. Натисніть картку, щоб побачити деталі", "Сигнал: зелёный — за направление монеты, красный — против, серый — нейтральный. Нажмите карточку, чтобы увидеть детали", "Signal: green agrees with the coin's direction, red disagrees, grey is neutral. Tap the card for details"],
@@ -340,6 +341,8 @@ heat: [
   ["#csv", "Завантажити поточний список монет таблицею", "Скачать текущий список монет таблицей", "Download the current coin list as a table"],
   ["#bkExport", "Зберегти обрані, сповіщення, портфель і налаштування у файл", "Сохранить избранное, уведомления, портфель и настройки в файл", "Save favorites, alerts, portfolio and settings to a file"],
   ["#bkImport", "Відновити дані з раніше збереженого файлу", "Восстановить данные из ранее сохранённого файла", "Restore data from a saved file"],
+  [".ipz[data-auto]", "Зони для кожної монети з її власної історії: купівля — нижні 10% її Heat, продаж — верхні 10% (так само для RSI). Увімкнено за замовчуванням; натискання на фіксовані рівні вимикає авто", "Зоны для каждой монеты из её собственной истории: покупка — нижние 10% её Heat, продажа — верхние 10% (так же для RSI). Включено по умолчанию; нажатие на фиксированные уровни выключает авто", "Zones for every coin from its own history: buy is the lowest 10% of its Heat, sell the highest 10% (RSI the same way). On by default; picking fixed levels turns auto off"],
+  ["#adzInfo", "Зони, які зараз діють для цієї монети", "Зоны, которые сейчас действуют для этой монеты", "The zones in use for this coin now"],
   [".ipz", "Готові рівні зон Heat: купівля / продаж", "Готовые уровни зон Heat: покупка / продажа", "Preset Heat zone levels: buy / sell"],
   ["#ipRsi", "Скільки свічок бере RSI. Стандарт — 14", "Сколько свечей берёт RSI. Стандарт — 14", "Candles in RSI. Standard is 14"],
   ["#ipOb", "Рівень RSI, вище якого монета вважається перекупленою", "Уровень RSI, выше которого монета считается перекупленной", "RSI level above which a coin counts as overbought"],
@@ -424,6 +427,7 @@ lab: [
   ["[data-ov=sig]", "Сигнали купівлі й продажу на графіку", "Сигналы покупки и продажи на графике", "Buy and sell signals on the chart"],
   ["#paneSel [data-pane]", "Показати або сховати панель цього індикатора під графіком", "Показать или скрыть панель этого индикатора под графиком", "Show or hide this indicator panel under the chart"],
   ["[data-hr]", "Таймфрейм, для якого показати Heat", "Таймфрейм, для которого показать Heat", "Timeframe to show Heat for"],
+  ["#lvAuto", "Рахувати зони для цієї монети з її власної історії (нижні й верхні 10% Heat). Вимкніть, щоб задати рівні вручну", "Считать зоны для этой монеты из её собственной истории (нижние и верхние 10% Heat). Выключите, чтобы задать уровни вручную", "Compute the zones for this coin from its own history (lowest and highest 10% of Heat). Turn off to set the levels by hand"],
   ["#lvLow", "Нижній рівень Heat: нижче — зона купівлі", "Нижний уровень Heat: ниже — зона покупки", "Lower Heat level: below it is the buy zone"],
   ["#lvHigh", "Верхній рівень Heat: вище — зона продажу", "Верхний уровень Heat: выше — зона продажи", "Upper Heat level: above it is the sell zone"],
   [".tab[data-t=sum]", "Підсумок: вердикт, ймовірність і торговий план", "Итог: вердикт, вероятность и торговый план", "Summary: verdict, probability and trade plan"],
@@ -432,6 +436,11 @@ lab: [
   [".tab[data-t=wh]", "Кити: великі угоди й стіни в стакані", "Киты: крупные сделки и стены в стакане", "Whales: big trades and order-book walls"],
   [".tab[data-t=lq]", "Ліквідації, фандинг, відкритий інтерес", "Ликвидации, фандинг, открытый интерес", "Liquidations, funding, open interest"],
   [".tab[data-t=bt]", "Як сигнали спрацювали б на історії", "Как сигналы сработали бы на истории", "How the signals would have done on history"],
+  ["#deepTab", "Повний розбір монети на 5 таймфреймах: тренд, імпульс, зони Heat монети, хвилі, режим ринку, рівні, деривативи, стакан, кореляція, новини, статистика, сценарії й план угоди", "Полный разбор монеты на 5 таймфреймах: тренд, импульс, зоны Heat монеты, волны, режим рынка, уровни, деривативы, стакан, корреляция, новости, статистика, сценарии и план сделки", "A full review of the coin on 5 timeframes: trend, momentum, the coin's Heat zones, waves, regime, levels, derivatives, book, correlation, news, statistics, scenarios and a trade plan"],
+  ["#deepGo", "Зібрати свіжі дані на всіх таймфреймах і перерахувати звіт", "Собрать свежие данные на всех таймфреймах и пересчитать отчёт", "Gather fresh data on every timeframe and rebuild the report"],
+  ["#deepCap, #deepRisk", "Розмір рахунку й ризик на угоду: з них рахується розмір позиції до стопу", "Размер счёта и риск на сделку: из них считается размер позиции до стопа", "Account size and risk per trade: the position size to the stop comes from them"],
+  ["#deepCopy", "Скопіювати короткий текст звіту для поста", "Скопировать короткий текст отчёта для поста", "Copy a short text of the report for a post"],
+  ["#deepTg", "Надіслати текст звіту в Telegram через вашого бота (налаштування Coin Lab)", "Отправить текст отчёта в Telegram через вашего бота (настройки Coin Lab)", "Send the report text to Telegram through your bot (Coin Lab settings)"],
   [".tab[data-t=sh]", "Картка й текст для публікації в каналі", "Карточка и текст для публикации в канале", "Card and text to post in the channel"],
   ["#btSig", "Який сигнал перевіряти на історії", "Какой сигнал проверять на истории", "Which signal to test on history"],
   ["#btRun", "Запустити перевірку на історії", "Запустить проверку на истории", "Run the history test"],
@@ -619,7 +628,7 @@ bot: [
 };
 
 </script>
-<script id="ch-js" data-tool="scan" data-ver="1.11" data-root="../">
+<script id="ch-js" data-tool="scan" data-ver="1.13" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -628,7 +637,7 @@ bot: [
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.11";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.13";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -1663,6 +1672,7 @@ details.help li{margin:4px 0;color:var(--ch-t2);font-size:13px}
     <label><span data-i="min"></span><select id="minM"><option>3</option><option>4</option><option>5</option><option>6</option></select></label>
     <label><span data-i="side"></span><span class="seg" id="sideSeg"><button data-s="all"></button><button data-s="L"></button><button data-s="S"></button></span></label>
     <label class="chk"><input type="checkbox" id="favOnly"><span data-i="favOnly"></span></label>
+    <label class="chk"><input type="checkbox" id="adz"><span data-i="adz"></span></label>
     <label><span data-i="lang"></span><select id="lang"><option value="uk">UA</option><option value="ru">RU</option><option value="en">EN</option></select></label>
     <button class="btn" id="theme" type="button" data-i="theme"></button>
     <button class="btn primary" id="go" type="button" data-i="go"></button>
@@ -2001,14 +2011,14 @@ const EW = (() => {
 /* ===== Confluence scanner: the signals of every CRYPTO HUNTERS tool, computed together for each coin ===== */
 const I18N = {
 uk: { title:"Сканер збігів", sub:"Монети, де одночасно сходяться кілька незалежних сигналів: перегрів, тренд, хвилі Елліотта, імпульс, обсяг, стакан, фандинг і новини. Чим більше збігів в один бік, тим сильніший кандидат.",
-  ex:"Біржа", tf:"Таймфрейм", top:"Скільки монет", min:"Мін. збігів", side:"Напрямок", all:"Усі", L:"Лонг", S:"Шорт", favOnly:"Лише обрані", lang:"Мова", theme:"Тема", go:"Сканувати",
+  ex:"Біржа", tf:"Таймфрейм", top:"Скільки монет", min:"Мін. збігів", side:"Напрямок", all:"Усі", L:"Лонг", S:"Шорт", favOnly:"Лише обрані", adz:"Зони кожної монети з її історії", lang:"Мова", theme:"Тема", go:"Сканувати",
   loading:"Завантажую ринок…", prog:"Аналізую {i} з {n}…", done:"{n} монет {ex}, таймфрейм {tf}, {t}. Показано {m} з мін. {k} збігами.", err:"Помилка: {e}", none:"Немає монет з такою кількістю збігів. Зменште поріг або змініть таймфрейм.",
   btc:"BTC: {t}", btcUp:"висхідний тренд", btcDn:"низхідний тренд", fng:"Збігів у лонг: {l} · у шорт: {s}",
   s_heat:"Heat", s_trend:"Тренд", s_ew:"Елліотт", s_mom:"Імпульс", s_vol:"Обсяг", s_book:"Стакан", s_fund:"Фандинг", s_news:"Новини",
-  d_heat:v=>`Heat ${v.v}: ${v.d>0?"перепроданість, можливий відскок":v.d<0?"перегрів, можливий відкат":"нейтрально"}`,
+  d_heat:v=>`Heat ${v.v}: ${v.d>0?"перепроданість, можливий відскок":v.d<0?"перегрів, можливий відкат":"нейтрально"} (зони монети ${v.auto?"з її історії":"стандартні"}: ≤ ${v.zb} / ≥ ${v.zs})`,
   d_trend:v=>`Ціна ${v.d>0?"вище":"нижче"} EMA50 старшого таймфрейму (${v.tf}) на ${v.p}%`,
   d_ew:v=>v.d?`${v.w}: прогноз ${v.d>0?"вгору":"вниз"} до ${v.t}, впевненість ${v.c}%`:`${v.w}: без чіткого прогнозу`,
-  d_mom:v=>`RSI ${v.r}${v.x?`, стохастик перетнувся ${v.x>0?"вгору в зоні перепроданості":"вниз у зоні перекупленості"}`:""}`,
+  d_mom:v=>`RSI ${v.r} (рівні монети ${v.os} / ${v.ob})${v.x?`, стохастик перетнувся ${v.x>0?"вгору в зоні перепроданості":"вниз у зоні перекупленості"}`:""}`,
   d_vol:v=>v.d?`Сплеск обсягу ×${v.r} на ${v.d>0?"зеленій":"червоній"} свічці`:`Обсяг звичайний (×${v.r})`,
   d_book:v=>v.r==null?"Стакан не перевірявся (монета поза першою двадцяткою)":`Заявки в межах 2%: купівлі / продажі ×${v.r}`,
   d_fund:v=>v.f==null?"Ф’ючерсів немає":`Фандинг ${v.f}%${v.d>0?": шорти перевантажені, можливий сквіз угору":v.d<0?": лонги перевантажені":""}`,
@@ -2019,16 +2029,16 @@ uk: { title:"Сканер збігів", sub:"Монети, де одночас�
     "Кожен із 8 сигналів голосує за лонг, шорт або утримується: Heat (перепроданість чи перегрів), тренд (ціна відносно EMA50 старшого таймфрейму), хвилі Елліотта (напрямок прогнозу), імпульс (RSI і перетин стохастика в крайній зоні), сплеск обсягу, перевага заявок у стакані, фандинг (перевантажена сторона), новини.",
     "Напрямок монети — той, за який проголосувало більше сигналів. Список відсортовано за кількістю збігів, а при рівності — за силою сигналів.",
     "Збіг сигналів — це кандидат, а не гарантія. Перевіряйте монету в інструментах (кнопки під карткою), ставте стоп і дивіться на кореляцію з BTC: монети з ρ вище 0,8 рухаються майже як біткоїн.",
-    "Сигнали Heat і тренд часто суперечать один одному: перепроданість буває саме в низхідному тренді. Найсильніші ситуації — коли тренд старшого таймфрейму і відкат на молодшому дивляться в один бік."] },
+    "Зони перепроданості й перекупленості рахуються для кожної монети з її власної історії: нижні й верхні 10% її Heat і RSI за останні 250 свічок. Спокійна монета отримує вужчі зони, волатильна — ширші.", "Сигнали Heat і тренд часто суперечать один одному: перепроданість буває саме в низхідному тренді. Найсильніші ситуації — коли тренд старшого таймфрейму і відкат на молодшому дивляться в один бік."] },
 ru: { title:"Сканер совпадений", sub:"Монеты, где одновременно сходятся несколько независимых сигналов: перегрев, тренд, волны Эллиотта, импульс, объём, стакан, фандинг и новости. Чем больше совпадений в одну сторону, тем сильнее кандидат.",
-  ex:"Биржа", tf:"Таймфрейм", top:"Сколько монет", min:"Мин. совпадений", side:"Направление", all:"Все", L:"Лонг", S:"Шорт", favOnly:"Только избранные", lang:"Язык", theme:"Тема", go:"Сканировать",
+  ex:"Биржа", tf:"Таймфрейм", top:"Сколько монет", min:"Мин. совпадений", side:"Направление", all:"Все", L:"Лонг", S:"Шорт", favOnly:"Только избранные", adz:"Зоны каждой монеты из её истории", lang:"Язык", theme:"Тема", go:"Сканировать",
   loading:"Загружаю рынок…", prog:"Анализирую {i} из {n}…", done:"{n} монет {ex}, таймфрейм {tf}, {t}. Показано {m} с мин. {k} совпадениями.", err:"Ошибка: {e}", none:"Нет монет с таким числом совпадений. Уменьшите порог или смените таймфрейм.",
   btc:"BTC: {t}", btcUp:"восходящий тренд", btcDn:"нисходящий тренд", fng:"Совпадений в лонг: {l} · в шорт: {s}",
   s_heat:"Heat", s_trend:"Тренд", s_ew:"Эллиотт", s_mom:"Импульс", s_vol:"Объём", s_book:"Стакан", s_fund:"Фандинг", s_news:"Новости",
-  d_heat:v=>`Heat ${v.v}: ${v.d>0?"перепроданность, возможен отскок":v.d<0?"перегрев, возможен откат":"нейтрально"}`,
+  d_heat:v=>`Heat ${v.v}: ${v.d>0?"перепроданность, возможен отскок":v.d<0?"перегрев, возможен откат":"нейтрально"} (зоны монеты ${v.auto?"из её истории":"стандартные"}: ≤ ${v.zb} / ≥ ${v.zs})`,
   d_trend:v=>`Цена ${v.d>0?"выше":"ниже"} EMA50 старшего таймфрейма (${v.tf}) на ${v.p}%`,
   d_ew:v=>v.d?`${v.w}: прогноз ${v.d>0?"вверх":"вниз"} до ${v.t}, уверенность ${v.c}%`:`${v.w}: без чёткого прогноза`,
-  d_mom:v=>`RSI ${v.r}${v.x?`, стохастик пересёкся ${v.x>0?"вверх в зоне перепроданности":"вниз в зоне перекупленности"}`:""}`,
+  d_mom:v=>`RSI ${v.r} (уровни монеты ${v.os} / ${v.ob})${v.x?`, стохастик пересёкся ${v.x>0?"вверх в зоне перепроданности":"вниз в зоне перекупленности"}`:""}`,
   d_vol:v=>v.d?`Всплеск объёма ×${v.r} на ${v.d>0?"зелёной":"красной"} свече`:`Объём обычный (×${v.r})`,
   d_book:v=>v.r==null?"Стакан не проверялся (монета вне первой двадцатки)":`Заявки в пределах 2%: покупки / продажи ×${v.r}`,
   d_fund:v=>v.f==null?"Фьючерсов нет":`Фандинг ${v.f}%${v.d>0?": шорты перегружены, возможен сквиз вверх":v.d<0?": лонги перегружены":""}`,
@@ -2039,16 +2049,16 @@ ru: { title:"Сканер совпадений", sub:"Монеты, где од�
     "Каждый из 8 сигналов голосует за лонг, шорт или воздерживается: Heat (перепроданность или перегрев), тренд (цена относительно EMA50 старшего таймфрейма), волны Эллиотта (направление прогноза), импульс (RSI и пересечение стохастика в крайней зоне), всплеск объёма, перевес заявок в стакане, фандинг (перегруженная сторона), новости.",
     "Направление монеты — то, за которое проголосовало больше сигналов. Список отсортирован по числу совпадений, а при равенстве — по силе сигналов.",
     "Совпадение сигналов — это кандидат, а не гарантия. Проверяйте монету в инструментах (кнопки под карточкой), ставьте стоп и смотрите на корреляцию с BTC: монеты с ρ выше 0,8 движутся почти как биткоин.",
-    "Сигналы Heat и тренд часто противоречат друг другу: перепроданность бывает именно в нисходящем тренде. Самые сильные ситуации — когда тренд старшего таймфрейма и откат на младшем смотрят в одну сторону."] },
+    "Зоны перепроданности и перекупленности считаются для каждой монеты из её собственной истории: нижние и верхние 10% её Heat и RSI за последние 250 свечей. Спокойная монета получает более узкие зоны, волатильная — более широкие.", "Сигналы Heat и тренд часто противоречат друг другу: перепроданность бывает именно в нисходящем тренде. Самые сильные ситуации — когда тренд старшего таймфрейма и откат на младшем смотрят в одну сторону."] },
 en: { title:"Confluence Scanner", sub:"Coins where several independent signals line up at once: heat, trend, Elliott waves, momentum, volume, order book, funding and news. The more signals agree, the stronger the candidate.",
-  ex:"Exchange", tf:"Timeframe", top:"Coins", min:"Min. matches", side:"Direction", all:"All", L:"Long", S:"Short", favOnly:"Favorites only", lang:"Language", theme:"Theme", go:"Scan",
+  ex:"Exchange", tf:"Timeframe", top:"Coins", min:"Min. matches", side:"Direction", all:"All", L:"Long", S:"Short", favOnly:"Favorites only", adz:"Per-coin zones from history", lang:"Language", theme:"Theme", go:"Scan",
   loading:"Loading the market…", prog:"Analysing {i} of {n}…", done:"{n} {ex} coins, timeframe {tf}, {t}. Showing {m} with at least {k} matches.", err:"Error: {e}", none:"No coins with that many matches. Lower the threshold or change the timeframe.",
   btc:"BTC: {t}", btcUp:"uptrend", btcDn:"downtrend", fng:"Long matches: {l} · short: {s}",
   s_heat:"Heat", s_trend:"Trend", s_ew:"Elliott", s_mom:"Momentum", s_vol:"Volume", s_book:"Book", s_fund:"Funding", s_news:"News",
-  d_heat:v=>`Heat ${v.v}: ${v.d>0?"oversold, a bounce is possible":v.d<0?"overheated, a pullback is possible":"neutral"}`,
+  d_heat:v=>`Heat ${v.v}: ${v.d>0?"oversold, a bounce is possible":v.d<0?"overheated, a pullback is possible":"neutral"} (coin zones ${v.auto?"from its history":"standard"}: ≤ ${v.zb} / ≥ ${v.zs})`,
   d_trend:v=>`Price ${v.d>0?"above":"below"} the higher-timeframe EMA50 (${v.tf}) by ${v.p}%`,
   d_ew:v=>v.d?`${v.w}: forecast ${v.d>0?"up":"down"} to ${v.t}, confidence ${v.c}%`:`${v.w}: no clear forecast`,
-  d_mom:v=>`RSI ${v.r}${v.x?`, stochastic crossed ${v.x>0?"up in the oversold zone":"down in the overbought zone"}`:""}`,
+  d_mom:v=>`RSI ${v.r} (coin levels ${v.os} / ${v.ob})${v.x?`, stochastic crossed ${v.x>0?"up in the oversold zone":"down in the overbought zone"}`:""}`,
   d_vol:v=>v.d?`Volume spike ×${v.r} on a ${v.d>0?"green":"red"} candle`:`Normal volume (×${v.r})`,
   d_book:v=>v.r==null?"Order book not checked (outside the top 20)":`Orders within 2%: bids / asks ×${v.r}`,
   d_fund:v=>v.f==null?"No futures":`Funding ${v.f}%${v.d>0?": shorts are crowded, a squeeze up is possible":v.d<0?": longs are crowded":""}`,
@@ -2059,12 +2069,12 @@ en: { title:"Confluence Scanner", sub:"Coins where several independent signals l
     "Each of 8 signals votes long, short or abstains: heat (oversold or overheated), trend (price against the higher-timeframe EMA50), Elliott waves (direction of the forecast), momentum (RSI and a stochastic cross in an extreme zone), a volume spike, the order-book balance, funding (the crowded side), news.",
     "A coin's direction is the one more signals voted for. The list is sorted by the number of matches, then by signal strength.",
     "A confluence is a candidate, not a guarantee. Check the coin in the tools (buttons under the card), use a stop, and watch the correlation with BTC: coins with ρ above 0.8 move almost like Bitcoin.",
-    "Heat and trend often disagree: oversold readings happen precisely in downtrends. The strongest setups are when the higher-timeframe trend and a pullback on the lower one point the same way."] }
+    "Oversold and overbought zones are computed for every coin from its own history: the lowest and highest 10% of its Heat and RSI over the last 250 candles. A calm coin gets narrower zones, a wild one wider.", "Heat and trend often disagree: oversold readings happen precisely in downtrends. The strongest setups are when the higher-timeframe trend and a pullback on the lower one point the same way."] }
 };
 const HTF = { "1h": "4h", "4h": "1d", "1d": "1w" }, SIGS = ["heat", "trend", "ew", "mom", "vol", "book", "fund", "news"];
 const store = { get(k, d) { try { const v = localStorage.getItem("sc_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem("sc_" + k, JSON.stringify(v)); } catch (e) {} } };
 const navL = (navigator.language || "uk").slice(0, 2);
-const S = { ex: ((window.CH && CH.param().ex) || store.get("ex", "binance")) === "bybit" ? "bybit" : "binance", lang: store.get("lang", ["uk", "ru"].includes(navL) ? navL : "en"), tf: store.get("tf", "4h"), top: store.get("top", 50), min: store.get("min", 4), side: store.get("side", "all"), favOnly: store.get("favOnly", false), rows: [], ctx: null, open: new Set(), busy: false, at: 0 };
+const S = { ex: ((window.CH && CH.param().ex) || store.get("ex", "binance")) === "bybit" ? "bybit" : "binance", lang: store.get("lang", ["uk", "ru"].includes(navL) ? navL : "en"), tf: store.get("tf", "4h"), top: store.get("top", 50), min: store.get("min", 4), side: store.get("side", "all"), favOnly: store.get("favOnly", false), adz: store.get("adz", true), rows: [], ctx: null, open: new Set(), busy: false, at: 0 };
 const DL = window.CH ? CH.param() : {};
 const T = (k, v) => { const e = (I18N[S.lang] || I18N.en)[k] ?? I18N.en[k]; return typeof e === "function" ? e(v || {}) : e == null ? k : String(e).replace(/\{(\w+)\}/g, (_, x) => v && v[x] != null ? v[x] : ""); };
 const $ = id => document.getElementById(id);
@@ -2106,21 +2116,35 @@ function stochKD(h, l, c, n = 14) {
   return { k: K(m), d: D(m), k1: K(m - 1), d1: D(m - 1) };
 }
 // heat as in the tools: smoothed stochastic on three lookbacks, averaged with RSI
-function heatOf(h, l, c) {
-  const s = n => { const m = c.length - 1; let a = -Infinity, z = Infinity; for (let q = Math.max(0, m - n + 1); q <= m; q++) { a = Math.max(a, h[q]); z = Math.min(z, l[q]); } return a > z ? (c[m] - z) / (a - z) * 100 : 50; };
-  return Math.round(0.6 * (0.4 * s(14) + 0.35 * s(50) + 0.25 * s(150)) + 0.4 * rsi(c));
+function heatOf(h, l, c, m) {
+  if (m == null) m = c.length - 1; const r = EW.rsiArr(c.slice(0, m + 1))[m];
+  const s = n => { let a = -Infinity, z = Infinity; for (let q = Math.max(0, m - n + 1); q <= m; q++) { a = Math.max(a, h[q]); z = Math.min(z, l[q]); } return a > z ? (c[m] - z) / (a - z) * 100 : 50; };
+  return Math.round(0.6 * (0.4 * s(14) + 0.35 * s(50) + 0.25 * s(150)) + 0.4 * (r == null ? 50 : r));
 }
 
+// Zones of one coin from its own history: the lowest and highest 10% of its Heat and RSI over the last 250 candles
+function zonesOf(h, l, c) {
+  const n = c.length, from = Math.max(150, n - 250); if (n - from < 120) return null;
+  const rs = EW.rsiArr(c), hv = [], rv = [];
+  for (let m = from; m < n; m++) {
+    const st = k => { let a = -Infinity, z = Infinity; for (let q = Math.max(0, m - k + 1); q <= m; q++) { a = Math.max(a, h[q]); z = Math.min(z, l[q]); } return a > z ? (c[m] - z) / (a - z) * 100 : 50; };
+    hv.push(0.6 * (0.4 * st(14) + 0.35 * st(50) + 0.25 * st(150)) + 0.4 * (rs[m] == null ? 50 : rs[m])); if (rs[m] != null) rv.push(rs[m]);
+  }
+  const q = (a, p) => { a = a.slice().sort((x, y) => x - y); const k = (a.length - 1) * p / 100, i = Math.floor(k); return a[i] + (a[Math.min(a.length - 1, i + 1)] - a[i]) * (k - i); };
+  let b = Math.min(35, Math.max(8, q(hv, 10))), s = Math.max(65, Math.min(92, q(hv, 90))); if (s - b < 30) { const mm = (b + s) / 2; b = mm - 15; s = mm + 15; }
+  return { b: Math.round(b), s: Math.round(s), os: Math.round(Math.min(40, Math.max(15, q(rv, 10)))), ob: Math.round(Math.max(60, Math.min(85, q(rv, 90)))) };
+}
 function analyze(sym, kb, kh, fund, btc) {
   const h = kb.map(k => k[2]), l = kb.map(k => k[3]), c = kb.map(k => k[4]), o = kb.map(k => k[1]), v = kb.map(k => k[5]), price = c[c.length - 1];
   const base = sym.replace(/USDT$/, ""), G = {};
-  const heat = heatOf(h, l, c); G.heat = { d: heat <= 25 ? 1 : heat >= 75 ? -1 : 0, s: Math.abs(heat - 50) / 50, v: heat };
+  const heat = heatOf(h, l, c), Z = S.adz ? zonesOf(h, l, c) : null, zb = Z ? Z.b : 25, zs = Z ? Z.s : 75, os = Z ? Z.os : 30, ob = Z ? Z.ob : 70;
+  G.heat = { d: heat <= zb ? 1 : heat >= zs ? -1 : 0, s: Math.abs(heat - 50) / 50, v: heat, zb, zs, auto: !!Z };
   const hc = kh.map(k => k[4]), e50 = ema(hc, 50);
   if (e50) { const p = (price / e50 - 1) * 100; G.trend = { d: Math.abs(p) < 0.5 ? 0 : Math.sign(p), s: Math.min(1, Math.abs(p) / 8), p: p.toFixed(1), tf: HTF[S.tf] }; } else G.trend = { d: 0, s: 0, p: "0", tf: HTF[S.tf] };
   const a = EW.analyze(kb, 3), fp = a && EW.forecastPath(a);
   G.ew = { d: fp && a.conf >= 0.35 ? fp.dir : 0, s: a ? a.conf : 0, w: a && a.best ? (EW.NAMES[a.best.key] || a.best.key) : "—", t: fp ? fmt(fp.target) : "", c: a ? Math.round(a.conf * 100) : 0, key: a && a.best ? a.best.key : null };
   const r = rsi(c), kd = stochKD(h, l, c), x = kd.k1 <= kd.d1 && kd.k > kd.d && kd.d < 25 ? 1 : kd.k1 >= kd.d1 && kd.k < kd.d && kd.d > 75 ? -1 : 0;
-  G.mom = { d: x || (r < 30 ? 1 : r > 70 ? -1 : 0), s: x ? 0.8 : Math.min(1, Math.abs(r - 50) / 30), r: Math.round(r), x };
+  G.mom = { d: x || (r < os ? 1 : r > ob ? -1 : 0), s: x ? 0.8 : Math.min(1, Math.abs(r - 50) / 30), r: Math.round(r), x, os, ob, auto: !!Z };
   const j = v.length - 2, avg = v.slice(j - 20, j).reduce((s, q) => s + q, 0) / 20, vr = avg > 0 ? v[j] / avg : 1;
   G.vol = { d: vr >= 2.5 ? Math.sign(c[j] - o[j]) : 0, s: Math.min(1, (vr - 1) / 4), r: vr.toFixed(1) };
   G.book = { d: 0, s: 0, r: null };
@@ -2179,7 +2203,7 @@ function render() {
   document.querySelectorAll("#sideSeg button").forEach(b => { b.textContent = T(b.dataset.s); b.setAttribute("aria-pressed", String(S.side === b.dataset.s)); });
   document.querySelectorAll("#tfSeg button").forEach(b => b.setAttribute("aria-pressed", String(S.tf === b.dataset.tf)));
   document.querySelectorAll("#exSeg button").forEach(b => b.setAttribute("aria-pressed", String(S.ex === b.dataset.ex)));
-  $("topN").value = String(S.top); $("minM").value = String(S.min); $("favOnly").checked = S.favOnly; $("lang").value = S.lang;
+  $("topN").value = String(S.top); $("minM").value = String(S.min); $("favOnly").checked = S.favOnly; $("adz").checked = S.adz; $("lang").value = S.lang;
   $("how").innerHTML = (I18N[S.lang] || I18N.en).how.map(x => `<li>${esc(x)}</li>`).join("");
   if (!S.rows.length) { $("list").innerHTML = S.busy ? "" : `<div class="empty">${esc(T("go"))} ↑</div>`; $("ctx").innerHTML = ""; return; }
   const favs = window.CH ? CH.favs() : [];
@@ -2210,6 +2234,7 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.classList && e.target.classList.contains("row")) e.target.click(); });
 $("topN").onchange = e => { S.top = +e.target.value; store.set("top", S.top); };
 $("minM").onchange = e => { S.min = +e.target.value; store.set("min", S.min); render(); };
+$("adz").onchange = e => { S.adz = e.target.checked; store.set("adz", S.adz); S.rows = []; render(); scan(); };
 $("favOnly").onchange = e => { S.favOnly = e.target.checked; store.set("favOnly", S.favOnly); render(); };
 $("lang").onchange = e => { S.lang = e.target.value; store.set("lang", S.lang); render(); };
 if (window.CH) { const th = CH.theme(null); if (th) document.documentElement.dataset.theme = th; }

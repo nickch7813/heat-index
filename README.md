@@ -2,7 +2,7 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **1.11**
+Version: **1.13**
 
 A set of free browser tools for scanning the crypto market and analysing single coins on Binance, Bybit and OKX (every tool works with Binance and Bybit; Heat Index and Coin Lab also with OKX). Every tool works in the browser and as a Telegram Mini App, shares one look and one light/dark theme, and links to the others: from any coin card you can open the same coin in another tool, each in its own tab.
 
@@ -10,7 +10,7 @@ A set of free browser tools for scanning the crypto market and analysing single 
 |---|---|
 | `/` (index.html) | **Heat Index**: the main market scanner with Heat, trend, reversal risk, setups and a simulator |
 | `scanner/` | **Confluence Scanner**: coins where heat, trend, Elliott waves, momentum, volume, order book, funding and news agree |
-| `coin-lab/` | **Coin Lab**: a detailed analysis and forecast for one coin |
+| `coin-lab/` | **Coin Lab**: a detailed analysis and forecast for one coin, with a deep-analysis report on five timeframes |
 | `elliott/` | **Elliott Waves**: automatic wave count with trade ideas |
 | `whales/` | **Whale Sonar**: large orders in the order book and how the price reacts |
 | `liquidations/` | **Liquidation Radar**: estimated liquidation zones on Binance or Bybit USDT perpetuals |
@@ -42,6 +42,10 @@ Open the bell in the top bar, then **Rules**, or tap **Alert** on any coin card.
 - RSI 14 on 15m, 1h, 4h or 1d goes below or above a level.
 
 An alert fires once or every time with a pause, and can carry a note. It is shown on screen and in the log, and can also play a sound, show a browser notification and send a message through your own Telegram bot (Settings tab). Alerts are checked in the browser every 15–120 s while at least one tab of any tool is open; one tab does the checking, so nothing is sent twice.
+
+## Adaptive zones per coin
+
+Overbought and oversold are not the same for every coin: a calm large cap rarely reaches Heat 25, a wild small cap goes there every week. Heat Index, Coin Lab and the Confluence Scanner therefore compute the zones of every coin from its own history (on by default): the buy zone is the lowest 10% of its Heat over the loaded candles, the sell zone the highest 10%, kept between 8–35 and 65–92, and RSI levels the same way. Each coin then reaches its zones about equally often. Heat Index shows the zones in use on the coin's chart; fixed zones are one tap away in Settings.
 
 ## Shared favorites, calendar, correlation, app install
 
