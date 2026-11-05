@@ -2,7 +2,7 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **1.17**
+Version: **1.18**
 
 A set of free browser tools for scanning the crypto market and analysing single coins on Binance, Bybit and OKX (every tool works with Binance and Bybit; Heat Index and Coin Lab also with OKX). Every tool works in the browser and as a Telegram Mini App, shares one look and one light/dark theme, and links to the others: from any coin card you can open the same coin in another tool, each in its own tab.
 
