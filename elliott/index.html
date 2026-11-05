@@ -262,6 +262,7 @@ scan: [
   ["#exSeg [data-ex]", "Біржа, монети якої сканувати: Binance або Bybit", "Биржа, монеты которой сканировать: Binance или Bybit", "Exchange whose coins to scan: Binance or Bybit"],
   ["#tfSeg [data-tf]", "Таймфрейм свічок для сигналів; тренд береться зі старшого таймфрейму", "Таймфрейм свечей для сигналов; тренд берётся со старшего таймфрейма", "Candle timeframe of the signals; the trend comes from the higher timeframe"],
   ["#topN", "Скільки найбільших монет Binance за обсягом сканувати (обрані додаються завжди)", "Сколько крупнейших монет Binance по объёму сканировать (избранные добавляются всегда)", "How many of the largest Binance coins to scan (favorites are always added)"],
+  ["#calC", "Сигнал, що на історії цієї монети не працював, не голосує (закреслений), а той, що працював добре, має більшу силу (✓)", "Сигнал, который на истории этой монеты не работал, не голосует (зачёркнут), а тот, что работал хорошо, имеет большую силу (✓)", "A signal that failed on this coin's history does not vote (struck through), one that worked well counts stronger (✓)"],
   ["#adz", "Зони перепроданості й перекупленості для кожної монети з її історії замість однакових 25/75 і 30/70 для всіх", "Зоны перепроданности и перекупленности для каждой монеты из её истории вместо одинаковых 25/75 и 30/70 для всех", "Oversold and overbought zones per coin from its history instead of the same 25/75 and 30/70 for all"],
   ["#minM", "Скільки з 8 сигналів мають дивитися в один бік, щоб монета потрапила в список", "Сколько из 8 сигналов должны смотреть в одну сторону, чтобы монета попала в список", "How many of the 8 signals must point the same way for a coin to be listed"],
   ["#sideSeg [data-s]", "Показати монети лише з цим напрямком збігу", "Показать монеты только с этим направлением совпадения", "Show only coins whose signals agree in this direction"],
@@ -437,6 +438,13 @@ lab: [
   [".tab[data-t=lq]", "Ліквідації, фандинг, відкритий інтерес", "Ликвидации, фандинг, открытый интерес", "Liquidations, funding, open interest"],
   [".tab[data-t=bt]", "Як сигнали спрацювали б на історії", "Как сигналы сработали бы на истории", "How the signals would have done on history"],
   ["#deepTab", "Повний розбір монети на 5 таймфреймах: тренд, імпульс, зони Heat монети, хвилі, режим ринку, рівні, деривативи, стакан, кореляція, новини, статистика, сценарії й план угоди", "Полный разбор монеты на 5 таймфреймах: тренд, импульс, зоны Heat монеты, волны, режим рынка, уровни, деривативы, стакан, корреляция, новости, статистика, сценарии и план сделки", "A full review of the coin on 5 timeframes: trend, momentum, the coin's Heat zones, waves, regime, levels, derivatives, book, correlation, news, statistics, scenarios and a trade plan"],
+  [".calnote", "Тест індикаторів сам проганяється на історії монети (не частіше ніж раз на 3 дні), і вага кожного чинника змінюється за тим, як він працював саме на цій монеті", "Тест индикаторов сам прогоняется на истории монеты (не чаще раза в 3 дня), и вес каждого фактора меняется по тому, как он работал именно на этой монете", "The indicator test runs by itself on the coin's history (at most every 3 days), and each factor's weight changes by how it worked on this very coin"],
+  ["#itTab", "Перевірка 16 індикаторів на історії цієї монети: вінрейт, profit factor і середня угода, окремо на навчальній і перевірочній частині", "Проверка 16 индикаторов на истории этой монеты: винрейт, profit factor и средняя сделка, отдельно на обучающей и проверочной части", "Tests 16 indicators on this coin's history: win rate, profit factor and average trade, separately on the training and the check part"],
+  ["#itGo", "Завантажити історію й прогнати всі індикатори з вибраними стопом, ціллю й комісією", "Загрузить историю и прогнать все индикаторы с выбранными стопом, целью и комиссией", "Load the history and run every indicator with the chosen stop, target and fee"],
+  ["#itBars", "Більше свічок — більше угод і надійніший висновок, але довше тест", "Больше свечей — больше сделок и надёжнее вывод, но дольше тест", "More candles mean more trades and a sounder verdict, but a longer test"],
+  ["#itTrend", "Брати лонги лише вище EMA200, шорти — лише нижче", "Брать лонги только выше EMA200, шорты — только ниже", "Take longs only above EMA200, shorts only below"],
+  [".it-row", "Натисніть, щоб побачити криву результату й останні угоди цього сигналу", "Нажмите, чтобы увидеть кривую результата и последние сделки этого сигнала", "Tap to see the result curve and latest trades of this signal"],
+  [".it-v", "Висновок за перевірочною частиною (останні 30% історії): «працює» — від 8 угод, PF від 1,2 і середня угода в плюсі", "Вывод по проверочной части (последние 30% истории): «работает» — от 8 сделок, PF от 1,2 и средняя сделка в плюсе", "Verdict on the check part (last 30% of history): works means 8+ trades, PF 1.2+ and a positive average trade"],
   ["#deepGo", "Зібрати свіжі дані на всіх таймфреймах і перерахувати звіт", "Собрать свежие данные на всех таймфреймах и пересчитать отчёт", "Gather fresh data on every timeframe and rebuild the report"],
   ["#deepCap, #deepRisk", "Розмір рахунку й ризик на угоду: з них рахується розмір позиції до стопу", "Размер счёта и риск на сделку: из них считается размер позиции до стопа", "Account size and risk per trade: the position size to the stop comes from them"],
   ["#deepCopy", "Скопіювати короткий текст звіту для поста", "Скопировать короткий текст отчёта для поста", "Copy a short text of the report for a post"],
@@ -471,6 +479,9 @@ elliott: [
   ["[data-g=sens][data-v='2']", "Бачити дрібні хвилі: більше деталей, більше шуму", "Видеть мелкие волны: больше деталей, больше шума", "See small waves: more detail, more noise"],
   ["[data-g=sens][data-v='3']", "Звичайна чутливість до хвиль", "Обычная чувствительность к волнам", "Normal wave sensitivity"],
   ["[data-g=sens][data-v='4.5']", "Лише великі хвилі: менше шуму", "Только крупные волны: меньше шума", "Only large waves: less noise"],
+  ["[data-g=learn][data-v=on]", "Розмітка й прогноз вчаться на історії кожної монети: сама підбирається чутливість, ціль стає зоною за її власними співвідношеннями хвиль, а впевненість — реальною ймовірністю", "Разметка и прогноз учатся на истории каждой монеты: сама подбирается чувствительность, цель становится зоной по её собственным соотношениям волн, а уверенность — реальной вероятностью", "The count and forecast learn from each coin's history: the sensitivity is chosen by itself, the target becomes a zone from the coin's own wave ratios, and confidence becomes a real probability"],
+  ["[data-g=learn][data-v=off]", "Однакова чутливість і цілі за підручником для всіх монет", "Одинаковая чувствительность и цели по учебнику для всех монет", "The same sensitivity and textbook targets for every coin"],
+  ["#ewlSt", "Скільки монет уже навчено на їхній історії; решта навчається у фоні", "Сколько монет уже обучено на их истории; остальные обучаются в фоне", "How many coins have learned from their history; the rest learn in the background"],
   ["[data-g=sort][data-v=best]", "Спершу монети з найсильнішими сигналами", "Сначала монеты с сильнейшими сигналами", "Strongest signals first"],
   ["[data-g=sort][data-v=fc]", "Спершу монети з найбільшим прогнозом росту", "Сначала монеты с наибольшим прогнозом роста", "Largest forecast rise first"],
   ["[data-g=sort][data-v=rev]", "Спершу монети з найбільшою ймовірністю розвороту", "Сначала монеты с наибольшей вероятностью разворота", "Highest reversal probability first"],
@@ -610,6 +621,8 @@ bot: [
   ["[data-dir=short]", "Бот відкриває лише шорти", "Бот открывает только шорты", "The bot opens shorts only"],
   ["[data-stop=on]", "Стоп-лосс на відстані 2×ATR: позиція закривається з обмеженою втратою, а після руху на 1,5 ATR у плюс стоп переноситься в беззбиток", "Стоп-лосс на расстоянии 2×ATR: позиция закрывается с ограниченной потерей, а после движения на 1,5 ATR в плюс стоп переносится в безубыток", "Stop-loss 2×ATR away: the position closes with a limited loss, and after a 1.5 ATR gain the stop moves to breakeven"],
   ["[data-stop=off]", "Без стоп-лоссу: позиції закриваються лише за ціллю, розворотом індикаторів, простоєм або ліквідацією. Втрата не обмежена", "Без стоп-лосса: позиции закрываются только по цели, развороту индикаторов, простою или ликвидации. Потеря не ограничена", "No stop-loss: positions close only at the target, on an indicator flip, idling or liquidation. The loss is not capped"],
+  ["[data-cal=on]", "Для кожної монети родини індикаторів (Heat, тренд, імпульс, обсяг, хвилі) перевіряються на її історії, і ті, що працювали краще, важать в оцінці більше", "Для каждой монеты семейства индикаторов (Heat, тренд, импульс, объём, волны) проверяются на её истории, и те, что работали лучше, весят в оценке больше", "For every coin the indicator families (Heat, trend, momentum, volume, waves) are checked on its history, and those that worked better weigh more in the score"],
+  ["[data-cal=off]", "Усі чинники з однаковою вагою для всіх монет", "Все факторы с одинаковым весом для всех монет", "Every factor with the same weight for every coin"],
   ["[data-news=on]", "Бот не купує монету з важливою негативною новиною за 12 год, закриває лонг, якщо така новина вийшла після входу, і посилює шорт, лише коли ціна вже падає", "Бот не покупает монету с важной негативной новостью за 12 ч, закрывает лонг, если такая новость вышла после входа, и усиливает шорт, только когда цена уже падает", "The bot does not buy a coin with important negative news in 12 h, closes a long if such news comes after entry, and strengthens a short only if the price is already falling"],
   ["[data-news=off]", "Бот не зважає на новини", "Бот не учитывает новости", "The bot ignores news"],
   ["[data-mode=std]", "Стандартний відбір: вхід від оцінки 45, сильний сигнал ±70 можна брати й проти тренду", "Стандартный отбор: вход от оценки 45, сильный сигнал ±70 можно брать и против тренда", "Standard selection: entry from a score of 45, a strong ±70 signal may go against the trend"],
@@ -628,7 +641,7 @@ bot: [
 };
 
 </script>
-<script id="ch-js" data-tool="elliott" data-ver="1.13" data-root="../">
+<script id="ch-js" data-tool="elliott" data-ver="1.17" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -637,7 +650,7 @@ bot: [
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.13";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.17";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -1496,6 +1509,94 @@ bot: [
   addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".ch-inst"); if (!b || !installEv) return; e.preventDefault(); installEv.prompt(); installEv.userChoice.finally(function () { installEv = null; b.hidden = true; }); });
   if ("serviceWorker" in navigator && location.protocol === "https:") { addEventListener("load", function () { navigator.serviceWorker.register(ROOT + "sw.js", { scope: ROOT }).catch(function () {}); }); }
 
+  // ---------- per-coin calibration, shared by the Paper Bot and the Confluence Scanner ----------
+  // For a coin and timeframe the main indicator families are replayed on 1000 candles of its history with the same
+  // exits as the Coin Lab indicator test (stop 2 ATR, target 4 ATR, 48 candles, 0.1% fee). Only the last 30% of history
+  // (the check part) decides: a family that worked there gets more weight on this coin (up to ×1.6), one that failed
+  // less (down to ×0.4), separately for rising and falling signals, and less change when there were few trades.
+  // A calibration made by Coin Lab's full 16-indicator test (with Elliott waves) is preferred when it exists.
+  // Results live in localStorage (ch.cal) for 3 days; coins are calibrated one by one in the background.
+  var CAL_KEY2 = "ch.cal", CAL_TTL2 = 3 * 864e5;
+  function calAll2() { var a = jget(CAL_KEY2, {}); return a && typeof a === "object" ? a : {}; }
+  function calKey2(ex, mkt, base, tf) { return [normEx(ex), /^fut/.test(String(mkt)) ? "fut" : "spot", String(base).toUpperCase(), tf].join("|"); }
+  function calGet2(ex, mkt, base, tf) { var c = calAll2()[calKey2(ex, mkt, base, tf)]; return c && Date.now() - c.at < 3 * CAL_TTL2 ? c : null; }
+  function calPut2(ex, mkt, base, tf, c) { var a = calAll2(); a[calKey2(ex, mkt, base, tf)] = c; Object.keys(a).sort(function (x, y) { return a[y].at - a[x].at; }).slice(300).forEach(function (k) { delete a[k]; }); jset(CAL_KEY2, a); }
+  var BYIV2 = { "5m": "5", "15m": "15", "1h": "60", "4h": "240", "1d": "D", "1w": "W" };
+  async function calKlines(ex, mkt, sym, tf) {
+    var fut = /^fut/.test(String(mkt));
+    if (normEx(ex) === "bybit") { var r = await getJ("https://api.bybit.com/v5/market/kline?category=" + (fut ? "linear" : "spot") + "&symbol=" + sym + "&interval=" + BYIV2[tf] + "&limit=1000");
+      return ((r.result && r.result.list) || []).map(function (k) { return [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]; }).reverse(); }
+    var d = await getJ(fut ? "https://fapi.binance.com/fapi/v1/klines?symbol=" + sym + "&interval=" + tf + "&limit=1000" : "https://api.binance.com/api/v3/klines?symbol=" + sym + "&interval=" + tf + "&limit=1000");
+    return d.map(function (k) { return [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]; });
+  }
+  function rsiArr(c, n) {
+    var o = Array(c.length).fill(null); if (c.length <= n) return o; var g = 0, l = 0, i;
+    for (i = 1; i <= n; i++) { var d = c[i] - c[i - 1]; if (d > 0) g += d; else l -= d; } g /= n; l /= n; o[n] = l === 0 ? 100 : 100 - 100 / (1 + g / l);
+    for (i = n + 1; i < c.length; i++) { var e = c[i] - c[i - 1]; g = (g * (n - 1) + Math.max(e, 0)) / n; l = (l * (n - 1) + Math.max(-e, 0)) / n; o[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l); }
+    return o;
+  }
+  function emaA(a, n) { var o = Array(a.length).fill(null), k = 2 / (n + 1), e = null; for (var i = 0; i < a.length; i++) { e = e == null ? a[i] : a[i] * k + e * (1 - k); if (i >= n - 1) o[i] = e; } return o; }
+  function calCompute(K) {
+    var n = K.length, o = K.map(function (k) { return k[1]; }), h = K.map(function (k) { return k[2]; }), l = K.map(function (k) { return k[3]; }), c = K.map(function (k) { return k[4]; }), v = K.map(function (k) { return k[5]; });
+    if (n < 400) return null;
+    var R = rsiArr(c, 14), E20 = emaA(c, 20), E50 = emaA(c, 50), E200 = emaA(c, 200), E12 = emaA(c, 12), E26 = emaA(c, 26);
+    var M = c.map(function (_, i) { return E12[i] != null && E26[i] != null ? E12[i] - E26[i] : null; }), MS = emaA(M.map(function (x) { return x == null ? 0 : x; }), 9), MH = M.map(function (x, i) { return x == null ? null : x - MS[i]; });
+    var TR = c.map(function (_, i) { return i ? Math.max(h[i] - l[i], Math.abs(h[i] - c[i - 1]), Math.abs(l[i] - c[i - 1])) : h[i] - l[i]; }), AT = emaA(TR, 14);
+    var HE = c.map(function (_, i) { if (i < 150 || R[i] == null) return null; var st = function (p) { var a = -Infinity, z = Infinity; for (var q = i - p + 1; q <= i; q++) { a = Math.max(a, h[q]); z = Math.min(z, l[q]); } return a > z ? (c[i] - z) / (a - z) * 100 : 50; };
+      return 0.6 * (0.4 * st(14) + 0.35 * st(50) + 0.25 * st(150)) + 0.4 * R[i]; });
+    var Z = Array(n).fill(null); for (var i0 = 250; i0 < n; i0 += 10) { var w = HE.slice(Math.max(0, i0 - 400), i0).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; }); if (w.length < 120) continue;
+      var q = function (p) { var k = (w.length - 1) * p / 100, f = Math.floor(k); return w[f] + (w[Math.min(w.length - 1, f + 1)] - w[f]) * (k - f); }; for (var j = i0; j < Math.min(n, i0 + 10); j++) Z[j] = [q(10), q(90)]; }
+    var VS = c.map(function (_, i) { if (i < 20) return null; var s = 0; for (var q2 = i - 20; q2 < i; q2++) s += v[q2]; return s / 20; });
+    var G = { fHeat: { L: [], S: [] }, fMom: { L: [], S: [] }, fTrend: { L: [], S: [] }, fVol: { L: [], S: [] } };
+    var sig = function (g, d, i) { G[g][d].push(i); };
+    var up = function (a, i, x) { return a[i] != null && a[i - 1] != null && a[i - 1] < x && a[i] >= x; }, dn = function (a, i, x) { return a[i] != null && a[i - 1] != null && a[i - 1] > x && a[i] <= x; };
+    for (var i = 1; i < n; i++) {
+      if (Z[i] && up(HE, i, Z[i][0])) sig("fHeat", "L", i); if (Z[i] && dn(HE, i, Z[i][1])) sig("fHeat", "S", i);
+      if (up(R, i, 30)) sig("fMom", "L", i); if (dn(R, i, 70)) sig("fMom", "S", i);
+      if (up(MH, i, 0)) sig("fMom", "L", i); if (dn(MH, i, 0)) sig("fMom", "S", i);
+      if (E20[i] != null && E50[i] != null && E20[i - 1] != null && E50[i - 1] != null) { if (E20[i - 1] <= E50[i - 1] && E20[i] > E50[i]) sig("fTrend", "L", i); if (E20[i - 1] >= E50[i - 1] && E20[i] < E50[i]) sig("fTrend", "S", i); }
+      if (E200[i] != null && E200[i - 1] != null) { if (c[i - 1] <= E200[i - 1] && c[i] > E200[i]) sig("fTrend", "L", i); if (c[i - 1] >= E200[i - 1] && c[i] < E200[i]) sig("fTrend", "S", i); }
+      if (VS[i] && v[i] > 2.5 * VS[i]) sig("fVol", c[i] > o[i] ? "L" : "S", i);
+    }
+    // trades: entry at the next open, stop 2 ATR, target 4 ATR, at most 48 candles, 0.1% fee each side; one at a time
+    var split = Math.floor(n * 0.7), out = {};
+    Object.keys(G).forEach(function (g) {
+      out[g] = {};
+      ["L", "S"].forEach(function (dd) {
+        var d = dd === "L" ? 1 : -1, list = G[g][dd].sort(function (a, b) { return a - b; }), busyTo = -1, T = [];
+        list.forEach(function (s) {
+          var i = s + 1; if (i >= n || i <= busyTo || !AT[s]) return;
+          var e = o[i], a = AT[s], sl = e - d * 2 * a, tp = e + d * 4 * a, x = null, end = Math.min(n - 1, i + 48), k;
+          for (k = i; k <= end; k++) { if (d > 0 ? l[k] <= sl : h[k] >= sl) { x = sl; break; } if (d > 0 ? h[k] >= tp : l[k] <= tp) { x = tp; break; } }
+          if (x == null) { k = end; x = c[end]; }
+          busyTo = k; if (s >= split) T.push(d * (x / e - 1) - 0.002);
+        });
+        var w2 = T.filter(function (r) { return r > 0; }), sw = w2.reduce(function (a, r) { return a + r; }, 0), sl2 = T.filter(function (r) { return r <= 0; }).reduce(function (a, r) { return a + r; }, 0);
+        out[g][dd] = { n: T.length, wr: T.length ? w2.length / T.length * 100 : null, pf: sl2 < 0 ? sw / -sl2 : sw > 0 ? 99 : null };
+      });
+    });
+    var grp = {}; Object.keys(out).forEach(function (g) { grp[g] = {}; ["L", "S"].forEach(function (d) { var s = out[g][d], q0 = !s || s.n < 5 || s.pf == null ? 0 : Math.max(-1, Math.min(1, (Math.min(3, s.pf) - 1) / 0.8)) * s.n / (s.n + 15); grp[g][d] = Math.max(0.4, Math.min(1.6, 1 + 0.6 * q0)); }); });
+    grp.fEw = { L: 1, S: 1 };
+    return { at: Date.now(), grp: grp, sig: out, bars: n, src: "auto" };
+  }
+  var calQ2 = [], calBusy2 = false;
+  function calEnsure2(ex, mkt, base, tf, quote) {
+    var c = calGet2(ex, mkt, base, tf); if (c && Date.now() - c.at < CAL_TTL2) return;
+    var key = calKey2(ex, mkt, base, tf); if (calQ2.some(function (x) { return x.key === key; }) || calQ2.length > 150) return;
+    calQ2.push({ key: key, ex: ex, mkt: mkt, base: String(base).toUpperCase(), tf: tf, sym: String(base).toUpperCase() + (quote || "USDT") }); calRun2();
+  }
+  async function calRun2() {
+    if (calBusy2) return; calBusy2 = true;
+    try {
+      while (calQ2.length) {
+        var job = calQ2.shift(), c0 = calGet2(job.ex, job.mkt, job.base, job.tf); if (c0 && Date.now() - c0.at < CAL_TTL2) continue;
+        try { var K = await calKlines(job.ex, job.mkt, job.sym, job.tf), r = calCompute(K); if (r) { calPut2(job.ex, job.mkt, job.base, job.tf, r); try { dispatchEvent(new CustomEvent("ch-cal", { detail: job })); } catch (e) {} } } catch (e) {}
+        await new Promise(function (res) { setTimeout(res, 2500); });
+      }
+    } finally { calBusy2 = false; }
+  }
+  function calMul2(c, group, v) { if (!c || !c.grp || !c.grp[group]) return 1; return c.grp[group][v >= 0 ? "L" : "S"] || 1; }
+
   // ---------- hover hints for every tool ----------
   // Sources, first found wins: an entry of assets/tips.js matching the element (or one of its parents), its title,
   // the aria-label of an icon-only control, the full text of a cut-off label. Mouse hover and keyboard focus only;
@@ -1604,7 +1705,7 @@ bot: [
     theme: function (fallback) { return saved() || fallback || null; },
     url: url, links: links, linksInto: linksInto, param: param,
     mark: mark, frame: frame, shot: shot, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
-    favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
+    calib: { get: calGet2, put: calPut2, ensure: calEnsure2, mul: calMul2, key: calKey2, compute: calCompute, pending: function () { return calQ2.length + (calBusy2 ? 1 : 0); } }, favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
   };
 })();
 
@@ -1705,7 +1806,7 @@ body.ch-skin ::placeholder{color:var(--ch-t3)}
 .lad .ls p{margin:4px 0 2px 22px;color:var(--muted);font-size:.82rem;line-height:1.45}
 .lad .ladn{margin:8px 0 2px;color:var(--muted);font-size:.82rem}
 .lad-s .ladh{gap:6px}
-
+.ewlst{font-size:12px;color:var(--muted);margin:2px 0 6px}.fch.ewl{color:var(--text)}
 html:root:root{--bg:var(--ch-bg);--surface:var(--ch-bg);--line:var(--ch-bd);--text:var(--ch-tx);--muted:var(--ch-t2);--green:var(--ch-up);--red:var(--ch-dn);--wave:var(--ch-warn);--chip:var(--ch-s1);--ch-w:760px}
 body.ch-skin main{padding-top:12px}
 body.ch-skin .btns button,body.ch-skin .act{background:none;border:0.5px solid var(--ch-bd2);border-radius:14px;padding:4px 11px;font-size:12px;color:var(--ch-t2);min-height:28px}
@@ -1730,7 +1831,7 @@ body.ch-skin .sheet{border:0.5px solid var(--ch-bd2)}
 <div id="controls"></div>
 <div class="legend"><span id="leg0"></span><span id="leg50"></span><span id="leg100"></span></div>
 <div class="scale"></div>
-<div id="status"></div>
+<div id="status"></div><div id="ewlSt" class="ewlst"></div>
 <div class="searchbar"><input id="search" type="search" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>
 <div id="list"></div>
 <footer id="footer"></footer>
@@ -2064,7 +2165,7 @@ const EW = (() => {
 const I18N = {
   en: {
     'rev.title': 'Trend reversal probability', 'rev.dirUp': 'reversal up', 'rev.dirDn': 'reversal down', 'pane.rev': 'Reversal probability, %', 'pane.ews': 'Elliott wave stochastic', 'ews.short': 'EWS', 'ews.bull': 'bullish cross {n} bars ago', 'ews.bear': 'bearish cross {n} bars ago', 'ews.none': 'no cross', 'ews.confUp': 'Elliott wave stochastic: bullish cross in the oversold zone confirms a reversal up', 'ews.confDn': 'Elliott wave stochastic: bearish cross in the overbought zone confirms a reversal down', 'why.rev': 'Trend reversal probability {p}%, {d}', 'rev.hist': 'Check on this chart: readings above 60% were followed by a turn within {h} bars in {r}% of cases ({n} signals), versus {b}% for a random bar.', 'rev.histNone': 'Too few readings above 60% on this chart to check them against history.', 'sort.rev': 'Reversal probability',
-    'sort.fc': 'Growth forecast', 'fc.title': 'Forecast:', 'fc.up': 'up to {t} ({p}%) in {time}', 'fc.down': 'down to {t} ({p}%) in {time}', 'fc.flat': 'sideways, the signals disagree', 'fc.hours': '≈ {a}–{b} h', 'fc.days': '≈ {a}–{b} days', 'fc.strong': 'strong', 'fc.moderate': 'moderate', 'fc.weak': 'weak', 'fc.agree': 'Sources agreeing with the forecast: {n} of 3', 'fc.stop': 'Wrong if the price goes past {s}', 'fc.hist': 'On this chart such forecasts reached the target {h} times of {n} ({r}%)', 'fc.histNone': 'Too few past forecasts on this chart to check them', "lad.title": "Confirmation of a {d}", "lad.up": "turn up", "lad.dn": "turn down", "lad.count": "{k} of {n}", "lad.struct": "Wave structure complete", "lad.struct.ok": "yes: {w}", "lad.struct.no": "no: the count is “{w}”", "lad.five.none": "not yet: the move has just begun", "lad.vol.none": "not enough bars yet", "lad.struct.why": "The count must say the move can end here: wave 5, a finished A-B-C, the end of wave 2 or 4. It is a condition, not a signal: the move may still extend.", "lad.div": "Momentum divergence", "lad.div.ok": "yes: RSI {r1} → {r2} on a new extreme", "lad.div.no": "no", "lad.div.why": "The price makes a new extreme but RSI does not: the push is losing strength. Usually seen at the end of wave 5 and wave C.", "lad.cross": "Stochastic cross in the extreme zone", "lad.cross.ok": "yes", "lad.cross.no": "not yet", "lad.cross.why": "The Elliott wave stochastic (EWS) crosses in the new direction below 25 for a turn up or above 75 for a turn down. The first moment a turn is worth noticing.", "lad.break": "Break of the key level", "lad.break.ok": "yes: past {lv}", "lad.break.no": "not yet: level {lv}", "lad.break.why": "The price closes past the last swing against the old move (for an A-B-C it is the top of the last bounce). The strongest price confirmation that the old move is over.", "lad.five": "Five waves, not three", "lad.five.ok": "yes: the move is five waves", "lad.five.warn": "careful: three waves and a pullback, looks like a bounce", "lad.five.no": "not yet: {n} inner waves", "lad.five.why": "A new trend starts with a five-wave impulse. A move of three waves that fades is usually only a bounce (wave B) inside the old trend. The most typical Elliott test.", "lad.hl": "Higher low (lower high)", "lad.hl.ok": "yes", "lad.hl.no": "not yet", "lad.hl.why": "The first pullback stops short of the extreme and the price then goes past the top of the first move. This is new wave 2 completing, and a reversal by classic chart rules too.", "lad.vol": "Volume backs the new move", "lad.vol.ok": "yes: ×{r} vs the old move", "lad.vol.no": "no: ×{r}", "lad.vol.why": "The new move trades more than the old one, mostly on candles in its direction. Big players take part in the turn.", "lad.prob": "The model with the confirmations: {p}% (without them: {base}).", "lad.final": "Together, the estimate at the top: {p}%.", "lad.hist": "On this chart, {k}+ confirmations were followed by a full swing in the new direction in {r}% of cases ({n}).", "lad.histNone": "Too few cases with {k}+ confirmations on this chart to check them.", "lad.howT": "How to use it", "lad.how": "The steps go from the earliest to the most reliable. Entering after 2–3 gives a better price but more false signals; after 5–6 it is safer but part of the move is gone. The stop goes past the extreme the turn starts from: if it breaks, the count is wrong. The probability is the model with each confirmation added, and the line below it shows how often the same number of confirmations really led to a turn on this coin.", 'src.elliott': 'Elliott waves', 'src.heat': 'Heat index', 'src.hs': 'short', 'src.hm': 'mid', 'src.hl': 'long', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (growth zone)', 'why.heatHigh': ' (overheated)', 'why.heatMid': ' (neutral)', 'why.heatAgainst': 'Heat index is overheated, buying now is risky',
+    'sort.fc': 'Growth forecast', 'fc.title': 'Forecast:', 'fc.up': 'up to {t} ({p}%) in {time}', 'fc.down': 'down to {t} ({p}%) in {time}', 'fc.flat': 'sideways, the signals disagree', 'fc.hours': '≈ {a}–{b} h', 'fc.days': '≈ {a}–{b} days', 'fc.strong': 'strong', 'fc.moderate': 'moderate', 'fc.weak': 'weak', 'fc.agree': 'Sources agreeing with the forecast: {n} of 3', 'fc.stop': 'Wrong if the price goes past {s}', 'fc.hist': 'On this chart such forecasts reached the target {h} times of {n} ({r}%)', 'fc.histNone': 'Too few past forecasts on this chart to check them', "g.learn": "Learning", "learn.on": "From each coin's history", "learn.off": "Off", "ln.status": "Learned on their history: {n} of {k} coins", "ln.busy": "learning…", "ln.wait": "Learning this coin's history…", "ln.prob": "Chance to reach the target ≈ {p}% (on this coin “{w}” worked {h} of {n})", "ln.zone": "target zone {a} – {b}, most often {m} (from {n} of its waves)", "ln.sens": "sensitivity for this coin: {s} ({h} of {n} came true)", "lad.title": "Confirmation of a {d}", "lad.up": "turn up", "lad.dn": "turn down", "lad.count": "{k} of {n}", "lad.struct": "Wave structure complete", "lad.struct.ok": "yes: {w}", "lad.struct.no": "no: the count is “{w}”", "lad.five.none": "not yet: the move has just begun", "lad.vol.none": "not enough bars yet", "lad.struct.why": "The count must say the move can end here: wave 5, a finished A-B-C, the end of wave 2 or 4. It is a condition, not a signal: the move may still extend.", "lad.div": "Momentum divergence", "lad.div.ok": "yes: RSI {r1} → {r2} on a new extreme", "lad.div.no": "no", "lad.div.why": "The price makes a new extreme but RSI does not: the push is losing strength. Usually seen at the end of wave 5 and wave C.", "lad.cross": "Stochastic cross in the extreme zone", "lad.cross.ok": "yes", "lad.cross.no": "not yet", "lad.cross.why": "The Elliott wave stochastic (EWS) crosses in the new direction below 25 for a turn up or above 75 for a turn down. The first moment a turn is worth noticing.", "lad.break": "Break of the key level", "lad.break.ok": "yes: past {lv}", "lad.break.no": "not yet: level {lv}", "lad.break.why": "The price closes past the last swing against the old move (for an A-B-C it is the top of the last bounce). The strongest price confirmation that the old move is over.", "lad.five": "Five waves, not three", "lad.five.ok": "yes: the move is five waves", "lad.five.warn": "careful: three waves and a pullback, looks like a bounce", "lad.five.no": "not yet: {n} inner waves", "lad.five.why": "A new trend starts with a five-wave impulse. A move of three waves that fades is usually only a bounce (wave B) inside the old trend. The most typical Elliott test.", "lad.hl": "Higher low (lower high)", "lad.hl.ok": "yes", "lad.hl.no": "not yet", "lad.hl.why": "The first pullback stops short of the extreme and the price then goes past the top of the first move. This is new wave 2 completing, and a reversal by classic chart rules too.", "lad.vol": "Volume backs the new move", "lad.vol.ok": "yes: ×{r} vs the old move", "lad.vol.no": "no: ×{r}", "lad.vol.why": "The new move trades more than the old one, mostly on candles in its direction. Big players take part in the turn.", "lad.prob": "The model with the confirmations: {p}% (without them: {base}).", "lad.final": "Together, the estimate at the top: {p}%.", "lad.hist": "On this chart, {k}+ confirmations were followed by a full swing in the new direction in {r}% of cases ({n}).", "lad.histNone": "Too few cases with {k}+ confirmations on this chart to check them.", "lad.howT": "How to use it", "lad.how": "The steps go from the earliest to the most reliable. Entering after 2–3 gives a better price but more false signals; after 5–6 it is safer but part of the move is gone. The stop goes past the extreme the turn starts from: if it breaks, the count is wrong. The probability is the model with each confirmation added, and the line below it shows how often the same number of confirmations really led to a turn on this coin.", 'src.elliott': 'Elliott waves', 'src.heat': 'Heat index', 'src.hs': 'short', 'src.hm': 'mid', 'src.hl': 'long', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (growth zone)', 'why.heatHigh': ' (overheated)', 'why.heatMid': ' (neutral)', 'why.heatAgainst': 'Heat index is overheated, buying now is risky',
     search: 'Search coin, for example SOL', analyze: 'Analyze {c}/{p}, volume {v}', analyzing: 'Counting waves…', noData: 'Not enough data', moreFound: 'Also on the exchange, below the volume filter:', lowVol: '«{q}» is below the minimum volume filter. Analyze it anyway:', notListed: 'No coin «{q}» on {ex}.',
     shot: 'Screenshot', share: 'Share', download: 'Save image', close: 'Close', shotHint: 'If the buttons do not work in your app, long-press the image and choose Save.',
     title: 'Elliott Wave Index', sub: 'Automatic wave count with trade recommendations for every coin on {ex}. 0 is a buy zone, 100 is a sell zone.',
@@ -2098,7 +2199,7 @@ const I18N = {
   },
   uk: {
     'rev.title': 'Ймовірність розвороту тренду', 'rev.dirUp': 'розворот вгору', 'rev.dirDn': 'розворот вниз', 'pane.rev': 'Ймовірність розвороту, %', 'pane.ews': 'Хвильовий стохастик', 'ews.short': 'EWS', 'ews.bull': 'бичачий перетин {n} св. тому', 'ews.bear': 'ведмежий перетин {n} св. тому', 'ews.none': 'перетину немає', 'ews.confUp': 'Хвильовий стохастик: бичачий перетин у зоні перепроданості підтверджує розворот вгору', 'ews.confDn': 'Хвильовий стохастик: ведмежий перетин у зоні перекупленості підтверджує розворот вниз', 'why.rev': 'Ймовірність розвороту тренду {p}%, {d}', 'rev.hist': 'Перевірка на цьому графіку: після показників понад 60% розворот протягом {h} свічок стався в {r}% випадків ({n} сигналів), тоді як для випадкової свічки це {b}%.', 'rev.histNone': 'На цьому графіку замало показників понад 60%, щоб перевірити їх на історії.', 'sort.rev': 'Ймовірність розвороту',
-    'sort.fc': 'Прогноз росту', 'fc.title': 'Прогноз:', 'fc.up': 'ріст до {t} ({p}%) за {time}', 'fc.down': 'падіння до {t} ({p}%) за {time}', 'fc.flat': 'бокова, сигнали суперечать один одному', 'fc.hours': '≈ {a}–{b} год', 'fc.days': '≈ {a}–{b} дн.', 'fc.strong': 'сильний', 'fc.moderate': 'помірний', 'fc.weak': 'слабкий', 'fc.agree': 'Джерел, що підтверджують прогноз: {n} з 3', 'fc.stop': 'Прогноз хибний, якщо ціна піде за {s}', 'fc.hist': 'На цьому графіку такі прогнози дійшли до цілі {h} раз з {n} ({r}%)', 'fc.histNone': 'Замало минулих прогнозів на цьому графіку, щоб їх перевірити', "lad.title": "Підтвердження {d}", "lad.up": "розвороту вгору", "lad.dn": "розвороту вниз", "lad.count": "{k} з {n}", "lad.struct": "Хвильова структура завершена", "lad.struct.ok": "так: {w}", "lad.struct.no": "ні: зараз «{w}»", "lad.five.none": "ще ні: рух тільки почався", "lad.vol.none": "ще замало свічок", "lad.struct.why": "Розмітка має показувати, що рух може тут закінчитися: хвиля 5, завершена A-B-C, кінець хвилі 2 чи 4. Це умова, а не сигнал: рух ще може продовжитися.", "lad.div": "Дивергенція імпульсу", "lad.div.ok": "так: RSI {r1} → {r2} на новому екстремумі", "lad.div.no": "ні", "lad.div.why": "Ціна робить новий екстремум, а RSI — ні: поштовх слабне. Зазвичай буває в кінці хвилі 5 і хвилі C.", "lad.cross": "Перетин стохастика в крайній зоні", "lad.cross.ok": "так", "lad.cross.no": "ще ні", "lad.cross.why": "Хвильовий стохастик (EWS) перетинається в новий бік нижче 25 для розвороту вгору або вище 75 для розвороту вниз. Перший момент, коли розворот варто помічати.", "lad.break": "Пробій ключового рівня", "lad.break.ok": "так: за {lv}", "lad.break.no": "ще ні: рівень {lv}", "lad.break.why": "Ціна закривається за останнім коливанням проти старого руху (для A-B-C це вершина останнього відскоку). Найсильніше цінове підтвердження, що старий рух закінчився.", "lad.five": "П’ять хвиль, а не три", "lad.five.ok": "так: рух із п’яти хвиль", "lad.five.warn": "обережно: три хвилі й відкат, схоже на відскок", "lad.five.no": "ще ні: {n} внутрішніх хвиль", "lad.five.why": "Новий тренд починається з п’ятихвильового імпульсу. Рух із трьох хвиль, що згасає, зазвичай лише відскок (хвиля B) у старому тренді. Найхарактерніша перевірка за Елліоттом.", "lad.hl": "Вищий мінімум (нижчий максимум)", "lad.hl.ok": "так", "lad.hl.no": "ще ні", "lad.hl.why": "Перший відкат не доходить до екстремуму, а потім ціна йде за вершину першого руху. Це завершення нової хвилі 2 і розворот також за класичним теханалізом.", "lad.vol": "Обсяг підтримує новий рух", "lad.vol.ok": "так: ×{r} проти старого руху", "lad.vol.no": "ні: ×{r}", "lad.vol.why": "Новий рух торгується активніше за старий, здебільшого на свічках у його бік. У розвороті беруть участь великі гравці.", "lad.prob": "Модель з підтвердженнями: {p}% (без них: {base}).", "lad.final": "Разом — оцінка вгорі: {p}%.", "lad.hist": "На цьому графіку після {k}+ підтверджень повний рух у новий бік був у {r}% випадків ({n}).", "lad.histNone": "Замало випадків з {k}+ підтвердженнями на цьому графіку, щоб перевірити.", "lad.howT": "Як цим користуватися", "lad.how": "Сходинки йдуть від найранішої до найнадійнішої. Вхід після 2–3 дає кращу ціну, але більше хибних сигналів; після 5–6 надійніше, але частина руху вже пройдена. Стоп ставлять за екстремумом, від якого почався розворот: якщо його пробито, розмітка хибна. Ймовірність — це модель, до якої додано кожне підтвердження, а рядок під нею показує, як часто така сама кількість підтверджень справді закінчувалась розворотом на цій монеті.", 'src.elliott': 'Хвилі Елліота', 'src.heat': 'Heat index', 'src.hs': 'корот.', 'src.hm': 'серед.', 'src.hl': 'довг.', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (зона росту)', 'why.heatHigh': ' (перегрів)', 'why.heatMid': ' (нейтрально)', 'why.heatAgainst': 'Heat index показує перегрів, купувати зараз ризиковано',
+    'sort.fc': 'Прогноз росту', 'fc.title': 'Прогноз:', 'fc.up': 'ріст до {t} ({p}%) за {time}', 'fc.down': 'падіння до {t} ({p}%) за {time}', 'fc.flat': 'бокова, сигнали суперечать один одному', 'fc.hours': '≈ {a}–{b} год', 'fc.days': '≈ {a}–{b} дн.', 'fc.strong': 'сильний', 'fc.moderate': 'помірний', 'fc.weak': 'слабкий', 'fc.agree': 'Джерел, що підтверджують прогноз: {n} з 3', 'fc.stop': 'Прогноз хибний, якщо ціна піде за {s}', 'fc.hist': 'На цьому графіку такі прогнози дійшли до цілі {h} раз з {n} ({r}%)', 'fc.histNone': 'Замало минулих прогнозів на цьому графіку, щоб їх перевірити', "g.learn": "Навчання", "learn.on": "На історії кожної монети", "learn.off": "Вимкнено", "ln.status": "Навчено на історії: {n} з {k} монет", "ln.busy": "навчаю…", "ln.wait": "Навчаю на історії цієї монети…", "ln.prob": "Ймовірність дійти до цілі ≈ {p}% (на цій монеті «{w}» спрацювала {h} з {n})", "ln.zone": "зона цілі {a} – {b}, найчастіше {m} (з {n} її хвиль)", "ln.sens": "чутливість для монети: {s} (справдилось {h} з {n})", "lad.title": "Підтвердження {d}", "lad.up": "розвороту вгору", "lad.dn": "розвороту вниз", "lad.count": "{k} з {n}", "lad.struct": "Хвильова структура завершена", "lad.struct.ok": "так: {w}", "lad.struct.no": "ні: зараз «{w}»", "lad.five.none": "ще ні: рух тільки почався", "lad.vol.none": "ще замало свічок", "lad.struct.why": "Розмітка має показувати, що рух може тут закінчитися: хвиля 5, завершена A-B-C, кінець хвилі 2 чи 4. Це умова, а не сигнал: рух ще може продовжитися.", "lad.div": "Дивергенція імпульсу", "lad.div.ok": "так: RSI {r1} → {r2} на новому екстремумі", "lad.div.no": "ні", "lad.div.why": "Ціна робить новий екстремум, а RSI — ні: поштовх слабне. Зазвичай буває в кінці хвилі 5 і хвилі C.", "lad.cross": "Перетин стохастика в крайній зоні", "lad.cross.ok": "так", "lad.cross.no": "ще ні", "lad.cross.why": "Хвильовий стохастик (EWS) перетинається в новий бік нижче 25 для розвороту вгору або вище 75 для розвороту вниз. Перший момент, коли розворот варто помічати.", "lad.break": "Пробій ключового рівня", "lad.break.ok": "так: за {lv}", "lad.break.no": "ще ні: рівень {lv}", "lad.break.why": "Ціна закривається за останнім коливанням проти старого руху (для A-B-C це вершина останнього відскоку). Найсильніше цінове підтвердження, що старий рух закінчився.", "lad.five": "П’ять хвиль, а не три", "lad.five.ok": "так: рух із п’яти хвиль", "lad.five.warn": "обережно: три хвилі й відкат, схоже на відскок", "lad.five.no": "ще ні: {n} внутрішніх хвиль", "lad.five.why": "Новий тренд починається з п’ятихвильового імпульсу. Рух із трьох хвиль, що згасає, зазвичай лише відскок (хвиля B) у старому тренді. Найхарактерніша перевірка за Елліоттом.", "lad.hl": "Вищий мінімум (нижчий максимум)", "lad.hl.ok": "так", "lad.hl.no": "ще ні", "lad.hl.why": "Перший відкат не доходить до екстремуму, а потім ціна йде за вершину першого руху. Це завершення нової хвилі 2 і розворот також за класичним теханалізом.", "lad.vol": "Обсяг підтримує новий рух", "lad.vol.ok": "так: ×{r} проти старого руху", "lad.vol.no": "ні: ×{r}", "lad.vol.why": "Новий рух торгується активніше за старий, здебільшого на свічках у його бік. У розвороті беруть участь великі гравці.", "lad.prob": "Модель з підтвердженнями: {p}% (без них: {base}).", "lad.final": "Разом — оцінка вгорі: {p}%.", "lad.hist": "На цьому графіку після {k}+ підтверджень повний рух у новий бік був у {r}% випадків ({n}).", "lad.histNone": "Замало випадків з {k}+ підтвердженнями на цьому графіку, щоб перевірити.", "lad.howT": "Як цим користуватися", "lad.how": "Сходинки йдуть від найранішої до найнадійнішої. Вхід після 2–3 дає кращу ціну, але більше хибних сигналів; після 5–6 надійніше, але частина руху вже пройдена. Стоп ставлять за екстремумом, від якого почався розворот: якщо його пробито, розмітка хибна. Ймовірність — це модель, до якої додано кожне підтвердження, а рядок під нею показує, як часто така сама кількість підтверджень справді закінчувалась розворотом на цій монеті.", 'src.elliott': 'Хвилі Елліота', 'src.heat': 'Heat index', 'src.hs': 'корот.', 'src.hm': 'серед.', 'src.hl': 'довг.', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (зона росту)', 'why.heatHigh': ' (перегрів)', 'why.heatMid': ' (нейтрально)', 'why.heatAgainst': 'Heat index показує перегрів, купувати зараз ризиковано',
     search: 'Пошук монети, наприклад SOL', analyze: 'Аналізувати {c}/{p}, об\u2019єм {v}', analyzing: 'Рахуємо хвилі…', noData: 'Замало даних', moreFound: 'Також є на біржі, нижче фільтра об\u2019єму:', lowVol: '«{q}» не проходить за мінімальним об\u2019ємом. Можна проаналізувати все одно:', notListed: 'Монети «{q}» на {ex} немає.',
     shot: 'Скріншот', share: 'Поділитися', download: 'Зберегти зображення', close: 'Закрити', shotHint: 'Якщо кнопки не працюють у вашому застосунку, затисніть зображення пальцем і виберіть «Зберегти».',
     title: 'Індекс хвиль Елліота', sub: 'Автоматичний підрахунок хвиль і торгові рекомендації для всіх монет на {ex}. 0 означає зону купівлі, 100 означає зону продажу.',
@@ -2132,7 +2233,7 @@ const I18N = {
   },
   ru: {
     'rev.title': 'Вероятность разворота тренда', 'rev.dirUp': 'разворот вверх', 'rev.dirDn': 'разворот вниз', 'pane.rev': 'Вероятность разворота, %', 'pane.ews': 'Волновой стохастик', 'ews.short': 'EWS', 'ews.bull': 'бычье пересечение {n} св. назад', 'ews.bear': 'медвежье пересечение {n} св. назад', 'ews.none': 'пересечения нет', 'ews.confUp': 'Волновой стохастик: бычье пересечение в зоне перепроданности подтверждает разворот вверх', 'ews.confDn': 'Волновой стохастик: медвежье пересечение в зоне перекупленности подтверждает разворот вниз', 'why.rev': 'Вероятность разворота тренда {p}%, {d}', 'rev.hist': 'Проверка на этом графике: после показателей выше 60% разворот в течение {h} свечей случился в {r}% случаев ({n} сигналов), тогда как для случайной свечи это {b}%.', 'rev.histNone': 'На этом графике слишком мало показателей выше 60%, чтобы проверить их на истории.', 'sort.rev': 'Вероятность разворота',
-    'sort.fc': 'Прогноз роста', 'fc.title': 'Прогноз:', 'fc.up': 'рост до {t} ({p}%) за {time}', 'fc.down': 'падение до {t} ({p}%) за {time}', 'fc.flat': 'боковик, сигналы противоречат друг другу', 'fc.hours': '≈ {a}–{b} ч', 'fc.days': '≈ {a}–{b} дн.', 'fc.strong': 'сильный', 'fc.moderate': 'умеренный', 'fc.weak': 'слабый', 'fc.agree': 'Источников, подтверждающих прогноз: {n} из 3', 'fc.stop': 'Прогноз ошибочен, если цена уйдёт за {s}', 'fc.hist': 'На этом графике такие прогнозы дошли до цели {h} раз из {n} ({r}%)', 'fc.histNone': 'Слишком мало прошлых прогнозов на этом графике, чтобы их проверить', "lad.title": "Подтверждение {d}", "lad.up": "разворота вверх", "lad.dn": "разворота вниз", "lad.count": "{k} из {n}", "lad.struct": "Волновая структура завершена", "lad.struct.ok": "да: {w}", "lad.struct.no": "нет: сейчас «{w}»", "lad.five.none": "ещё нет: движение только началось", "lad.vol.none": "ещё мало свечей", "lad.struct.why": "Разметка должна показывать, что движение может здесь закончиться: волна 5, завершённая A-B-C, конец волны 2 или 4. Это условие, а не сигнал: движение ещё может продолжиться.", "lad.div": "Дивергенция импульса", "lad.div.ok": "да: RSI {r1} → {r2} на новом экстремуме", "lad.div.no": "нет", "lad.div.why": "Цена делает новый экстремум, а RSI — нет: толчок слабеет. Обычно бывает в конце волны 5 и волны C.", "lad.cross": "Пересечение стохастика в крайней зоне", "lad.cross.ok": "да", "lad.cross.no": "ещё нет", "lad.cross.why": "Волновой стохастик (EWS) пересекается в новую сторону ниже 25 для разворота вверх или выше 75 для разворота вниз. Первый момент, когда разворот стоит замечать.", "lad.break": "Пробой ключевого уровня", "lad.break.ok": "да: за {lv}", "lad.break.no": "ещё нет: уровень {lv}", "lad.break.why": "Цена закрывается за последним колебанием против старого движения (для A-B-C это вершина последнего отскока). Самое сильное ценовое подтверждение, что старое движение закончилось.", "lad.five": "Пять волн, а не три", "lad.five.ok": "да: движение из пяти волн", "lad.five.warn": "осторожно: три волны и откат, похоже на отскок", "lad.five.no": "ещё нет: {n} внутренних волн", "lad.five.why": "Новый тренд начинается с пятиволнового импульса. Движение из трёх волн, которое затухает, обычно лишь отскок (волна B) в старом тренде. Самая характерная проверка по Эллиотту.", "lad.hl": "Более высокий минимум (более низкий максимум)", "lad.hl.ok": "да", "lad.hl.no": "ещё нет", "lad.hl.why": "Первый откат не доходит до экстремума, а затем цена уходит за вершину первого движения. Это завершение новой волны 2 и разворот также по классическому теханализу.", "lad.vol": "Объём поддерживает новое движение", "lad.vol.ok": "да: ×{r} против старого движения", "lad.vol.no": "нет: ×{r}", "lad.vol.why": "Новое движение торгуется активнее старого, в основном на свечах в его сторону. В развороте участвуют крупные игроки.", "lad.prob": "Модель с подтверждениями: {p}% (без них: {base}).", "lad.final": "Вместе — оценка вверху: {p}%.", "lad.hist": "На этом графике после {k}+ подтверждений полное движение в новую сторону было в {r}% случаев ({n}).", "lad.histNone": "Слишком мало случаев с {k}+ подтверждениями на этом графике, чтобы проверить.", "lad.howT": "Как этим пользоваться", "lad.how": "Ступени идут от самой ранней к самой надёжной. Вход после 2–3 даёт лучшую цену, но больше ложных сигналов; после 5–6 надёжнее, но часть движения уже пройдена. Стоп ставят за экстремумом, от которого начался разворот: если он пробит, разметка ошибочна. Вероятность — это модель, к которой добавлено каждое подтверждение, а строка под ней показывает, как часто такое же количество подтверждений действительно заканчивалось разворотом на этой монете.", 'src.elliott': 'Волны Эллиотта', 'src.heat': 'Heat index', 'src.hs': 'корот.', 'src.hm': 'сред.', 'src.hl': 'длин.', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (зона роста)', 'why.heatHigh': ' (перегрев)', 'why.heatMid': ' (нейтрально)', 'why.heatAgainst': 'Heat index показывает перегрев, покупать сейчас рискованно',
+    'sort.fc': 'Прогноз роста', 'fc.title': 'Прогноз:', 'fc.up': 'рост до {t} ({p}%) за {time}', 'fc.down': 'падение до {t} ({p}%) за {time}', 'fc.flat': 'боковик, сигналы противоречат друг другу', 'fc.hours': '≈ {a}–{b} ч', 'fc.days': '≈ {a}–{b} дн.', 'fc.strong': 'сильный', 'fc.moderate': 'умеренный', 'fc.weak': 'слабый', 'fc.agree': 'Источников, подтверждающих прогноз: {n} из 3', 'fc.stop': 'Прогноз ошибочен, если цена уйдёт за {s}', 'fc.hist': 'На этом графике такие прогнозы дошли до цели {h} раз из {n} ({r}%)', 'fc.histNone': 'Слишком мало прошлых прогнозов на этом графике, чтобы их проверить', "g.learn": "Обучение", "learn.on": "На истории каждой монеты", "learn.off": "Выключено", "ln.status": "Обучено на истории: {n} из {k} монет", "ln.busy": "обучаю…", "ln.wait": "Обучаю на истории этой монеты…", "ln.prob": "Вероятность дойти до цели ≈ {p}% (на этой монете «{w}» сработала {h} из {n})", "ln.zone": "зона цели {a} – {b}, чаще всего {m} (из {n} её волн)", "ln.sens": "чувствительность для монеты: {s} (сбылось {h} из {n})", "lad.title": "Подтверждение {d}", "lad.up": "разворота вверх", "lad.dn": "разворота вниз", "lad.count": "{k} из {n}", "lad.struct": "Волновая структура завершена", "lad.struct.ok": "да: {w}", "lad.struct.no": "нет: сейчас «{w}»", "lad.five.none": "ещё нет: движение только началось", "lad.vol.none": "ещё мало свечей", "lad.struct.why": "Разметка должна показывать, что движение может здесь закончиться: волна 5, завершённая A-B-C, конец волны 2 или 4. Это условие, а не сигнал: движение ещё может продолжиться.", "lad.div": "Дивергенция импульса", "lad.div.ok": "да: RSI {r1} → {r2} на новом экстремуме", "lad.div.no": "нет", "lad.div.why": "Цена делает новый экстремум, а RSI — нет: толчок слабеет. Обычно бывает в конце волны 5 и волны C.", "lad.cross": "Пересечение стохастика в крайней зоне", "lad.cross.ok": "да", "lad.cross.no": "ещё нет", "lad.cross.why": "Волновой стохастик (EWS) пересекается в новую сторону ниже 25 для разворота вверх или выше 75 для разворота вниз. Первый момент, когда разворот стоит замечать.", "lad.break": "Пробой ключевого уровня", "lad.break.ok": "да: за {lv}", "lad.break.no": "ещё нет: уровень {lv}", "lad.break.why": "Цена закрывается за последним колебанием против старого движения (для A-B-C это вершина последнего отскока). Самое сильное ценовое подтверждение, что старое движение закончилось.", "lad.five": "Пять волн, а не три", "lad.five.ok": "да: движение из пяти волн", "lad.five.warn": "осторожно: три волны и откат, похоже на отскок", "lad.five.no": "ещё нет: {n} внутренних волн", "lad.five.why": "Новый тренд начинается с пятиволнового импульса. Движение из трёх волн, которое затухает, обычно лишь отскок (волна B) в старом тренде. Самая характерная проверка по Эллиотту.", "lad.hl": "Более высокий минимум (более низкий максимум)", "lad.hl.ok": "да", "lad.hl.no": "ещё нет", "lad.hl.why": "Первый откат не доходит до экстремума, а затем цена уходит за вершину первого движения. Это завершение новой волны 2 и разворот также по классическому теханализу.", "lad.vol": "Объём поддерживает новое движение", "lad.vol.ok": "да: ×{r} против старого движения", "lad.vol.no": "нет: ×{r}", "lad.vol.why": "Новое движение торгуется активнее старого, в основном на свечах в его сторону. В развороте участвуют крупные игроки.", "lad.prob": "Модель с подтверждениями: {p}% (без них: {base}).", "lad.final": "Вместе — оценка вверху: {p}%.", "lad.hist": "На этом графике после {k}+ подтверждений полное движение в новую сторону было в {r}% случаев ({n}).", "lad.histNone": "Слишком мало случаев с {k}+ подтверждениями на этом графике, чтобы проверить.", "lad.howT": "Как этим пользоваться", "lad.how": "Ступени идут от самой ранней к самой надёжной. Вход после 2–3 даёт лучшую цену, но больше ложных сигналов; после 5–6 надёжнее, но часть движения уже пройдена. Стоп ставят за экстремумом, от которого начался разворот: если он пробит, разметка ошибочна. Вероятность — это модель, к которой добавлено каждое подтверждение, а строка под ней показывает, как часто такое же количество подтверждений действительно заканчивалось разворотом на этой монете.", 'src.elliott': 'Волны Эллиотта', 'src.heat': 'Heat index', 'src.hs': 'корот.', 'src.hm': 'сред.', 'src.hl': 'длин.', 'src.htf': '{tf}', 'why.heat': 'Heat index {v}', 'why.heatLow': ' (зона роста)', 'why.heatHigh': ' (перегрев)', 'why.heatMid': ' (нейтрально)', 'why.heatAgainst': 'Heat index показывает перегрев, покупать сейчас рискованно',
     search: 'Поиск монеты, например SOL', analyze: 'Анализировать {c}/{p}, объём {v}', analyzing: 'Считаем волны…', noData: 'Мало данных', moreFound: 'Также есть на бирже, ниже фильтра объёма:', lowVol: '«{q}» не проходит по минимальному объёму. Можно проанализировать всё равно:', notListed: 'Монеты «{q}» на {ex} нет.',
     shot: 'Скриншот', share: 'Поделиться', download: 'Сохранить изображение', close: 'Закрыть', shotHint: 'Если кнопки не работают в вашем приложении, зажмите изображение пальцем и выберите «Сохранить».',
     title: 'Индекс волн Эллиотта', sub: 'Автоматический подсчёт волн и торговые рекомендации для всех монет на {ex}. 0 означает зону покупки, 100 означает зону продажи.',
@@ -2227,11 +2328,11 @@ const EX = {
 
 // ===== State =====
 const navLang = (navigator.language || 'en').slice(0, 2);
-const S = { ex: 'binance', lang: ['uk', 'ru'].includes(navLang) ? navLang : 'en', tf: '4h', sens: '3', sort: 'best', show: 'all', quote: 'ALL',
+const S = { learn: 'on', ex: 'binance', lang: ['uk', 'ru'].includes(navLang) ? navLang : 'en', tf: '4h', sens: '3', sort: 'best', show: 'all', quote: 'ALL',
   minVols: { ALL: 1000000, USDT: 1000000, BTC: 20, USDC: 500000, FDUSD: 500000, ETH: 300, BNB: 1500 },
   rows: [], open: new Set(), loading: false, status: ['loading'] };
 try { const s = JSON.parse(localStorage.getItem('ewi') || '{}'); delete s.rows; delete s.open; Object.assign(S, s, { minVols: Object.assign(S.minVols, s.minVols || {}) }); } catch (e) {}
-const save = () => { try { localStorage.setItem('ewi', JSON.stringify({ ex: S.ex, lang: S.lang, tf: S.tf, sens: S.sens, sort: S.sort, show: S.show, quote: S.quote, minVols: S.minVols, theme: S.theme })); } catch (e) {} };
+const save = () => { try { localStorage.setItem('ewi', JSON.stringify({ ex: S.ex, lang: S.lang, tf: S.tf, sens: S.sens, learn: S.learn, sort: S.sort, show: S.show, quote: S.quote, minVols: S.minVols, theme: S.theme })); } catch (e) {} };
 if (window.CH) S.theme = CH.theme(S.theme);
 if (S.theme) document.documentElement.dataset.theme = S.theme;
 if (!EX[S.ex]) S.ex = 'binance';
@@ -2509,6 +2610,137 @@ function ladderHTML(x) {
     <details class="ls"><summary><span>${T('lad.howT')}</span></summary><p>${T('lad.how')}</p></details></div>`;
 }
 
+
+// ===== Learning from the coin's own history =====
+// For every coin the count is replayed on its past at the three wave sensitivities. For each moment the forecast of
+// that time is checked against what the price did next (target first or invalidation first). From that:
+//  1. the sensitivity whose forecasts came true most often is used for this coin;
+//  2. every pattern (wave 2, wave 4, A-B-C, ...) gets its own success rate on this coin;
+//  3. the confidence of the count is turned into a real probability (how often counts with such confidence worked);
+//  4. the coin's own wave ratios (wave 3 to wave 1, wave 5 to wave 1, C to A) turn the target into a zone.
+// Small samples are pulled toward the statistics of all coins learned so far. Results are kept for 3 days.
+const EWL_KEY = 'ew.learn', EWP_KEY = 'ew.prior', EWL_TTL = 3 * 864e5, EWL_SENS = [2, 3, 4.5];
+const ewlKey = x => [S.ex, x.sym, S.tf].join('|');
+function ewlAll() { try { return JSON.parse(localStorage.getItem(EWL_KEY) || '{}'); } catch (e) { return {}; } }
+function ewlGet(x) { const c = ewlAll()[ewlKey(x)]; return c && Date.now() - c.at < EWL_TTL ? c : null; }
+function ewlPut(x, c) { const a = ewlAll(); a[ewlKey(x)] = c; Object.keys(a).sort((p, q) => a[q].at - a[p].at).slice(400).forEach(k => delete a[k]); try { localStorage.setItem(EWL_KEY, JSON.stringify(a)); } catch (e) {} }
+function ewPrior() { try { return JSON.parse(localStorage.getItem(EWP_KEY) || '{}'); } catch (e) { return {}; } }
+const qtl = (a, p) => { const s = a.slice().sort((x, y) => x - y); const k = (s.length - 1) * p, f = Math.floor(k); return s[f] + (s[Math.min(s.length - 1, f + 1)] - s[f]) * (k - f); };
+// wave ratios of a count, in bull space
+function ewlRatios(b, R) {
+  const v = b.points.map(p => b.sign * p.p), K = b.key;
+  if (v.length >= 4 && ['w4', 'w5', 'A', 'B', 'C', 'ABC'].includes(K)) { const w1 = v[1] - v[0]; if (w1 > 0) R.e3.push((v[3] - v[2]) / w1); }
+  if (v.length >= 6 && ['A', 'B', 'C', 'ABC'].includes(K)) { const w1 = v[1] - v[0]; if (w1 > 0) R.w5.push((v[5] - v[4]) / w1); }
+  if (K === 'ABC' && v.length >= 9) { const a = v[5] - v[6]; if (a > 0) R.ca.push((v[7] - v[8]) / a); }
+  if (K === 'cABC' && v.length >= 4) { const a = v[0] - v[1]; if (a > 0) R.ca.push((v[2] - v[3]) / a); }
+}
+function ewlReplay(k, sens) {
+  const n = k.length, from = Math.max(150, n - 360), step = Math.max(3, Math.floor((n - from) / 50));
+  const out = [], seen = new Set(), seenR = new Set(), R = { e3: [], w5: [], ca: [] };
+  for (let i = from; i < n - 3; i += step) {
+    const a = EW.analyze(k.slice(0, i + 1), sens); if (!a || !a.best) continue; const b = a.best;
+    const rid = b.key + b.sign + b.points[0].i; if (!seenR.has(rid)) { seenR.add(rid); ewlRatios(b, R); }
+    const fp = EW.forecastPath(a); if (!fp || seen.has(rid)) continue; seen.add(rid);
+    let res = 0;
+    for (let j = i + 1; j < Math.min(n, i + 1 + Math.max(6, Math.round(fp.bars * 2.5))); j++) {
+      const hi = +k[j][2], lo = +k[j][3];
+      if (fp.dir > 0 ? lo <= fp.stop : hi >= fp.stop) { res = -1; break; }
+      if (fp.dir > 0 ? hi >= fp.target : lo <= fp.target) { res = 1; break; }
+    }
+    if (res) out.push({ key: b.key, conf: a.conf, res });
+  }
+  return { out, R };
+}
+const ewlBin = c => c < 0.45 ? 0 : c < 0.6 ? 1 : 2;
+function ewlLearn(x) {
+  const tries = EWL_SENS.map(s => ({ s, ...ewlReplay(x.k, s) }));
+  tries.forEach(t => { const h = t.out.filter(o => o.res > 0).length, m = t.out.length; t.h = h; t.m = m; t.score = (h + 2) / (m + 4); });
+  const ok = tries.filter(t => t.m >= 6).sort((p, q) => q.score - p.score), best = ok[0] || tries.find(t => t.s === +S.sens) || tries[1];
+  const keys = {}, bins = [[0, 0], [0, 0], [0, 0]];
+  best.out.forEach(o => { (keys[o.key] = keys[o.key] || [0, 0])[o.res > 0 ? 0 : 1]++; bins[ewlBin(o.conf)][o.res > 0 ? 0 : 1]++; });
+  const R = { e3: [], w5: [], ca: [] }; tries.forEach(t => Object.keys(R).forEach(k => R[k].push(...t.R[k])));
+  const ratios = {}; Object.keys(R).forEach(k => { const a = R[k].filter(v => isFinite(v) && v > 0.1 && v < 6); if (a.length >= 4) ratios[k] = [qtl(a, 0.25), qtl(a, 0.5), qtl(a, 0.75), a.length]; });
+  const L = { at: Date.now(), sens: best.s, sensScore: best.score, n: best.m, hits: best.h, keys, bins, ratios, tried: tries.map(t => [t.s, t.h, t.m]) };
+  // the pooled statistics of every coin learned so far
+  try { const P = ewPrior(); Object.entries(keys).forEach(([k2, v]) => { const p = P[k2] || [0, 0]; P[k2] = [p[0] + v[0], p[1] + v[1]]; });
+    P._bins = (P._bins || [[0, 0], [0, 0], [0, 0]]).map((b, i) => [b[0] + bins[i][0], b[1] + bins[i][1]]); localStorage.setItem(EWP_KEY, JSON.stringify(P)); } catch (e) {}
+  return L;
+}
+// success probability of the current count: its pattern on this coin and its confidence bin, both pulled toward all coins
+function ewlProb(x) {
+  const L = x.learn, b = x.best; if (!L || !b) return null; const P = ewPrior();
+  const rate = (hm, prior, k) => (hm[0] + k * prior) / (hm[0] + hm[1] + k);
+  const pk = P[b.key] ? P[b.key][0] / Math.max(1, P[b.key][0] + P[b.key][1]) : 0.45, pb = P._bins ? P._bins.map(v => v[0] / Math.max(1, v[0] + v[1])) : [0.4, 0.45, 0.5];
+  const kh = L.keys[b.key] || [0, 0], bh = L.bins[ewlBin(x.conf)] || [0, 0];
+  const p1 = rate(kh, pk, 6), p2 = rate(bh, pb[ewlBin(x.conf)] || 0.45, 6);
+  return { p: Math.round(Math.min(0.9, Math.max(0.1, 0.55 * p1 + 0.45 * p2)) * 100), k: kh, b: bh };   // never shown as near-certain
+}
+// target zone from the coin's own ratios
+function ewlZone(x) {
+  const L = x.learn, b = x.best; if (!L || !b || !L.ratios) return null;
+  const v = b.points.map(p => b.sign * p.p), R = L.ratios, Z = (base, unit, q) => q ? [base + q[0] * unit, base + q[1] * unit, base + q[2] * unit] : null;
+  let z = null;
+  if ((b.key === 'w2' || b.key === 'w3') && v.length >= 3) z = Z(v[2], v[1] - v[0], R.e3);
+  else if ((b.key === 'w4' || (b.key === 'w5' && !b.done)) && v.length >= 5) z = Z(v[4], v[1] - v[0], R.w5);
+  else if ((b.key === 'B' || b.key === 'C') && v.length >= 8) { const a = v[5] - v[6]; z = R.ca ? [v[7] - R.ca[0] * a, v[7] - R.ca[1] * a, v[7] - R.ca[2] * a] : null; }
+  else if ((b.key === 'cB' || b.key === 'cC') && v.length >= 3) { const a = v[0] - v[1]; z = R.ca ? [v[2] - R.ca[0] * a, v[2] - R.ca[1] * a, v[2] - R.ca[2] * a] : null; }
+  if (!z) return null;
+  const real = z.map(p => b.sign * p).sort((p, q) => p - q), dir = x.fc && x.fc.dir;
+  if (!dir || (dir > 0 ? real[1] <= x.price : real[1] >= x.price)) return null;   // the zone must lie in the forecast direction
+  return { lo: real[0], mid: b.sign > 0 ? (dir > 0 ? real[1] : real[1]) : real[1], hi: real[2], n: (b.key === 'B' || b.key === 'C' || b.key === 'cB' || b.key === 'cC') ? R.ca[3] : (b.key === 'w4' || b.key === 'w5') ? R.w5[3] : R.e3[3] };
+}
+// the learned forecast on top of the usual one
+function ewlApply(row) {
+  if (S.learn === 'off' || !row.learn) return;
+  const F = row.fc; row.prob = ewlProb(row); row.zone = F.dir ? ewlZone(row) : null;
+  if (row.zone) { F.target0 = F.target; F.target = row.zone.mid; F.pct = (F.target / row.price - 1) * 100; if (F.path && F.path.length) F.path[0] = Object.assign({}, F.path[0], { p: row.zone.mid }); }
+  if (row.prob && F.dir) F.strength = row.prob.p >= 60 ? 'strong' : row.prob.p >= 47 ? 'moderate' : 'weak';
+}
+// one row from data already loaded (no new downloads)
+function buildRow(c, k, kH, sens) {
+  const a = EW.analyze(k, sens); if (!a) return null;
+  let htf = null; try { htf = kH ? EW.analyze(kH, sens) : null; } catch (e) {}
+  const row = Object.assign({}, c, a, { k, kH, htf, heat: heatIndex(k), sensUsed: sens });
+  row.hist = buildHistory(k, a.dev);
+  const n = k.length, Hs = row.hist;
+  let lc = null; for (let j = n - 1; j >= Math.max(0, n - 10); j--) if (Hs.X[j]) { lc = { ago: n - 1 - j, dir: Hs.X[j] }; break; }
+  row.rev = { p: Hs.P[n - 1], dir: Hs.RD[n - 1] };
+  row.ews = { k: Hs.K[n - 1], d: Hs.D[n - 1], cross: lc };
+  row.revCheck = reversalCheck(Hs, a.piv);
+  try { row.lad = ladderAt(ladArrays(k), k.length - 1, a, Hs.X); } catch (e) { row.lad = null; }
+  row.rec = recommend(row);
+  row.fc = forecast(row);
+  row.learn = S.learn === 'off' ? null : ewlGet(row);
+  ewlApply(row);
+  return row;
+}
+// coins are learned one by one in the background, the opened ones first; a learned coin is rebuilt at once
+let ewlQ = [], ewlBusy = false, ewlDone = 0, ewlT = null;
+function ewlQueue(rows) { if (S.learn === 'off') return; rows.forEach(r => { if (!ewlGet(r) && !ewlQ.includes(r.sym)) ewlQ.push(r.sym); }); ewlRun(); }
+async function ewlRun() {
+  if (ewlBusy) return; ewlBusy = true;
+  try {
+    while (ewlQ.length && S.learn !== 'off') {
+      ewlQ.sort((p, q) => (S.open.has(q) ? 1 : 0) - (S.open.has(p) ? 1 : 0));
+      const sym = ewlQ.shift(), i = S.rows.findIndex(r => r.sym === sym); if (i < 0) continue;
+      const r = S.rows[i]; if (ewlGet(r)) continue;
+      ewlPut(r, ewlLearn(r)); ewlDone++;
+      const L = ewlGet(r), nr = buildRow(r, r.k, r.kH, L.sens);
+      if (nr) S.rows[S.rows.findIndex(z => z.sym === sym)] = nr;
+      clearTimeout(ewlT); ewlT = setTimeout(() => { render(); ewlStatus(); }, 400);
+      await new Promise(res => setTimeout(res, 30));
+    }
+  } finally { ewlBusy = false; ewlStatus(); }
+}
+function ewlStatus() { const el = document.getElementById('ewlSt'); if (!el) return; if (S.learn === 'off') { el.textContent = ''; return; } const ready = S.rows.filter(r => r.learn).length; el.textContent = TR(['ln.status', { n: ready, k: S.rows.length }]) + (ewlQ.length ? ' · ' + TR(['ln.busy']) : ''); }
+function ewlHTML(x) {
+  if (S.learn === 'off') return '';
+  if (!x.learn) return `<div class="fch">${T('ln.wait')}</div>`;
+  const L = x.learn, P = x.prob, Z = x.zone, kn = x.best ? T('w.' + x.best.key) : '';
+  return `<div class="fch ewl">${P ? T('ln.prob', { p: P.p, w: kn, h: P.k[0], n: P.k[0] + P.k[1] }) : ''}${Z ? ' · ' + T('ln.zone', { a: fmt(Z.lo, x.quote), b: fmt(Z.hi, x.quote), m: fmt(Z.mid, x.quote), n: Z.n }) : ''}
+    · ${T('ln.sens', { s: T('s.' + String(L.sens)), h: L.hits, n: L.n })}</div>`;
+}
+
 const fcTime = F => {
   const hrs = TF_HOURS[S.tf], a = F.barsLo * hrs, b = F.barsHi * hrs;
   return b < 48 ? T('fc.hours', { a, b }) : T('fc.days', { a: Math.max(1, Math.round(a / 24)), b: Math.max(1, Math.round(b / 24)) });
@@ -2574,23 +2806,13 @@ const STABLES = new Set(['USDT', 'USDC', 'FDUSD', 'TUSD', 'USDP', 'DAI', 'BUSD',
 let loadId = 0;
 async function analyzeCoin(ex, c, tf, sens) {
   try {
-    const k = await ex.klines(c.sym, tf), a = EW.analyze(k, sens);
-    if (!a) return null;
-    let htf = null;
-    try { htf = EW.analyze(await ex.klines(c.sym, HTF[tf]), sens); } catch (e) {}
-    const row = Object.assign({}, c, a, { k, htf, heat: heatIndex(k) });
-    row.hist = buildHistory(k, a.dev);
-    const n = k.length, Hs = row.hist;
-    let lc = null; for (let j = n - 1; j >= Math.max(0, n - 10); j--) if (Hs.X[j]) { lc = { ago: n - 1 - j, dir: Hs.X[j] }; break; }
-    row.rev = { p: Hs.P[n - 1], dir: Hs.RD[n - 1] };
-    row.ews = { k: Hs.K[n - 1], d: Hs.D[n - 1], cross: lc };
-    row.revCheck = reversalCheck(Hs, a.piv);
-    try { row.lad = ladderAt(ladArrays(k), k.length - 1, a, Hs.X); } catch (e) { row.lad = null; }
-    row.rec = recommend(row);
-    row.fc = forecast(row);
-    return row;
+    const k = await ex.klines(c.sym, tf);
+    let kH = null; try { kH = await ex.klines(c.sym, HTF[tf]); } catch (e) {}
+    const L = S.learn === 'off' ? null : ewlGet(Object.assign({}, c));
+    return buildRow(c, k, kH, L ? L.sens : sens);
   } catch (e) { return null; }
 }
+
 async function load() {
   if (S.loading) { S.again = true; return; }
   S.loading = true; S.again = false;
@@ -2622,7 +2844,7 @@ async function load() {
     };
     await Promise.all([...Array(8)].map(worker));
     if (!S.again) {
-      S.rows = rows;
+      S.rows = rows; ewlQueue(rows);
       setStatus(['done', { n: rows.length, m: S.quote === 'ALL' ? ['allMarkets'] : ['q.pair', { q: S.quote }], tf: ['tf.' + tf], t: new Date().toLocaleTimeString(S.lang, { hour: '2-digit', minute: '2-digit' }) }]);
       render();
     }
@@ -2653,6 +2875,7 @@ function renderUI() {
     group('quote', T('market'), ex.quotes.map(q => [q, q === 'ALL' ? T('q.ALL') : T('q.pair', { q })])) +
     group('tf', T('timeframe'), ['1h', '4h', '1d'].map(v => [v, T('tf.' + v)])) +
     group('sens', T('sens'), ['2', '3', '4.5'].map(v => [v, T('s.' + v)])) +
+    group('learn', T('g.learn'), [['on', T('learn.on')], ['off', T('learn.off')]]) +
     group('sort', T('sort'), ['best', 'fc', 'rev', 'buy', 'sell', 'conf', 'vol'].map(v => [v, T('sort.' + v)])) +
     group('show', T('show'), ['all', 'buy', 'sell'].map(v => [v, T('show.' + v)])) +
     `<div class="group row"><label>${T('minVol', { u: unitOf() })}<input id="minVol" type="number" min="0" step="any" value="${S.minVols[S.quote]}"></label>
@@ -2852,7 +3075,7 @@ function fcHTML(x) {
     more = `<div class="fch">${F.stop != null ? T('fc.stop', { s: fmt(F.stop, x.quote) }) + ' · ' : ''}${H.n >= 3 ? T('fc.hist', { h: H.hit, n: H.n, r: H.rate }) : T('fc.histNone')}</div>`;
   }
   return `<div class="fc ${F.dir > 0 ? 'up' : F.dir < 0 ? 'dn' : ''}"><span class="fcl">${T('fc.title')}</span> <b>${fcText(x)}</b>
-    <span class="tag">${T('fc.' + F.strength)}</span>${more}</div>`;
+    <span class="tag">${T('fc.' + F.strength)}</span>${x.prob && F.dir ? `<span class="tag">${x.prob.p}%</span>` : ''}${more}${S.open.has(x.sym) ? ewlHTML(x) : ''}</div>`;
 }
 function fcSources(x) {
   const F = x.fc, h = x.heat;
@@ -3017,7 +3240,7 @@ controls.addEventListener('click', e => {
     S.theme = dark ? 'light' : 'dark'; document.documentElement.dataset.theme = S.theme; save(); return render();
   }
   const g = b.dataset.g; if (!g) return;
-  S[g] = b.dataset.v;
+  S[g] = b.dataset.v; if (g === 'learn') { save(); renderUI(); return load(); }
   if (g === 'ex') { S.open.clear(); if (!EX[S.ex].quotes.includes(S.quote)) S.quote = 'ALL'; }
   save(); renderUI();
   RELOAD.has(g) ? load() : render();

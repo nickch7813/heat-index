@@ -2,7 +2,7 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **1.13**
+Version: **1.17**
 
 A set of free browser tools for scanning the crypto market and analysing single coins on Binance, Bybit and OKX (every tool works with Binance and Bybit; Heat Index and Coin Lab also with OKX). Every tool works in the browser and as a Telegram Mini App, shares one look and one light/dark theme, and links to the others: from any coin card you can open the same coin in another tool, each in its own tab.
 
@@ -10,8 +10,8 @@ A set of free browser tools for scanning the crypto market and analysing single 
 |---|---|
 | `/` (index.html) | **Heat Index**: the main market scanner with Heat, trend, reversal risk, setups and a simulator |
 | `scanner/` | **Confluence Scanner**: coins where heat, trend, Elliott waves, momentum, volume, order book, funding and news agree |
-| `coin-lab/` | **Coin Lab**: a detailed analysis and forecast for one coin, with a deep-analysis report on five timeframes |
-| `elliott/` | **Elliott Waves**: automatic wave count with trade ideas |
+| `coin-lab/` | **Coin Lab**: a detailed analysis and forecast for one coin, with a deep-analysis report on five timeframes, an indicator tester on the coin's history, and forecast weights tuned per coin by that test |
+| `elliott/` | **Elliott Waves**: automatic wave count with trade ideas, a reversal confirmation ladder, and counts that learn from each coin's history (own sensitivity, target zones from the coin's wave ratios, real success probabilities) |
 | `whales/` | **Whale Sonar**: large orders in the order book and how the price reacts |
 | `liquidations/` | **Liquidation Radar**: estimated liquidation zones on Binance or Bybit USDT perpetuals |
 | `volume/` | **Volume Spikes**: coins whose volume suddenly jumps far above normal |
@@ -46,6 +46,10 @@ An alert fires once or every time with a pause, and can carry a note. It is show
 ## Adaptive zones per coin
 
 Overbought and oversold are not the same for every coin: a calm large cap rarely reaches Heat 25, a wild small cap goes there every week. Heat Index, Coin Lab and the Confluence Scanner therefore compute the zones of every coin from its own history (on by default): the buy zone is the lowest 10% of its Heat over the loaded candles, the sell zone the highest 10%, kept between 8–35 and 65–92, and RSI levels the same way. Each coin then reaches its zones about equally often. Heat Index shows the zones in use on the coin's chart; fixed zones are one tap away in Settings.
+
+## Per-coin weights
+
+The indicator families (Heat zones, trend, momentum, volume, Elliott waves) are checked on each coin's own history with fixed exits, and only the last 30% of that history decides. A family that worked there counts more for that coin (up to ×1.6), one that failed counts less (down to ×0.4), separately for rising and falling signals. Coin Lab uses its full 16-indicator test; the Paper Bot and the Confluence Scanner use the same results when Coin Lab has them and otherwise calibrate each coin in the background (results kept for 3 days). The bot's strategy tester runs without these weights so it never sees the future.
 
 ## Shared favorites, calendar, correlation, app install
 

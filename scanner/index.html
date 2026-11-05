@@ -262,6 +262,7 @@ scan: [
   ["#exSeg [data-ex]", "Біржа, монети якої сканувати: Binance або Bybit", "Биржа, монеты которой сканировать: Binance или Bybit", "Exchange whose coins to scan: Binance or Bybit"],
   ["#tfSeg [data-tf]", "Таймфрейм свічок для сигналів; тренд береться зі старшого таймфрейму", "Таймфрейм свечей для сигналов; тренд берётся со старшего таймфрейма", "Candle timeframe of the signals; the trend comes from the higher timeframe"],
   ["#topN", "Скільки найбільших монет Binance за обсягом сканувати (обрані додаються завжди)", "Сколько крупнейших монет Binance по объёму сканировать (избранные добавляются всегда)", "How many of the largest Binance coins to scan (favorites are always added)"],
+  ["#calC", "Сигнал, що на історії цієї монети не працював, не голосує (закреслений), а той, що працював добре, має більшу силу (✓)", "Сигнал, который на истории этой монеты не работал, не голосует (зачёркнут), а тот, что работал хорошо, имеет большую силу (✓)", "A signal that failed on this coin's history does not vote (struck through), one that worked well counts stronger (✓)"],
   ["#adz", "Зони перепроданості й перекупленості для кожної монети з її історії замість однакових 25/75 і 30/70 для всіх", "Зоны перепроданности и перекупленности для каждой монеты из её истории вместо одинаковых 25/75 и 30/70 для всех", "Oversold and overbought zones per coin from its history instead of the same 25/75 and 30/70 for all"],
   ["#minM", "Скільки з 8 сигналів мають дивитися в один бік, щоб монета потрапила в список", "Сколько из 8 сигналов должны смотреть в одну сторону, чтобы монета попала в список", "How many of the 8 signals must point the same way for a coin to be listed"],
   ["#sideSeg [data-s]", "Показати монети лише з цим напрямком збігу", "Показать монеты только с этим направлением совпадения", "Show only coins whose signals agree in this direction"],
@@ -437,6 +438,13 @@ lab: [
   [".tab[data-t=lq]", "Ліквідації, фандинг, відкритий інтерес", "Ликвидации, фандинг, открытый интерес", "Liquidations, funding, open interest"],
   [".tab[data-t=bt]", "Як сигнали спрацювали б на історії", "Как сигналы сработали бы на истории", "How the signals would have done on history"],
   ["#deepTab", "Повний розбір монети на 5 таймфреймах: тренд, імпульс, зони Heat монети, хвилі, режим ринку, рівні, деривативи, стакан, кореляція, новини, статистика, сценарії й план угоди", "Полный разбор монеты на 5 таймфреймах: тренд, импульс, зоны Heat монеты, волны, режим рынка, уровни, деривативы, стакан, корреляция, новости, статистика, сценарии и план сделки", "A full review of the coin on 5 timeframes: trend, momentum, the coin's Heat zones, waves, regime, levels, derivatives, book, correlation, news, statistics, scenarios and a trade plan"],
+  [".calnote", "Тест індикаторів сам проганяється на історії монети (не частіше ніж раз на 3 дні), і вага кожного чинника змінюється за тим, як він працював саме на цій монеті", "Тест индикаторов сам прогоняется на истории монеты (не чаще раза в 3 дня), и вес каждого фактора меняется по тому, как он работал именно на этой монете", "The indicator test runs by itself on the coin's history (at most every 3 days), and each factor's weight changes by how it worked on this very coin"],
+  ["#itTab", "Перевірка 16 індикаторів на історії цієї монети: вінрейт, profit factor і середня угода, окремо на навчальній і перевірочній частині", "Проверка 16 индикаторов на истории этой монеты: винрейт, profit factor и средняя сделка, отдельно на обучающей и проверочной части", "Tests 16 indicators on this coin's history: win rate, profit factor and average trade, separately on the training and the check part"],
+  ["#itGo", "Завантажити історію й прогнати всі індикатори з вибраними стопом, ціллю й комісією", "Загрузить историю и прогнать все индикаторы с выбранными стопом, целью и комиссией", "Load the history and run every indicator with the chosen stop, target and fee"],
+  ["#itBars", "Більше свічок — більше угод і надійніший висновок, але довше тест", "Больше свечей — больше сделок и надёжнее вывод, но дольше тест", "More candles mean more trades and a sounder verdict, but a longer test"],
+  ["#itTrend", "Брати лонги лише вище EMA200, шорти — лише нижче", "Брать лонги только выше EMA200, шорты — только ниже", "Take longs only above EMA200, shorts only below"],
+  [".it-row", "Натисніть, щоб побачити криву результату й останні угоди цього сигналу", "Нажмите, чтобы увидеть кривую результата и последние сделки этого сигнала", "Tap to see the result curve and latest trades of this signal"],
+  [".it-v", "Висновок за перевірочною частиною (останні 30% історії): «працює» — від 8 угод, PF від 1,2 і середня угода в плюсі", "Вывод по проверочной части (последние 30% истории): «работает» — от 8 сделок, PF от 1,2 и средняя сделка в плюсе", "Verdict on the check part (last 30% of history): works means 8+ trades, PF 1.2+ and a positive average trade"],
   ["#deepGo", "Зібрати свіжі дані на всіх таймфреймах і перерахувати звіт", "Собрать свежие данные на всех таймфреймах и пересчитать отчёт", "Gather fresh data on every timeframe and rebuild the report"],
   ["#deepCap, #deepRisk", "Розмір рахунку й ризик на угоду: з них рахується розмір позиції до стопу", "Размер счёта и риск на сделку: из них считается размер позиции до стопа", "Account size and risk per trade: the position size to the stop comes from them"],
   ["#deepCopy", "Скопіювати короткий текст звіту для поста", "Скопировать короткий текст отчёта для поста", "Copy a short text of the report for a post"],
@@ -471,6 +479,9 @@ elliott: [
   ["[data-g=sens][data-v='2']", "Бачити дрібні хвилі: більше деталей, більше шуму", "Видеть мелкие волны: больше деталей, больше шума", "See small waves: more detail, more noise"],
   ["[data-g=sens][data-v='3']", "Звичайна чутливість до хвиль", "Обычная чувствительность к волнам", "Normal wave sensitivity"],
   ["[data-g=sens][data-v='4.5']", "Лише великі хвилі: менше шуму", "Только крупные волны: меньше шума", "Only large waves: less noise"],
+  ["[data-g=learn][data-v=on]", "Розмітка й прогноз вчаться на історії кожної монети: сама підбирається чутливість, ціль стає зоною за її власними співвідношеннями хвиль, а впевненість — реальною ймовірністю", "Разметка и прогноз учатся на истории каждой монеты: сама подбирается чувствительность, цель становится зоной по её собственным соотношениям волн, а уверенность — реальной вероятностью", "The count and forecast learn from each coin's history: the sensitivity is chosen by itself, the target becomes a zone from the coin's own wave ratios, and confidence becomes a real probability"],
+  ["[data-g=learn][data-v=off]", "Однакова чутливість і цілі за підручником для всіх монет", "Одинаковая чувствительность и цели по учебнику для всех монет", "The same sensitivity and textbook targets for every coin"],
+  ["#ewlSt", "Скільки монет уже навчено на їхній історії; решта навчається у фоні", "Сколько монет уже обучено на их истории; остальные обучаются в фоне", "How many coins have learned from their history; the rest learn in the background"],
   ["[data-g=sort][data-v=best]", "Спершу монети з найсильнішими сигналами", "Сначала монеты с сильнейшими сигналами", "Strongest signals first"],
   ["[data-g=sort][data-v=fc]", "Спершу монети з найбільшим прогнозом росту", "Сначала монеты с наибольшим прогнозом роста", "Largest forecast rise first"],
   ["[data-g=sort][data-v=rev]", "Спершу монети з найбільшою ймовірністю розвороту", "Сначала монеты с наибольшей вероятностью разворота", "Highest reversal probability first"],
@@ -610,6 +621,8 @@ bot: [
   ["[data-dir=short]", "Бот відкриває лише шорти", "Бот открывает только шорты", "The bot opens shorts only"],
   ["[data-stop=on]", "Стоп-лосс на відстані 2×ATR: позиція закривається з обмеженою втратою, а після руху на 1,5 ATR у плюс стоп переноситься в беззбиток", "Стоп-лосс на расстоянии 2×ATR: позиция закрывается с ограниченной потерей, а после движения на 1,5 ATR в плюс стоп переносится в безубыток", "Stop-loss 2×ATR away: the position closes with a limited loss, and after a 1.5 ATR gain the stop moves to breakeven"],
   ["[data-stop=off]", "Без стоп-лоссу: позиції закриваються лише за ціллю, розворотом індикаторів, простоєм або ліквідацією. Втрата не обмежена", "Без стоп-лосса: позиции закрываются только по цели, развороту индикаторов, простою или ликвидации. Потеря не ограничена", "No stop-loss: positions close only at the target, on an indicator flip, idling or liquidation. The loss is not capped"],
+  ["[data-cal=on]", "Для кожної монети родини індикаторів (Heat, тренд, імпульс, обсяг, хвилі) перевіряються на її історії, і ті, що працювали краще, важать в оцінці більше", "Для каждой монеты семейства индикаторов (Heat, тренд, импульс, объём, волны) проверяются на её истории, и те, что работали лучше, весят в оценке больше", "For every coin the indicator families (Heat, trend, momentum, volume, waves) are checked on its history, and those that worked better weigh more in the score"],
+  ["[data-cal=off]", "Усі чинники з однаковою вагою для всіх монет", "Все факторы с одинаковым весом для всех монет", "Every factor with the same weight for every coin"],
   ["[data-news=on]", "Бот не купує монету з важливою негативною новиною за 12 год, закриває лонг, якщо така новина вийшла після входу, і посилює шорт, лише коли ціна вже падає", "Бот не покупает монету с важной негативной новостью за 12 ч, закрывает лонг, если такая новость вышла после входа, и усиливает шорт, только когда цена уже падает", "The bot does not buy a coin with important negative news in 12 h, closes a long if such news comes after entry, and strengthens a short only if the price is already falling"],
   ["[data-news=off]", "Бот не зважає на новини", "Бот не учитывает новости", "The bot ignores news"],
   ["[data-mode=std]", "Стандартний відбір: вхід від оцінки 45, сильний сигнал ±70 можна брати й проти тренду", "Стандартный отбор: вход от оценки 45, сильный сигнал ±70 можно брать и против тренда", "Standard selection: entry from a score of 45, a strong ±70 signal may go against the trend"],
@@ -628,7 +641,7 @@ bot: [
 };
 
 </script>
-<script id="ch-js" data-tool="scan" data-ver="1.13" data-root="../">
+<script id="ch-js" data-tool="scan" data-ver="1.17" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -637,7 +650,7 @@ bot: [
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.13";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.17";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -1496,6 +1509,94 @@ bot: [
   addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".ch-inst"); if (!b || !installEv) return; e.preventDefault(); installEv.prompt(); installEv.userChoice.finally(function () { installEv = null; b.hidden = true; }); });
   if ("serviceWorker" in navigator && location.protocol === "https:") { addEventListener("load", function () { navigator.serviceWorker.register(ROOT + "sw.js", { scope: ROOT }).catch(function () {}); }); }
 
+  // ---------- per-coin calibration, shared by the Paper Bot and the Confluence Scanner ----------
+  // For a coin and timeframe the main indicator families are replayed on 1000 candles of its history with the same
+  // exits as the Coin Lab indicator test (stop 2 ATR, target 4 ATR, 48 candles, 0.1% fee). Only the last 30% of history
+  // (the check part) decides: a family that worked there gets more weight on this coin (up to ×1.6), one that failed
+  // less (down to ×0.4), separately for rising and falling signals, and less change when there were few trades.
+  // A calibration made by Coin Lab's full 16-indicator test (with Elliott waves) is preferred when it exists.
+  // Results live in localStorage (ch.cal) for 3 days; coins are calibrated one by one in the background.
+  var CAL_KEY2 = "ch.cal", CAL_TTL2 = 3 * 864e5;
+  function calAll2() { var a = jget(CAL_KEY2, {}); return a && typeof a === "object" ? a : {}; }
+  function calKey2(ex, mkt, base, tf) { return [normEx(ex), /^fut/.test(String(mkt)) ? "fut" : "spot", String(base).toUpperCase(), tf].join("|"); }
+  function calGet2(ex, mkt, base, tf) { var c = calAll2()[calKey2(ex, mkt, base, tf)]; return c && Date.now() - c.at < 3 * CAL_TTL2 ? c : null; }
+  function calPut2(ex, mkt, base, tf, c) { var a = calAll2(); a[calKey2(ex, mkt, base, tf)] = c; Object.keys(a).sort(function (x, y) { return a[y].at - a[x].at; }).slice(300).forEach(function (k) { delete a[k]; }); jset(CAL_KEY2, a); }
+  var BYIV2 = { "5m": "5", "15m": "15", "1h": "60", "4h": "240", "1d": "D", "1w": "W" };
+  async function calKlines(ex, mkt, sym, tf) {
+    var fut = /^fut/.test(String(mkt));
+    if (normEx(ex) === "bybit") { var r = await getJ("https://api.bybit.com/v5/market/kline?category=" + (fut ? "linear" : "spot") + "&symbol=" + sym + "&interval=" + BYIV2[tf] + "&limit=1000");
+      return ((r.result && r.result.list) || []).map(function (k) { return [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]; }).reverse(); }
+    var d = await getJ(fut ? "https://fapi.binance.com/fapi/v1/klines?symbol=" + sym + "&interval=" + tf + "&limit=1000" : "https://api.binance.com/api/v3/klines?symbol=" + sym + "&interval=" + tf + "&limit=1000");
+    return d.map(function (k) { return [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]; });
+  }
+  function rsiArr(c, n) {
+    var o = Array(c.length).fill(null); if (c.length <= n) return o; var g = 0, l = 0, i;
+    for (i = 1; i <= n; i++) { var d = c[i] - c[i - 1]; if (d > 0) g += d; else l -= d; } g /= n; l /= n; o[n] = l === 0 ? 100 : 100 - 100 / (1 + g / l);
+    for (i = n + 1; i < c.length; i++) { var e = c[i] - c[i - 1]; g = (g * (n - 1) + Math.max(e, 0)) / n; l = (l * (n - 1) + Math.max(-e, 0)) / n; o[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l); }
+    return o;
+  }
+  function emaA(a, n) { var o = Array(a.length).fill(null), k = 2 / (n + 1), e = null; for (var i = 0; i < a.length; i++) { e = e == null ? a[i] : a[i] * k + e * (1 - k); if (i >= n - 1) o[i] = e; } return o; }
+  function calCompute(K) {
+    var n = K.length, o = K.map(function (k) { return k[1]; }), h = K.map(function (k) { return k[2]; }), l = K.map(function (k) { return k[3]; }), c = K.map(function (k) { return k[4]; }), v = K.map(function (k) { return k[5]; });
+    if (n < 400) return null;
+    var R = rsiArr(c, 14), E20 = emaA(c, 20), E50 = emaA(c, 50), E200 = emaA(c, 200), E12 = emaA(c, 12), E26 = emaA(c, 26);
+    var M = c.map(function (_, i) { return E12[i] != null && E26[i] != null ? E12[i] - E26[i] : null; }), MS = emaA(M.map(function (x) { return x == null ? 0 : x; }), 9), MH = M.map(function (x, i) { return x == null ? null : x - MS[i]; });
+    var TR = c.map(function (_, i) { return i ? Math.max(h[i] - l[i], Math.abs(h[i] - c[i - 1]), Math.abs(l[i] - c[i - 1])) : h[i] - l[i]; }), AT = emaA(TR, 14);
+    var HE = c.map(function (_, i) { if (i < 150 || R[i] == null) return null; var st = function (p) { var a = -Infinity, z = Infinity; for (var q = i - p + 1; q <= i; q++) { a = Math.max(a, h[q]); z = Math.min(z, l[q]); } return a > z ? (c[i] - z) / (a - z) * 100 : 50; };
+      return 0.6 * (0.4 * st(14) + 0.35 * st(50) + 0.25 * st(150)) + 0.4 * R[i]; });
+    var Z = Array(n).fill(null); for (var i0 = 250; i0 < n; i0 += 10) { var w = HE.slice(Math.max(0, i0 - 400), i0).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; }); if (w.length < 120) continue;
+      var q = function (p) { var k = (w.length - 1) * p / 100, f = Math.floor(k); return w[f] + (w[Math.min(w.length - 1, f + 1)] - w[f]) * (k - f); }; for (var j = i0; j < Math.min(n, i0 + 10); j++) Z[j] = [q(10), q(90)]; }
+    var VS = c.map(function (_, i) { if (i < 20) return null; var s = 0; for (var q2 = i - 20; q2 < i; q2++) s += v[q2]; return s / 20; });
+    var G = { fHeat: { L: [], S: [] }, fMom: { L: [], S: [] }, fTrend: { L: [], S: [] }, fVol: { L: [], S: [] } };
+    var sig = function (g, d, i) { G[g][d].push(i); };
+    var up = function (a, i, x) { return a[i] != null && a[i - 1] != null && a[i - 1] < x && a[i] >= x; }, dn = function (a, i, x) { return a[i] != null && a[i - 1] != null && a[i - 1] > x && a[i] <= x; };
+    for (var i = 1; i < n; i++) {
+      if (Z[i] && up(HE, i, Z[i][0])) sig("fHeat", "L", i); if (Z[i] && dn(HE, i, Z[i][1])) sig("fHeat", "S", i);
+      if (up(R, i, 30)) sig("fMom", "L", i); if (dn(R, i, 70)) sig("fMom", "S", i);
+      if (up(MH, i, 0)) sig("fMom", "L", i); if (dn(MH, i, 0)) sig("fMom", "S", i);
+      if (E20[i] != null && E50[i] != null && E20[i - 1] != null && E50[i - 1] != null) { if (E20[i - 1] <= E50[i - 1] && E20[i] > E50[i]) sig("fTrend", "L", i); if (E20[i - 1] >= E50[i - 1] && E20[i] < E50[i]) sig("fTrend", "S", i); }
+      if (E200[i] != null && E200[i - 1] != null) { if (c[i - 1] <= E200[i - 1] && c[i] > E200[i]) sig("fTrend", "L", i); if (c[i - 1] >= E200[i - 1] && c[i] < E200[i]) sig("fTrend", "S", i); }
+      if (VS[i] && v[i] > 2.5 * VS[i]) sig("fVol", c[i] > o[i] ? "L" : "S", i);
+    }
+    // trades: entry at the next open, stop 2 ATR, target 4 ATR, at most 48 candles, 0.1% fee each side; one at a time
+    var split = Math.floor(n * 0.7), out = {};
+    Object.keys(G).forEach(function (g) {
+      out[g] = {};
+      ["L", "S"].forEach(function (dd) {
+        var d = dd === "L" ? 1 : -1, list = G[g][dd].sort(function (a, b) { return a - b; }), busyTo = -1, T = [];
+        list.forEach(function (s) {
+          var i = s + 1; if (i >= n || i <= busyTo || !AT[s]) return;
+          var e = o[i], a = AT[s], sl = e - d * 2 * a, tp = e + d * 4 * a, x = null, end = Math.min(n - 1, i + 48), k;
+          for (k = i; k <= end; k++) { if (d > 0 ? l[k] <= sl : h[k] >= sl) { x = sl; break; } if (d > 0 ? h[k] >= tp : l[k] <= tp) { x = tp; break; } }
+          if (x == null) { k = end; x = c[end]; }
+          busyTo = k; if (s >= split) T.push(d * (x / e - 1) - 0.002);
+        });
+        var w2 = T.filter(function (r) { return r > 0; }), sw = w2.reduce(function (a, r) { return a + r; }, 0), sl2 = T.filter(function (r) { return r <= 0; }).reduce(function (a, r) { return a + r; }, 0);
+        out[g][dd] = { n: T.length, wr: T.length ? w2.length / T.length * 100 : null, pf: sl2 < 0 ? sw / -sl2 : sw > 0 ? 99 : null };
+      });
+    });
+    var grp = {}; Object.keys(out).forEach(function (g) { grp[g] = {}; ["L", "S"].forEach(function (d) { var s = out[g][d], q0 = !s || s.n < 5 || s.pf == null ? 0 : Math.max(-1, Math.min(1, (Math.min(3, s.pf) - 1) / 0.8)) * s.n / (s.n + 15); grp[g][d] = Math.max(0.4, Math.min(1.6, 1 + 0.6 * q0)); }); });
+    grp.fEw = { L: 1, S: 1 };
+    return { at: Date.now(), grp: grp, sig: out, bars: n, src: "auto" };
+  }
+  var calQ2 = [], calBusy2 = false;
+  function calEnsure2(ex, mkt, base, tf, quote) {
+    var c = calGet2(ex, mkt, base, tf); if (c && Date.now() - c.at < CAL_TTL2) return;
+    var key = calKey2(ex, mkt, base, tf); if (calQ2.some(function (x) { return x.key === key; }) || calQ2.length > 150) return;
+    calQ2.push({ key: key, ex: ex, mkt: mkt, base: String(base).toUpperCase(), tf: tf, sym: String(base).toUpperCase() + (quote || "USDT") }); calRun2();
+  }
+  async function calRun2() {
+    if (calBusy2) return; calBusy2 = true;
+    try {
+      while (calQ2.length) {
+        var job = calQ2.shift(), c0 = calGet2(job.ex, job.mkt, job.base, job.tf); if (c0 && Date.now() - c0.at < CAL_TTL2) continue;
+        try { var K = await calKlines(job.ex, job.mkt, job.sym, job.tf), r = calCompute(K); if (r) { calPut2(job.ex, job.mkt, job.base, job.tf, r); try { dispatchEvent(new CustomEvent("ch-cal", { detail: job })); } catch (e) {} } } catch (e) {}
+        await new Promise(function (res) { setTimeout(res, 2500); });
+      }
+    } finally { calBusy2 = false; }
+  }
+  function calMul2(c, group, v) { if (!c || !c.grp || !c.grp[group]) return 1; return c.grp[group][v >= 0 ? "L" : "S"] || 1; }
+
   // ---------- hover hints for every tool ----------
   // Sources, first found wins: an entry of assets/tips.js matching the element (or one of its parents), its title,
   // the aria-label of an icon-only control, the full text of a cut-off label. Mouse hover and keyboard focus only;
@@ -1604,7 +1705,7 @@ bot: [
     theme: function (fallback) { return saved() || fallback || null; },
     url: url, links: links, linksInto: linksInto, param: param,
     mark: mark, frame: frame, shot: shot, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
-    favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
+    calib: { get: calGet2, put: calPut2, ensure: calEnsure2, mul: calMul2, key: calKey2, compute: calCompute, pending: function () { return calQ2.length + (calBusy2 ? 1 : 0); } }, favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
   };
 })();
 
@@ -1647,6 +1748,7 @@ h1{font-size:20px;font-weight:500;margin:4px 0 2px}
 .sg{font-size:12px;border-radius:7px;padding:2px 8px;border:0.5px solid var(--ch-bd);color:var(--ch-t3)}
 .sg.p{background:var(--ch-upb);color:var(--ch-up);border-color:transparent}
 .sg.m{background:var(--ch-dnb);color:var(--ch-dn);border-color:transparent}
+.sg.x{text-decoration:line-through;opacity:.7}
 .meta{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:12px;color:var(--ch-t2)}
 .meta b{color:var(--ch-tx);font-weight:500}
 .det{margin-top:8px;border-top:0.5px solid var(--ch-bd);padding-top:6px}
@@ -1673,6 +1775,7 @@ details.help li{margin:4px 0;color:var(--ch-t2);font-size:13px}
     <label><span data-i="side"></span><span class="seg" id="sideSeg"><button data-s="all"></button><button data-s="L"></button><button data-s="S"></button></span></label>
     <label class="chk"><input type="checkbox" id="favOnly"><span data-i="favOnly"></span></label>
     <label class="chk"><input type="checkbox" id="adz"><span data-i="adz"></span></label>
+    <label class="chk"><input type="checkbox" id="calC"><span data-i="calC"></span></label>
     <label><span data-i="lang"></span><select id="lang"><option value="uk">UA</option><option value="ru">RU</option><option value="en">EN</option></select></label>
     <button class="btn" id="theme" type="button" data-i="theme"></button>
     <button class="btn primary" id="go" type="button" data-i="go"></button>
@@ -2011,7 +2114,7 @@ const EW = (() => {
 /* ===== Confluence scanner: the signals of every CRYPTO HUNTERS tool, computed together for each coin ===== */
 const I18N = {
 uk: { title:"Сканер збігів", sub:"Монети, де одночасно сходяться кілька незалежних сигналів: перегрів, тренд, хвилі Елліотта, імпульс, обсяг, стакан, фандинг і новини. Чим більше збігів в один бік, тим сильніший кандидат.",
-  ex:"Біржа", tf:"Таймфрейм", top:"Скільки монет", min:"Мін. збігів", side:"Напрямок", all:"Усі", L:"Лонг", S:"Шорт", favOnly:"Лише обрані", adz:"Зони кожної монети з її історії", lang:"Мова", theme:"Тема", go:"Сканувати",
+  ex:"Біржа", tf:"Таймфрейм", top:"Скільки монет", min:"Мін. збігів", side:"Напрямок", all:"Усі", L:"Лонг", S:"Шорт", favOnly:"Лише обрані", calC:"Ваги під монету", calOff:"на цій монеті цей сигнал не працював, голос не враховано", calMul:"на цій монеті вага ×{m}", calN:"Ваги під монету готові для {n} з {k}", adz:"Зони кожної монети з її історії", lang:"Мова", theme:"Тема", go:"Сканувати",
   loading:"Завантажую ринок…", prog:"Аналізую {i} з {n}…", done:"{n} монет {ex}, таймфрейм {tf}, {t}. Показано {m} з мін. {k} збігами.", err:"Помилка: {e}", none:"Немає монет з такою кількістю збігів. Зменште поріг або змініть таймфрейм.",
   btc:"BTC: {t}", btcUp:"висхідний тренд", btcDn:"низхідний тренд", fng:"Збігів у лонг: {l} · у шорт: {s}",
   s_heat:"Heat", s_trend:"Тренд", s_ew:"Елліотт", s_mom:"Імпульс", s_vol:"Обсяг", s_book:"Стакан", s_fund:"Фандинг", s_news:"Новини",
@@ -2031,7 +2134,7 @@ uk: { title:"Сканер збігів", sub:"Монети, де одночас�
     "Збіг сигналів — це кандидат, а не гарантія. Перевіряйте монету в інструментах (кнопки під карткою), ставте стоп і дивіться на кореляцію з BTC: монети з ρ вище 0,8 рухаються майже як біткоїн.",
     "Зони перепроданості й перекупленості рахуються для кожної монети з її власної історії: нижні й верхні 10% її Heat і RSI за останні 250 свічок. Спокійна монета отримує вужчі зони, волатильна — ширші.", "Сигнали Heat і тренд часто суперечать один одному: перепроданість буває саме в низхідному тренді. Найсильніші ситуації — коли тренд старшого таймфрейму і відкат на молодшому дивляться в один бік."] },
 ru: { title:"Сканер совпадений", sub:"Монеты, где одновременно сходятся несколько независимых сигналов: перегрев, тренд, волны Эллиотта, импульс, объём, стакан, фандинг и новости. Чем больше совпадений в одну сторону, тем сильнее кандидат.",
-  ex:"Биржа", tf:"Таймфрейм", top:"Сколько монет", min:"Мин. совпадений", side:"Направление", all:"Все", L:"Лонг", S:"Шорт", favOnly:"Только избранные", adz:"Зоны каждой монеты из её истории", lang:"Язык", theme:"Тема", go:"Сканировать",
+  ex:"Биржа", tf:"Таймфрейм", top:"Сколько монет", min:"Мин. совпадений", side:"Направление", all:"Все", L:"Лонг", S:"Шорт", favOnly:"Только избранные", calC:"Веса под монету", calOff:"на этой монете этот сигнал не работал, голос не учтён", calMul:"на этой монете вес ×{m}", calN:"Веса под монету готовы для {n} из {k}", adz:"Зоны каждой монеты из её истории", lang:"Язык", theme:"Тема", go:"Сканировать",
   loading:"Загружаю рынок…", prog:"Анализирую {i} из {n}…", done:"{n} монет {ex}, таймфрейм {tf}, {t}. Показано {m} с мин. {k} совпадениями.", err:"Ошибка: {e}", none:"Нет монет с таким числом совпадений. Уменьшите порог или смените таймфрейм.",
   btc:"BTC: {t}", btcUp:"восходящий тренд", btcDn:"нисходящий тренд", fng:"Совпадений в лонг: {l} · в шорт: {s}",
   s_heat:"Heat", s_trend:"Тренд", s_ew:"Эллиотт", s_mom:"Импульс", s_vol:"Объём", s_book:"Стакан", s_fund:"Фандинг", s_news:"Новости",
@@ -2051,7 +2154,7 @@ ru: { title:"Сканер совпадений", sub:"Монеты, где од�
     "Совпадение сигналов — это кандидат, а не гарантия. Проверяйте монету в инструментах (кнопки под карточкой), ставьте стоп и смотрите на корреляцию с BTC: монеты с ρ выше 0,8 движутся почти как биткоин.",
     "Зоны перепроданности и перекупленности считаются для каждой монеты из её собственной истории: нижние и верхние 10% её Heat и RSI за последние 250 свечей. Спокойная монета получает более узкие зоны, волатильная — более широкие.", "Сигналы Heat и тренд часто противоречат друг другу: перепроданность бывает именно в нисходящем тренде. Самые сильные ситуации — когда тренд старшего таймфрейма и откат на младшем смотрят в одну сторону."] },
 en: { title:"Confluence Scanner", sub:"Coins where several independent signals line up at once: heat, trend, Elliott waves, momentum, volume, order book, funding and news. The more signals agree, the stronger the candidate.",
-  ex:"Exchange", tf:"Timeframe", top:"Coins", min:"Min. matches", side:"Direction", all:"All", L:"Long", S:"Short", favOnly:"Favorites only", adz:"Per-coin zones from history", lang:"Language", theme:"Theme", go:"Scan",
+  ex:"Exchange", tf:"Timeframe", top:"Coins", min:"Min. matches", side:"Direction", all:"All", L:"Long", S:"Short", favOnly:"Favorites only", calC:"Per-coin weights", calOff:"this signal failed on this coin, its vote is ignored", calMul:"weight on this coin ×{m}", calN:"Per-coin weights ready for {n} of {k}", adz:"Per-coin zones from history", lang:"Language", theme:"Theme", go:"Scan",
   loading:"Loading the market…", prog:"Analysing {i} of {n}…", done:"{n} {ex} coins, timeframe {tf}, {t}. Showing {m} with at least {k} matches.", err:"Error: {e}", none:"No coins with that many matches. Lower the threshold or change the timeframe.",
   btc:"BTC: {t}", btcUp:"uptrend", btcDn:"downtrend", fng:"Long matches: {l} · short: {s}",
   s_heat:"Heat", s_trend:"Trend", s_ew:"Elliott", s_mom:"Momentum", s_vol:"Volume", s_book:"Book", s_fund:"Funding", s_news:"News",
@@ -2074,7 +2177,7 @@ en: { title:"Confluence Scanner", sub:"Coins where several independent signals l
 const HTF = { "1h": "4h", "4h": "1d", "1d": "1w" }, SIGS = ["heat", "trend", "ew", "mom", "vol", "book", "fund", "news"];
 const store = { get(k, d) { try { const v = localStorage.getItem("sc_" + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem("sc_" + k, JSON.stringify(v)); } catch (e) {} } };
 const navL = (navigator.language || "uk").slice(0, 2);
-const S = { ex: ((window.CH && CH.param().ex) || store.get("ex", "binance")) === "bybit" ? "bybit" : "binance", lang: store.get("lang", ["uk", "ru"].includes(navL) ? navL : "en"), tf: store.get("tf", "4h"), top: store.get("top", 50), min: store.get("min", 4), side: store.get("side", "all"), favOnly: store.get("favOnly", false), adz: store.get("adz", true), rows: [], ctx: null, open: new Set(), busy: false, at: 0 };
+const S = { ex: ((window.CH && CH.param().ex) || store.get("ex", "binance")) === "bybit" ? "bybit" : "binance", lang: store.get("lang", ["uk", "ru"].includes(navL) ? navL : "en"), tf: store.get("tf", "4h"), top: store.get("top", 50), min: store.get("min", 4), side: store.get("side", "all"), favOnly: store.get("favOnly", false), adz: store.get("adz", true), cal: store.get("cal", true), rows: [], ctx: null, open: new Set(), busy: false, at: 0 };
 const DL = window.CH ? CH.param() : {};
 const T = (k, v) => { const e = (I18N[S.lang] || I18N.en)[k] ?? I18N.en[k]; return typeof e === "function" ? e(v || {}) : e == null ? k : String(e).replace(/\{(\w+)\}/g, (_, x) => v && v[x] != null ? v[x] : ""); };
 const $ = id => document.getElementById(id);
@@ -2155,6 +2258,14 @@ function analyze(sym, kb, kh, fund, btc) {
   const cr = btc && window.CH ? CH.corr(c, btc) : null;
   return { sym, base, price, G, corr: cr, ewKey: G.ew.key };
 }
+// per-coin weights from the shared calibration: a signal family that failed on this coin's history does not vote,
+// one that worked counts stronger
+const SCAL = { heat: "fHeat", trend: "fTrend", ew: "fEw", mom: "fMom", vol: "fVol" };
+function applyCal(x) {
+  if (!S.cal || !window.CH || !CH.calib) return;
+  const c = CH.calib.get(S.ex, "spot", x.base, S.tf); CH.calib.ensure(S.ex, "spot", x.base, S.tf, "USDT"); if (!c) return; x.cal = true;
+  Object.entries(SCAL).forEach(([k, g]) => { const G = x.G[k]; if (!G || !G.d) return; const m = CH.calib.mul(c, g, G.d); G.m = m; if (m < 0.7) { G.d0 = G.d; G.d = 0; } else G.s *= m; });
+}
 function vote(x) {
   let L = 0, Sh = 0, sc = 0; SIGS.forEach(k => { const g = x.G[k]; if (g.d > 0) { L++; sc += g.s; } else if (g.d < 0) { Sh++; sc -= g.s; } });
   x.L = L; x.Sh = Sh; x.side = L > Sh ? "L" : Sh > L ? "S" : "N"; x.m = Math.max(L, Sh); x.score = sc;
@@ -2185,7 +2296,7 @@ async function scan() {
       if (kb.length >= 120) { const x = analyze(t.symbol, kb, kh, fund, t.symbol === "BTCUSDT" ? null : btc); x.chg = +t.priceChangePercent; x.qv = +t.quoteVolume; out.push(x); }
       done++; status(T("prog", { i: done, n: uni.length })); bar(done / uni.length * 0.85);
     });
-    out.forEach(vote);
+    out.forEach(applyCal); out.forEach(vote);
     out.sort((a, b) => b.m - a.m || Math.abs(b.score) - Math.abs(a.score));
     await pool(out.slice(0, 20), 4, async x => { await applyBook(x); });
     out.forEach(vote); out.sort((a, b) => b.m - a.m || Math.abs(b.score) - Math.abs(a.score));
@@ -2203,18 +2314,18 @@ function render() {
   document.querySelectorAll("#sideSeg button").forEach(b => { b.textContent = T(b.dataset.s); b.setAttribute("aria-pressed", String(S.side === b.dataset.s)); });
   document.querySelectorAll("#tfSeg button").forEach(b => b.setAttribute("aria-pressed", String(S.tf === b.dataset.tf)));
   document.querySelectorAll("#exSeg button").forEach(b => b.setAttribute("aria-pressed", String(S.ex === b.dataset.ex)));
-  $("topN").value = String(S.top); $("minM").value = String(S.min); $("favOnly").checked = S.favOnly; $("adz").checked = S.adz; $("lang").value = S.lang;
+  $("topN").value = String(S.top); $("minM").value = String(S.min); $("favOnly").checked = S.favOnly; $("adz").checked = S.adz; $("calC").checked = S.cal; $("lang").value = S.lang;
   $("how").innerHTML = (I18N[S.lang] || I18N.en).how.map(x => `<li>${esc(x)}</li>`).join("");
   if (!S.rows.length) { $("list").innerHTML = S.busy ? "" : `<div class="empty">${esc(T("go"))} ↑</div>`; $("ctx").innerHTML = ""; return; }
   const favs = window.CH ? CH.favs() : [];
   const list = S.rows.filter(x => x.m >= S.min && x.side !== "N" && (S.side === "all" || x.side === S.side) && (!S.favOnly || favs.includes(x.base)));
   status(T("done", { n: S.rows.length, ex: S.ex === "bybit" ? "Bybit" : "Binance", tf: S.tf, t: new Date(S.at).toLocaleTimeString(S.lang, { hour: "2-digit", minute: "2-digit" }), m: list.length, k: S.min }));
   const nL = S.rows.filter(x => x.side === "L" && x.m >= S.min).length, nS = S.rows.filter(x => x.side === "S" && x.m >= S.min).length;
-  $("ctx").innerHTML = S.ctx ? `<span>${esc(T("btc", { t: T(S.ctx.btc > 0 ? "btcUp" : S.ctx.btc < 0 ? "btcDn" : "all") }))}</span><span>${esc(T("fng", { l: nL, s: nS }))}</span>` : "";
+  $("ctx").innerHTML = S.ctx ? `<span>${esc(T("btc", { t: T(S.ctx.btc > 0 ? "btcUp" : S.ctx.btc < 0 ? "btcDn" : "all") }))}</span><span>${esc(T("fng", { l: nL, s: nS }))}</span>${S.cal ? `<span>${esc(T("calN", { n: S.rows.filter(x => x.cal).length, k: S.rows.length }))}</span>` : ""}` : "";
   $("list").innerHTML = list.length ? list.map(x => {
     const open = S.open.has(x.sym), d = x.side === "L" ? 1 : -1;
-    const chips = SIGS.map(k => { const g = x.G[k], cls = g.d * d > 0 ? "p" : g.d * d < 0 ? "m" : ""; return `<span class="sg ${cls}" title="${esc(T("d_" + k, g))}">${esc(T("s_" + k))}</span>`; }).join("");
-    const det = open ? `<div class="det"><ul>${SIGS.map(k => { const g = x.G[k]; return `<li><b>${esc(T("s_" + k))}${g.d ? (g.d > 0 ? " ↑" : " ↓") : ""}</b> — ${esc(T("d_" + k, g))}</li>`; }).join("")}</ul></div>` : "";
+    const chips = SIGS.map(k => { const g = x.G[k], cls = g.d * d > 0 ? "p" : g.d * d < 0 ? "m" : g.d0 ? "x" : ""; const cm = g.d0 ? " · " + T("calOff") : g.m && Math.abs(g.m - 1) >= 0.05 ? " · " + T("calMul", { m: g.m.toFixed(1) }) : ""; return `<span class="sg ${cls}" title="${esc(T("d_" + k, g) + cm)}">${esc(T("s_" + k))}${g.m && g.m >= 1.2 && !g.d0 ? " ✓" : ""}</span>`; }).join("");
+    const det = open ? `<div class="det"><ul>${SIGS.map(k => { const g = x.G[k]; const cm = g.d0 ? " · " + T("calOff") : g.m && Math.abs(g.m - 1) >= 0.05 ? " · " + T("calMul", { m: g.m.toFixed(1) }) : ""; return `<li><b>${esc(T("s_" + k))}${g.d ? (g.d > 0 ? " ↑" : " ↓") : ""}</b> — ${esc(T("d_" + k, g) + cm)}</li>`; }).join("")}</ul></div>` : "";
     return `<div class="row" tabindex="0" data-s="${x.sym}"><div class="r1"><span class="coin">${x.base}</span><span class="px">${fmt(x.price)} USDT · <span class="${x.chg >= 0 ? "up" : "dn"}">${pct(x.chg)}</span></span>
       <span class="side ${x.side}">${esc(T(x.side))} ${x.m}/${SIGS.length}</span></div>
       <div class="sigs">${chips}</div>
@@ -2234,12 +2345,14 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.classList && e.target.classList.contains("row")) e.target.click(); });
 $("topN").onchange = e => { S.top = +e.target.value; store.set("top", S.top); };
 $("minM").onchange = e => { S.min = +e.target.value; store.set("min", S.min); render(); };
+$("calC").onchange = e => { S.cal = e.target.checked; store.set("cal", S.cal); S.rows = []; render(); scan(); };
 $("adz").onchange = e => { S.adz = e.target.checked; store.set("adz", S.adz); S.rows = []; render(); scan(); };
 $("favOnly").onchange = e => { S.favOnly = e.target.checked; store.set("favOnly", S.favOnly); render(); };
 $("lang").onchange = e => { S.lang = e.target.value; store.set("lang", S.lang); render(); };
 if (window.CH) { const th = CH.theme(null); if (th) document.documentElement.dataset.theme = th; }
 if (DL.coin) { S.open.add(DL.coin + "USDT"); }
 render(); scan();
+let calT = null; addEventListener("ch-cal", () => { clearTimeout(calT); calT = setTimeout(() => { if (!S.busy && S.rows.length) { S.rows.forEach(x => { ["heat", "trend", "ew", "mom", "vol"].forEach(k => { const g = x.G[k]; if (g && g.d0) { g.d = g.d0; delete g.d0; } if (g && g.m) { if (g.m >= 0.7) g.s /= g.m; delete g.m; } }); applyCal(x); vote(x); }); S.rows.sort((a, b) => b.m - a.m || Math.abs(b.score) - Math.abs(a.score)); render(); } }, 1500); });
 setInterval(() => { if (!S.busy && !document.hidden && Date.now() - S.at > 5 * 60e3) scan(); }, 60e3);
 </script>
 </body>

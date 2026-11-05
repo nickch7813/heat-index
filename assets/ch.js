@@ -6,7 +6,7 @@
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.13";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.17";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -865,6 +865,94 @@
   addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".ch-inst"); if (!b || !installEv) return; e.preventDefault(); installEv.prompt(); installEv.userChoice.finally(function () { installEv = null; b.hidden = true; }); });
   if ("serviceWorker" in navigator && location.protocol === "https:") { addEventListener("load", function () { navigator.serviceWorker.register(ROOT + "sw.js", { scope: ROOT }).catch(function () {}); }); }
 
+  // ---------- per-coin calibration, shared by the Paper Bot and the Confluence Scanner ----------
+  // For a coin and timeframe the main indicator families are replayed on 1000 candles of its history with the same
+  // exits as the Coin Lab indicator test (stop 2 ATR, target 4 ATR, 48 candles, 0.1% fee). Only the last 30% of history
+  // (the check part) decides: a family that worked there gets more weight on this coin (up to ×1.6), one that failed
+  // less (down to ×0.4), separately for rising and falling signals, and less change when there were few trades.
+  // A calibration made by Coin Lab's full 16-indicator test (with Elliott waves) is preferred when it exists.
+  // Results live in localStorage (ch.cal) for 3 days; coins are calibrated one by one in the background.
+  var CAL_KEY2 = "ch.cal", CAL_TTL2 = 3 * 864e5;
+  function calAll2() { var a = jget(CAL_KEY2, {}); return a && typeof a === "object" ? a : {}; }
+  function calKey2(ex, mkt, base, tf) { return [normEx(ex), /^fut/.test(String(mkt)) ? "fut" : "spot", String(base).toUpperCase(), tf].join("|"); }
+  function calGet2(ex, mkt, base, tf) { var c = calAll2()[calKey2(ex, mkt, base, tf)]; return c && Date.now() - c.at < 3 * CAL_TTL2 ? c : null; }
+  function calPut2(ex, mkt, base, tf, c) { var a = calAll2(); a[calKey2(ex, mkt, base, tf)] = c; Object.keys(a).sort(function (x, y) { return a[y].at - a[x].at; }).slice(300).forEach(function (k) { delete a[k]; }); jset(CAL_KEY2, a); }
+  var BYIV2 = { "5m": "5", "15m": "15", "1h": "60", "4h": "240", "1d": "D", "1w": "W" };
+  async function calKlines(ex, mkt, sym, tf) {
+    var fut = /^fut/.test(String(mkt));
+    if (normEx(ex) === "bybit") { var r = await getJ("https://api.bybit.com/v5/market/kline?category=" + (fut ? "linear" : "spot") + "&symbol=" + sym + "&interval=" + BYIV2[tf] + "&limit=1000");
+      return ((r.result && r.result.list) || []).map(function (k) { return [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]; }).reverse(); }
+    var d = await getJ(fut ? "https://fapi.binance.com/fapi/v1/klines?symbol=" + sym + "&interval=" + tf + "&limit=1000" : "https://api.binance.com/api/v3/klines?symbol=" + sym + "&interval=" + tf + "&limit=1000");
+    return d.map(function (k) { return [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]; });
+  }
+  function rsiArr(c, n) {
+    var o = Array(c.length).fill(null); if (c.length <= n) return o; var g = 0, l = 0, i;
+    for (i = 1; i <= n; i++) { var d = c[i] - c[i - 1]; if (d > 0) g += d; else l -= d; } g /= n; l /= n; o[n] = l === 0 ? 100 : 100 - 100 / (1 + g / l);
+    for (i = n + 1; i < c.length; i++) { var e = c[i] - c[i - 1]; g = (g * (n - 1) + Math.max(e, 0)) / n; l = (l * (n - 1) + Math.max(-e, 0)) / n; o[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l); }
+    return o;
+  }
+  function emaA(a, n) { var o = Array(a.length).fill(null), k = 2 / (n + 1), e = null; for (var i = 0; i < a.length; i++) { e = e == null ? a[i] : a[i] * k + e * (1 - k); if (i >= n - 1) o[i] = e; } return o; }
+  function calCompute(K) {
+    var n = K.length, o = K.map(function (k) { return k[1]; }), h = K.map(function (k) { return k[2]; }), l = K.map(function (k) { return k[3]; }), c = K.map(function (k) { return k[4]; }), v = K.map(function (k) { return k[5]; });
+    if (n < 400) return null;
+    var R = rsiArr(c, 14), E20 = emaA(c, 20), E50 = emaA(c, 50), E200 = emaA(c, 200), E12 = emaA(c, 12), E26 = emaA(c, 26);
+    var M = c.map(function (_, i) { return E12[i] != null && E26[i] != null ? E12[i] - E26[i] : null; }), MS = emaA(M.map(function (x) { return x == null ? 0 : x; }), 9), MH = M.map(function (x, i) { return x == null ? null : x - MS[i]; });
+    var TR = c.map(function (_, i) { return i ? Math.max(h[i] - l[i], Math.abs(h[i] - c[i - 1]), Math.abs(l[i] - c[i - 1])) : h[i] - l[i]; }), AT = emaA(TR, 14);
+    var HE = c.map(function (_, i) { if (i < 150 || R[i] == null) return null; var st = function (p) { var a = -Infinity, z = Infinity; for (var q = i - p + 1; q <= i; q++) { a = Math.max(a, h[q]); z = Math.min(z, l[q]); } return a > z ? (c[i] - z) / (a - z) * 100 : 50; };
+      return 0.6 * (0.4 * st(14) + 0.35 * st(50) + 0.25 * st(150)) + 0.4 * R[i]; });
+    var Z = Array(n).fill(null); for (var i0 = 250; i0 < n; i0 += 10) { var w = HE.slice(Math.max(0, i0 - 400), i0).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; }); if (w.length < 120) continue;
+      var q = function (p) { var k = (w.length - 1) * p / 100, f = Math.floor(k); return w[f] + (w[Math.min(w.length - 1, f + 1)] - w[f]) * (k - f); }; for (var j = i0; j < Math.min(n, i0 + 10); j++) Z[j] = [q(10), q(90)]; }
+    var VS = c.map(function (_, i) { if (i < 20) return null; var s = 0; for (var q2 = i - 20; q2 < i; q2++) s += v[q2]; return s / 20; });
+    var G = { fHeat: { L: [], S: [] }, fMom: { L: [], S: [] }, fTrend: { L: [], S: [] }, fVol: { L: [], S: [] } };
+    var sig = function (g, d, i) { G[g][d].push(i); };
+    var up = function (a, i, x) { return a[i] != null && a[i - 1] != null && a[i - 1] < x && a[i] >= x; }, dn = function (a, i, x) { return a[i] != null && a[i - 1] != null && a[i - 1] > x && a[i] <= x; };
+    for (var i = 1; i < n; i++) {
+      if (Z[i] && up(HE, i, Z[i][0])) sig("fHeat", "L", i); if (Z[i] && dn(HE, i, Z[i][1])) sig("fHeat", "S", i);
+      if (up(R, i, 30)) sig("fMom", "L", i); if (dn(R, i, 70)) sig("fMom", "S", i);
+      if (up(MH, i, 0)) sig("fMom", "L", i); if (dn(MH, i, 0)) sig("fMom", "S", i);
+      if (E20[i] != null && E50[i] != null && E20[i - 1] != null && E50[i - 1] != null) { if (E20[i - 1] <= E50[i - 1] && E20[i] > E50[i]) sig("fTrend", "L", i); if (E20[i - 1] >= E50[i - 1] && E20[i] < E50[i]) sig("fTrend", "S", i); }
+      if (E200[i] != null && E200[i - 1] != null) { if (c[i - 1] <= E200[i - 1] && c[i] > E200[i]) sig("fTrend", "L", i); if (c[i - 1] >= E200[i - 1] && c[i] < E200[i]) sig("fTrend", "S", i); }
+      if (VS[i] && v[i] > 2.5 * VS[i]) sig("fVol", c[i] > o[i] ? "L" : "S", i);
+    }
+    // trades: entry at the next open, stop 2 ATR, target 4 ATR, at most 48 candles, 0.1% fee each side; one at a time
+    var split = Math.floor(n * 0.7), out = {};
+    Object.keys(G).forEach(function (g) {
+      out[g] = {};
+      ["L", "S"].forEach(function (dd) {
+        var d = dd === "L" ? 1 : -1, list = G[g][dd].sort(function (a, b) { return a - b; }), busyTo = -1, T = [];
+        list.forEach(function (s) {
+          var i = s + 1; if (i >= n || i <= busyTo || !AT[s]) return;
+          var e = o[i], a = AT[s], sl = e - d * 2 * a, tp = e + d * 4 * a, x = null, end = Math.min(n - 1, i + 48), k;
+          for (k = i; k <= end; k++) { if (d > 0 ? l[k] <= sl : h[k] >= sl) { x = sl; break; } if (d > 0 ? h[k] >= tp : l[k] <= tp) { x = tp; break; } }
+          if (x == null) { k = end; x = c[end]; }
+          busyTo = k; if (s >= split) T.push(d * (x / e - 1) - 0.002);
+        });
+        var w2 = T.filter(function (r) { return r > 0; }), sw = w2.reduce(function (a, r) { return a + r; }, 0), sl2 = T.filter(function (r) { return r <= 0; }).reduce(function (a, r) { return a + r; }, 0);
+        out[g][dd] = { n: T.length, wr: T.length ? w2.length / T.length * 100 : null, pf: sl2 < 0 ? sw / -sl2 : sw > 0 ? 99 : null };
+      });
+    });
+    var grp = {}; Object.keys(out).forEach(function (g) { grp[g] = {}; ["L", "S"].forEach(function (d) { var s = out[g][d], q0 = !s || s.n < 5 || s.pf == null ? 0 : Math.max(-1, Math.min(1, (Math.min(3, s.pf) - 1) / 0.8)) * s.n / (s.n + 15); grp[g][d] = Math.max(0.4, Math.min(1.6, 1 + 0.6 * q0)); }); });
+    grp.fEw = { L: 1, S: 1 };
+    return { at: Date.now(), grp: grp, sig: out, bars: n, src: "auto" };
+  }
+  var calQ2 = [], calBusy2 = false;
+  function calEnsure2(ex, mkt, base, tf, quote) {
+    var c = calGet2(ex, mkt, base, tf); if (c && Date.now() - c.at < CAL_TTL2) return;
+    var key = calKey2(ex, mkt, base, tf); if (calQ2.some(function (x) { return x.key === key; }) || calQ2.length > 150) return;
+    calQ2.push({ key: key, ex: ex, mkt: mkt, base: String(base).toUpperCase(), tf: tf, sym: String(base).toUpperCase() + (quote || "USDT") }); calRun2();
+  }
+  async function calRun2() {
+    if (calBusy2) return; calBusy2 = true;
+    try {
+      while (calQ2.length) {
+        var job = calQ2.shift(), c0 = calGet2(job.ex, job.mkt, job.base, job.tf); if (c0 && Date.now() - c0.at < CAL_TTL2) continue;
+        try { var K = await calKlines(job.ex, job.mkt, job.sym, job.tf), r = calCompute(K); if (r) { calPut2(job.ex, job.mkt, job.base, job.tf, r); try { dispatchEvent(new CustomEvent("ch-cal", { detail: job })); } catch (e) {} } } catch (e) {}
+        await new Promise(function (res) { setTimeout(res, 2500); });
+      }
+    } finally { calBusy2 = false; }
+  }
+  function calMul2(c, group, v) { if (!c || !c.grp || !c.grp[group]) return 1; return c.grp[group][v >= 0 ? "L" : "S"] || 1; }
+
   // ---------- hover hints for every tool ----------
   // Sources, first found wins: an entry of assets/tips.js matching the element (or one of its parents), its title,
   // the aria-label of an icon-only control, the full text of a cut-off label. Mouse hover and keyboard focus only;
@@ -973,6 +1061,6 @@
     theme: function (fallback) { return saved() || fallback || null; },
     url: url, links: links, linksInto: linksInto, param: param,
     mark: mark, frame: frame, shot: shot, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
-    favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
+    calib: { get: calGet2, put: calPut2, ensure: calEnsure2, mul: calMul2, key: calKey2, compute: calCompute, pending: function () { return calQ2.length + (calBusy2 ? 1 : 0); } }, favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
   };
 })();

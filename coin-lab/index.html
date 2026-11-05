@@ -262,6 +262,7 @@ scan: [
   ["#exSeg [data-ex]", "Біржа, монети якої сканувати: Binance або Bybit", "Биржа, монеты которой сканировать: Binance или Bybit", "Exchange whose coins to scan: Binance or Bybit"],
   ["#tfSeg [data-tf]", "Таймфрейм свічок для сигналів; тренд береться зі старшого таймфрейму", "Таймфрейм свечей для сигналов; тренд берётся со старшего таймфрейма", "Candle timeframe of the signals; the trend comes from the higher timeframe"],
   ["#topN", "Скільки найбільших монет Binance за обсягом сканувати (обрані додаються завжди)", "Сколько крупнейших монет Binance по объёму сканировать (избранные добавляются всегда)", "How many of the largest Binance coins to scan (favorites are always added)"],
+  ["#calC", "Сигнал, що на історії цієї монети не працював, не голосує (закреслений), а той, що працював добре, має більшу силу (✓)", "Сигнал, который на истории этой монеты не работал, не голосует (зачёркнут), а тот, что работал хорошо, имеет большую силу (✓)", "A signal that failed on this coin's history does not vote (struck through), one that worked well counts stronger (✓)"],
   ["#adz", "Зони перепроданості й перекупленості для кожної монети з її історії замість однакових 25/75 і 30/70 для всіх", "Зоны перепроданности и перекупленности для каждой монеты из её истории вместо одинаковых 25/75 и 30/70 для всех", "Oversold and overbought zones per coin from its history instead of the same 25/75 and 30/70 for all"],
   ["#minM", "Скільки з 8 сигналів мають дивитися в один бік, щоб монета потрапила в список", "Сколько из 8 сигналов должны смотреть в одну сторону, чтобы монета попала в список", "How many of the 8 signals must point the same way for a coin to be listed"],
   ["#sideSeg [data-s]", "Показати монети лише з цим напрямком збігу", "Показать монеты только с этим направлением совпадения", "Show only coins whose signals agree in this direction"],
@@ -437,6 +438,13 @@ lab: [
   [".tab[data-t=lq]", "Ліквідації, фандинг, відкритий інтерес", "Ликвидации, фандинг, открытый интерес", "Liquidations, funding, open interest"],
   [".tab[data-t=bt]", "Як сигнали спрацювали б на історії", "Как сигналы сработали бы на истории", "How the signals would have done on history"],
   ["#deepTab", "Повний розбір монети на 5 таймфреймах: тренд, імпульс, зони Heat монети, хвилі, режим ринку, рівні, деривативи, стакан, кореляція, новини, статистика, сценарії й план угоди", "Полный разбор монеты на 5 таймфреймах: тренд, импульс, зоны Heat монеты, волны, режим рынка, уровни, деривативы, стакан, корреляция, новости, статистика, сценарии и план сделки", "A full review of the coin on 5 timeframes: trend, momentum, the coin's Heat zones, waves, regime, levels, derivatives, book, correlation, news, statistics, scenarios and a trade plan"],
+  [".calnote", "Тест індикаторів сам проганяється на історії монети (не частіше ніж раз на 3 дні), і вага кожного чинника змінюється за тим, як він працював саме на цій монеті", "Тест индикаторов сам прогоняется на истории монеты (не чаще раза в 3 дня), и вес каждого фактора меняется по тому, как он работал именно на этой монете", "The indicator test runs by itself on the coin's history (at most every 3 days), and each factor's weight changes by how it worked on this very coin"],
+  ["#itTab", "Перевірка 16 індикаторів на історії цієї монети: вінрейт, profit factor і середня угода, окремо на навчальній і перевірочній частині", "Проверка 16 индикаторов на истории этой монеты: винрейт, profit factor и средняя сделка, отдельно на обучающей и проверочной части", "Tests 16 indicators on this coin's history: win rate, profit factor and average trade, separately on the training and the check part"],
+  ["#itGo", "Завантажити історію й прогнати всі індикатори з вибраними стопом, ціллю й комісією", "Загрузить историю и прогнать все индикаторы с выбранными стопом, целью и комиссией", "Load the history and run every indicator with the chosen stop, target and fee"],
+  ["#itBars", "Більше свічок — більше угод і надійніший висновок, але довше тест", "Больше свечей — больше сделок и надёжнее вывод, но дольше тест", "More candles mean more trades and a sounder verdict, but a longer test"],
+  ["#itTrend", "Брати лонги лише вище EMA200, шорти — лише нижче", "Брать лонги только выше EMA200, шорты — только ниже", "Take longs only above EMA200, shorts only below"],
+  [".it-row", "Натисніть, щоб побачити криву результату й останні угоди цього сигналу", "Нажмите, чтобы увидеть кривую результата и последние сделки этого сигнала", "Tap to see the result curve and latest trades of this signal"],
+  [".it-v", "Висновок за перевірочною частиною (останні 30% історії): «працює» — від 8 угод, PF від 1,2 і середня угода в плюсі", "Вывод по проверочной части (последние 30% истории): «работает» — от 8 сделок, PF от 1,2 и средняя сделка в плюсе", "Verdict on the check part (last 30% of history): works means 8+ trades, PF 1.2+ and a positive average trade"],
   ["#deepGo", "Зібрати свіжі дані на всіх таймфреймах і перерахувати звіт", "Собрать свежие данные на всех таймфреймах и пересчитать отчёт", "Gather fresh data on every timeframe and rebuild the report"],
   ["#deepCap, #deepRisk", "Розмір рахунку й ризик на угоду: з них рахується розмір позиції до стопу", "Размер счёта и риск на сделку: из них считается размер позиции до стопа", "Account size and risk per trade: the position size to the stop comes from them"],
   ["#deepCopy", "Скопіювати короткий текст звіту для поста", "Скопировать короткий текст отчёта для поста", "Copy a short text of the report for a post"],
@@ -471,6 +479,9 @@ elliott: [
   ["[data-g=sens][data-v='2']", "Бачити дрібні хвилі: більше деталей, більше шуму", "Видеть мелкие волны: больше деталей, больше шума", "See small waves: more detail, more noise"],
   ["[data-g=sens][data-v='3']", "Звичайна чутливість до хвиль", "Обычная чувствительность к волнам", "Normal wave sensitivity"],
   ["[data-g=sens][data-v='4.5']", "Лише великі хвилі: менше шуму", "Только крупные волны: меньше шума", "Only large waves: less noise"],
+  ["[data-g=learn][data-v=on]", "Розмітка й прогноз вчаться на історії кожної монети: сама підбирається чутливість, ціль стає зоною за її власними співвідношеннями хвиль, а впевненість — реальною ймовірністю", "Разметка и прогноз учатся на истории каждой монеты: сама подбирается чувствительность, цель становится зоной по её собственным соотношениям волн, а уверенность — реальной вероятностью", "The count and forecast learn from each coin's history: the sensitivity is chosen by itself, the target becomes a zone from the coin's own wave ratios, and confidence becomes a real probability"],
+  ["[data-g=learn][data-v=off]", "Однакова чутливість і цілі за підручником для всіх монет", "Одинаковая чувствительность и цели по учебнику для всех монет", "The same sensitivity and textbook targets for every coin"],
+  ["#ewlSt", "Скільки монет уже навчено на їхній історії; решта навчається у фоні", "Сколько монет уже обучено на их истории; остальные обучаются в фоне", "How many coins have learned from their history; the rest learn in the background"],
   ["[data-g=sort][data-v=best]", "Спершу монети з найсильнішими сигналами", "Сначала монеты с сильнейшими сигналами", "Strongest signals first"],
   ["[data-g=sort][data-v=fc]", "Спершу монети з найбільшим прогнозом росту", "Сначала монеты с наибольшим прогнозом роста", "Largest forecast rise first"],
   ["[data-g=sort][data-v=rev]", "Спершу монети з найбільшою ймовірністю розвороту", "Сначала монеты с наибольшей вероятностью разворота", "Highest reversal probability first"],
@@ -610,6 +621,8 @@ bot: [
   ["[data-dir=short]", "Бот відкриває лише шорти", "Бот открывает только шорты", "The bot opens shorts only"],
   ["[data-stop=on]", "Стоп-лосс на відстані 2×ATR: позиція закривається з обмеженою втратою, а після руху на 1,5 ATR у плюс стоп переноситься в беззбиток", "Стоп-лосс на расстоянии 2×ATR: позиция закрывается с ограниченной потерей, а после движения на 1,5 ATR в плюс стоп переносится в безубыток", "Stop-loss 2×ATR away: the position closes with a limited loss, and after a 1.5 ATR gain the stop moves to breakeven"],
   ["[data-stop=off]", "Без стоп-лоссу: позиції закриваються лише за ціллю, розворотом індикаторів, простоєм або ліквідацією. Втрата не обмежена", "Без стоп-лосса: позиции закрываются только по цели, развороту индикаторов, простою или ликвидации. Потеря не ограничена", "No stop-loss: positions close only at the target, on an indicator flip, idling or liquidation. The loss is not capped"],
+  ["[data-cal=on]", "Для кожної монети родини індикаторів (Heat, тренд, імпульс, обсяг, хвилі) перевіряються на її історії, і ті, що працювали краще, важать в оцінці більше", "Для каждой монеты семейства индикаторов (Heat, тренд, импульс, объём, волны) проверяются на её истории, и те, что работали лучше, весят в оценке больше", "For every coin the indicator families (Heat, trend, momentum, volume, waves) are checked on its history, and those that worked better weigh more in the score"],
+  ["[data-cal=off]", "Усі чинники з однаковою вагою для всіх монет", "Все факторы с одинаковым весом для всех монет", "Every factor with the same weight for every coin"],
   ["[data-news=on]", "Бот не купує монету з важливою негативною новиною за 12 год, закриває лонг, якщо така новина вийшла після входу, і посилює шорт, лише коли ціна вже падає", "Бот не покупает монету с важной негативной новостью за 12 ч, закрывает лонг, если такая новость вышла после входа, и усиливает шорт, только когда цена уже падает", "The bot does not buy a coin with important negative news in 12 h, closes a long if such news comes after entry, and strengthens a short only if the price is already falling"],
   ["[data-news=off]", "Бот не зважає на новини", "Бот не учитывает новости", "The bot ignores news"],
   ["[data-mode=std]", "Стандартний відбір: вхід від оцінки 45, сильний сигнал ±70 можна брати й проти тренду", "Стандартный отбор: вход от оценки 45, сильный сигнал ±70 можно брать и против тренда", "Standard selection: entry from a score of 45, a strong ±70 signal may go against the trend"],
@@ -628,7 +641,7 @@ bot: [
 };
 
 </script>
-<script id="ch-js" data-tool="lab" data-ver="1.13" data-root="../">
+<script id="ch-js" data-tool="lab" data-ver="1.17" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -637,7 +650,7 @@ bot: [
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.13";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.17";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -1496,6 +1509,94 @@ bot: [
   addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".ch-inst"); if (!b || !installEv) return; e.preventDefault(); installEv.prompt(); installEv.userChoice.finally(function () { installEv = null; b.hidden = true; }); });
   if ("serviceWorker" in navigator && location.protocol === "https:") { addEventListener("load", function () { navigator.serviceWorker.register(ROOT + "sw.js", { scope: ROOT }).catch(function () {}); }); }
 
+  // ---------- per-coin calibration, shared by the Paper Bot and the Confluence Scanner ----------
+  // For a coin and timeframe the main indicator families are replayed on 1000 candles of its history with the same
+  // exits as the Coin Lab indicator test (stop 2 ATR, target 4 ATR, 48 candles, 0.1% fee). Only the last 30% of history
+  // (the check part) decides: a family that worked there gets more weight on this coin (up to ×1.6), one that failed
+  // less (down to ×0.4), separately for rising and falling signals, and less change when there were few trades.
+  // A calibration made by Coin Lab's full 16-indicator test (with Elliott waves) is preferred when it exists.
+  // Results live in localStorage (ch.cal) for 3 days; coins are calibrated one by one in the background.
+  var CAL_KEY2 = "ch.cal", CAL_TTL2 = 3 * 864e5;
+  function calAll2() { var a = jget(CAL_KEY2, {}); return a && typeof a === "object" ? a : {}; }
+  function calKey2(ex, mkt, base, tf) { return [normEx(ex), /^fut/.test(String(mkt)) ? "fut" : "spot", String(base).toUpperCase(), tf].join("|"); }
+  function calGet2(ex, mkt, base, tf) { var c = calAll2()[calKey2(ex, mkt, base, tf)]; return c && Date.now() - c.at < 3 * CAL_TTL2 ? c : null; }
+  function calPut2(ex, mkt, base, tf, c) { var a = calAll2(); a[calKey2(ex, mkt, base, tf)] = c; Object.keys(a).sort(function (x, y) { return a[y].at - a[x].at; }).slice(300).forEach(function (k) { delete a[k]; }); jset(CAL_KEY2, a); }
+  var BYIV2 = { "5m": "5", "15m": "15", "1h": "60", "4h": "240", "1d": "D", "1w": "W" };
+  async function calKlines(ex, mkt, sym, tf) {
+    var fut = /^fut/.test(String(mkt));
+    if (normEx(ex) === "bybit") { var r = await getJ("https://api.bybit.com/v5/market/kline?category=" + (fut ? "linear" : "spot") + "&symbol=" + sym + "&interval=" + BYIV2[tf] + "&limit=1000");
+      return ((r.result && r.result.list) || []).map(function (k) { return [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]; }).reverse(); }
+    var d = await getJ(fut ? "https://fapi.binance.com/fapi/v1/klines?symbol=" + sym + "&interval=" + tf + "&limit=1000" : "https://api.binance.com/api/v3/klines?symbol=" + sym + "&interval=" + tf + "&limit=1000");
+    return d.map(function (k) { return [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]; });
+  }
+  function rsiArr(c, n) {
+    var o = Array(c.length).fill(null); if (c.length <= n) return o; var g = 0, l = 0, i;
+    for (i = 1; i <= n; i++) { var d = c[i] - c[i - 1]; if (d > 0) g += d; else l -= d; } g /= n; l /= n; o[n] = l === 0 ? 100 : 100 - 100 / (1 + g / l);
+    for (i = n + 1; i < c.length; i++) { var e = c[i] - c[i - 1]; g = (g * (n - 1) + Math.max(e, 0)) / n; l = (l * (n - 1) + Math.max(-e, 0)) / n; o[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l); }
+    return o;
+  }
+  function emaA(a, n) { var o = Array(a.length).fill(null), k = 2 / (n + 1), e = null; for (var i = 0; i < a.length; i++) { e = e == null ? a[i] : a[i] * k + e * (1 - k); if (i >= n - 1) o[i] = e; } return o; }
+  function calCompute(K) {
+    var n = K.length, o = K.map(function (k) { return k[1]; }), h = K.map(function (k) { return k[2]; }), l = K.map(function (k) { return k[3]; }), c = K.map(function (k) { return k[4]; }), v = K.map(function (k) { return k[5]; });
+    if (n < 400) return null;
+    var R = rsiArr(c, 14), E20 = emaA(c, 20), E50 = emaA(c, 50), E200 = emaA(c, 200), E12 = emaA(c, 12), E26 = emaA(c, 26);
+    var M = c.map(function (_, i) { return E12[i] != null && E26[i] != null ? E12[i] - E26[i] : null; }), MS = emaA(M.map(function (x) { return x == null ? 0 : x; }), 9), MH = M.map(function (x, i) { return x == null ? null : x - MS[i]; });
+    var TR = c.map(function (_, i) { return i ? Math.max(h[i] - l[i], Math.abs(h[i] - c[i - 1]), Math.abs(l[i] - c[i - 1])) : h[i] - l[i]; }), AT = emaA(TR, 14);
+    var HE = c.map(function (_, i) { if (i < 150 || R[i] == null) return null; var st = function (p) { var a = -Infinity, z = Infinity; for (var q = i - p + 1; q <= i; q++) { a = Math.max(a, h[q]); z = Math.min(z, l[q]); } return a > z ? (c[i] - z) / (a - z) * 100 : 50; };
+      return 0.6 * (0.4 * st(14) + 0.35 * st(50) + 0.25 * st(150)) + 0.4 * R[i]; });
+    var Z = Array(n).fill(null); for (var i0 = 250; i0 < n; i0 += 10) { var w = HE.slice(Math.max(0, i0 - 400), i0).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; }); if (w.length < 120) continue;
+      var q = function (p) { var k = (w.length - 1) * p / 100, f = Math.floor(k); return w[f] + (w[Math.min(w.length - 1, f + 1)] - w[f]) * (k - f); }; for (var j = i0; j < Math.min(n, i0 + 10); j++) Z[j] = [q(10), q(90)]; }
+    var VS = c.map(function (_, i) { if (i < 20) return null; var s = 0; for (var q2 = i - 20; q2 < i; q2++) s += v[q2]; return s / 20; });
+    var G = { fHeat: { L: [], S: [] }, fMom: { L: [], S: [] }, fTrend: { L: [], S: [] }, fVol: { L: [], S: [] } };
+    var sig = function (g, d, i) { G[g][d].push(i); };
+    var up = function (a, i, x) { return a[i] != null && a[i - 1] != null && a[i - 1] < x && a[i] >= x; }, dn = function (a, i, x) { return a[i] != null && a[i - 1] != null && a[i - 1] > x && a[i] <= x; };
+    for (var i = 1; i < n; i++) {
+      if (Z[i] && up(HE, i, Z[i][0])) sig("fHeat", "L", i); if (Z[i] && dn(HE, i, Z[i][1])) sig("fHeat", "S", i);
+      if (up(R, i, 30)) sig("fMom", "L", i); if (dn(R, i, 70)) sig("fMom", "S", i);
+      if (up(MH, i, 0)) sig("fMom", "L", i); if (dn(MH, i, 0)) sig("fMom", "S", i);
+      if (E20[i] != null && E50[i] != null && E20[i - 1] != null && E50[i - 1] != null) { if (E20[i - 1] <= E50[i - 1] && E20[i] > E50[i]) sig("fTrend", "L", i); if (E20[i - 1] >= E50[i - 1] && E20[i] < E50[i]) sig("fTrend", "S", i); }
+      if (E200[i] != null && E200[i - 1] != null) { if (c[i - 1] <= E200[i - 1] && c[i] > E200[i]) sig("fTrend", "L", i); if (c[i - 1] >= E200[i - 1] && c[i] < E200[i]) sig("fTrend", "S", i); }
+      if (VS[i] && v[i] > 2.5 * VS[i]) sig("fVol", c[i] > o[i] ? "L" : "S", i);
+    }
+    // trades: entry at the next open, stop 2 ATR, target 4 ATR, at most 48 candles, 0.1% fee each side; one at a time
+    var split = Math.floor(n * 0.7), out = {};
+    Object.keys(G).forEach(function (g) {
+      out[g] = {};
+      ["L", "S"].forEach(function (dd) {
+        var d = dd === "L" ? 1 : -1, list = G[g][dd].sort(function (a, b) { return a - b; }), busyTo = -1, T = [];
+        list.forEach(function (s) {
+          var i = s + 1; if (i >= n || i <= busyTo || !AT[s]) return;
+          var e = o[i], a = AT[s], sl = e - d * 2 * a, tp = e + d * 4 * a, x = null, end = Math.min(n - 1, i + 48), k;
+          for (k = i; k <= end; k++) { if (d > 0 ? l[k] <= sl : h[k] >= sl) { x = sl; break; } if (d > 0 ? h[k] >= tp : l[k] <= tp) { x = tp; break; } }
+          if (x == null) { k = end; x = c[end]; }
+          busyTo = k; if (s >= split) T.push(d * (x / e - 1) - 0.002);
+        });
+        var w2 = T.filter(function (r) { return r > 0; }), sw = w2.reduce(function (a, r) { return a + r; }, 0), sl2 = T.filter(function (r) { return r <= 0; }).reduce(function (a, r) { return a + r; }, 0);
+        out[g][dd] = { n: T.length, wr: T.length ? w2.length / T.length * 100 : null, pf: sl2 < 0 ? sw / -sl2 : sw > 0 ? 99 : null };
+      });
+    });
+    var grp = {}; Object.keys(out).forEach(function (g) { grp[g] = {}; ["L", "S"].forEach(function (d) { var s = out[g][d], q0 = !s || s.n < 5 || s.pf == null ? 0 : Math.max(-1, Math.min(1, (Math.min(3, s.pf) - 1) / 0.8)) * s.n / (s.n + 15); grp[g][d] = Math.max(0.4, Math.min(1.6, 1 + 0.6 * q0)); }); });
+    grp.fEw = { L: 1, S: 1 };
+    return { at: Date.now(), grp: grp, sig: out, bars: n, src: "auto" };
+  }
+  var calQ2 = [], calBusy2 = false;
+  function calEnsure2(ex, mkt, base, tf, quote) {
+    var c = calGet2(ex, mkt, base, tf); if (c && Date.now() - c.at < CAL_TTL2) return;
+    var key = calKey2(ex, mkt, base, tf); if (calQ2.some(function (x) { return x.key === key; }) || calQ2.length > 150) return;
+    calQ2.push({ key: key, ex: ex, mkt: mkt, base: String(base).toUpperCase(), tf: tf, sym: String(base).toUpperCase() + (quote || "USDT") }); calRun2();
+  }
+  async function calRun2() {
+    if (calBusy2) return; calBusy2 = true;
+    try {
+      while (calQ2.length) {
+        var job = calQ2.shift(), c0 = calGet2(job.ex, job.mkt, job.base, job.tf); if (c0 && Date.now() - c0.at < CAL_TTL2) continue;
+        try { var K = await calKlines(job.ex, job.mkt, job.sym, job.tf), r = calCompute(K); if (r) { calPut2(job.ex, job.mkt, job.base, job.tf, r); try { dispatchEvent(new CustomEvent("ch-cal", { detail: job })); } catch (e) {} } } catch (e) {}
+        await new Promise(function (res) { setTimeout(res, 2500); });
+      }
+    } finally { calBusy2 = false; }
+  }
+  function calMul2(c, group, v) { if (!c || !c.grp || !c.grp[group]) return 1; return c.grp[group][v >= 0 ? "L" : "S"] || 1; }
+
   // ---------- hover hints for every tool ----------
   // Sources, first found wins: an entry of assets/tips.js matching the element (or one of its parents), its title,
   // the aria-label of an icon-only control, the full text of a cut-off label. Mouse hover and keyboard focus only;
@@ -1604,7 +1705,7 @@ bot: [
     theme: function (fallback) { return saved() || fallback || null; },
     url: url, links: links, linksInto: linksInto, param: param,
     mark: mark, frame: frame, shot: shot, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
-    favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
+    calib: { get: calGet2, put: calPut2, ensure: calEnsure2, mul: calMul2, key: calKey2, compute: calCompute, pending: function () { return calQ2.length + (calBusy2 ? 1 : 0); } }, favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
   };
 })();
 
@@ -1821,6 +1922,32 @@ body.ch-skin .dp-size label{display:flex;flex-direction:column;gap:4px;font-size
 body.ch-skin .dp-size input{width:110px}
 body.ch-skin .dp-acts{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 8px}
 
+body.ch-skin #p-itest .card{margin-bottom:12px}
+body.ch-skin .it-ctl{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;margin-top:10px}
+body.ch-skin .it-ctl label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ch-t2)}
+body.ch-skin .it-ctl input[type=number]{width:86px}
+body.ch-skin .it-chk{flex-direction:row!important;align-items:center;gap:6px!important;font-size:13px!important;color:var(--ch-tx)!important;min-height:34px}
+body.ch-skin .it-chk input{accent-color:var(--ch-ac);width:16px;height:16px;margin:0}
+body.ch-skin .it-prog{height:5px;border-radius:3px;background:var(--ch-bd);overflow:hidden;margin:12px 0 4px}
+body.ch-skin .it-prog i{display:block;height:100%;background:var(--ch-ac)}
+body.ch-skin .it-best{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+body.ch-skin .it-best span{border-radius:8px;padding:3px 9px;font-size:13px;background:var(--ch-s1)}
+body.ch-skin .it-t{width:100%;border-collapse:collapse;font-size:13px}
+body.ch-skin .it-t th{text-align:left;color:var(--ch-t3);font-weight:400;padding:5px 8px;border-bottom:0.5px solid var(--ch-bd);vertical-align:bottom}
+body.ch-skin .it-t td{padding:6px 8px;border-bottom:0.5px solid var(--ch-bd);white-space:nowrap}
+body.ch-skin .it-row{cursor:pointer}
+body.ch-skin .it-row:hover,body.ch-skin .it-row.on{background:var(--ch-s1)}
+body.ch-skin .it-row:focus-visible{outline:2px solid var(--ch-acd);outline-offset:-2px}
+body.ch-skin .it-base td{color:var(--ch-t2);font-style:italic}
+body.ch-skin .it-v{border-radius:6px;padding:1px 7px;font-size:12px}
+body.ch-skin .v-good{background:var(--ch-okb);color:var(--ch-okt)}
+body.ch-skin .v-ok{background:var(--ch-acb);color:var(--ch-act)}
+body.ch-skin .v-bad{background:var(--ch-erb);color:var(--ch-ert)}
+body.ch-skin .v-few{border:0.5px solid var(--ch-bd2);color:var(--ch-t3)}
+body.ch-skin .it-det{margin-top:12px;border-top:0.5px solid var(--ch-bd);padding-top:10px}
+body.ch-skin .it-help li{margin:4px 0;color:var(--ch-t2);font-size:13px}
+body.ch-skin .it-help summary{cursor:pointer;font-weight:500}
+body.ch-skin .calm{font-style:normal;font-size:11px;margin-left:6px;padding:0 5px;border-radius:6px;background:var(--ch-s1)}body.ch-skin .calnote a{color:var(--ch-act)}
 html:root:root{--bg:var(--ch-bg);--panel:var(--ch-bg);--panel2:var(--ch-s1);--line:var(--ch-bd);--text:var(--ch-tx);--mute:var(--ch-t2);
   --up:var(--ch-up);--down:var(--ch-dn);--accent:var(--ch-ac);--accent-ink:#fff;--blue:var(--ch-ac);--violet:#8b6fe0;--ch-w:1320px}
 body.ch-skin .top{background:var(--ch-bg);backdrop-filter:none;border-bottom-width:0.5px}
@@ -1924,14 +2051,16 @@ body.ch-skin footer:not(.ch-foot){border-top-width:0.5px}
     <button class="tab" role="tab" data-t="lq" data-i="tLq"></button>
     <button class="tab" role="tab" data-t="bt" data-i="tBt"></button>
     <button class="tab deeptab" role="tab" data-t="deep" id="deepTab"></button>
+    <button class="tab" role="tab" data-t="itest" id="itTab"></button>
     <button class="tab" role="tab" data-t="sh" data-i="tSh"></button>
   </nav>
 
   <section class="pane" id="p-deep"><div id="deepBox"></div></section>
+  <section class="pane" id="p-itest"><div id="itBox"></div></section>
   <section class="pane on" id="p-sum">
     <div class="grid2">
       <div class="card prose" id="narr"></div>
-      <div class="card"><h2><span data-i="factors"></span><button class="ib" data-tip="score" aria-label="?">i</button></h2><div id="factors"></div><p class="note" data-i="factorsNote"></p></div>
+      <div class="card"><h2><span data-i="factors"></span><button class="ib" data-tip="score" aria-label="?">i</button></h2><div id="factors"></div><p class="note calnote" id="calNote"></p><p class="note" data-i="factorsNote"></p></div>
     </div>
     <div class="card" style="margin-top:14px"><h2 data-i="levels"></h2><div class="tbl-wrap" id="levelsTbl"></div></div>
   </section>
@@ -2770,7 +2899,7 @@ function probHistory(K, A){
 
 /* ================= FORECAST ================= */
 function forecast(A){
-  const F=[]; const add=(key,v,w,txt)=>F.push({key,v:clamp(v,-1,1),w,txt});
+  const F=[]; const add=(key,v,w,txt)=>{ const m=calMul(key,v); F.push({key,v:clamp(v,-1,1),w:w*m,w0:w,m,txt}); };
   // heat (contrarian, weighted by horizon)
   const hz=[A.hz.s,A.hz.m,A.hz.l]; const hw=[.25,.35,.4]; let hv=0, hws=0;
   hz.forEach((h,i)=>{ if(h!=null){ hv+=hw[i]*(50-h)/50; hws+=hw[i]; } });
@@ -2850,8 +2979,8 @@ async function run(silent){
     ST.qUsd = USDQ.includes(quoteNow())? 1 : (val(8)?.last||1);
     ST.price = ST.tick?.last || ST.k[ST.k.length-1].c;
     if(symChanged){ ST.sym=sym+S.tf+S.exch+S.market; ST.tape=[]; ST.liqs=[]; ST.liqTot={long:0,short:0}; connectWS(); }
-    compute();
-    renderAll(symChanged);
+    CAL_CUR = calGet(); compute();
+    renderAll(symChanged); setTimeout(() => calEnsure(), 600);
     const miss=[]; if(!ST.book) miss.push(t("depth")); if(!ST.deriv) miss.push(t("tLq"));
     setStatus(t("updated",{time:new Date().toLocaleTimeString()}) + (miss.length? " · "+t("noData")+": "+miss.join(", "):""));
     checkAlerts();
@@ -3756,6 +3885,7 @@ function renderDeep() {
     const ago = new Date(R.at).toLocaleString(S.lang, { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "short" });
     h += `<div class="card dp-sum" id="deepSum"><div class="dp-v"><span class="dp-big ${cls(R.total)}">${R.total > 0 ? "+" : ""}${R.total}</span><div><b>${esc(DT(biasKey(R.total)))}</b><p class="note">${esc(DT("agree", { n: R.agree, k: R.T.length }))} · ${esc(DT("made", { t: ago, ex: EX_NAMES[S.exch], m: DT(fut() ? "fut" : "spot") }))}</p></div></div>
       ${R.why.length ? `<h3>${esc(DT("why"))}</h3><ul class="dp-ul">${R.why.map(w => `<li>${esc(w)}</li>`).join("")}</ul>` : ""}</div>`;
+    if (typeof calDeepHTML === "function") h += calDeepHTML();
     h += `<div class="card"><h3>${esc(DT("tfT"))}</h3><div class="tbl-wrap"><table class="dp-t"><thead><tr><th>${esc(DT("tf"))}</th><th>${esc(DT("trend"))}</th><th>${esc(DT("heat"))}</th><th>${esc(DT("rsi"))}</th><th>${esc(DT("adx"))}</th><th>${esc(DT("macd"))}</th><th>${esc(DT("ew"))}</th><th>${esc(DT("score"))}</th></tr></thead><tbody>
       ${R.T.map(({ s }) => `<tr><td><b>${s.tf}</b></td><td class="${cls(s.tr)}">${esc(DT(s.tr > 0 ? "up" : s.tr < 0 ? "down" : "side"))}</td>
         <td><span class="${s.h != null && s.h <= s.zb ? "up" : s.h != null && s.h >= s.zs ? "down" : ""}">${s.h != null ? Math.round(s.h) : "—"}</span> <small>${s.zb}/${s.zs}</small></td>
@@ -3810,10 +3940,271 @@ function renderDeep() {
   if (window.CH && $("deepSum")) window.CH.cam($("deepBox").querySelector(".dp-head"), $("deepBox"), { opts: () => ({ name: "coin-lab-deep-" + S.base.toLowerCase(), title: "Coin Lab · " + DT("tab") + " · " + pairName() }) });
 }
 
+
+/* ================= INDICATOR TEST =================
+   All signals are computed on the coin's history (one timeframe, up to 3000 candles) and traded one at a time with
+   the same exits: stop and target in ATRs, a time limit, fees. Results are split into a training part (first 70%)
+   and a check part (last 30%), and compared with random entries under the same exits. */
+const IT_L = {"uk": {"tab": "Тест індикаторів", "title": "Тест індикаторів на історії {c}", "sub": "Кожен індикатор цієї монети прогоняється на її власній історії: скільки сигналів дав, скільки дійшло до цілі раніше за стоп, який середній результат. Перші 70% історії — навчальна частина, останні 30% — перевірка на даних, які індикатор «не бачив».", "tf": "Таймфрейм", "bars": "Свічок історії", "dir": "Напрямок", "both": "Лонг і шорт", "long": "Лише лонг", "short": "Лише шорт", "trend": "Лише за трендом (EMA200)", "sl": "Стоп, × ATR", "tp": "Ціль, × ATR", "hold": "Макс. свічок", "fee": "Комісія, %", "go": "Запустити тест", "busy": "Тестую…", "load": "Завантажую історію…", "calc": "Рахую сигнали: {p}%", "need": "Спершу зробіть аналіз монети.", "err": "Не вдалося: {e}", "range": "{n} свічок {tf}, {a} — {b}. Перевірка — з {c}.", "best": "Найкраще для {c} на перевірці", "none": "Жоден індикатор не дав переваги на перевірочній частині: для цієї монети й таймфрейму краще не покладатися на ці сигнали.", "sig": "Сигнал", "n": "Угод", "wr": "Вінрейт", "pf": "PF", "avg": "Сер. угода", "r": "Сер. R", "is": "навч.", "oos": "перев.", "verd": "Висновок", "v_good": "працює", "v_ok": "слабко", "v_bad": "не працює", "v_few": "замало даних", "base": "Випадковий вхід (база)", "hold_": "Купити й тримати: {p}", "baseHint": "Індикатор корисний, лише якщо його вінрейт і середній результат на перевірці кращі за випадковий вхід з тими самими стопом і ціллю.", "s_rsi": "RSI 30/70: вихід із зони", "s_rsiA": "RSI: зони монети", "s_heat": "Heat 25/75: вихід із зони", "s_heatA": "Heat: зони монети", "s_macd0": "MACD: гістограма через 0", "s_macdX": "MACD: перетин нижче/вище 0", "s_ema": "EMA 20/50: перетин", "s_e200": "Ціна через EMA200", "s_bb": "Боллінджер: повернення в смугу", "s_srsi": "Stoch RSI: перетин у крайній зоні", "s_mfi": "MFI 20/80: вихід із зони", "s_dmi": "DMI: перетин +DI/−DI при ADX>20", "s_vol": "Сплеск обсягу ×2,5", "s_div": "Дивергенція RSI", "s_ew": "Хвилі Елліотта: прогноз", "s_conf": "Збіг: Heat монети + MACD + тренд", "det": "Деталі: {s}", "trades": "Останні угоди", "eq": "Крива результату (зліва навчальна частина, справа перевірка)", "why": "Причина виходу", "tpW": "ціль", "slW": "стоп", "tmW": "час", "copy": "Копіювати результати", "copied": "Скопійовано", "howT": "Як читати тест", "how": ["Вхід — на відкритті свічки після сигналу. Вихід — стоп або ціль у розмірах ATR, або закінчення часу. Якщо стоп і ціль в одній свічці, рахується стоп.", "Навчальна частина (перші 70%) показує, як індикатор поводився раніше. Справжня перевірка — останні 30%: якщо там результат зник, індикатор, найпевніше, працював випадково.", "Висновок «працює» ставиться, коли на перевірці щонайменше 8 угод, profit factor від 1,2 і середня угода в плюсі після комісій. «Слабко» — плюс, але менший. Менше 8 угод — «замало даних».", "Порівнюйте з рядком «Випадковий вхід»: при цілі вдвічі більшій за стоп навіть випадкові входи дають близько 33% вінрейту. Цінний той індикатор, що помітно кращий за це.", "Минулий результат не гарантує майбутнього. Тест допомагає відкинути те, що на цій монеті явно не працює, і зосередитися на кількох сильних сигналах."]}, "ru": {"tab": "Тест индикаторов", "title": "Тест индикаторов на истории {c}", "sub": "Каждый индикатор этой монеты прогоняется на её собственной истории: сколько сигналов дал, сколько дошло до цели раньше стопа, какой средний результат. Первые 70% истории — обучающая часть, последние 30% — проверка на данных, которые индикатор «не видел».", "tf": "Таймфрейм", "bars": "Свечей истории", "dir": "Направление", "both": "Лонг и шорт", "long": "Только лонг", "short": "Только шорт", "trend": "Только по тренду (EMA200)", "sl": "Стоп, × ATR", "tp": "Цель, × ATR", "hold": "Макс. свечей", "fee": "Комиссия, %", "go": "Запустить тест", "busy": "Тестирую…", "load": "Загружаю историю…", "calc": "Считаю сигналы: {p}%", "need": "Сначала сделайте анализ монеты.", "err": "Не удалось: {e}", "range": "{n} свечей {tf}, {a} — {b}. Проверка — с {c}.", "best": "Лучшее для {c} на проверке", "none": "Ни один индикатор не дал преимущества на проверочной части: для этой монеты и таймфрейма лучше не полагаться на эти сигналы.", "sig": "Сигнал", "n": "Сделок", "wr": "Винрейт", "pf": "PF", "avg": "Ср. сделка", "r": "Ср. R", "is": "обуч.", "oos": "пров.", "verd": "Вывод", "v_good": "работает", "v_ok": "слабо", "v_bad": "не работает", "v_few": "мало данных", "base": "Случайный вход (база)", "hold_": "Купить и держать: {p}", "baseHint": "Индикатор полезен, только если его винрейт и средний результат на проверке лучше случайного входа с теми же стопом и целью.", "s_rsi": "RSI 30/70: выход из зоны", "s_rsiA": "RSI: зоны монеты", "s_heat": "Heat 25/75: выход из зоны", "s_heatA": "Heat: зоны монеты", "s_macd0": "MACD: гистограмма через 0", "s_macdX": "MACD: пересечение ниже/выше 0", "s_ema": "EMA 20/50: пересечение", "s_e200": "Цена через EMA200", "s_bb": "Боллинджер: возврат в полосу", "s_srsi": "Stoch RSI: пересечение в крайней зоне", "s_mfi": "MFI 20/80: выход из зоны", "s_dmi": "DMI: пересечение +DI/−DI при ADX>20", "s_vol": "Всплеск объёма ×2,5", "s_div": "Дивергенция RSI", "s_ew": "Волны Эллиотта: прогноз", "s_conf": "Совпадение: Heat монеты + MACD + тренд", "det": "Детали: {s}", "trades": "Последние сделки", "eq": "Кривая результата (слева обучающая часть, справа проверка)", "why": "Причина выхода", "tpW": "цель", "slW": "стоп", "tmW": "время", "copy": "Копировать результаты", "copied": "Скопировано", "howT": "Как читать тест", "how": ["Вход — на открытии свечи после сигнала. Выход — стоп или цель в размерах ATR, или окончание времени. Если стоп и цель в одной свече, считается стоп.", "Обучающая часть (первые 70%) показывает, как индикатор вёл себя раньше. Настоящая проверка — последние 30%: если там результат исчез, индикатор, скорее всего, работал случайно.", "Вывод «работает» ставится, когда на проверке минимум 8 сделок, profit factor от 1,2 и средняя сделка в плюсе после комиссий. «Слабо» — плюс, но меньше. Меньше 8 сделок — «мало данных».", "Сравнивайте со строкой «Случайный вход»: при цели вдвое больше стопа даже случайные входы дают около 33% винрейта. Ценен тот индикатор, что заметно лучше этого.", "Прошлый результат не гарантирует будущего. Тест помогает отбросить то, что на этой монете явно не работает, и сосредоточиться на нескольких сильных сигналах."]}, "en": {"tab": "Indicator test", "title": "Indicator test on {c} history", "sub": "Every indicator of this coin is replayed on its own history: how many signals it gave, how many reached the target before the stop, the average result. The first 70% of history is the training part, the last 30% a check on data the indicator never saw.", "tf": "Timeframe", "bars": "History candles", "dir": "Direction", "both": "Long and short", "long": "Long only", "short": "Short only", "trend": "With the trend only (EMA200)", "sl": "Stop, × ATR", "tp": "Target, × ATR", "hold": "Max candles", "fee": "Fee, %", "go": "Run the test", "busy": "Testing…", "load": "Loading history…", "calc": "Computing signals: {p}%", "need": "Analyse a coin first.", "err": "Failed: {e}", "range": "{n} {tf} candles, {a} to {b}. The check starts {c}.", "best": "Best for {c} on the check", "none": "No indicator showed an edge on the check part: for this coin and timeframe better not to rely on these signals.", "sig": "Signal", "n": "Trades", "wr": "Win rate", "pf": "PF", "avg": "Avg trade", "r": "Avg R", "is": "train", "oos": "check", "verd": "Verdict", "v_good": "works", "v_ok": "weak", "v_bad": "does not work", "v_few": "too few", "base": "Random entry (baseline)", "hold_": "Buy and hold: {p}", "baseHint": "An indicator is useful only if its win rate and average result on the check beat a random entry with the same stop and target.", "s_rsi": "RSI 30/70: leaving the zone", "s_rsiA": "RSI: the coin's zones", "s_heat": "Heat 25/75: leaving the zone", "s_heatA": "Heat: the coin's zones", "s_macd0": "MACD: histogram through 0", "s_macdX": "MACD: cross below/above 0", "s_ema": "EMA 20/50 cross", "s_e200": "Price through EMA200", "s_bb": "Bollinger: back inside the band", "s_srsi": "Stoch RSI: cross in an extreme zone", "s_mfi": "MFI 20/80: leaving the zone", "s_dmi": "DMI: +DI/−DI cross with ADX>20", "s_vol": "Volume spike ×2.5", "s_div": "RSI divergence", "s_ew": "Elliott waves: forecast", "s_conf": "Confluence: coin Heat + MACD + trend", "det": "Details: {s}", "trades": "Latest trades", "eq": "Result curve (training part on the left, check on the right)", "why": "Exit", "tpW": "target", "slW": "stop", "tmW": "time", "copy": "Copy results", "copied": "Copied", "howT": "How to read the test", "how": ["Entry at the open of the candle after the signal. Exit at the stop or target in ATRs, or when time runs out. If the stop and target are inside one candle, the stop counts.", "The training part (first 70%) shows how the indicator behaved before. The real check is the last 30%: if the result is gone there, the indicator most likely worked by chance.", "Works means at least 8 trades on the check, profit factor 1.2 or more and a positive average trade after fees. Weak is positive but less. Under 8 trades is too few.", "Compare with the Random entry row: with a target twice the stop even random entries win about 33% of the time. An indicator is worth something only if it is clearly better.", "Past results do not promise the future. The test helps drop what clearly fails on this coin and focus on a few strong signals."]}};
+const IT_SIG = ["rsi", "rsiA", "heat", "heatA", "macd0", "macdX", "ema", "e200", "bb", "srsi", "mfi", "dmi", "vol", "div", "ew", "conf"];
+const IT = (k, v) => { let s = (IT_L[S.lang] || IT_L.en)[k] ?? IT_L.en[k] ?? k; if (v && typeof s === "string") s = s.replace(/\{(\w+)\}/g, (_, x) => v[x] != null ? v[x] : ""); return s; };
+const ITS = { busy: false, prog: 0, stage: "", R: null, err: null, open: null,
+  cfg: Object.assign({ tf: null, bars: 1500, dir: "both", trend: false, sl: 2, tp: 4, hold: 48, fee: 0.1 }, JSON.parse(localStorage.getItem("cl_itCfg") || "{}")) };
+async function itKlines(tf, need) {
+  const f = fut(), sym = symNow(), out = [];
+  if (S.exch === "binance") {
+    let end = Date.now();
+    while (out.length < need) {
+      const n = Math.min(f ? 1500 : 1000, need - out.length);
+      const d = await j(f ? `${BN_F}/fapi/v1/klines?symbol=${sym}&interval=${tf}&limit=${n}&endTime=${end}` : `${BN_S}/klines?symbol=${sym}&interval=${tf}&limit=${n}&endTime=${end}`);
+      const rows = d.map(k => ({ t: k[0] / 1000, o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5], qv: +k[7], tb: +k[9] })); if (!rows.length) break;
+      out.unshift(...rows); end = d[0][0] - 1; if (rows.length < n) break;
+    }
+    return out;
+  }
+  if (S.exch === "bybit") {
+    const iv = EX.bybit.iv[tf]; let end = Date.now();
+    while (out.length < need) {
+      const n = Math.min(1000, need - out.length), d = await j(`${BY}/market/kline?category=${f ? "linear" : "spot"}&symbol=${sym}&interval=${iv}&limit=${n}&end=${end}`);
+      const L = (d.result && d.result.list) || []; if (!L.length) break;
+      const rows = L.map(k => ({ t: +k[0] / 1000, o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[5] })).reverse(); out.unshift(...rows); end = +L[L.length - 1][0] - 1; if (L.length < n) break;
+    }
+    return out;
+  }
+  return EX[S.exch].klines(sym, tf, Math.min(need, 1000), f);
+}
+const cross = (a, b, i, up) => a[i] != null && a[i - 1] != null && b[i] != null && b[i - 1] != null && (up ? a[i - 1] <= b[i - 1] && a[i] > b[i] : a[i - 1] >= b[i - 1] && a[i] < b[i]);
+const lvlUp = (a, i, lv) => a[i] != null && a[i - 1] != null && a[i - 1] < lv && a[i] >= lv;
+const lvlDn = (a, i, lv) => a[i] != null && a[i - 1] != null && a[i - 1] > lv && a[i] <= lv;
+// zones of the coin on each bar from the 400 bars before it (no look-ahead)
+function rollZones(x, p) {
+  const out = Array(x.length).fill(null);
+  for (let i = 200; i < x.length; i += 5) { const w = x.slice(Math.max(0, i - 400), i).filter(v => v != null).sort((a, b) => a - b); if (w.length < 150) continue;
+    const q = r => { const k = (w.length - 1) * r / 100, f = Math.floor(k); return w[f] + (w[Math.min(w.length - 1, f + 1)] - w[f]) * (k - f); };
+    const z = [q(p), q(100 - p)]; for (let j = i; j < Math.min(x.length, i + 5); j++) out[j] = z; }
+  return out;
+}
+async function itSignals(K) {
+  const n = K.length, c = K.map(k => k.c), v = K.map(k => k.v);
+  const R = rsi(c, 14), H = heatIndex(K), M = macd(c, 12, 26, 9), E20 = ema(c, 20), E50 = ema(c, 50), E200 = ema(c, 200), B = bbands(c, 20, 2), SR = stochRsi(c, 14, 14, 3, 3), MF = mfi(K, 14), D = adx(K, 14), VS = sma(v, 20);
+  const RZ = rollZones(R, 10), HZ = rollZones(H, 10);
+  const sg = {}; IT_SIG.forEach(k => sg[k] = { L: Array(n).fill(false), S: Array(n).fill(false) });
+  // pivots for divergences (confirmed 3 bars later)
+  const piv = []; for (let i = 3; i < n - 3; i++) { const lo = K.slice(i - 3, i + 4).every(k => k.l >= K[i].l), hi = K.slice(i - 3, i + 4).every(k => k.h <= K[i].h); if (lo) piv.push({ i, t: "L" }); if (hi) piv.push({ i, t: "H" }); }
+  for (let i = 1; i < n; i++) {
+    if (lvlUp(R, i, 30)) sg.rsi.L[i] = true; if (lvlDn(R, i, 70)) sg.rsi.S[i] = true;
+    if (RZ[i] && lvlUp(R, i, RZ[i][0])) sg.rsiA.L[i] = true; if (RZ[i] && lvlDn(R, i, RZ[i][1])) sg.rsiA.S[i] = true;
+    if (lvlUp(H, i, 25)) sg.heat.L[i] = true; if (lvlDn(H, i, 75)) sg.heat.S[i] = true;
+    if (HZ[i] && lvlUp(H, i, HZ[i][0])) sg.heatA.L[i] = true; if (HZ[i] && lvlDn(H, i, HZ[i][1])) sg.heatA.S[i] = true;
+    if (lvlUp(M.h, i, 0)) sg.macd0.L[i] = true; if (lvlDn(M.h, i, 0)) sg.macd0.S[i] = true;
+    if (cross(M.m, M.sig, i, true) && M.m[i] < 0) sg.macdX.L[i] = true; if (cross(M.m, M.sig, i, false) && M.m[i] > 0) sg.macdX.S[i] = true;
+    if (cross(E20, E50, i, true)) sg.ema.L[i] = true; if (cross(E20, E50, i, false)) sg.ema.S[i] = true;
+    if (cross(c, E200, i, true)) sg.e200.L[i] = true; if (cross(c, E200, i, false)) sg.e200.S[i] = true;
+    if (B.lo[i - 1] != null && c[i - 1] < B.lo[i - 1] && c[i] > B.lo[i]) sg.bb.L[i] = true; if (B.up[i - 1] != null && c[i - 1] > B.up[i - 1] && c[i] < B.up[i]) sg.bb.S[i] = true;
+    if (cross(SR.k, SR.d, i, true) && SR.d[i] < 20) sg.srsi.L[i] = true; if (cross(SR.k, SR.d, i, false) && SR.d[i] > 80) sg.srsi.S[i] = true;
+    if (lvlUp(MF, i, 20)) sg.mfi.L[i] = true; if (lvlDn(MF, i, 80)) sg.mfi.S[i] = true;
+    if (D.adx[i] != null && D.adx[i] > 20) { if (cross(D.pdi, D.ndi, i, true)) sg.dmi.L[i] = true; if (cross(D.pdi, D.ndi, i, false)) sg.dmi.S[i] = true; }
+    if (VS[i - 1] && v[i] > 2.5 * VS[i - 1]) { if (c[i] > K[i].o) sg.vol.L[i] = true; else sg.vol.S[i] = true; }
+    const hz = HZ[i]; if (hz && H[i] != null && M.h[i] != null && M.h[i - 1] != null) {
+      if (H[i] <= hz[0] + 5 && M.h[i] > M.h[i - 1] && (E200[i] == null || c[i] > E200[i] * 0.97)) sg.conf.L[i] = !sg.conf.L[i - 1] && true;
+      if (H[i] >= hz[1] - 5 && M.h[i] < M.h[i - 1] && (E200[i] == null || c[i] < E200[i] * 1.03)) sg.conf.S[i] = !sg.conf.S[i - 1] && true; }
+  }
+  // divergences: two pivots of the same type, price makes a new extreme and RSI does not; the signal comes when the pivot is confirmed
+  const lows = piv.filter(p => p.t === "L"), highs = piv.filter(p => p.t === "H");
+  for (let a = 1; a < lows.length; a++) { const p = lows[a - 1], q = lows[a]; if (q.i - p.i > 60 || R[p.i] == null || R[q.i] == null) continue; if (K[q.i].l < K[p.i].l && R[q.i] > R[p.i] + 2 && q.i + 3 < n) sg.div.L[q.i + 3] = true; }
+  for (let a = 1; a < highs.length; a++) { const p = highs[a - 1], q = highs[a]; if (q.i - p.i > 60 || R[p.i] == null || R[q.i] == null) continue; if (K[q.i].h > K[p.i].h && R[q.i] < R[p.i] - 2 && q.i + 3 < n) sg.div.S[q.i + 3] = true; }
+  // Elliott forecast every 4 candles (on the 300 before each one): a signal when the direction turns
+  let prev = 0;
+  for (let i = 300; i < n; i += 4) {
+    try { const a = EWD.analyze(K.slice(i - 299, i + 1).map(k => [k.t * 1000, k.o, k.h, k.l, k.c]), 3), fp = a && EWD.forecastPath(a), d = fp && a.conf >= 0.45 ? fp.dir : 0;
+      if (d && d !== prev) { if (d > 0) sg.ew.L[i] = true; else sg.ew.S[i] = true; } prev = d || prev; } catch (e) {}
+    if (i % 200 === 0) { if (ITS.busy) { ITS.prog = 0.45 + 0.4 * i / n; ITS.stage = IT("calc", { p: Math.round(i / n * 100) }); renderIT(); } await new Promise(r => setTimeout(r, 0)); }
+  }
+  return { sg, E200, AT: atr(K, 14) };
+}
+function itTrade(K, sig, dir, X, cfg, split) {
+  const n = K.length, fee = cfg.fee / 100, tr = []; let pos = null;
+  for (let i = 1; i < n; i++) {
+    const k = K[i];
+    if (pos) {
+      let x = null, why = "";
+      if (dir > 0 ? k.l <= pos.sl : k.h >= pos.sl) { x = pos.sl; why = "sl"; } else if (dir > 0 ? k.h >= pos.tp : k.l <= pos.tp) { x = pos.tp; why = "tp"; } else if (i - pos.i >= cfg.hold) { x = k.o; why = "tm"; }
+      if (x != null) { const r = dir * (x / pos.e - 1) - 2 * fee; tr.push({ i0: pos.i, i1: i, t0: K[pos.i].t, e: pos.e, x, r: r * 100, R: r / pos.risk, why, oos: pos.i >= split }); pos = null; }
+    }
+    if (!pos && sig[i - 1] && X.AT[i - 1]) {
+      if (cfg.trend && X.E200[i - 1] != null && (dir > 0 ? K[i - 1].c < X.E200[i - 1] : K[i - 1].c > X.E200[i - 1])) continue;
+      const e = k.o, a = X.AT[i - 1]; pos = { i, e, sl: e - dir * cfg.sl * a, tp: e + dir * cfg.tp * a, risk: cfg.sl * a / e };
+    }
+  }
+  return tr;
+}
+function itStats(T) {
+  const n = T.length, w = T.filter(t => t.r > 0), l = T.filter(t => t.r <= 0), sw = w.reduce((a, t) => a + t.r, 0), sl = l.reduce((a, t) => a + t.r, 0);
+  return { n, wr: n ? w.length / n * 100 : null, avg: n ? (sw + sl) / n : null, pf: sl < 0 ? sw / -sl : sw > 0 ? Infinity : null, R: n ? T.reduce((a, t) => a + t.R, 0) / n : null };
+}
+function itVerdict(s) { if (!s || s.n < 8) return "few"; if (s.pf >= 1.2 && s.avg > 0) return "good"; if (s.avg > 0) return "ok"; return "bad"; }
+// the whole test without the screen: used by the tab and by the per-coin calibration in the background
+async function itCompute(cfg, tf) {
+    const K = await itKlines(tf, cfg.bars); if (!K || K.length < 400) throw new Error("< 400");
+    const X = await itSignals(K), split = Math.floor(K.length * 0.7), dirs = cfg.dir === "both" ? [1, -1] : cfg.dir === "long" ? [1] : [-1];
+    const rows = [];
+    IT_SIG.forEach(k => dirs.forEach(d => { const T = itTrade(K, d > 0 ? X.sg[k].L : X.sg[k].S, d, X, cfg, split); rows.push({ k, d, T, is: itStats(T.filter(t => !t.oos)), oos: itStats(T.filter(t => t.oos)) }); }));
+    // baseline: an entry every 5 candles, same exits
+    const every = K.map((_, i) => i % 5 === 0);
+    const base = dirs.map(d => { const T = itTrade(K, every, d, X, cfg, split); return { k: "base", d, T, is: itStats(T.filter(t => !t.oos)), oos: itStats(T.filter(t => t.oos)) }; });
+    rows.forEach(r => r.v = itVerdict(r.oos));
+    rows.sort((a, b) => { const o = { good: 0, ok: 1, bad: 2, few: 3 }; return o[a.v] - o[b.v] || (b.oos.avg ?? -99) - (a.oos.avg ?? -99); });
+    return { K, rows, base, split, tf, coin: S.base, pair: pairName(), hold: (K[K.length - 1].c / K[0].c - 1) * 100, cfg: { ...cfg }, sigs: X.sg };
+}
+async function runIT() {
+  if (ITS.busy) return; if (!ST.A) { ITS.err = IT("need"); renderIT(); return; }
+  const cfg = ITS.cfg, tf = cfg.tf || S.tf; localStorage.setItem("cl_itCfg", JSON.stringify(cfg));
+  ITS.busy = true; ITS.err = null; ITS.R = null; ITS.open = null; ITS.prog = 0.05; ITS.stage = IT("load"); renderIT();
+  try {
+    ITS.R = await itCompute(cfg, tf);
+    if (typeof calTake === "function") calTake(ITS.R);   // a manual test on the analysis timeframe also updates the calibration
+  } catch (e) { ITS.err = IT("err", { e: e.message || e }); }
+  finally { ITS.busy = false; ITS.prog = 1; renderIT(); }
+}
+function itRowName(r) { return r.k === "base" ? IT("base") : IT("s_" + r.k); }
+function itText(R) {
+  const good = R.rows.filter(r => r.v === "good").slice(0, 5);
+  const L = [`🧪 ${R.pair} · ${R.tf} · ${R.K.length} · CRYPTO HUNTERS · Coin Lab`, IT("best", { c: R.coin }) + ":"];
+  (good.length ? good : R.rows.slice(0, 3)).forEach(r => L.push(`${r.d > 0 ? "↑" : "↓"} ${itRowName(r)}: WR ${Math.round(r.oos.wr ?? 0)}%, PF ${r.oos.pf === Infinity ? "∞" : (r.oos.pf ?? 0).toFixed(2)}, ${(r.oos.avg ?? 0).toFixed(2)}% (${r.oos.n})`));
+  R.base.forEach(b => L.push(`${IT("base")} ${b.d > 0 ? "↑" : "↓"}: WR ${Math.round(b.oos.wr ?? 0)}%, ${(b.oos.avg ?? 0).toFixed(2)}%`));
+  L.push("", "t.me/Cr_hunters");
+  return L.join("\n");
+}
+function itDraw(cv, R, row) {
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight; if (!w) return; cv.width = w * dpr; cv.height = h * dpr; const g = cv.getContext("2d"); g.scale(dpr, dpr);
+  const n = R.K.length, pts = [[0, 0]]; let acc = 0; row.T.forEach(t => { acc += t.r; pts.push([t.i1, acc]); }); pts.push([n - 1, acc]);
+  const lo = Math.min(0, ...pts.map(p => p[1])), hi = Math.max(0, ...pts.map(p => p[1])), pad = (hi - lo) * 0.1 || 1, X = i => i / (n - 1) * (w - 2) + 1, Y = v => h - 4 - (v - lo + pad) / (hi - lo + 2 * pad) * (h - 8);
+  g.fillStyle = cssv("--panel2") || "rgba(127,127,127,.08)"; g.fillRect(X(R.split), 0, w - X(R.split), h);
+  g.strokeStyle = cssv("--line"); g.setLineDash([4, 4]); g.beginPath(); g.moveTo(0, Y(0)); g.lineTo(w, Y(0)); g.stroke(); g.setLineDash([]);
+  g.strokeStyle = acc >= 0 ? cssv("--up") : cssv("--down"); g.lineWidth = 2; g.beginPath(); pts.forEach(([i, v], j) => j ? g.lineTo(X(i), Y(v)) : g.moveTo(X(i), Y(v))); g.stroke();
+}
+function renderIT() {
+  const tb = $("itTab"); if (tb) tb.textContent = IT("tab");
+  const box = $("itBox"); if (!box) return; const c = ITS.cfg, tfNow = c.tf || S.tf;
+  const opt = (v, cur, label) => `<option value="${v}"${String(v) === String(cur) ? " selected" : ""}>${esc(label ?? v)}</option>`;
+  let h = `<div class="card"><h2>${esc(IT("title", { c: pairName() }))}</h2><p class="note">${esc(IT("sub"))}</p>
+    <div class="it-ctl">
+      <label>${esc(IT("tf"))}<select class="inp" id="itTf">${["15m", "1h", "4h", "1d"].map(x => opt(x, tfNow)).join("")}</select></label>
+      <label>${esc(IT("bars"))}<select class="inp" id="itBars">${[1000, 1500, 2000, 3000].map(x => opt(x, c.bars)).join("")}</select></label>
+      <label>${esc(IT("dir"))}<select class="inp" id="itDir">${["both", "long", "short"].map(x => opt(x, c.dir, IT(x))).join("")}</select></label>
+      <label>${esc(IT("sl"))}<input class="inp" type="number" id="itSl" min="0.5" max="10" step="0.5" value="${c.sl}"></label>
+      <label>${esc(IT("tp"))}<input class="inp" type="number" id="itTp" min="0.5" max="20" step="0.5" value="${c.tp}"></label>
+      <label>${esc(IT("hold"))}<input class="inp" type="number" id="itHold" min="4" max="500" step="1" value="${c.hold}"></label>
+      <label>${esc(IT("fee"))}<input class="inp" type="number" id="itFee" min="0" max="1" step="0.01" value="${c.fee}"></label>
+      <label class="it-chk"><input type="checkbox" id="itTrend"${c.trend ? " checked" : ""}> ${esc(IT("trend"))}</label>
+      <button class="btn primary" id="itGo" type="button"${ITS.busy ? " disabled" : ""}>${esc(ITS.busy ? IT("busy") : IT("go"))}</button>
+    </div>${ITS.busy ? `<div class="it-prog"><i style="width:${Math.round(ITS.prog * 100)}%"></i></div><p class="note">${esc(ITS.stage || "")}</p>` : ""}${ITS.err ? `<p class="dp-err card">${esc(ITS.err)}</p>` : ""}</div>`;
+  const R = ITS.R && ITS.R.coin === S.base ? ITS.R : null;
+  if (R && !ITS.busy) {
+    const d0 = new Date(R.K[0].t * 1000), d1 = new Date(R.K[R.K.length - 1].t * 1000), ds = new Date(R.K[R.split].t * 1000), fd = d => d.toLocaleDateString(S.lang, { day: "2-digit", month: "short", year: "2-digit" });
+    const good = R.rows.filter(r => r.v === "good");
+    const pf = v => v == null ? "—" : v === Infinity ? "∞" : v.toFixed(2), wr = v => v == null ? "—" : Math.round(v) + "%", av = v => v == null ? "—" : (v > 0 ? "+" : "") + v.toFixed(2) + "%", rr = v => v == null ? "—" : (v > 0 ? "+" : "") + v.toFixed(2);
+    const cls = v => v == null ? "" : v > 0 ? "up" : "down";
+    h += `<div class="card"><p class="note">${esc(IT("range", { n: R.K.length, tf: R.tf, a: fd(d0), b: fd(d1), c: fd(ds) }))} ${esc(IT("hold_", { p: av(R.hold) }))}</p>
+      <h3>${esc(IT("best", { c: R.coin }))}</h3>${good.length ? `<div class="it-best">${good.slice(0, 4).map(r => `<span class="${r.d > 0 ? "up" : "down"}">${r.d > 0 ? "↑" : "↓"} ${esc(itRowName(r))} · ${wr(r.oos.wr)} · PF ${pf(r.oos.pf)}</span>`).join("")}</div>` : `<p class="note">${esc(IT("none"))}</p>`}
+      <div class="tbl-wrap"><table class="it-t"><thead><tr><th>${esc(IT("sig"))}</th><th>${esc(IT("n"))}<br><small>${esc(IT("is"))} / ${esc(IT("oos"))}</small></th><th>${esc(IT("wr"))}<br><small>${esc(IT("is"))} / ${esc(IT("oos"))}</small></th><th>${esc(IT("pf"))}<br><small>${esc(IT("oos"))}</small></th><th>${esc(IT("avg"))}<br><small>${esc(IT("oos"))}</small></th><th>${esc(IT("r"))}<br><small>${esc(IT("oos"))}</small></th><th>${esc(IT("verd"))}</th></tr></thead><tbody>
+      ${[...R.base.map(b => ({ ...b, v: "base" })), ...R.rows].map((r, idx) => `<tr class="it-row${r.v === "base" ? " it-base" : ""}${ITS.open === idx ? " on" : ""}" data-it="${idx}" tabindex="0"><td><span class="${r.d > 0 ? "up" : "down"}">${r.d > 0 ? "↑" : "↓"}</span> ${esc(itRowName(r))}</td>
+        <td>${r.is.n} / ${r.oos.n}</td><td>${wr(r.is.wr)} / <b>${wr(r.oos.wr)}</b></td><td>${pf(r.oos.pf)}</td><td class="${cls(r.oos.avg)}">${av(r.oos.avg)}</td><td class="${cls(r.oos.R)}">${rr(r.oos.R)}</td>
+        <td>${r.v === "base" ? "" : `<span class="it-v v-${r.v}">${esc(IT("v_" + r.v))}</span>`}</td></tr>`).join("")}</tbody></table></div>
+      <p class="note">${esc(IT("baseHint"))}</p>`;
+    const all = [...R.base.map(b => ({ ...b, v: "base" })), ...R.rows], sel = ITS.open != null ? all[ITS.open] : null;
+    if (sel) {
+      h += `<div class="it-det"><h3>${esc(IT("det", { s: (sel.d > 0 ? "↑ " : "↓ ") + itRowName(sel) }))}</h3><p class="note">${esc(IT("eq"))}</p><canvas class="plot" id="itCv" height="160"></canvas>
+        <h3>${esc(IT("trades"))}</h3><div class="tbl-wrap"><table class="it-t"><tbody>${sel.T.slice(-15).reverse().map(t => `<tr><td>${new Date(t.t0 * 1000).toLocaleString(S.lang, { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}</td><td>${fp(t.e)} → ${fp(t.x)}</td><td class="${cls(t.r)}">${av(t.r)}</td><td>${esc(IT(t.why + "W"))}</td><td>${t.oos ? esc(IT("oos")) : esc(IT("is"))}</td></tr>`).join("")}</tbody></table></div></div>`;
+    }
+    h += `<div class="dp-acts"><button class="btn" id="itCopy" type="button">${esc(IT("copy"))}</button></div></div>`;
+  }
+  h += `<details class="card it-help"><summary>${esc(IT("howT"))}</summary><ul>${IT("how").map(x => `<li>${esc(x)}</li>`).join("")}</ul></details>`;
+  box.innerHTML = h;
+  const set = (id, k, num) => { const el = $(id); if (el) el.onchange = () => { ITS.cfg[k] = el.type === "checkbox" ? el.checked : num ? +el.value : el.value; localStorage.setItem("cl_itCfg", JSON.stringify(ITS.cfg)); }; };
+  set("itTf", "tf"); set("itBars", "bars", 1); set("itDir", "dir"); set("itSl", "sl", 1); set("itTp", "tp", 1); set("itHold", "hold", 1); set("itFee", "fee", 1); set("itTrend", "trend");
+  const g = $("itGo"); if (g) g.onclick = runIT;
+  box.querySelectorAll("[data-it]").forEach(tr => { const f = () => { const i = +tr.dataset.it; ITS.open = ITS.open === i ? null : i; renderIT(); }; tr.onclick = f; tr.onkeydown = e => { if (e.key === "Enter") f(); }; });
+  const cp = $("itCopy"); if (cp) cp.onclick = async () => { try { await navigator.clipboard.writeText(itText(ITS.R)); toast(IT("copied")); } catch (e) {} };
+  if (R && ITS.open != null && $("itCv")) itDraw($("itCv"), R, [...R.base.map(b => ({ ...b, v: "base" })), ...R.rows][ITS.open]);
+  if (window.CH && R) window.CH.cam(box.querySelector(".card"), box, { opts: () => ({ name: "coin-lab-indicators-" + S.base.toLowerCase(), title: "Coin Lab · " + IT("tab") + " · " + pairName() + " · " + R.tf }) });
+}
+
+
+/* ================= PER-COIN CALIBRATION =================
+   The indicator test runs by itself in the background for the coin and timeframe being analysed (at most every
+   3 days), and the forecast factors are weighted by how the matching indicators did on the check part of history:
+   Heat <- Heat zones; Trend <- EMA crosses, EMA200, DMI; Momentum <- RSI, MACD, Stoch RSI, MFI, divergences;
+   Waves <- Elliott forecast; Volume <- volume spikes. A factor's weight moves between ×0.4 and ×1.6, separately for
+   rising and falling signals, and moves less when the test has few trades. Order book, trade flow and derivatives
+   have no history and keep their weights. */
+const CAL_L = {"uk": {"on": "Ваги налаштовані під {c} за тестом {tf} ({d}):", "off": "Налаштування під монету вимкнене: усі чинники мають стандартну вагу.", "busy": "Налаштовую ваги під {c}: перевіряю індикатори на її історії…", "none": "Ще немає тесту для {c} на {tf}.", "turnOff": "вимкнути", "turnOn": "увімкнути", "retest": "перевірити знову", "few": "Тест знайшов замало угод, ваги стандартні.", "mulTip": "Вага цього чинника для монети змінена за тестом індикаторів: ×{m} для сигналів {d}. Більше 1 — на цій монеті він спрацьовував краще за середнє, менше 1 — гірше.", "up": "на ріст", "down": "на падіння", "fHeat": "Heat", "fTrend": "Тренд", "fMom": "Імпульс", "fEw": "Хвилі", "fVol": "Обсяг", "dT": "Що працює на цій монеті", "dSub": "За тестом індикаторів на {tf} (перевірочна частина історії). Ці сигнали отримують більшу вагу в оцінці монети.", "dNone": "Жоден індикатор не пройшов перевірку на цій монеті: оцінка спирається на стандартні ваги.", "dAct": "Спрацювали щойно", "dActNone": "Зараз перевірені сигнали не спрацьовували.", "dItem": "{s}: {wr} до цілі, PF {pf}, {n} угод", "dBase": "Випадковий вхід для порівняння: {l} у лонг, {s} у шорт."}, "ru": {"on": "Веса настроены под {c} по тесту {tf} ({d}):", "off": "Настройка под монету выключена: все факторы имеют стандартный вес.", "busy": "Настраиваю веса под {c}: проверяю индикаторы на её истории…", "none": "Ещё нет теста для {c} на {tf}.", "turnOff": "выключить", "turnOn": "включить", "retest": "проверить снова", "few": "Тест нашёл мало сделок, веса стандартные.", "mulTip": "Вес этого фактора для монеты изменён по тесту индикаторов: ×{m} для сигналов {d}. Больше 1 — на этой монете он срабатывал лучше среднего, меньше 1 — хуже.", "up": "на рост", "down": "на падение", "fHeat": "Heat", "fTrend": "Тренд", "fMom": "Импульс", "fEw": "Волны", "fVol": "Объём", "dT": "Что работает на этой монете", "dSub": "По тесту индикаторов на {tf} (проверочная часть истории). Эти сигналы получают больший вес в оценке монеты.", "dNone": "Ни один индикатор не прошёл проверку на этой монете: оценка опирается на стандартные веса.", "dAct": "Сработали только что", "dActNone": "Сейчас проверенные сигналы не срабатывали.", "dItem": "{s}: {wr} до цели, PF {pf}, {n} сделок", "dBase": "Случайный вход для сравнения: {l} в лонг, {s} в шорт."}, "en": {"on": "Weights tuned for {c} by the {tf} test ({d}):", "off": "Per-coin tuning is off: every factor has its standard weight.", "busy": "Tuning the weights for {c}: testing the indicators on its history…", "none": "No test for {c} on {tf} yet.", "turnOff": "turn off", "turnOn": "turn on", "retest": "test again", "few": "The test found too few trades, the weights stay standard.", "mulTip": "The weight of this factor for the coin is changed by the indicator test: ×{m} for {d} signals. Above 1 it worked better than average on this coin, below 1 worse.", "up": "rise", "down": "drop", "fHeat": "Heat", "fTrend": "Trend", "fMom": "Momentum", "fEw": "Waves", "fVol": "Volume", "dT": "What works on this coin", "dSub": "From the indicator test on {tf} (the check part of history). These signals get more weight in the coin's score.", "dNone": "No indicator passed the check on this coin: the score uses the standard weights.", "dAct": "Just fired", "dActNone": "No tested signal has fired right now.", "dItem": "{s}: {wr} reached the target, PF {pf}, {n} trades", "dBase": "Random entry for comparison: {l} long, {s} short."}};
+const CL = (k, v) => { let s = (CAL_L[S.lang] || CAL_L.en)[k] ?? CAL_L.en[k] ?? k; if (v) s = String(s).replace(/\{(\w+)\}/g, (_, x) => v[x] != null ? v[x] : ""); return s; };
+const CAL_KEY = "cl_cal", CAL_TTL = 3 * 864e5;
+const CAL_GROUP = { fHeat: ["heat", "heatA"], fTrend: ["ema", "e200", "dmi"], fMom: ["rsi", "rsiA", "macd0", "macdX", "srsi", "mfi", "div"], fEw: ["ew"], fVol: ["vol"] };
+var CAL_CUR = null, CAL_BUSY = false;
+const calKey = () => [S.exch, S.market, S.base, quoteNow(), S.tf].join("|");
+function calAll() { try { return JSON.parse(localStorage.getItem(CAL_KEY) || "{}"); } catch (e) { return {}; } }
+function calGet() { const c = calAll()[calKey()]; return c && Date.now() - c.at < 3 * CAL_TTL ? c : null; }
+function calSave(c) { const a = calAll(); a[calKey()] = c; Object.keys(a).sort((x, y) => a[y].at - a[x].at).slice(60).forEach(k => delete a[k]); try { localStorage.setItem(CAL_KEY, JSON.stringify(a)); } catch (e) {} }
+// quality of one signal on the check part, -1..1, pulled toward 0 when there are few trades
+function calQ(s) { if (!s || s.n < 5 || s.pf == null) return 0; const pf = Math.min(3, s.pf); return Math.max(-1, Math.min(1, (pf - 1) / 0.8)) * s.n / (s.n + 15); }
+function calFrom(R) {
+  const sig = {}; R.rows.forEach(r => { (sig[r.k] = sig[r.k] || {})[r.d > 0 ? "L" : "S"] = { n: r.oos.n, wr: r.oos.wr, pf: r.oos.pf === Infinity ? 99 : r.oos.pf, avg: r.oos.avg, v: r.v }; });
+  const grp = {}; let used = 0;
+  for (const g in CAL_GROUP) { const m = { L: 1, S: 1 }; ["L", "S"].forEach(d => { const qs = CAL_GROUP[g].map(k => calQ(sig[k] && sig[k][d])).filter(q => q !== 0); if (qs.length) { used++; m[d] = Math.max(0.4, Math.min(1.6, 1 + 0.6 * qs.reduce((a, v) => a + v, 0) / qs.length)); } }); grp[g] = m; }
+  const n = R.K.length, act = [];
+  if (R.sigs) Object.keys(R.sigs).forEach(k => ["L", "S"].forEach(d => { const a = R.sigs[k][d]; for (let i = n - 3; i < n; i++) if (a[i]) { act.push({ k, d }); break; } }));
+  const b = d => { const x = R.base.find(z => z.d === d); return x ? { n: x.oos.n, wr: x.oos.wr } : null; };
+  return { at: Date.now(), tf: R.tf, bars: n, sig, grp, act, used, base: { L: b(1), S: b(-1) } };
+}
+function calTake(R) { if (!R || R.coin !== S.base || R.tf !== S.tf) return; CAL_CUR = calFrom(R); calSave(CAL_CUR);
+  if (window.CH && window.CH.calib) window.CH.calib.put(S.exch, S.market, S.base, S.tf, { at: CAL_CUR.at, grp: CAL_CUR.grp, bars: CAL_CUR.bars, src: "lab" }); if (ST.A) { ST.A.fc = forecast(ST.A); renderAll(false); } }
+function calMul(key, v) { if (S.calOn === false || !CAL_CUR || !CAL_CUR.grp[key]) return 1; return CAL_CUR.grp[key][v >= 0 ? "L" : "S"]; }
+async function calEnsure(force) {
+  CAL_CUR = calGet();
+  if (S.calOn === false || CAL_BUSY || (typeof ITS !== "undefined" && ITS.busy)) return;
+  if (!force && CAL_CUR && Date.now() - CAL_CUR.at < CAL_TTL) return;
+  CAL_BUSY = true; if (ST.A) renderSummary();
+  const want = calKey();
+  try {
+    const c = (typeof ITS !== "undefined" && ITS.cfg) || {};
+    const R = await itCompute({ bars: 1500, dir: "both", trend: false, sl: c.sl || 2, tp: c.tp || 4, hold: c.hold || 48, fee: c.fee ?? 0.1 }, S.tf);
+    if (calKey() === want) calTake(R);
+  } catch (e) {} finally { CAL_BUSY = false; if (ST.A) renderSummary(); }
+}
+function calNoteHTML() {
+  if (S.calOn === false) return `${esc(CL("off"))} <a href="#" data-cal="on">${esc(CL("turnOn"))}</a>`;
+  if (CAL_BUSY) return esc(CL("busy", { c: S.base }));
+  if (!CAL_CUR) return `${esc(CL("none", { c: S.base, tf: S.tf }))} <a href="#" data-cal="run">${esc(CL("retest"))}</a>`;
+  if (!CAL_CUR.used) return `${esc(CL("few"))} <a href="#" data-cal="run">${esc(CL("retest"))}</a>`;
+  const parts = Object.keys(CAL_GROUP).map(g => { const m = CAL_CUR.grp[g]; if (Math.abs(m.L - 1) < 0.05 && Math.abs(m.S - 1) < 0.05) return null; return `${CL(g)} ↑×${m.L.toFixed(1)} ↓×${m.S.toFixed(1)}`; }).filter(Boolean);
+  const d = new Date(CAL_CUR.at).toLocaleDateString(S.lang, { day: "2-digit", month: "short" });
+  return `${esc(CL("on", { c: S.base, tf: CAL_CUR.tf, d }))} ${esc(parts.join(" · ") || "—")} · <a href="#" data-cal="run">${esc(CL("retest"))}</a> · <a href="#" data-cal="off">${esc(CL("turnOff"))}</a>`;
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest && e.target.closest("[data-cal]"); if (!a) return; e.preventDefault();
+  const k = a.dataset.cal;
+  if (k === "off" || k === "on") { S.calOn = k === "on"; save(); if (ST.A) { ST.A.fc = forecast(ST.A); renderAll(false); } if (k === "on") calEnsure(); }
+  if (k === "run") calEnsure(true);
+});
+// "what works on this coin" for the deep analysis
+function calDeepHTML() {
+  const c = CAL_CUR; if (!c || S.calOn === false) return "";
+  const items = []; Object.keys(c.sig).forEach(k => ["L", "S"].forEach(d => { const x = c.sig[k][d]; if (x && (x.v === "good" || x.v === "ok")) items.push({ k, d, x }); }));
+  items.sort((a, b) => (b.x.v === "good") - (a.x.v === "good") || (b.x.avg || 0) - (a.x.avg || 0));
+  const nm = k => typeof IT === "function" ? IT("s_" + k) : k, wr = v => v == null ? "—" : Math.round(v) + "%", pf = v => v == null ? "—" : v >= 99 ? "∞" : v.toFixed(2);
+  const act = c.act.filter(a => c.sig[a.k] && c.sig[a.k][a.d] && (c.sig[a.k][a.d].v === "good" || c.sig[a.k][a.d].v === "ok"));
+  return `<div class="card"><h3>${esc(CL("dT"))}</h3><p class="note">${esc(CL("dSub", { tf: c.tf }))}</p>
+    ${items.length ? `<ul class="dp-ul">${items.slice(0, 6).map(i => `<li><span class="${i.d === "L" ? "up" : "down"}">${i.d === "L" ? "↑" : "↓"}</span> ${esc(CL("dItem", { s: nm(i.k), wr: wr(i.x.wr), pf: pf(i.x.pf), n: i.x.n }))}</li>`).join("")}</ul>` : `<p class="note">${esc(CL("dNone"))}</p>`}
+    <h3 style="margin-top:10px">${esc(CL("dAct"))}</h3>${act.length ? `<ul class="dp-ul">${act.map(a => { const x = c.sig[a.k][a.d]; return `<li><b class="${a.d === "L" ? "up" : "down"}">${a.d === "L" ? "↑" : "↓"} ${esc(nm(a.k))}</b> — ${esc(CL("dItem", { s: "", wr: wr(x.wr), pf: pf(x.pf), n: x.n }).replace(/^: /, ""))}</li>`; }).join("")}</ul>` : `<p class="note">${esc(CL("dActNone"))}</p>`}
+    ${c.base.L || c.base.S ? `<p class="note">${esc(CL("dBase", { l: wr(c.base.L && c.base.L.wr), s: wr(c.base.S && c.base.S.wr) }))}</p>` : ""}</div>`;
+}
+
 /* ================= UI RENDER ================= */
 if(typeof CanvasRenderingContext2D!=="undefined" && !CanvasRenderingContext2D.prototype.roundRect){ CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h){ this.rect(x,y,w,h); }; }
 function renderAll(fit){
-  renderHero(); renderChart(fit); renderSummary(); renderInd(); renderEw(); renderWhales(); renderDeriv(); renderBt(); renderShare(); renderDeep();
+  renderHero(); renderChart(fit); renderSummary(); renderInd(); renderEw(); renderWhales(); renderDeriv(); renderBt(); renderShare(); renderDeep(); renderIT();
   $("star").textContent = S.favs.includes(S.base)?"★":"☆";
   document.title = `${S.base} ${fp(ST.price)} — Coin Lab`;
 }
@@ -3856,7 +4247,9 @@ function pill(v, inv){ const x=inv?-v:v; return x>0?`<span class="pill up">${esc
 
 function renderSummary(){
   const A=ST.A, fc=A.fc;
-  $("factors").innerHTML = fc.F.map(f=>{ const w=Math.abs(f.v)*50; const st = f.v>=0? `left:50%;width:${w}%;background:var(--up)` : `left:${50-w}%;width:${w}%;background:var(--down)`; return `<div class="scorebar"><span>${esc(t(f.key))}${ib(f.key)}</span><div class="sb"><i style="${st}"></i></div><b class="${cls(f.v)}" style="text-align:right">${f.v>0?"+":""}${Math.round(f.v*100)}</b></div>`; }).join("");
+  $("factors").innerHTML = fc.F.map(f=>{ const w=Math.abs(f.v)*50; const st = f.v>=0? `left:50%;width:${w}%;background:var(--up)` : `left:${50-w}%;width:${w}%;background:var(--down)`; const mm = f.m && Math.abs(f.m-1)>=0.05 ? `<em class="calm ${f.m>1?"up":"down"}" title="${esc(CL("mulTip",{m:f.m.toFixed(2),d:CL(f.v>=0?"up":"down")}))}">×${f.m.toFixed(1)}</em>` : "";
+    return `<div class="scorebar"><span>${esc(t(f.key))}${mm}${ib(f.key)}</span><div class="sb"><i style="${st}"></i></div><b class="${cls(f.v)}" style="text-align:right">${f.v>0?"+":""}${Math.round(f.v*100)}</b></div>`; }).join("");
+  if($("calNote")) $("calNote").innerHTML = calNoteHTML();
   $("narr").innerHTML = `<h2>${esc(t("analysisFor",{s:pairName()}))}</h2>` + narrative().map(p=>`<p>${p}</p>`).join("");
   // levels table
   const p=ST.price, rows=[];
@@ -4241,7 +4634,7 @@ function bind(){
   $("hrHead").onclick=e=>{ const b=e.target.closest("[data-hr]"); if(!b) return; const k=b.dataset.hr; S.hrow[k]=!S.hrow[k]; b.setAttribute("aria-pressed",String(S.hrow[k])); save(); if(ST.A) renderHeatRows(); };
   $("hrHead").addEventListener("change",e=>{ if(e.target.id!=="lvLow"&&e.target.id!=="lvHigh") return; setLevels(+$("lvLow").value, +$("lvHigh").value); });
   $("paneSel").onclick=e=>{ const b=e.target.closest("[data-pane]"); if(!b) return; const k=b.dataset.pane; S.panes[k]=!S.panes[k]; b.setAttribute("aria-pressed",String(S.panes[k])); save(); if(ST.A) renderPanes(); };
-  $("tabs").onclick=e=>{ const b=e.target.closest("[data-t]"); if(!b) return; document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",String(x===b))); document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("on", p.id==="p-"+b.dataset.t)); if(ST.A){ if(b.dataset.t==="wh") renderWhales(); if(b.dataset.t==="lq") renderDeriv(); if(b.dataset.t==="bt") drawEq(); if(b.dataset.t==="sh") renderShare(); } if(b.dataset.t==="deep"){ renderDeep(); if(ST.A && !(DEEP.R && DEEP.R.coin===S.base) && !DEEP.busy) runDeep(); } };
+  $("tabs").onclick=e=>{ const b=e.target.closest("[data-t]"); if(!b) return; document.querySelectorAll(".tab").forEach(x=>x.setAttribute("aria-selected",String(x===b))); document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("on", p.id==="p-"+b.dataset.t)); if(ST.A){ if(b.dataset.t==="wh") renderWhales(); if(b.dataset.t==="lq") renderDeriv(); if(b.dataset.t==="bt") drawEq(); if(b.dataset.t==="sh") renderShare(); } if(b.dataset.t==="itest") renderIT(); if(b.dataset.t==="deep"){ renderDeep(); if(ST.A && !(DEEP.R && DEEP.R.coin===S.base) && !DEEP.busy) runDeep(); } };
   $("btRun").onclick=()=>{ if(!ST.A) return; ST.A.bt=backtest(ST.k,ST.A,$("btSig").value); renderBt(); renderChart(false); };
   $("btSig").onchange=()=>$("btRun").click();
   $("dlCard").onclick=()=>{ const a=document.createElement("a"); a.download=`${S.base}_${S.tf}_cryptohunters.png`; a.href=$("shareCv").toDataURL("image/png"); a.click(); };
