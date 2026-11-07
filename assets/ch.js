@@ -6,7 +6,7 @@
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.18";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "1.21";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -1053,6 +1053,17 @@
     var host = document.querySelector("[data-ch-foot]") || document.body; host.appendChild(foot);
     new MutationObserver(function () { draw(); document.querySelectorAll(".ch-links").forEach(function (el) { el.__ch = null; }); if (panelOpen()) renderPanel(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   }
+  // A Telegram link t.me/<bot>?startapp=SOL (from the bot's inline cards) opens the app on that coin's chart
+  (function startParam() {
+    var m = /[#&?]tgWebAppStartParam=([A-Za-z0-9_-]{2,20})/.exec(location.href), p = m ? m[1] : null;
+    if (!p || TOOL !== "heat") return;
+    var coin = p.toUpperCase().replace(/[^A-Z0-9]/g, "").replace(/USDT$/, ""); if (!coin) return;
+    setTimeout(function () {
+      var tw = window.Telegram && window.Telegram.WebApp, sp = tw && tw.initDataUnsafe && tw.initDataUnsafe.start_param;
+      if (sp && sp.toUpperCase().replace(/[^A-Z0-9]/g, "") !== p.toUpperCase().replace(/[^A-Z0-9]/g, "")) return;
+      if (!/^#\/chart\//.test(location.hash)) location.hash = "#/chart/Binance/" + coin + "/USDT";
+    }, 1800);
+  })();
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount); else mount();
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", loadTips); else loadTips();
 
