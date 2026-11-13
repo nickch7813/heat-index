@@ -221,8 +221,20 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
 .ch-ek.k-listing{color:var(--ch-okt);background:var(--ch-okb);border-color:transparent}
 .ch-evi .ch-nh{display:block;color:var(--ch-tx);text-decoration:none;font-weight:500;font-size:14px;line-height:1.4}
 
+/* ---- the bar and the footer are <header>/<footer>: undo whatever a tool styles those tags with ---- */
+:root .ch-top{display:block;margin:0;padding:0;max-width:none;gap:0;justify-content:normal;align-items:normal}
+:root .ch-foot{display:block;padding:0;max-width:none;margin-left:0;margin-right:0;margin-bottom:0}
+:root .ch-top .ch-in,:root .ch-foot .ch-in{min-width:0;box-sizing:border-box;width:100%}
+
+/* ---- comfortable tap targets ---- */
+.ch-foot a{display:inline-flex;align-items:center;min-height:32px;padding:0 4px;margin:0 -4px}
+.ch-foot .ch-in{align-items:center}
+
+/* ---- on a wide screen every tool is visible in the bar (two rows if needed) instead of a hidden sideways scroll ---- */
+@media (min-width:700px){.ch-nav{flex-wrap:wrap;overflow:visible;row-gap:2px}}
+
 </style>
-<script id="ch-js" data-tool="bot" data-ver="1.21" data-root="../">
+<script id="ch-js" data-tool="bot" data-ver="2.0" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -231,7 +243,7 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.21";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "2.0";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")

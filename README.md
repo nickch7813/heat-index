@@ -2,7 +2,15 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **1.21**
+Version: **2.0**
+
+## What is new in 2.0
+
+- Every tool now fits a phone screen: the Liquidation Radar table and the Volume Spikes page no longer stretch the page sideways, and the shared top bar and footer are no longer bent by a tool's own header and footer styles.
+- Larger tap targets for small controls (favorite stars, info buttons, footer links).
+- On a wide screen the top bar shows all eight tools at once.
+- Elliott Waves: the settings fold into one line, so the coin list is on the first screen.
+- Everything added since 1.0: one look for all tools, cross-links between tools, notification log and price alerts, hover hints, news badges and the news filter, the Confluence Scanner, the strategy tester, shared favorites, the events calendar, correlation with BTC, app install, Bybit everywhere, per-coin zones and weights, deep analysis and the indicator test in Coin Lab, Elliott counts that learn from history, Heat components, faster loading, and the Telegram bot's inline mode.
 
 A set of free browser tools for scanning the crypto market and analysing single coins on Binance, Bybit and OKX (every tool works with Binance and Bybit; Heat Index and Coin Lab also with OKX). Every tool works in the browser and as a Telegram Mini App, shares one look and one light/dark theme, and links to the others: from any coin card you can open the same coin in another tool, each in its own tab.
 

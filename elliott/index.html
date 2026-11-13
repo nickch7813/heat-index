@@ -221,8 +221,20 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
 .ch-ek.k-listing{color:var(--ch-okt);background:var(--ch-okb);border-color:transparent}
 .ch-evi .ch-nh{display:block;color:var(--ch-tx);text-decoration:none;font-weight:500;font-size:14px;line-height:1.4}
 
+/* ---- the bar and the footer are <header>/<footer>: undo whatever a tool styles those tags with ---- */
+:root .ch-top{display:block;margin:0;padding:0;max-width:none;gap:0;justify-content:normal;align-items:normal}
+:root .ch-foot{display:block;padding:0;max-width:none;margin-left:0;margin-right:0;margin-bottom:0}
+:root .ch-top .ch-in,:root .ch-foot .ch-in{min-width:0;box-sizing:border-box;width:100%}
+
+/* ---- comfortable tap targets ---- */
+.ch-foot a{display:inline-flex;align-items:center;min-height:32px;padding:0 4px;margin:0 -4px}
+.ch-foot .ch-in{align-items:center}
+
+/* ---- on a wide screen every tool is visible in the bar (two rows if needed) instead of a hidden sideways scroll ---- */
+@media (min-width:700px){.ch-nav{flex-wrap:wrap;overflow:visible;row-gap:2px}}
+
 </style>
-<script id="ch-js" data-tool="elliott" data-ver="1.21" data-root="../">
+<script id="ch-js" data-tool="elliott" data-ver="2.0" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -231,7 +243,7 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "1.21";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "2.0";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -1415,12 +1427,21 @@ body.ch-skin :is(.searchbar input,.row input){border-width:0.5px;border-radius:8
 body.ch-skin .tag{border-radius:6px}
 body.ch-skin .extra{border-width:0.5px}
 body.ch-skin .sheet{border:0.5px solid var(--ch-bd2)}
+body.ch-skin .ctlbox{border:0.5px solid var(--ch-bd);border-radius:12px;padding:0 12px;margin:0 0 10px}
+body.ch-skin .ctlbox>summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;cursor:pointer;padding:10px 0;list-style:none;min-height:24px}
+body.ch-skin .ctlbox>summary::-webkit-details-marker{display:none}
+body.ch-skin .ctlbox>summary b{font-weight:500}
+body.ch-skin .ctlbox>summary span{color:var(--ch-t2);font-size:13px}
+body.ch-skin .ctlbox>summary::after{content:"▾";margin-left:auto;color:var(--ch-t3)}
+body.ch-skin .ctlbox[open]>summary::after{content:"▴"}
+body.ch-skin .ctlbox[open]>summary{border-bottom:0.5px solid var(--ch-bd);margin-bottom:8px}
+body.ch-skin .ctlbox>summary:focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px;border-radius:8px}
 </style>
 <body>
 <main>
 <h1 id="title"></h1>
 <p class="sub" id="sub"></p>
-<div id="controls"></div>
+<details id="ctlBox" class="ctlbox"><summary id="ctlSum"></summary><div id="controls"></div></details>
 <div class="legend"><span id="leg0"></span><span id="leg50"></span><span id="leg100"></span></div>
 <div class="scale"></div>
 <div id="status"></div><div id="ewlSt" class="ewlst"></div>
@@ -2472,6 +2493,9 @@ function renderUI() {
     group('show', T('show'), ['all', 'buy', 'sell'].map(v => [v, T('show.' + v)])) +
     `<div class="group row"><label>${T('minVol', { u: unitOf() })}<input id="minVol" type="number" min="0" step="any" value="${S.minVols[S.quote]}"></label>
      <button class="act" id="refresh">${T('refresh')}</button><button class="act" id="theme">${T('theme')}</button></div>`;
+  { const nm = { en: 'Settings', uk: 'Налаштування', ru: 'Настройки' }[S.lang] || 'Settings', cb = document.getElementById('ctlBox');
+    document.getElementById('ctlSum').innerHTML = `<b>⚙ ${nm}</b><span>${[ex.name, S.quote === 'ALL' ? T('q.ALL') : T('q.pair', { q: S.quote }), T('tf.' + S.tf), T('sort.' + S.sort)].map(esc).join(' · ')}</span>`;
+    if (!cb.dataset.init) { cb.dataset.init = '1'; let op = false; try { op = localStorage.getItem('ew_ctl') === '1'; } catch (e) {} cb.open = op; cb.addEventListener('toggle', () => { try { localStorage.setItem('ew_ctl', cb.open ? '1' : '0'); } catch (e) {} }); } }
   document.getElementById('status').textContent = TR(S.status);
   document.getElementById('search').placeholder = T('search');
   document.getElementById('search').setAttribute('aria-label', T('search'));
