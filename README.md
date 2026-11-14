@@ -2,9 +2,17 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **2.12**
+Version: **2.14**
 
-## What is new in 2.12
+## What is new in 2.14
+
+- The logo pulses and the crosshair spins while a tool is loading data (any `fetch` in flight for more than 0.25 s; at least 0.7 s once shown, at most 12 s). The shared library's own background requests are not counted.
+
+## What was new in 2.13
+
+- The logo in the top bar is animated on hover (mouse) or press (touch): the crosshair spins and the candles hop. Disabled with `prefers-reduced-motion`.
+
+## What was new in 2.12
 
 - Global Cycle now loads BTC history back to 2011 (Bitstamp daily, CryptoCompare as a backup; cached for 30 days): range switch (All / 2013+ / 2017+), the 2013 cycle in the comparison chart, tops and bottoms taken from the data, and scenario multipliers updated for four cycles.
 

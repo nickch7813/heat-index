@@ -6,7 +6,27 @@
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "2.12";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "2.14";   // the site version, set by build.py on every update and shown in the header
+  // Loading indicator: the logo pulses while the tool's own requests are in flight (our own background requests use rawFetch and are not counted).
+  var rawFetch = window.fetch ? window.fetch.bind(window) : null;
+  (function () {
+    if (!rawFetch) return;
+    var busy = 0, onT = 0, offT = 0, capT = 0, shownAt = 0, root = document.documentElement;
+    function set(on) { root.classList.toggle("ch-loading", on); clearTimeout(capT); if (on) capT = setTimeout(function () { root.classList.remove("ch-loading"); }, 12000); }
+    function done() {
+      busy = Math.max(0, busy - 1);
+      if (busy) return;
+      clearTimeout(onT);
+      if (root.classList.contains("ch-loading")) { clearTimeout(offT); offT = setTimeout(function () { if (!busy) set(false); }, Math.max(0, 700 - (Date.now() - shownAt))); }
+    }
+    window.fetch = function () {
+      var p = rawFetch.apply(null, arguments);
+      busy++;
+      if (busy === 1) { clearTimeout(offT); clearTimeout(onT); onT = setTimeout(function () { if (busy) { shownAt = Date.now(); set(true); } }, 250); }
+      p.then(done, done);
+      return p;
+    };
+  })();
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -14,7 +34,7 @@
   var CHANNEL = "Cr_hunters", CHANNEL_URL = "https://t.me/" + CHANNEL, WATERMARK = "t.me/" + CHANNEL, BRAND = "CRYPTO HUNTERS";
   var REPO = "https://github.com/nickch7813/heat-index";
   // The logo is built in, so the header never depends on a separate image file (or its cache).
-  var LOGO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 70 500 500" aria-hidden="true" focusable="false"><rect x="70" y="70" width="500" height="500" rx="120" fill="#0B0E14"/><circle cx="320" cy="320" r="200" fill="none" stroke="#F5A524" stroke-width="22"/><circle cx="320" cy="320" r="120" fill="none" stroke="#F5A524" stroke-width="6" stroke-opacity=".35"/><path d="M320 96v80M320 464v80M96 320h80M464 320h80" stroke="#F5A524" stroke-width="22" stroke-linecap="round"/><path d="M230 160v80M275 200v85M320 250v70" stroke="#F0475B" stroke-width="6"/><rect x="215" y="175" width="30" height="50" rx="4" fill="#F0475B"/><rect x="260" y="215" width="30" height="55" rx="4" fill="#F0475B"/><rect x="305" y="262" width="30" height="40" rx="4" fill="#F0475B"/><path d="M365 225v85M410 160v95" stroke="#2EBD85" stroke-width="6"/><rect x="350" y="240" width="30" height="60" rx="4" fill="#2EBD85"/><rect x="395" y="175" width="30" height="70" rx="4" fill="#2EBD85"/><circle cx="320" cy="320" r="14" fill="#F5A524"/></svg>';
+  var LOGO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 70 500 500" aria-hidden="true" focusable="false"><rect x="70" y="70" width="500" height="500" rx="120" fill="#0B0E14"/><g class="aim"><circle class="ring" cx="320" cy="320" r="200" fill="none" stroke="#F5A524" stroke-width="22"/><circle cx="320" cy="320" r="120" fill="none" stroke="#F5A524" stroke-width="6" stroke-opacity=".35"/><path d="M320 96v80M320 464v80M96 320h80M464 320h80" stroke="#F5A524" stroke-width="22" stroke-linecap="round"/></g><g class="cd" style="--i:0"><path d="M230 160v80" stroke="#F0475B" stroke-width="6"/><rect x="215" y="175" width="30" height="50" rx="4" fill="#F0475B"/></g><g class="cd" style="--i:1"><path d="M275 200v85" stroke="#F0475B" stroke-width="6"/><rect x="260" y="215" width="30" height="55" rx="4" fill="#F0475B"/></g><g class="cd" style="--i:2"><path d="M320 250v70" stroke="#F0475B" stroke-width="6"/><rect x="305" y="262" width="30" height="40" rx="4" fill="#F0475B"/></g><g class="cd" style="--i:3"><path d="M365 225v85" stroke="#2EBD85" stroke-width="6"/><rect x="350" y="240" width="30" height="60" rx="4" fill="#2EBD85"/></g><g class="cd" style="--i:4"><path d="M410 160v95" stroke="#2EBD85" stroke-width="6"/><rect x="395" y="175" width="30" height="70" rx="4" fill="#2EBD85"/></g><circle class="dot" cx="320" cy="320" r="14" fill="#F5A524"/></svg>';
   var THEME_KEY = "heat.theme";   // the key of Heat Index, so the main app and the tools share one theme
 
   // ---------- the tools ----------
@@ -279,7 +299,7 @@
   }
 
   // ---- market data (public exchange APIs, no keys) ----
-  async function getJ(u) { var r = await fetch(u, { cache: "no-store" }); if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }
+  async function getJ(u) { var r = await rawFetch(u, { cache: "no-store" }); if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }
   async function ticker(ex, coin, q) {
     if (ex === "bybit") { var j = await getJ("https://api.bybit.com/v5/market/tickers?category=spot&symbol=" + coin + q), t = j.result && j.result.list && j.result.list[0]; if (!t) throw new Error("no pair"); return { p: +t.lastPrice, chg: +t.price24hPcnt * 100 }; }
     if (ex === "okx") { var o = await getJ("https://www.okx.com/api/v5/market/ticker?instId=" + coin + "-" + q), x = o.data && o.data[0]; if (!x) throw new Error("no pair"); return { p: +x.last, chg: +x.open24h ? (x.last / x.open24h - 1) * 100 : null }; }
@@ -321,7 +341,7 @@
     w.appendChild(t); setTimeout(function () { t.remove(); }, 12000);
   }
   async function tgSend(text, S) {
-    var r = await fetch("https://api.telegram.org/bot" + S.tgToken + "/sendMessage", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: S.tgChat, text: text, disable_web_page_preview: true }) });
+    var r = await rawFetch("https://api.telegram.org/bot" + S.tgToken + "/sendMessage", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: S.tgChat, text: text, disable_web_page_preview: true }) });
     var j = await r.json().catch(function () { return { ok: false, description: "HTTP " + r.status }; }); if (!j.ok) throw new Error(j.description || "error"); return j;
   }
   async function deliver(r, d) {
@@ -670,7 +690,7 @@
       for (var i = 0; i < tries.length; i++) {
         try {
           var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 12000);
-          var r = await fetch(tries[i][1], { signal: ctl.signal, cache: "no-store" }); clearTimeout(to);
+          var r = await rawFetch(tries[i][1], { signal: ctl.signal, cache: "no-store" }); clearTimeout(to);
           if (!r.ok) throw new Error("HTTP " + r.status);
           var items = listOf(await r.json()).map(normItem).filter(Boolean);
           if (!items.length) throw new Error("empty");
@@ -795,7 +815,7 @@
   async function loadEvents() {
     var S0 = newsSet(); if (!S0.server) return;
     var c = serverEvents(); if (Date.now() - c.at < 30 * 60e3) return;
-    try { var r = await fetch(S0.server.replace(/\/+$/, "") + "/events", { cache: "no-store" }); if (!r.ok) throw 0; var j = await r.json();
+    try { var r = await rawFetch(S0.server.replace(/\/+$/, "") + "/events", { cache: "no-store" }); if (!r.ok) throw 0; var j = await r.json();
       var items = (j.events || []).map(function (e) { return { at: Date.parse(e.date), t: String(e.title || "").slice(0, 200), c: uniqC(e.coins || []), k: e.category || "event", u: e.url || "" }; }).filter(function (e) { return e.at && e.t; });
       jset(EV_KEY, { at: Date.now(), items: items });
     } catch (e) { jset(EV_KEY, { at: Date.now(), items: c.items }); }
