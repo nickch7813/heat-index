@@ -2,9 +2,20 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **2.15**
+Version: **2.17**
 
-## What is new in 2.15
+## What is new in 2.17
+
+- Two more languages in every tool: Japanese (日本語) and Korean (한국어). The language menu now has eight languages.
+- Same scope as 2.16: short interface texts are translated, long explanations fall back to English; the translations were written by the assistant and are worth a native-speaker check.
+
+## What was new in 2.16
+
+- Three new languages in every tool: Chinese (Mandarin, 中文), Hindi (हिन्दी) and Arabic (العربية, right-to-left layout). The shared bar now has one compact language menu with all six languages.
+- Short interface texts (buttons, labels, table headings, statuses, settings) are translated in all nine tools; the long explanatory paragraphs, guides and hints stay in English for now and are used automatically where a translation is missing. Heat Index translates its main interface (about 700 short texts).
+- The translations were written by the assistant and are worth a check by native speakers.
+
+## What was new in 2.15
 
 - Removed the logo animations (hover and loading); the logo is static again.
 
