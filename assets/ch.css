@@ -49,24 +49,6 @@
 details.langsp,div#langs,#langSeg,#langSel,select#lang,label:has(>select#lang),.group:has(button[data-g=lang]){display:none!important}
 @media (max-width:420px){.ch-row{gap:3px}.ch-sp{display:none}.ch-top .ch-lang{margin-left:auto}.ch-brand{font-size:11.5px;letter-spacing:0;gap:6px}.ch-top .ch-lang button{padding:0 3px;min-width:23px}.ch-ver{font-size:10.5px}}
 
-/* ---- logo animation: on hover (mouse) or press (touch); off when the system asks for less motion ---- */
-.ch-logo svg *{transform-box:fill-box}
-.ch-logo .aim{transform-origin:center}
-.ch-logo .cd{transform-origin:50% 100%}
-@keyframes chSpin{to{transform:rotate(360deg)}}
-@keyframes chHop{40%{transform:scaleY(1.25)}}
-.ch-brand:active .aim{animation:chSpin 1s cubic-bezier(.5,0,.2,1) 1}
-.ch-brand:active .cd{animation:chHop .5s ease-out calc(var(--i)*.07s) 1}
-@media (hover:hover){.ch-brand:hover .aim{animation:chSpin 1s cubic-bezier(.5,0,.2,1) 1}.ch-brand:hover .cd{animation:chHop .5s ease-out calc(var(--i)*.07s) 1}}
-/* ---- logo animation while data loads ---- */
-.ch-logo .ring,.ch-logo .dot{transform-origin:center}
-@keyframes chPulse{50%{transform:scale(1.08);opacity:.55}}
-@keyframes chRot{to{transform:rotate(360deg)}}
-.ch-loading .ch-logo .aim{animation:chRot 2.4s linear infinite}
-.ch-loading .ch-logo .ring,.ch-loading .ch-logo .dot{animation:chPulse 1.1s ease-in-out infinite}
-
-@media (prefers-reduced-motion:reduce){.ch-logo *{animation:none!important}}
-
 /* ---- links from a coin card to the other tools ---- */
 .ch-links{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px;font:12px/1.3 var(--ch-font)}
 .ch-links>em{font-style:normal;color:var(--ch-t3);margin-right:2px}

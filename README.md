@@ -2,9 +2,13 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **2.14**
+Version: **2.15**
 
-## What is new in 2.14
+## What is new in 2.15
+
+- Removed the logo animations (hover and loading); the logo is static again.
+
+## What was new in 2.14
 
 - The logo pulses and the crosshair spins while a tool is loading data (any `fetch` in flight for more than 0.25 s; at least 0.7 s once shown, at most 12 s). The shared library's own background requests are not counted.
 
