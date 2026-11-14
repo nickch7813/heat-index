@@ -2,9 +2,17 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **2.0**
+Version: **2.1**
 
-## What is new in 2.0
+## What is new in 2.1
+
+- New tab **Global Cycle** (`cycle/`): where Bitcoin is in its four-year cycle (halving, top, bear market, bottom), cycle clock, bottom-confirmation ladder, phase chart with 200-week MA and weak/base/strong scenarios, post-top comparison of cycles, table of past cycles and a timeline of what to expect.
+
+## What was new in 2.01
+
+- Heat Index cards: larger tap targets for the pin, screenshot and alert icons, the analysis links and the full-chart link; easier-to-read signal labels; bigger filter checkboxes and volume slider.
+
+## What was new in 2.0
 
 - Every tool now fits a phone screen: the Liquidation Radar table and the Volume Spikes page no longer stretch the page sideways, and the shared top bar and footer are no longer bent by a tool's own header and footer styles.
 - Larger tap targets for small controls (favorite stars, info buttons, footer links).

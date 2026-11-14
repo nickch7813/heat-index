@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16181d">
+<link rel="manifest" href="../manifest.webmanifest"><link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<style id="ch-css">
+/* CRYPTO HUNTERS: the shared look of every tool.
+   The colors are the ones of Heat Index (the main app), so all tools read as one product.
+   Each tool maps its own variable names to these tokens in a small <style id="ch-skin"> block. */
+:root{
+  --ch-bg:#fff;--ch-s1:#f4f4f2;--ch-tx:#1b1f24;--ch-t2:#5f6368;--ch-t3:#8a8f96;--ch-bd:#e3e3e0;--ch-bd2:#c9c9c4;
+  --ch-acb:#e6f1fb;--ch-act:#0c447c;--ch-acd:#85b7eb;--ch-ac:#378add;
+  --ch-okb:#eaf3de;--ch-okt:#27500a;--ch-erb:#fcebeb;--ch-ert:#791f1f;--ch-warn:#ba7517;
+  --ch-up:#1d9e75;--ch-dn:#e24b4a;--ch-upb:rgba(29,158,117,.12);--ch-dnb:rgba(226,75,74,.12);
+  --ch-brand:#c9820f;--ch-w:760px;--ch-font:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --ch-bg:#16181d;--ch-s1:#1f2228;--ch-tx:#e8eaed;--ch-t2:#a0a4ab;--ch-t3:#6f747c;--ch-bd:#2c3038;--ch-bd2:#454a54;
+  --ch-acb:#0c3a66;--ch-act:#b5d4f4;--ch-acd:#378add;--ch-ac:#378add;
+  --ch-okb:#173404;--ch-okt:#c0dd97;--ch-erb:#501313;--ch-ert:#f7c1c1;--ch-warn:#ef9f27;
+  --ch-up:#2bb58a;--ch-dn:#ec5f5e;--ch-upb:rgba(43,181,138,.14);--ch-dnb:rgba(236,95,94,.14);--ch-brand:#f5a524;color-scheme:dark}}
+:root[data-theme=dark]{
+  --ch-bg:#16181d;--ch-s1:#1f2228;--ch-tx:#e8eaed;--ch-t2:#a0a4ab;--ch-t3:#6f747c;--ch-bd:#2c3038;--ch-bd2:#454a54;
+  --ch-acb:#0c3a66;--ch-act:#b5d4f4;--ch-acd:#378add;--ch-ac:#378add;
+  --ch-okb:#173404;--ch-okt:#c0dd97;--ch-erb:#501313;--ch-ert:#f7c1c1;--ch-warn:#ef9f27;
+  --ch-up:#2bb58a;--ch-dn:#ec5f5e;--ch-upb:rgba(43,181,138,.14);--ch-dnb:rgba(236,95,94,.14);--ch-brand:#f5a524;color-scheme:dark}
+
+/* ---- suite bar: brand, Telegram channel and the tools ---- */
+.ch-top{background:var(--ch-bg);border-bottom:0.5px solid var(--ch-bd);font:14px/1.4 var(--ch-font);color:var(--ch-tx);position:relative;z-index:3}
+.ch-in{max-width:var(--ch-w);margin:0 auto;padding:0 14px}
+.ch-row{display:flex;align-items:center;gap:10px;padding:8px 0 4px}
+.ch-brand{display:inline-flex;align-items:center;gap:8px;color:var(--ch-tx);text-decoration:none;font-weight:600;font-size:14px;letter-spacing:.04em;white-space:nowrap}
+.ch-brand img,.ch-logo,.ch-logo svg{width:26px;height:26px;border-radius:8px;display:block;flex:0 0 auto}
+.ch-brand span b{color:var(--ch-brand);font-weight:600}
+.ch-sp{flex:1}
+.ch-tg{display:inline-flex;align-items:center;gap:6px;color:var(--ch-act);background:var(--ch-acb);border:0.5px solid var(--ch-acd);border-radius:14px;padding:4px 10px 4px 8px;font-size:12px;font-weight:500;text-decoration:none;white-space:nowrap;min-height:28px}
+.ch-tg svg{width:15px;height:15px;flex:0 0 auto}
+.ch-tg:hover{border-color:var(--ch-act)}
+.ch-nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:2px 0 8px}
+.ch-nav::-webkit-scrollbar{display:none}
+.ch-nav a,.ch-nav span{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;padding:5px 10px;border-radius:8px;color:var(--ch-t2);text-decoration:none;font-size:13px}
+.ch-nav a:hover{color:var(--ch-tx);background:var(--ch-s1)}
+.ch-nav span{background:var(--ch-acb);color:var(--ch-act);font-weight:500}
+.ch-nav svg,.ch-links svg{width:15px;height:15px;flex:0 0 auto}
+.ch-top a:focus-visible,.ch-links a:focus-visible,.ch-foot a:focus-visible,.ch-cam:focus-visible,.ch-shot button:focus-visible,.ch-shot a:focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px}
+@media (max-width:420px){.ch-brand{font-size:13px}.ch-tg span{display:none}.ch-tg{padding:4px 8px}}
+
+/* ---- links from a coin card to the other tools ---- */
+.ch-links{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px;font:12px/1.3 var(--ch-font)}
+.ch-links>em{font-style:normal;color:var(--ch-t3);margin-right:2px}
+.ch-links a{display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 7px;border:0.5px solid var(--ch-bd2);border-radius:14px;color:var(--ch-t2);text-decoration:none;background:transparent;white-space:nowrap;min-height:26px}
+.ch-links a:hover{border-color:var(--ch-acd);color:var(--ch-act);background:var(--ch-acb)}
+.ch-links svg{width:13px;height:13px}
+.ch-links:empty{display:none}
+
+/* ---- screenshot: camera button and preview ---- */
+:root .ch-cam{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0.5px solid var(--ch-bd2);background:var(--ch-bg);color:var(--ch-t2);border-radius:14px;padding:4px 10px;font:12px/1.2 var(--ch-font);cursor:pointer;min-height:28px;white-space:nowrap}
+:root .ch-cam:hover{color:var(--ch-tx);border-color:var(--ch-t3)}
+:root .ch-cam svg{width:16px;height:16px}
+:root .ch-cam.ch-float{position:absolute;top:10px;right:10px;z-index:2}
+.ch-shot{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:calc(12px + env(safe-area-inset-top,0px)) 10px calc(12px + env(safe-area-inset-bottom,0px));background:rgba(0,0,0,.5);font:14px/1.45 var(--ch-font);color:var(--ch-tx)}
+.ch-shot[hidden]{display:none}
+.ch-shot .ch-pn{width:min(620px,100%);max-height:100%;overflow:auto;background:var(--ch-bg);border:0.5px solid var(--ch-bd2);border-radius:14px;padding:10px;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.ch-shot img{display:block;width:100%;height:auto;border-radius:8px;border:0.5px solid var(--ch-bd)}
+.ch-shot .ch-wait{padding:36px 0;text-align:center;color:var(--ch-t2)}
+.ch-shot .ch-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+:root .ch-shot .ch-acts>*{flex:1 1 auto;text-align:center;border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;padding:6px 12px;font:13px/1.2 var(--ch-font);cursor:pointer;text-decoration:none;min-height:32px;display:inline-flex;align-items:center;justify-content:center}
+:root .ch-shot .ch-acts>.on{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+.ch-shot p{margin:8px 2px 0;font-size:12px;color:var(--ch-t3)}
+
+/* ---- footer ---- */
+.ch-foot{border-top:0.5px solid var(--ch-bd);margin-top:24px;font:12px/1.5 var(--ch-font);color:var(--ch-t3);background:var(--ch-bg)}
+.ch-foot .ch-in{padding-top:12px;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}
+.ch-foot b{color:var(--ch-t2);font-weight:600;letter-spacing:.04em}
+.ch-foot a{color:var(--ch-act);text-decoration:none}
+.ch-foot a:hover{text-decoration:underline}
+
+/* ---- base skin of every tool (the class is set on the body by ch.js) ---- */
+body.ch-skin{font-family:var(--ch-font)!important;font-size:14px;line-height:1.45;-webkit-font-smoothing:auto}
+body.ch-skin :is(h1,h2,h3,h4,input,select,button,textarea,summary,.brand){font-family:inherit!important;font-stretch:normal!important}
+body.ch-skin :is(input,select,textarea){border-width:0.5px!important}
+body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
+
+/* ---- notification log ---- */
+:root .ch-bell{position:relative;display:inline-flex;align-items:center;justify-content:center;width:32px;height:30px;border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;cursor:pointer;padding:0;flex:0 0 auto}
+:root .ch-bell:hover{color:var(--ch-tx);border-color:var(--ch-t3)}
+:root .ch-bell svg{width:17px;height:17px}
+.ch-bell b{position:absolute;top:-6px;right:-7px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--ch-dn);color:#fff;font:600 10px/17px var(--ch-font);text-align:center;box-sizing:border-box}
+.ch-bell b[hidden]{display:none}
+.ch-bell:focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px}
+.ch-lock,.ch-lock body{overflow:hidden}
+.ch-log{position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,.45);display:flex;justify-content:flex-end;font:14px/1.45 var(--ch-font);color:var(--ch-tx)}
+.ch-log[hidden]{display:none}
+.ch-lp{width:min(440px,100%);height:100%;background:var(--ch-bg);border-left:0.5px solid var(--ch-bd2);display:flex;flex-direction:column;box-shadow:-8px 0 30px rgba(0,0,0,.25);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box}
+.ch-lp>header{display:flex;align-items:center;gap:10px;padding:14px 14px 8px}
+.ch-lp h2{flex:1;margin:0;font:500 17px/1.3 var(--ch-font)}
+:root .ch-x{width:32px;height:32px;border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;cursor:pointer;font-size:13px}
+.ch-lf{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding:0 14px 10px;border-bottom:0.5px solid var(--ch-bd)}
+.ch-lf:empty{display:none}
+.ch-lf::-webkit-scrollbar{display:none}
+:root .ch-lf button{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;padding:4px 10px;font:12px/1.3 var(--ch-font);cursor:pointer;min-height:28px}
+:root .ch-lf button svg{width:13px;height:13px}
+:root .ch-lf button[aria-pressed=true]{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+.ch-ll{flex:1;overflow:auto;padding:4px 14px 14px;overscroll-behavior:contain}
+.ch-le{border-bottom:0.5px solid var(--ch-bd);padding:11px 0 11px 10px;margin-left:-10px;border-left:2px solid transparent}
+.ch-le.ch-new{border-left-color:var(--ch-ac)}
+.ch-lm{display:flex;align-items:center;gap:6px;color:var(--ch-t3);font-size:12px;margin-bottom:3px}
+.ch-lm svg{width:14px;height:14px}
+.ch-lm em{font-style:normal;color:var(--ch-act);background:var(--ch-acb);border-radius:6px;padding:0 6px;font-size:11px}
+.ch-lm time{margin-left:auto;white-space:nowrap}
+.ch-le>b{display:block;font-weight:500;font-size:14px}
+.ch-le p{margin:2px 0 0;color:var(--ch-t2);font-size:13px;white-space:pre-line}
+.ch-lc{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:7px}
+.ch-lc span{font-size:11px;color:var(--ch-t3);border:0.5px solid var(--ch-bd);border-radius:6px;padding:1px 6px}
+.ch-lc a{margin-left:auto;font-size:12px;color:var(--ch-act);text-decoration:none;padding:3px 0}
+.ch-lc a:hover{text-decoration:underline}
+.ch-l0{color:var(--ch-t2);padding:28px 4px;margin:0;text-align:center}
+.ch-lp>footer{display:flex;align-items:center;gap:6px;padding:10px 14px;border-top:0.5px solid var(--ch-bd)}
+.ch-lh{flex:1;font-size:11px;color:var(--ch-t3)}
+:root .ch-lp>footer button{border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;padding:5px 12px;font:12px/1.2 var(--ch-font);cursor:pointer;min-height:30px}
+.ch-lp :is(button,a):focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px}
+@media (max-width:520px){.ch-lp{width:100%;border-left:0}}
+
+/* ---- notification panel: tabs, rules, form, settings ---- */
+:root .ch-log .ch-tabs{display:flex;gap:2px;padding:0 14px;border-bottom:0.5px solid var(--ch-bd)}
+:root .ch-log .ch-tabs button{flex:1;background:none;border:0;border-bottom:2px solid transparent;border-radius:0;color:var(--ch-t2);font:500 13px/1.2 var(--ch-font);padding:9px 6px 8px;cursor:pointer;min-height:36px}
+:root .ch-log .ch-tabs button[aria-selected=true]{color:var(--ch-tx);border-bottom-color:var(--ch-ac)}
+.ch-log .ch-lf{padding-top:10px}
+:root .ch-log .ch-add{display:block;width:100%;margin:12px 0 6px;border:0.5px dashed var(--ch-acd);background:var(--ch-acb);color:var(--ch-act);border-radius:12px;padding:10px;font:500 14px/1.2 var(--ch-font);cursor:pointer}
+.ch-rule{border-bottom:0.5px solid var(--ch-bd);padding:11px 0}
+.ch-rule.ch-offr>:not(.ch-rt){opacity:.6}
+.ch-rt{display:flex;align-items:center;gap:8px}
+.ch-rt b{font-weight:600;font-size:15px}
+.ch-rt span{color:var(--ch-t3);font-size:12px;flex:1}
+.ch-rule>p{margin:3px 0 0;font-size:14px}
+.ch-rule>p.ch-note{color:var(--ch-t2);font-size:13px}
+.ch-lc .ch-ok{color:var(--ch-okt);background:var(--ch-okb);border-color:transparent}
+.ch-lc .ch-err{color:var(--ch-ert);background:var(--ch-erb);border-color:transparent}
+.ch-rm{display:flex;align-items:center;gap:6px;margin-top:7px}
+.ch-rm small{flex:1;color:var(--ch-t3);font-size:12px}
+:root .ch-log .ch-rm button,:root .ch-log .ch-quick button,:root .ch-log .ch-fh button,:root .ch-log .ch-lp>footer button{border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;padding:4px 11px;font:12px/1.2 var(--ch-font);cursor:pointer;min-height:28px;font-weight:400}
+:root .ch-log .ch-lp>footer button.on{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500;padding:6px 18px;font-size:13px}
+.ch-sw{position:relative;display:inline-block;width:38px;height:22px;flex:0 0 auto;cursor:pointer}
+.ch-sw input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.ch-sw i{position:absolute;inset:0;border-radius:11px;background:var(--ch-bd2);transition:background .15s}
+.ch-sw i::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .15s}
+.ch-sw input:checked+i{background:var(--ch-ac)}
+.ch-sw input:checked+i::after{transform:translateX(16px)}
+.ch-sw input:focus-visible+i{outline:2px solid var(--ch-acd);outline-offset:2px}
+.ch-form{display:flex;flex-direction:column;gap:10px;padding:12px 0 4px}
+.ch-form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ch-t2);min-width:0}
+:root .ch-log .ch-form :is(input:not([type=checkbox]),select){font:14px/1.3 var(--ch-font);color:var(--ch-tx);background:var(--ch-bg);border:0.5px solid var(--ch-bd2);border-radius:8px;padding:8px 10px;min-height:38px;width:100%;box-sizing:border-box;margin:0}
+:root .ch-log .ch-form :is(input,select):focus{outline:2px solid var(--ch-acd);outline-offset:0;border-color:var(--ch-acd)}
+.ch-f3{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px}
+.ch-f2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ch-f2>label:only-child{grid-column:1/-1}
+.ch-now{font-size:13px;color:var(--ch-t2);background:var(--ch-s1);border-radius:8px;padding:7px 10px}
+.ch-quick{display:flex;flex-wrap:wrap;gap:5px}
+.ch-fh{margin:0;font-size:12px;color:var(--ch-t3);line-height:1.45}
+.ch-ferr{margin:0;color:var(--ch-ert);background:var(--ch-erb);border-radius:8px;padding:7px 10px;font-size:13px}
+.ch-ferr[hidden]{display:none}
+.ch-chk{flex-direction:row!important;align-items:center;gap:10px!important;font-size:14px!important;color:var(--ch-tx)!important;cursor:pointer}
+.ch-chk input{width:18px;height:18px;margin:0;accent-color:var(--ch-ac)}
+
+/* ---- bell on a coin card ---- */
+:root .ch-links .ch-al{display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 7px;border:0.5px solid var(--ch-acd);border-radius:14px;color:var(--ch-act);background:var(--ch-acb);font:12px/1.3 var(--ch-font);cursor:pointer;min-height:26px;white-space:nowrap;font-weight:400}
+.ch-links .ch-al svg{width:13px;height:13px}
+:root .ch-links .ch-al:focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px}
+
+/* ---- on-screen alerts ---- */
+.ch-toasts{position:fixed;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:1002;display:flex;flex-direction:column;gap:8px;width:min(340px,calc(100% - 24px));font:14px/1.4 var(--ch-font)}
+.ch-toast{position:relative;background:var(--ch-bg);color:var(--ch-tx);border:0.5px solid var(--ch-bd2);border-left:3px solid var(--ch-ac);border-radius:12px;padding:10px 36px 10px 12px;box-shadow:0 8px 28px rgba(0,0,0,.25);animation:chIn .2s ease-out}
+.ch-toast b{display:block;font-weight:600}
+.ch-toast p{margin:3px 0 0;color:var(--ch-t2);font-size:13px;white-space:pre-line}
+.ch-toast a{display:inline-block;margin-top:6px;font-size:12px;color:var(--ch-act);text-decoration:none}
+:root .ch-toast button{position:absolute;top:6px;right:6px;width:26px;height:26px;border:0;background:none;color:var(--ch-t3);cursor:pointer;border-radius:8px;padding:0;min-height:0;font-size:12px}
+@keyframes chIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.ch-toast{animation:none}}
+
+/* ---- hover hints ---- */
+.ch-tip{position:fixed;z-index:1100;max-width:min(300px,calc(100vw - 12px));padding:7px 10px;border-radius:8px;background:var(--ch-tx);color:var(--ch-bg);font:12.5px/1.45 var(--ch-font);box-shadow:0 6px 20px rgba(0,0,0,.25);pointer-events:none;white-space:pre-line;animation:chTip .12s ease-out}
+.ch-tip[hidden]{display:none}
+@keyframes chTip{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.ch-tip{animation:none}}
+
+/* ---- version ---- */
+.ch-ver{font:500 11px/1 var(--ch-font);color:var(--ch-t3);border:0.5px solid var(--ch-bd2);border-radius:8px;padding:3px 6px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.ch-ver.ch-old{color:var(--ch-ert);background:var(--ch-erb);border-color:transparent}
+
+/* ---- news ---- */
+:root .ch-links .ch-nw{display:inline-flex;align-items:center;gap:4px;padding:3px 9px 3px 7px;border:0.5px solid var(--ch-bd2);border-radius:14px;color:var(--ch-t2);background:transparent;font:12px/1.3 var(--ch-font);cursor:pointer;min-height:26px;white-space:nowrap;font-weight:400}
+.ch-links .ch-nw svg{width:13px;height:13px}
+:root .ch-links .ch-nw.zero{color:var(--ch-t3)}
+:root .ch-links .ch-nw.pos{color:var(--ch-okt);background:var(--ch-okb);border-color:transparent}
+:root .ch-links .ch-nw.neg{color:var(--ch-warn);border-color:var(--ch-warn)}
+:root .ch-links .ch-nw.imp{color:var(--ch-ert);background:var(--ch-erb);border-color:transparent;font-weight:600}
+:root .ch-links .ch-nw:focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px}
+.ch-nwi .ch-nh{display:block;color:var(--ch-tx);text-decoration:none;font-weight:500;font-size:14px;line-height:1.4}
+.ch-nwi .ch-nh:hover{color:var(--ch-act)}
+.ch-ni{font-size:11px;color:var(--ch-ert);background:var(--ch-erb);border-radius:6px;padding:0 6px}
+.ch-nt{font-size:11px;border-radius:6px;padding:0 6px;color:var(--ch-t3);border:0.5px solid var(--ch-bd)}
+.ch-nt.t-1{color:var(--ch-warn);border-color:var(--ch-warn)}
+.ch-nt.t1{color:var(--ch-okt);background:var(--ch-okb);border-color:transparent}
+.ch-sh{margin:10px 0 0;font:500 14px/1.3 var(--ch-font);color:var(--ch-tx)}
+
+/* ---- favorites, events, install ---- */
+:root .ch-links .ch-fv{border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t3);border-radius:14px;min-height:26px;min-width:30px;padding:2px 8px;font-size:14px;line-height:1;cursor:pointer}
+:root .ch-links .ch-fv.on{color:var(--ch-brand);border-color:var(--ch-brand)}
+:root .ch-links .ch-ev{display:inline-flex;align-items:center;gap:4px;border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;min-height:26px;padding:3px 9px;font:12px/1.3 var(--ch-font);cursor:pointer;white-space:nowrap}
+:root .ch-links .ch-ev.bad{color:var(--ch-ert);background:var(--ch-erb);border-color:transparent}
+:root .ch-links :is(.ch-fv,.ch-ev):focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px}
+:root .ch-inst{display:inline-flex;align-items:center;gap:4px;border:0.5px solid var(--ch-acd);background:var(--ch-acb);color:var(--ch-act);border-radius:14px;padding:4px 10px;font:500 12px/1.2 var(--ch-font);cursor:pointer;min-height:30px;white-space:nowrap}
+:root .ch-inst[hidden]{display:none}
+@media (max-width:420px){:root .ch-inst span{display:none}}
+.ch-ek{font-size:11px;border-radius:6px;padding:0 6px;border:0.5px solid var(--ch-bd2);color:var(--ch-t2)}
+.ch-ek.k-fomc{color:var(--ch-act);background:var(--ch-acb);border-color:transparent}
+.ch-ek.k-delisting{color:var(--ch-ert);background:var(--ch-erb);border-color:transparent}
+.ch-ek.k-listing{color:var(--ch-okt);background:var(--ch-okb);border-color:transparent}
+.ch-evi .ch-nh{display:block;color:var(--ch-tx);text-decoration:none;font-weight:500;font-size:14px;line-height:1.4}
+
+/* ---- the bar and the footer are <header>/<footer>: undo whatever a tool styles those tags with ---- */
+:root .ch-top{display:block;margin:0;padding:0;max-width:none;gap:0;justify-content:normal;align-items:normal}
+:root .ch-foot{display:block;padding:0;max-width:none;margin-left:0;margin-right:0;margin-bottom:0}
+:root .ch-top .ch-in,:root .ch-foot .ch-in{min-width:0;box-sizing:border-box;width:100%}
+
+/* ---- comfortable tap targets ---- */
+.ch-foot a{display:inline-flex;align-items:center;min-height:32px;padding:0 4px;margin:0 -4px}
+.ch-foot .ch-in{align-items:center}
+
+/* ---- on a wide screen every tool is visible in the bar (two rows if needed) instead of a hidden sideways scroll ---- */
+@media (min-width:700px){.ch-nav{flex-wrap:wrap;overflow:visible;row-gap:2px}}
+
+</style>
+<script id="ch-js" data-tool="cycle" data-ver="2.1" data-root="../">
+/* CRYPTO HUNTERS: the glue between the tools.
+   build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
+   on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
+   It gives every page the same top bar (brand, version, Telegram channel, tools), one shared light/dark theme,
+   links from a coin to the other tools (each tool opens in its own browser tab), notifications and hover hints,
+   and screenshots with the watermark. */
+(function () {
+  "use strict";
+  var VERSION = "2.1";   // the site version, set by build.py on every update and shown in the header
+  var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
+  var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
+  var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
+    : me && me.src ? me.src.replace(/assets\/ch\.js(\?.*)?$/, "") : "./";
+  var CHANNEL = "Cr_hunters", CHANNEL_URL = "https://t.me/" + CHANNEL, WATERMARK = "t.me/" + CHANNEL, BRAND = "CRYPTO HUNTERS";
+  var REPO = "https://github.com/nickch7813/heat-index";
+  // The logo is built in, so the header never depends on a separate image file (or its cache).
+  var LOGO = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 70 500 500" aria-hidden="true" focusable="false"><rect x="70" y="70" width="500" height="500" rx="120" fill="#0B0E14"/><circle cx="320" cy="320" r="200" fill="none" stroke="#F5A524" stroke-width="22"/><circle cx="320" cy="320" r="120" fill="none" stroke="#F5A524" stroke-width="6" stroke-opacity=".35"/><path d="M320 96v80M320 464v80M96 320h80M464 320h80" stroke="#F5A524" stroke-width="22" stroke-linecap="round"/><path d="M230 160v80M275 200v85M320 250v70" stroke="#F0475B" stroke-width="6"/><rect x="215" y="175" width="30" height="50" rx="4" fill="#F0475B"/><rect x="260" y="215" width="30" height="55" rx="4" fill="#F0475B"/><rect x="305" y="262" width="30" height="40" rx="4" fill="#F0475B"/><path d="M365 225v85M410 160v95" stroke="#2EBD85" stroke-width="6"/><rect x="350" y="240" width="30" height="60" rx="4" fill="#2EBD85"/><rect x="395" y="175" width="30" height="70" rx="4" fill="#2EBD85"/><circle cx="320" cy="320" r="14" fill="#F5A524"/></svg>';
+  var THEME_KEY = "heat.theme";   // the key of Heat Index, so the main app and the tools share one theme
+
+  // ---------- the tools ----------
+  var IC = {
+    cycle: '<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v4.2h-4.2"/><circle cx="12" cy="12" r="1.6"/>',
+    scan: '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11h5M11 8.5v5"/>',
+    heat: '<path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.4-4 2.6-5.2.3 1.7 1.1 2.7 2.2 3.2C11.4 9 11 6 12 3z"/>',
+    lab: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3M7.5 15h9"/>',
+    elliott: '<path d="M3 17l4-6 3 3 4-9 3 6 4-4"/>',
+    whales: '<path d="M3 13c2-4 6-6 10-5 3 .8 5 3 8 2-1 4-5 7-10 7-4 0-7-1.5-8-4zM17 8c.5-2 2-3 4-3"/><circle cx="8" cy="12" r=".6"/>',
+    liq: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><path d="M12 12l6-6"/>',
+    volume: '<path d="M4 20V14M9 20V10M14 20V13M19 20V4"/>',
+    bot: '<rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01M9.5 16.5h5"/>'
+  };
+  var TOOLS = [
+    { id: "heat", path: "" },
+    { id: "cycle", path: "cycle/" },
+    { id: "scan", path: "scanner/" },
+    { id: "lab", path: "coin-lab/" },
+    { id: "elliott", path: "elliott/" },
+    { id: "whales", path: "whales/" },
+    { id: "liq", path: "liquidations/" },
+    { id: "volume", path: "volume/" },
+    { id: "bot", path: "paper-bot/" }
+  ];
+  var L = {
+    uk: { cycle: ["Глобальний цикл", "Цикл"], scan: ["Сканер збігів", "Збіги"], heat: ["Heat Index", "Heat"], lab: ["Coin Lab", "Coin Lab"], elliott: ["Хвилі Елліотта", "Хвилі"], whales: ["Китовий сонар", "Кити"], liq: ["Радар ліквідацій", "Ліквідації"], volume: ["Сплески об’ємів", "Об’єми"], bot: ["Бот-трейдер", "Бот"],
+      an: "Аналіз:", open: "Відкрити {c} у «{t}» (нова вкладка)", tools: "Інструменти", tg: "Телеграм-канал", cam: "Скріншот", wait: "Готую зображення…", save: "Зберегти", share: "Поділитися", copy: "Копіювати", copied: "Скопійовано", close: "Закрити", fail: "Не вдалося створити зображення: {e}", hint: "На телефоні можна також утримати зображення, щоб зберегти його.", nfa: "Не фінансова порада", src: "Код", log: "Журнал сповіщень", logAll: "Усі", logEmpty: "Поки що сповіщень немає. Тут збираються сповіщення з усіх інструментів: сигнали зон Heat Index (дзвіночок на картці монети), сповіщення Coin Lab і нові сплески об’ємів.", notif: "Сповіщення", tLog: "Журнал", tRules: "Правила", tSet: "Налаштування", alerts: "Цінові сповіщення", alAdd: "Сповіщення", alAddT: "Налаштувати сповіщення для {c}", now: "Зараз", dist: "до цілі {d}%", waiting: "Чекає першої перевірки", active: "Активне", off: "Вимкнене", firedOff: "Спрацювало", once: "Один раз", every: "Щоразу, пауза {m} хв", repeatEvery: "Щоразу, з паузою", lastFired: "Спрацювало: {t}", edit: "Змінити", del: "Видалити", delQ: "Видалити це сповіщення?", rulesEmpty: "Ще немає жодного сповіщення. Створіть перше: наприклад, коли ціна досягне певного рівня або підійде до нього ближче ніж на 1%.", rulesHint: "Ціни перевіряються кожні {s} с, поки відкрита хоча б одна вкладка будь-якого інструмента.", newRule: "Нове сповіщення", cancel: "Скасувати", save2: "Зберегти", k_reach: "ціна досягне {v}", k_above: "ціна вище {v}", k_below: "ціна нижче {v}", k_near: "ціна ближче ніж на {d}% до {v}", k_up24: "зростання за 24 год від {v}", k_dn24: "падіння за 24 год від {v}", k_rsiLo: "RSI {tf} нижче {v}", k_rsiHi: "RSI {tf} вище {v}", o_reach: "Ціна досягне рівня", o_above: "Ціна вище рівня", o_below: "Ціна нижче рівня", o_near: "Наближення до ціни", o_up24: "Зростання за 24 год, %", o_dn24: "Падіння за 24 год, %", o_rsiLo: "RSI нижче рівня (перепроданість)", o_rsiHi: "RSI вище рівня (перекупленість)", h_reach: "Спрацює, коли ціна дійде до рівня з будь-якого боку: вгору, якщо рівень вищий за поточну ціну, вниз, якщо нижчий.", h_above: "Спрацює, коли ціна буде на рівні або вище.", h_below: "Спрацює, коли ціна буде на рівні або нижче.", h_near: "Спрацює, коли ціна підійде до рівня ближче, ніж на вказаний відсоток, з будь-якого боку. Зручно, щоб встигнути підготуватися до входу чи виходу.", h_up24: "Спрацює, коли зміна ціни за 24 години досягне вказаного зростання.", h_dn24: "Спрацює, коли ціна за 24 години впаде на вказаний відсоток або більше.", h_rsiLo: "RSI 14 на вибраному таймфреймі, з поточною свічкою. 30 і нижче вважається перепроданістю.", h_rsiHi: "RSI 14 на вибраному таймфреймі, з поточною свічкою. 70 і вище вважається перекупленістю.", fCoin: "Монета", fQuote: "Котирування", fEx: "Біржа", fKind: "Умова", fPrice: "Ціна, {q}", fRsi: "Рівень RSI", fPct: "Відсоток", fNear: "Відстань, %", fTf: "Таймфрейм", fRepeat: "Повтор", fCd: "Пауза, хв", fNote: "Нотатка (необов’язково)", fNoteP: "напр. план входу", fCoinNeed: "Введіть тікер монети, напр. BTC", fValNeed: "Вкажіть значення більше нуля", fRsiNeed: "RSI має бути від 1 до 99", loading: "Завантажую ціну…", noPair: "Пару {p} не знайдено на {e}", errData: "Немає даних", onoff: "Увімкнути або вимкнути", sSound: "Звуковий сигнал", sBrowser: "Сповіщення браузера", perm_default: "Браузер ще не дав дозволу на сповіщення.", perm_granted: "Дозвіл браузера є.", perm_denied: "Браузер заборонив сповіщення для цього сайту. Дозвольте їх у налаштуваннях сайту в браузері.", perm_unsupported: "Тут сповіщення браузера недоступні (наприклад, усередині Telegram), але на екрані, звуком і в Telegram-бот усе працює.", allow: "Дозволити", sTg: "Надсилати в Telegram через свого бота", sToken: "Токен бота", sChat: "Chat ID або @канал", sTgHint: "Створіть бота в @BotFather, додайте його в чат чи канал і вкажіть його ID.", test: "Перевірити", tgTestMsg: "тестове сповіщення", tgOk: "Надіслано", tgFail: "Помилка: {e}", sEvery: "Як часто перевіряти", sec: "кожні {s} с", sNote: "Перевірка йде прямо в браузері, поки відкрита хоча б одна вкладка будь-якого інструмента CRYPTO HUNTERS. Якщо закрити всі вкладки, сповіщення не прийдуть.", testAll: "Тестове сповіщення", verOk: "Версія сайту {v}. Якщо після оновлення на GitHub тут стара версія, браузер показує сторінку з кешу", verOld: "Сторінка версії {p}, а скрипт версії {v}: браузер узяв частину файлів з кешу. Оновіть сторінку", nwBadge: "Новини про {c} за 24 год: {n}, важливих негативних: {i}. Натисніть, щоб прочитати", nwNone: "Про {c} за 24 год новин немає", nwTitle: "Новини: {c}", nwReload: "Оновити", nwSrc: "Джерело: {s}, оновлено {t}", nwSrvName: "ваш сервер новин", nwErr: "Новини недоступні ({e})", nwHint: "Якщо джерело блокує запити з браузера, вкажіть свій сервер новин у Сповіщення → Налаштування.", nwEmpty: "За останні 3 дні новин про {c} немає.", nwImp: "важлива негативна", nwNeg: "негативна", nwPos: "позитивна", nwNeu: "нейтральна", nwSet: "Новини", nwOn: "Показувати новини на картках монет", nwSrv: "Свій сервер новин (необов’язково)", nwSrvHint: "Адреса сервера з server/news-proxy.js: він збирає CryptoPanic, оголошення Binance і RSS. Без нього використовується безкоштовне Free Crypto News.", favOn: "Додати {c} в обрані (в усіх інструментах)", favOff: "Прибрати {c} з обраних", install: "Встановити CRYPTO HUNTERS як застосунок на цей пристрій", installS: "Встановити", calTitle: "Календар подій", calTitleC: "Події: {c}", calAll: "Усі події", calSrc: "Засідання ФРС і оголошення Binance з новин. Більше подій (розблокування, оновлення мереж) — через свій сервер новин з ключем CoinMarketCal.", calSrcSrv: "Засідання ФРС, оголошення Binance і події CoinMarketCal з вашого сервера.", calEmpty: "Найближчих подій немає.", evBadge: "Подій щодо {c} за 7 днів: {n}. Найближча: {t}", evIn: "{d} дн", evToday: "сьогодні", evFomc: "ФРС", evList: "лістинг", evDelist: "делістинг", evFomcT: "Рішення ФРС щодо ставки (FOMC)", evFomcWhy: "У день рішення ринок нервовий: різкі рухи в обидва боки. Суворий режим бота не відкриває нових угод за 12 год до й 2 год після рішення.", corrL: "Кореляція з BTC", logClear: "Очистити", logClearQ: "Видалити всі записи журналу?", logCsv: "CSV", logOpen: "Відкрити", logNew: "нове", buy: "зона купівлі", sell: "зона продажу", spike: "Сплеск об’єму ×{r}", candle: "свічка", brkUp: "пробій угору", brkDn: "пробій униз", spot: "спот", futures: "ф’ючерси", chScreen: "На екрані", chBrowser: "Браузер", chTelegram: "Telegram", chSound: "Звук", chLog: "Лише журнал", logHint: "Журнал зберігається в цьому браузері, до 300 останніх записів.", today: "сьогодні", yesterday: "вчора" },
+    ru: { cycle: ["Глобальный цикл", "Цикл"], scan: ["Сканер совпадений", "Совпадения"], heat: ["Heat Index", "Heat"], lab: ["Coin Lab", "Coin Lab"], elliott: ["Волны Эллиотта", "Волны"], whales: ["Китовый сонар", "Киты"], liq: ["Радар ликвидаций", "Ликвидации"], volume: ["Всплески объёмов", "Объёмы"], bot: ["Бот-трейдер", "Бот"],
+      an: "Анализ:", open: "Открыть {c} в «{t}» (новая вкладка)", tools: "Инструменты", tg: "Телеграм-канал", cam: "Скриншот", wait: "Готовлю изображение…", save: "Сохранить", share: "Поделиться", copy: "Копировать", copied: "Скопировано", close: "Закрыть", fail: "Не удалось создать изображение: {e}", hint: "На телефоне можно также удержать изображение, чтобы сохранить его.", nfa: "Не финансовый совет", src: "Код", log: "Журнал уведомлений", logAll: "Все", logEmpty: "Пока уведомлений нет. Здесь собираются уведомления всех инструментов: сигналы зон Heat Index (колокольчик на карточке монеты), уведомления Coin Lab и новые всплески объёмов.", notif: "Уведомления", tLog: "Журнал", tRules: "Правила", tSet: "Настройки", alerts: "Ценовые уведомления", alAdd: "Уведомление", alAddT: "Настроить уведомление для {c}", now: "Сейчас", dist: "до цели {d}%", waiting: "Ждёт первой проверки", active: "Активно", off: "Выключено", firedOff: "Сработало", once: "Один раз", every: "Каждый раз, пауза {m} мин", repeatEvery: "Каждый раз, с паузой", lastFired: "Сработало: {t}", edit: "Изменить", del: "Удалить", delQ: "Удалить это уведомление?", rulesEmpty: "Пока нет ни одного уведомления. Создайте первое: например, когда цена достигнет уровня или подойдёт к нему ближе чем на 1%.", rulesHint: "Цены проверяются каждые {s} с, пока открыта хотя бы одна вкладка любого инструмента.", newRule: "Новое уведомление", cancel: "Отмена", save2: "Сохранить", k_reach: "цена достигнет {v}", k_above: "цена выше {v}", k_below: "цена ниже {v}", k_near: "цена ближе чем на {d}% к {v}", k_up24: "рост за 24 ч от {v}", k_dn24: "падение за 24 ч от {v}", k_rsiLo: "RSI {tf} ниже {v}", k_rsiHi: "RSI {tf} выше {v}", o_reach: "Цена достигнет уровня", o_above: "Цена выше уровня", o_below: "Цена ниже уровня", o_near: "Приближение к цене", o_up24: "Рост за 24 ч, %", o_dn24: "Падение за 24 ч, %", o_rsiLo: "RSI ниже уровня (перепроданность)", o_rsiHi: "RSI выше уровня (перекупленность)", h_reach: "Сработает, когда цена дойдёт до уровня с любой стороны: вверх, если уровень выше текущей цены, вниз, если ниже.", h_above: "Сработает, когда цена будет на уровне или выше.", h_below: "Сработает, когда цена будет на уровне или ниже.", h_near: "Сработает, когда цена подойдёт к уровню ближе указанного процента с любой стороны. Удобно, чтобы успеть подготовиться ко входу или выходу.", h_up24: "Сработает, когда изменение цены за 24 часа достигнет указанного роста.", h_dn24: "Сработает, когда цена за 24 часа упадёт на указанный процент или больше.", h_rsiLo: "RSI 14 на выбранном таймфрейме, с текущей свечой. 30 и ниже считается перепроданностью.", h_rsiHi: "RSI 14 на выбранном таймфрейме, с текущей свечой. 70 и выше считается перекупленностью.", fCoin: "Монета", fQuote: "Котировка", fEx: "Биржа", fKind: "Условие", fPrice: "Цена, {q}", fRsi: "Уровень RSI", fPct: "Процент", fNear: "Расстояние, %", fTf: "Таймфрейм", fRepeat: "Повтор", fCd: "Пауза, мин", fNote: "Заметка (необязательно)", fNoteP: "напр. план входа", fCoinNeed: "Введите тикер монеты, напр. BTC", fValNeed: "Укажите значение больше нуля", fRsiNeed: "RSI должен быть от 1 до 99", loading: "Загружаю цену…", noPair: "Пара {p} не найдена на {e}", errData: "Нет данных", onoff: "Включить или выключить", sSound: "Звуковой сигнал", sBrowser: "Уведомления браузера", perm_default: "Браузер ещё не дал разрешения на уведомления.", perm_granted: "Разрешение браузера есть.", perm_denied: "Браузер запретил уведомления для этого сайта. Разрешите их в настройках сайта в браузере.", perm_unsupported: "Здесь уведомления браузера недоступны (например, внутри Telegram), но на экране, звуком и в Telegram-бот всё работает.", allow: "Разрешить", sTg: "Отправлять в Telegram через своего бота", sToken: "Токен бота", sChat: "Chat ID или @канал", sTgHint: "Создайте бота в @BotFather, добавьте его в чат или канал и укажите его ID.", test: "Проверить", tgTestMsg: "тестовое уведомление", tgOk: "Отправлено", tgFail: "Ошибка: {e}", sEvery: "Как часто проверять", sec: "каждые {s} с", sNote: "Проверка идёт прямо в браузере, пока открыта хотя бы одна вкладка любого инструмента CRYPTO HUNTERS. Если закрыть все вкладки, уведомления не придут.", testAll: "Тестовое уведомление", verOk: "Версия сайта {v}. Если после обновления на GitHub здесь старая версия, браузер показывает страницу из кэша", verOld: "Страница версии {p}, а скрипт версии {v}: браузер взял часть файлов из кэша. Обновите страницу", nwBadge: "Новости о {c} за 24 ч: {n}, важных негативных: {i}. Нажмите, чтобы прочитать", nwNone: "О {c} за 24 ч новостей нет", nwTitle: "Новости: {c}", nwReload: "Обновить", nwSrc: "Источник: {s}, обновлено {t}", nwSrvName: "ваш сервер новостей", nwErr: "Новости недоступны ({e})", nwHint: "Если источник блокирует запросы из браузера, укажите свой сервер новостей в Уведомления → Настройки.", nwEmpty: "За последние 3 дня новостей о {c} нет.", nwImp: "важная негативная", nwNeg: "негативная", nwPos: "позитивная", nwNeu: "нейтральная", nwSet: "Новости", nwOn: "Показывать новости на карточках монет", nwSrv: "Свой сервер новостей (необязательно)", nwSrvHint: "Адрес сервера из server/news-proxy.js: он собирает CryptoPanic, объявления Binance и RSS. Без него используется бесплатный Free Crypto News.", favOn: "Добавить {c} в избранное (во всех инструментах)", favOff: "Убрать {c} из избранного", install: "Установить CRYPTO HUNTERS как приложение на это устройство", installS: "Установить", calTitle: "Календарь событий", calTitleC: "События: {c}", calAll: "Все события", calSrc: "Заседания ФРС и объявления Binance из новостей. Больше событий (разблокировки, обновления сетей) — через свой сервер новостей с ключом CoinMarketCal.", calSrcSrv: "Заседания ФРС, объявления Binance и события CoinMarketCal с вашего сервера.", calEmpty: "Ближайших событий нет.", evBadge: "Событий по {c} за 7 дней: {n}. Ближайшее: {t}", evIn: "{d} дн", evToday: "сегодня", evFomc: "ФРС", evList: "листинг", evDelist: "делистинг", evFomcT: "Решение ФРС по ставке (FOMC)", evFomcWhy: "В день решения рынок нервный: резкие движения в обе стороны. Строгий режим бота не открывает новых сделок за 12 ч до и 2 ч после решения.", corrL: "Корреляция с BTC", logClear: "Очистить", logClearQ: "Удалить все записи журнала?", logCsv: "CSV", logOpen: "Открыть", logNew: "новое", buy: "зона покупки", sell: "зона продажи", spike: "Всплеск объёма ×{r}", candle: "свеча", brkUp: "пробой вверх", brkDn: "пробой вниз", spot: "спот", futures: "фьючерсы", chScreen: "На экране", chBrowser: "Браузер", chTelegram: "Telegram", chSound: "Звук", chLog: "Только журнал", logHint: "Журнал хранится в этом браузере, до 300 последних записей.", today: "сегодня", yesterday: "вчера" },
+    en: { cycle: ["Global Cycle", "Cycle"], scan: ["Confluence Scanner", "Confluence"], heat: ["Heat Index", "Heat"], lab: ["Coin Lab", "Coin Lab"], elliott: ["Elliott Waves", "Elliott"], whales: ["Whale Sonar", "Whales"], liq: ["Liquidation Radar", "Liquidations"], volume: ["Volume Spikes", "Volume"], bot: ["Paper Bot", "Bot"],
+      an: "Analyze:", open: "Open {c} in {t} (new tab)", tools: "Tools", tg: "Telegram channel", cam: "Screenshot", wait: "Preparing the image…", save: "Save", share: "Share", copy: "Copy", copied: "Copied", close: "Close", fail: "Could not create the image: {e}", hint: "On a phone you can also long-press the image to save it.", nfa: "Not financial advice", src: "Code", log: "Notification log", logAll: "All", logEmpty: "No notifications yet. Notifications from every tool are collected here: Heat Index zone signals (the bell on a coin card), Coin Lab alerts and new volume spikes.", notif: "Notifications", tLog: "Log", tRules: "Rules", tSet: "Settings", alerts: "Price alerts", alAdd: "Alert", alAddT: "Set an alert for {c}", now: "Now", dist: "{d}% to target", waiting: "Waiting for the first check", active: "Active", off: "Off", firedOff: "Fired", once: "Once", every: "Every time, {m} min pause", repeatEvery: "Every time, with a pause", lastFired: "Fired: {t}", edit: "Edit", del: "Delete", delQ: "Delete this alert?", rulesEmpty: "No alerts yet. Create the first one: for example, when the price reaches a level or comes within 1% of it.", rulesHint: "Prices are checked every {s} s while at least one tab of any tool is open.", newRule: "New alert", cancel: "Cancel", save2: "Save", k_reach: "price reaches {v}", k_above: "price above {v}", k_below: "price below {v}", k_near: "price within {d}% of {v}", k_up24: "24h rise of {v} or more", k_dn24: "24h drop of {v} or more", k_rsiLo: "RSI {tf} below {v}", k_rsiHi: "RSI {tf} above {v}", o_reach: "Price reaches a level", o_above: "Price above a level", o_below: "Price below a level", o_near: "Price comes close to a level", o_up24: "24h rise, %", o_dn24: "24h drop, %", o_rsiLo: "RSI below a level (oversold)", o_rsiHi: "RSI above a level (overbought)", h_reach: "Fires when the price gets to the level from either side: up if the level is above the current price, down if it is below.", h_above: "Fires when the price is at or above the level.", h_below: "Fires when the price is at or below the level.", h_near: "Fires when the price comes closer to the level than the given percent, from either side. Handy to get ready for an entry or exit.", h_up24: "Fires when the 24h price change reaches the given rise.", h_dn24: "Fires when the price has dropped by the given percent or more over 24 hours.", h_rsiLo: "RSI 14 on the chosen timeframe, current candle included. 30 and below is usually read as oversold.", h_rsiHi: "RSI 14 on the chosen timeframe, current candle included. 70 and above is usually read as overbought.", fCoin: "Coin", fQuote: "Quote", fEx: "Exchange", fKind: "Condition", fPrice: "Price, {q}", fRsi: "RSI level", fPct: "Percent", fNear: "Distance, %", fTf: "Timeframe", fRepeat: "Repeat", fCd: "Pause, min", fNote: "Note (optional)", fNoteP: "e.g. entry plan", fCoinNeed: "Enter a coin ticker, e.g. BTC", fValNeed: "Enter a value above zero", fRsiNeed: "RSI must be between 1 and 99", loading: "Loading the price…", noPair: "{p} was not found on {e}", errData: "No data", onoff: "Turn on or off", sSound: "Sound", sBrowser: "Browser notifications", perm_default: "The browser has not been asked for permission yet.", perm_granted: "The browser allows notifications.", perm_denied: "The browser blocked notifications for this site. Allow them in the site settings of your browser.", perm_unsupported: "Browser notifications are not available here (for example inside Telegram), but on-screen, sound and Telegram bot alerts work.", allow: "Allow", sTg: "Send to Telegram through my bot", sToken: "Bot token", sChat: "Chat ID or @channel", sTgHint: "Create a bot in @BotFather, add it to a chat or channel and enter its ID.", test: "Test", tgTestMsg: "test notification", tgOk: "Sent", tgFail: "Error: {e}", sEvery: "How often to check", sec: "every {s} s", sNote: "Checks run right in the browser while at least one tab of any CRYPTO HUNTERS tool is open. If every tab is closed, no alerts arrive.", testAll: "Test notification", verOk: "Site version {v}. If an old version shows here after a GitHub update, the browser is using its cache", verOld: "The page is version {p} but the script is {v}: the browser took some files from its cache. Reload the page", nwBadge: "News on {c} in 24h: {n}, important negative: {i}. Tap to read", nwNone: "No news on {c} in 24h", nwTitle: "News: {c}", nwReload: "Refresh", nwSrc: "Source: {s}, updated {t}", nwSrvName: "your news server", nwErr: "News unavailable ({e})", nwHint: "If the source blocks requests from the browser, set your own news server in Notifications → Settings.", nwEmpty: "No news on {c} in the last 3 days.", nwImp: "important negative", nwNeg: "negative", nwPos: "positive", nwNeu: "neutral", nwSet: "News", nwOn: "Show news on coin cards", nwSrv: "Own news server (optional)", nwSrvHint: "Address of a server running server/news-proxy.js: it gathers CryptoPanic, Binance announcements and RSS. Without it the free Free Crypto News is used.", favOn: "Add {c} to favorites (in every tool)", favOff: "Remove {c} from favorites", install: "Install CRYPTO HUNTERS as an app on this device", installS: "Install", calTitle: "Events calendar", calTitleC: "Events: {c}", calAll: "All events", calSrc: "Fed decisions and Binance announcements from the news. More events (unlocks, network upgrades) come through your own news server with a CoinMarketCal key.", calSrcSrv: "Fed decisions, Binance announcements and CoinMarketCal events from your server.", calEmpty: "No upcoming events.", evBadge: "Events for {c} in 7 days: {n}. Next: {t}", evIn: "{d} d", evToday: "today", evFomc: "Fed", evList: "listing", evDelist: "delisting", evFomcT: "Fed rate decision (FOMC)", evFomcWhy: "On decision day the market is nervous, with sharp moves both ways. The bot\u2019s strict mode opens no new trades from 12 h before to 2 h after the decision.", corrL: "Correlation with BTC", logClear: "Clear", logClearQ: "Delete every entry of the log?", logCsv: "CSV", logOpen: "Open", logNew: "new", buy: "buy zone", sell: "sell zone", spike: "Volume spike ×{r}", candle: "candle", brkUp: "breakout up", brkDn: "breakdown", spot: "spot", futures: "futures", chScreen: "On screen", chBrowser: "Browser", chTelegram: "Telegram", chSound: "Sound", chLog: "Log only", logHint: "The log is kept in this browser, up to the last 300 entries.", today: "today", yesterday: "yesterday" }
+  };
+  function lang() { var l = (document.documentElement.lang || "en").slice(0, 2).toLowerCase(); return L[l] ? l : "en"; }
+  function tr(k, p) { var s = L[lang()][k]; if (s == null) s = L.en[k]; if (Array.isArray(s)) return s; s = String(s); if (p) s = s.replace(/\{(\w+)\}/g, function (_, x) { return p[x] == null ? "" : p[x]; }); return s; }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function icon(id) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (IC[id] || "") + "</svg>"; }
+  var TG_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.6 4.2 2.9 11.4c-1.3.5-1.3 1.2-.2 1.6l4.8 1.5 1.8 5.6c.2.6.1.9.8.9.5 0 .7-.2 1-.5l2.3-2.3 4.9 3.6c.9.5 1.5.2 1.8-.8l3.2-15.1c.3-1.3-.5-1.9-1.4-1.5zM8.2 14.2l9.4-5.9c.5-.3.9-.1.5.2l-8 7.2-.3 3.4-1.6-4.9z"/></svg>';
+
+  // ---------- one theme for every tool ----------
+  var lastUser = 0;
+  ["pointerdown", "keydown"].forEach(function (ev) { addEventListener(ev, function (e) { if (e.isTrusted) lastUser = Date.now(); }, true); });
+  function saved() { try { var v = localStorage.getItem(THEME_KEY); return v === "dark" || v === "light" ? v : null; } catch (e) { return null; } }
+  var start = saved();
+  if (start) document.documentElement.dataset.theme = start;
+  // A theme the person picks in any tool is stored under the shared key; a theme set by the page itself (Telegram, system) is not.
+  new MutationObserver(function () {
+    var th = document.documentElement.dataset.theme;
+    if ((th === "dark" || th === "light") && Date.now() - lastUser < 1500) { try { localStorage.setItem(THEME_KEY, th); } catch (e) {} }
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  addEventListener("storage", function (e) { if (e.key === THEME_KEY && (e.newValue === "dark" || e.newValue === "light") && document.hidden) document.documentElement.dataset.theme = e.newValue; });
+
+  // ---------- links between the tools ----------
+  var EXN = { binance: "Binance", bybit: "Bybit", okx: "OKX" };
+  function normEx(ex) { ex = String(ex || "binance").toLowerCase(); return EXN[ex] ? ex : "binance"; }
+  function url(id, o) {
+    var t = TOOLS.filter(function (x) { return x.id === id; })[0]; if (!t) return ROOT;
+    var base = ROOT + t.path; if (!o || !o.coin) return base;
+    var coin = String(o.coin).toUpperCase(), q = String(o.q || "USDT").toUpperCase(), ex = normEx(o.ex);
+    if (id === "heat") return base + "#/chart/" + EXN[ex] + "/" + encodeURIComponent(coin) + (q === "BTC" ? "" : "/USDT");
+    if (id === "liq") return base + (ex === "bybit" ? "?ex=bybit" : "") + "#" + encodeURIComponent(coin) + "USDT";
+    if (id === "volume") return base + "?coin=" + encodeURIComponent(coin);
+    if (id === "whales" && ex === "okx") ex = "binance";
+    return base + "?coin=" + encodeURIComponent(coin) + "&q=" + encodeURIComponent(q) + "&ex=" + ex;
+  }
+  // The tools a coin can be opened in, in this order (the bot trades by itself, so it is not a target).
+  var TARGETS = ["heat", "lab", "elliott", "whales", "liq", "volume"];
+  function links(o) {
+    if (!o || !o.coin) return "";
+    var from = o.from || TOOL, coin = String(o.coin).toUpperCase(), q = String(o.q || "USDT").toUpperCase();
+    var list = TARGETS.filter(function (id) { return id !== from && !(id === "liq" && q !== "USDT"); });
+    return '<div class="ch-links" translate="no" data-ch><em>' + esc(tr("an")) + "</em>" + list.map(function (id) {
+      var nm = tr(id)[1];
+      return '<a href="' + esc(url(id, o)) + '" target="ch_' + id + '" data-ch-href title="' + esc(tr("open", { c: coin, t: tr(id)[0] })) + '">' + icon(id) + "<span>" + esc(nm) + "</span></a>";
+    }).join("") + '<button type="button" class="ch-al" data-ch-alert data-coin="' + esc(coin) + '" data-q="' + esc(q) + '" data-ex="' + esc(normEx(o.ex)) + '" title="' + esc(tr("alAddT", { c: coin })) + '">' + BELL + "<span>" + esc(tr("alAdd")) + "</span></button>" + badgeHTML(coin) + evBadge(coin) + favBtn(coin) + "</div>";
+  }
+  function linksInto(el, o) { if (!el) return; var h = links(o); if (el.__ch !== h) { el.innerHTML = h; el.__ch = h; } }
+
+  // A card that re-renders often can swap the link between press and release; open on release so the tap is never lost.
+  var press = null, eat = 0;
+  function tg() { var w = window.Telegram && window.Telegram.WebApp; return w && w.platform && w.platform !== "unknown" ? w : null; }
+  function go(a) {
+    var href = a.getAttribute("href"), T = tg();
+    if (T) { try { if (/^https:\/\/t\.me\//.test(href)) T.openTelegramLink(href); else T.openLink(new URL(href, location.href).href); return; } catch (e) {} }
+    var w = window.open(href, a.getAttribute("target") || "_blank"); if (w) { try { w.focus(); } catch (e) {} } else location.href = href;
+  }
+  addEventListener("pointerdown", function (e) { var a = e.target.closest && e.target.closest("[data-ch] a[href], a[data-ch-href]"); press = a && e.button === 0 ? { href: a.getAttribute("href"), x: e.clientX, y: e.clientY } : null; }, true);
+  addEventListener("pointerup", function (e) {
+    var p = press; press = null; if (!p) return; var a = e.target.closest && e.target.closest("[data-ch] a[href], a[data-ch-href]");
+    if (!a || a.getAttribute("href") !== p.href || Math.abs(e.clientX - p.x) > 12 || Math.abs(e.clientY - p.y) > 12) return;
+    if (e.ctrlKey || e.metaKey || e.shiftKey) return;   // let the browser handle new-tab gestures itself
+    eat = Date.now(); go(a);
+  }, true);
+  addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("[data-ch] a[href], a[data-ch-href]"); if (!a) return;
+    e.stopPropagation(); if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+    e.preventDefault(); if (Date.now() - eat < 800) return; go(a);   // keyboard Enter comes here
+  }, true);
+
+  // ---------- deep links: ?coin=SOL&q=USDT&ex=binance&tf=1h ----------
+  function param() {
+    var s = new URLSearchParams(location.search), c = (s.get("coin") || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    return { coin: c || null, q: (s.get("q") || "").toUpperCase().replace(/[^A-Z0-9]/g, "") || null, ex: s.get("ex") ? normEx(s.get("ex")) : null, tf: s.get("tf") || null };
+  }
+
+  // ---------- watermark and screenshots ----------
+  function palette() {
+    var cs = getComputedStyle(document.documentElement), g = function (n, d) { return (cs.getPropertyValue(n) || "").trim() || d; };
+    return { bg: g("--ch-bg", "#16181d"), tx: g("--ch-tx", "#e8eaed"), mu: g("--ch-t2", "#a0a4ab"), line: g("--ch-bd", "#2c3038"), ac: g("--ch-brand", "#f5a524") };
+  }
+  // The same mark as in Heat Index: a strip with the channel under the picture and a faint pattern across all of it, so cropping does not remove it.
+  function mark(cv) {
+    var P = palette(), dark = document.documentElement.dataset.theme === "dark" || (!document.documentElement.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
+    var W = cv.width, H = cv.height, k = W / 1080, strip = Math.round(64 * k), out = document.createElement("canvas");
+    out.width = W; out.height = H + strip; var g = out.getContext("2d"); g.drawImage(cv, 0, 0);
+    g.fillStyle = P.bg; g.fillRect(0, H, W, strip); g.fillStyle = P.line; g.fillRect(Math.round(64 * k), H, W - 2 * Math.round(64 * k), Math.max(1, Math.round(2 * k)));
+    g.save(); g.globalAlpha = dark ? .07 : .06; g.fillStyle = P.tx; g.font = "700 " + Math.round(34 * k) + "px system-ui,sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
+    g.translate(W / 2, (H + strip) / 2); g.rotate(-Math.PI / 9);
+    var stepY = Math.round(230 * k), stepX = Math.round(430 * k), span = Math.ceil(Math.hypot(W, H + strip) / 2 / stepY) + 1;
+    for (var r = -span; r <= span; r++) for (var q = -4; q <= 4; q++) g.fillText(WATERMARK, q * stepX + (r % 2 ? stepX / 2 : 0), r * stepY);
+    g.restore();
+    g.fillStyle = P.ac; g.font = "700 " + Math.round(30 * k) + "px system-ui,sans-serif"; g.textAlign = "center"; g.textBaseline = "alphabetic"; g.fillText(WATERMARK, W / 2, H + Math.round(strip * .68));
+    return out;
+  }
+  // A header with the brand, the tool and the time above a captured block.
+  function frame(src, title) {
+    var P = palette(), W = src.width, k = W / 1080, head = Math.round(96 * k), out = document.createElement("canvas");
+    out.width = W; out.height = src.height + head; var g = out.getContext("2d");
+    g.fillStyle = P.bg; g.fillRect(0, 0, W, out.height); g.drawImage(src, 0, head);
+    var M = Math.round(40 * k);
+    g.textBaseline = "alphabetic"; g.fillStyle = P.ac; g.font = "700 " + Math.round(30 * k) + "px system-ui,sans-serif"; g.textAlign = "left"; g.fillText(BRAND, M, Math.round(52 * k));
+    g.fillStyle = P.mu; g.font = "500 " + Math.round(24 * k) + "px system-ui,sans-serif"; g.fillText(title || tr(TOOL)[0], M, Math.round(82 * k));
+    g.textAlign = "right"; g.fillText(new Date().toLocaleString(document.documentElement.lang || undefined, { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }), W - M, Math.round(52 * k));
+    g.fillText(tr("nfa"), W - M, Math.round(82 * k));
+    g.fillStyle = P.line; g.fillRect(M, head - Math.max(1, Math.round(2 * k)), W - 2 * M, Math.max(1, Math.round(2 * k)));
+    return out;
+  }
+  var h2c = null;
+  function loadH2C() {
+    if (window.html2canvas) return Promise.resolve();
+    if (!h2c) h2c = new Promise(function (res, rej) { var s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"; s.onload = res; s.onerror = function () { h2c = null; rej(new Error("html2canvas")); }; document.head.appendChild(s); });
+    return h2c;
+  }
+  var SH = { blob: null, url: null, name: "" };
+  function modal() {
+    var m = document.getElementById("chShot"); if (m) return m;
+    m = document.createElement("div"); m.id = "chShot"; m.className = "ch-shot"; m.hidden = true; m.setAttribute("translate", "no"); m.setAttribute("data-html2canvas-ignore", "true");
+    m.innerHTML = '<div class="ch-pn" role="dialog" aria-modal="true"><div class="ch-wait"></div><img alt=""><div class="ch-acts"><a class="on" data-a="save" download></a><button data-a="share" hidden></button><button data-a="copy" hidden></button><button data-a="close"></button></div><p></p></div>';
+    m.addEventListener("click", async function (e) {
+      var a = e.target.closest("[data-a]"), k = a && a.dataset.a;
+      if (e.target === m || k === "close") { m.hidden = true; return; }
+      if (k === "share" && SH.blob) { try { await navigator.share({ files: [new File([SH.blob], SH.name, { type: "image/png" })], text: CHANNEL_URL }); } catch (er) {} }
+      if (k === "copy" && SH.blob) { try { await navigator.clipboard.write([new ClipboardItem({ "image/png": SH.blob })]); a.textContent = tr("copied"); } catch (er) {} }
+    });
+    addEventListener("keydown", function (e) { if (e.key === "Escape" && !m.hidden) m.hidden = true; });
+    document.body.appendChild(m); return m;
+  }
+  function stamp() { var d = new Date(), z = function (n) { return String(n).padStart(2, "0"); }; return d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()) + "-" + z(d.getHours()) + z(d.getMinutes()); }
+  async function showCanvas(cv, name) {
+    var m = modal(), img = m.querySelector("img");
+    SH.blob = await new Promise(function (r) { cv.toBlob(r, "image/png"); }); if (!SH.blob) throw new Error("toBlob");
+    if (SH.url) URL.revokeObjectURL(SH.url); SH.url = URL.createObjectURL(SH.blob); SH.name = (name || "crypto-hunters") + "-" + stamp() + ".png";
+    img.src = SH.url; img.style.display = "block"; m.querySelector(".ch-wait").style.display = "none";
+    var sv = m.querySelector('[data-a="save"]'); sv.href = SH.url; sv.download = SH.name;
+    m.querySelector('[data-a="share"]').hidden = !(navigator.canShare && navigator.canShare({ files: [new File([SH.blob], SH.name, { type: "image/png" })] }));
+    m.querySelector('[data-a="copy"]').hidden = !(navigator.clipboard && window.ClipboardItem);
+  }
+  function openWait() {
+    var m = modal(); m.querySelector(".ch-wait").textContent = tr("wait"); m.querySelector(".ch-wait").style.display = "block"; m.querySelector("img").style.display = "none";
+    m.querySelector('[data-a="save"]').textContent = tr("save"); m.querySelector('[data-a="share"]').textContent = tr("share"); m.querySelector('[data-a="copy"]').textContent = tr("copy"); m.querySelector('[data-a="close"]').textContent = tr("close");
+    m.querySelector("p").textContent = tr("hint"); m.querySelector('[data-a="save"]').removeAttribute("href"); m.hidden = false; return m;
+  }
+  // Screenshot of a block of the page: header with the brand, the block, then the watermark.
+  async function shot(el, o) {
+    o = o || {}; if (!el) return; var m = openWait();
+    try {
+      await loadH2C();
+      var bg = getComputedStyle(document.body).backgroundColor;
+      var src = await window.html2canvas(el, { backgroundColor: bg, scale: Math.max(2, Math.min(3, 1080 / Math.max(320, el.offsetWidth))), useCORS: true, logging: false,
+        ignoreElements: function (n) { return n.classList && (n.classList.contains("ch-cam") || n.classList.contains("ch-links")); } });
+      await showCanvas(mark(frame(src, o.title)), o.name || TOOL);
+    } catch (e) { m.querySelector(".ch-wait").textContent = tr("fail", { e: (e && e.message) || e }); }
+  }
+  // A camera button; host gets it as the last child (float: true puts it in the top-right corner of host).
+  function cam(host, getEl, o) {
+    o = o || {}; if (!host || host.querySelector(":scope > .ch-cam")) return;
+    var b = document.createElement("button"); b.type = "button"; b.className = "ch-cam" + (o.float ? " ch-float" : ""); b.setAttribute("data-html2canvas-ignore", "true"); b.setAttribute("translate", "no");
+    b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l1.6-2h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.4"/></svg><span></span>';
+    var lab = function () { b.querySelector("span").textContent = (o.label === false) ? "" : tr("cam"); b.setAttribute("aria-label", tr("cam")); b.title = tr("cam"); };
+    lab(); new MutationObserver(lab).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+    if (o.float && getComputedStyle(host).position === "static") host.style.position = "relative";
+    b.addEventListener("click", function (e) { e.preventDefault(); e.stopPropagation(); shot(typeof getEl === "function" ? getEl() : getEl, typeof o.opts === "function" ? o.opts() : o.opts); });
+    host.appendChild(b);
+  }
+
+
+  // ---------- notifications: one log, alert rules and settings for every tool ----------
+  // Every tool that notifies calls CH.log(entry). Alert rules (price, distance to a price, 24h change, RSI) are checked here,
+  // in whichever tool tab is open; one tab at a time does the checking, so a signal is never sent twice.
+  // Everything lives in localStorage of this site, so all tools and tabs share it.
+  var LOG_KEY = "ch.log", SEEN_KEY = "ch.logSeen", LOG_MAX = 300, RULES_KEY = "ch.rules", SET_KEY = "ch.alertSet", ENG_KEY = "ch.eng";
+  var logFilter = "all", tab = "log", editing = null;
+  function jget(k, d) { try { var v = JSON.parse(localStorage.getItem(k) || "null"); return v == null ? d : v; } catch (e) { return d; } }
+  function jset(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  function logRead() { var a = jget(LOG_KEY, []); return Array.isArray(a) ? a : []; }
+  function logWrite(a) { if (!jset(LOG_KEY, a.slice(-LOG_MAX))) jset(LOG_KEY, a.slice(-100)); }
+  function seenAt() { try { return +localStorage.getItem(SEEN_KEY) || 0; } catch (e) { return 0; } }
+  function log(e) {
+    if (!e) return; var a = logRead();
+    e = Object.assign({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), at: Date.now(), tool: TOOL }, e);
+    if (e.coin) e.coin = String(e.coin).toUpperCase();
+    a.push(e); logWrite(a); badge(); if (panelOpen() && tab === "log") renderPanel();
+    return e;
+  }
+  function unread() { var s = seenAt(); return logRead().filter(function (e) { return e.at > s; }).length; }
+  function badge() { document.querySelectorAll(".ch-bell b").forEach(function (b) { var n = unread(); b.textContent = n > 99 ? "99+" : n; b.hidden = !n; }); }
+  addEventListener("storage", function (e) {
+    if (e.key === LOG_KEY || e.key === SEEN_KEY) { badge(); if (panelOpen() && tab === "log") renderPanel(); }
+    if (e.key === RULES_KEY && panelOpen() && tab === "rules" && !editing) renderPanel();
+  });
+  function when(at) {
+    var d = new Date(at), now = new Date(), y = new Date(now); y.setDate(now.getDate() - 1);
+    var hm = d.toLocaleTimeString(document.documentElement.lang || undefined, { hour: "2-digit", minute: "2-digit" });
+    if (d.toDateString() === now.toDateString()) return tr("today") + ", " + hm;
+    if (d.toDateString() === y.toDateString()) return tr("yesterday") + ", " + hm;
+    return d.toLocaleDateString(document.documentElement.lang || undefined, { day: "2-digit", month: "short" }) + ", " + hm;
+  }
+  function pct(v) { v = +v; return (v > 0 ? "+" : "") + (Math.abs(v) < 10 ? v.toFixed(2) : v.toFixed(1)) + "%"; }
+  function fp(p) {
+    p = +p; if (!isFinite(p)) return "—"; var a = Math.abs(p);
+    var d = a >= 1000 ? 2 : a >= 100 ? 2 : a >= 1 ? 4 : a >= 0.01 ? 5 : a >= 0.0001 ? 7 : 9;
+    return p.toLocaleString("en-US", { minimumFractionDigits: Math.min(d, 2), maximumFractionDigits: d }).replace(/,/g, " ");
+  }
+
+  // ---- settings shared by every rule ----
+  var DEF_SET = { every: 30, sound: true, browser: true, tg: false, tgToken: "", tgChat: "" };
+  function settings() { return Object.assign({}, DEF_SET, jget(SET_KEY, {})); }
+
+  // ---- rules ----
+  // kinds: reach (price reaches v; direction set at creation), above, below, near (within d % of v), up24 / dn24 (24h change), rsiLo / rsiHi (RSI 14 on tf)
+  var KINDS = ["reach", "above", "below", "near", "up24", "dn24", "rsiLo", "rsiHi"];
+  function rules() { var a = jget(RULES_KEY, []); return Array.isArray(a) ? a : []; }
+  function saveRules(a) { jset(RULES_KEY, a); }
+  function ruleText(r, short) {
+    var v = r.kind === "rsiLo" || r.kind === "rsiHi" ? String(+r.v) : r.kind === "up24" || r.kind === "dn24" ? Math.abs(+r.v) + "%" : fp(r.v) + " " + (r.q || "");
+    var s = tr("k_" + r.kind, { v: v, d: r.d, tf: r.tf || "1h" });
+    return short ? s : (r.coin + "/" + r.q + " · " + (EXN[r.ex] || r.ex) + " — " + s);
+  }
+  function cond(r, d) {
+    var p = d.p, v = +r.v;
+    switch (r.kind) {
+      case "reach": return r.dir === "up" ? p >= v : p <= v;
+      case "above": return p >= v;
+      case "below": return p <= v;
+      case "near": return v > 0 && Math.abs(p - v) / v * 100 <= (+r.d || 1);
+      case "up24": return d.chg != null && d.chg >= Math.abs(v);
+      case "dn24": return d.chg != null && d.chg <= -Math.abs(v);
+      case "rsiLo": return d.rsi != null && d.rsi <= v;
+      case "rsiHi": return d.rsi != null && d.rsi >= v;
+    }
+    return false;
+  }
+
+  // ---- market data (public exchange APIs, no keys) ----
+  async function getJ(u) { var r = await fetch(u, { cache: "no-store" }); if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }
+  async function ticker(ex, coin, q) {
+    if (ex === "bybit") { var j = await getJ("https://api.bybit.com/v5/market/tickers?category=spot&symbol=" + coin + q), t = j.result && j.result.list && j.result.list[0]; if (!t) throw new Error("no pair"); return { p: +t.lastPrice, chg: +t.price24hPcnt * 100 }; }
+    if (ex === "okx") { var o = await getJ("https://www.okx.com/api/v5/market/ticker?instId=" + coin + "-" + q), x = o.data && o.data[0]; if (!x) throw new Error("no pair"); return { p: +x.last, chg: +x.open24h ? (x.last / x.open24h - 1) * 100 : null }; }
+    var b = await getJ("https://api.binance.com/api/v3/ticker/24hr?symbol=" + coin + q); return { p: +b.lastPrice, chg: +b.priceChangePercent };
+  }
+  var TFM = { "15m": ["15m", "15", "15m"], "1h": ["1h", "60", "1H"], "4h": ["4h", "240", "4H"], "1d": ["1d", "D", "1Dutc"] };
+  async function closes(ex, coin, q, tf) {
+    var m = TFM[tf] || TFM["1h"];
+    if (ex === "bybit") { var j = await getJ("https://api.bybit.com/v5/market/kline?category=spot&symbol=" + coin + q + "&interval=" + m[1] + "&limit=200"); return (j.result.list || []).map(function (k) { return +k[4]; }).reverse(); }
+    if (ex === "okx") { var o = await getJ("https://www.okx.com/api/v5/market/candles?instId=" + coin + "-" + q + "&bar=" + m[2] + "&limit=200"); return (o.data || []).map(function (k) { return +k[4]; }).reverse(); }
+    var b = await getJ("https://api.binance.com/api/v3/klines?symbol=" + coin + q + "&interval=" + m[0] + "&limit=200"); return b.map(function (k) { return +k[4]; });
+  }
+  function rsi(c, n) {   // Wilder RSI on closes, the last (still forming) candle included, as exchanges show it
+    n = n || 14; if (c.length <= n) return null; var g = 0, l = 0, i;
+    for (i = 1; i <= n; i++) { var d = c[i] - c[i - 1]; if (d > 0) g += d; else l -= d; }
+    g /= n; l /= n;
+    for (i = n + 1; i < c.length; i++) { var e = c[i] - c[i - 1]; g = (g * (n - 1) + Math.max(e, 0)) / n; l = (l * (n - 1) + Math.max(-e, 0)) / n; }
+    return l === 0 ? 100 : 100 - 100 / (1 + g / l);
+  }
+  var RSIC = {};
+  async function rsiOf(ex, coin, q, tf) {
+    var k = ex + coin + q + tf, c = RSIC[k]; if (c && Date.now() - c.at < 60e3) return c.v;
+    var v = rsi(await closes(ex, coin, q, tf)); RSIC[k] = { at: Date.now(), v: v }; return v;
+  }
+
+  // ---- delivering a fired rule ----
+  var actx = null;
+  function beep() {
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)(); var t = actx.currentTime;
+      [880, 1175].forEach(function (f, i) { var o = actx.createOscillator(), g = actx.createGain(); o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t + i * .18); g.gain.exponentialRampToValueAtTime(.25, t + i * .18 + .02); g.gain.exponentialRampToValueAtTime(.0001, t + i * .18 + .16); o.connect(g); g.connect(actx.destination); o.start(t + i * .18); o.stop(t + i * .18 + .17); });
+    } catch (e) {}
+  }
+  function toast(title, body, href) {
+    var w = document.getElementById("chToasts"); if (!w) { w = document.createElement("div"); w.id = "chToasts"; w.className = "ch-toasts"; w.setAttribute("translate", "no"); w.setAttribute("aria-live", "polite"); w.setAttribute("data-html2canvas-ignore", "true"); document.body.appendChild(w); }
+    var t = document.createElement("div"); t.className = "ch-toast"; t.setAttribute("data-ch", "");
+    t.innerHTML = '<b>' + esc(title) + "</b>" + (body ? "<p>" + esc(body) + "</p>" : "") + (href ? '<a href="' + esc(href) + '" target="ch_lab" data-ch-href>' + esc(tr("logOpen")) + " ↗</a>" : "") + '<button type="button" aria-label="' + esc(tr("close")) + '">✕</button>';
+    t.querySelector("button").onclick = function () { t.remove(); };
+    w.appendChild(t); setTimeout(function () { t.remove(); }, 12000);
+  }
+  async function tgSend(text, S) {
+    var r = await fetch("https://api.telegram.org/bot" + S.tgToken + "/sendMessage", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ chat_id: S.tgChat, text: text, disable_web_page_preview: true }) });
+    var j = await r.json().catch(function () { return { ok: false, description: "HTTP " + r.status }; }); if (!j.ok) throw new Error(j.description || "error"); return j;
+  }
+  async function deliver(r, d) {
+    var S = settings(), ch = ["screen"], pair = r.coin + "/" + r.q, title = pair + ": " + ruleText(r, true);
+    var line = tr("now") + " " + fp(d.p) + (d.chg != null ? " · 24h " + pct(d.chg) : "") + (d.rsi != null ? " · RSI " + d.rsi.toFixed(1) : "");
+    var href = url("lab", { coin: r.coin, q: r.q, ex: r.ex });
+    toast(title, line + (r.note ? "\n" + r.note : ""), href);
+    if (S.sound) { beep(); ch.push("sound"); }
+    if (S.browser) { try { if ("Notification" in window && Notification.permission === "granted") { new Notification(BRAND + " · " + title, { body: line + (r.note ? "\n" + r.note : ""), tag: "ch-" + r.id }); ch.push("browser"); } } catch (e) {} }
+    if (S.tg && S.tgToken && S.tgChat) { try { await tgSend("🔔 " + title + "\n" + (EXN[r.ex] || r.ex) + " · " + line + (r.note ? "\n📝 " + r.note : "") + "\n\n" + href + "\n" + CHANNEL_URL, S); ch.push("telegram"); } catch (e) {} }
+    log({ tool: "alerts", kind: "rule", coin: r.coin, q: r.q, ex: r.ex, rk: r.kind, v: r.v, d: r.d, tf: r.tf, dir: r.dir, p: d.p, chg: d.chg, rsi: d.rsi, note: r.note || "", ch: ch });
+  }
+
+  // ---- the checking loop: one leader tab ----
+  var ME = Math.random().toString(36).slice(2), busy = false, timer = null;
+  function lead() {
+    var l = jget(ENG_KEY, null), now = Date.now(), every = settings().every * 1000;
+    if (!l || l.id === ME || now - l.t > Math.max(3 * every, 90e3)) { jset(ENG_KEY, { id: ME, t: now }); return true; }
+    return false;
+  }
+  addEventListener("pagehide", function () { var l = jget(ENG_KEY, null); if (l && l.id === ME) try { localStorage.removeItem(ENG_KEY); } catch (e) {} });
+  async function tick(force) {
+    if (busy) return; var list = rules().filter(function (r) { return r.on; }); if (!list.length) return;
+    if (!force && !lead()) return; busy = true;
+    try {
+      var groups = {}; list.forEach(function (r) { var k = r.ex + "|" + r.coin + "|" + r.q; (groups[k] = groups[k] || []).push(r); });
+      var data = {}, now = Date.now();
+      await Promise.all(Object.keys(groups).map(async function (k) {
+        var g = groups[k], r0 = g[0];
+        try {
+          var d = await ticker(r0.ex, r0.coin, r0.q);
+          var tfs = {}; g.forEach(function (r) { if (r.kind === "rsiLo" || r.kind === "rsiHi") tfs[r.tf || "1h"] = 1; });
+          d.rsiTf = {}; for (var tf in tfs) { try { d.rsiTf[tf] = await rsiOf(r0.ex, r0.coin, r0.q, tf); } catch (e) { d.rsiTf[tf] = null; } }
+          data[k] = d;
+        } catch (e) { data[k] = { err: e.message || String(e) }; }
+      }));
+      var fire = [], cur = rules();   // re-read: a rule may have been edited meanwhile
+      cur.forEach(function (r) {
+        if (!r.on) return; var d0 = data[r.ex + "|" + r.coin + "|" + r.q]; if (!d0) return;
+        if (d0.err) { r.err = d0.err; return; }
+        var d = { p: d0.p, chg: d0.chg, rsi: r.kind === "rsiLo" || r.kind === "rsiHi" ? d0.rsiTf[r.tf || "1h"] : null };
+        r.err = null; r.last = { p: d.p, chg: d.chg, rsi: d.rsi, at: now };
+        var c = cond(r, d), cd = (+r.cd || 0) * 60e3;
+        if (c && !r.state && (!r.fired || now - r.fired >= cd)) { r.state = true; r.fired = now; r.count = (r.count || 0) + 1; if (r.repeat === "once") r.on = false; fire.push([r, d]); }
+        else if (!c) r.state = false;
+      });
+      saveRules(cur);
+      for (var i = 0; i < fire.length; i++) await deliver(fire[i][0], fire[i][1]);
+      if (panelOpen() && tab === "rules" && !editing) renderPanel();
+    } finally { busy = false; }
+  }
+  function schedule() { clearInterval(timer); timer = setInterval(tick, Math.max(10, settings().every) * 1000); }
+  setTimeout(function () { tick(); schedule(); }, 3000);
+
+  // ---- the panel: log, rules, settings ----
+  function panelOpen() { var p = document.getElementById("chLog"); return p && !p.hidden; }
+  function panel() {
+    var p = document.getElementById("chLog"); if (p) return p;
+    p = document.createElement("div"); p.id = "chLog"; p.className = "ch-log"; p.hidden = true; p.setAttribute("translate", "no"); p.setAttribute("data-html2canvas-ignore", "true");
+    p.innerHTML = '<section class="ch-lp" role="dialog" aria-modal="true" aria-labelledby="chLogT"><header><h2 id="chLogT"></h2><button type="button" class="ch-x" data-l="close"></button></header><div class="ch-tabs" role="tablist"></div><div class="ch-lf" role="group"></div><div class="ch-ll"></div><footer></footer></section>';
+    p.addEventListener("click", onPanelClick);
+    p.addEventListener("change", onPanelChange);
+    p.addEventListener("input", onPanelInput);
+    addEventListener("keydown", function (e) { if (e.key === "Escape" && panelOpen()) closePanel(); });
+    document.body.appendChild(p); return p;
+  }
+  var CHN = { screen: "chScreen", browser: "chBrowser", telegram: "chTelegram", sound: "chSound" };
+  function entryText(e) {
+    var pair = e.coin ? e.coin + (e.q ? "/" + e.q : "") : "";
+    if (e.kind === "zone") return { title: pair + ": " + tr(e.z === "buy" ? "buy" : "sell"), lines: ["Heat " + (e.hn || "") + " = " + e.v] };
+    if (e.kind === "spike") {
+      var l = [(EXN[e.ex] || e.ex || "") + " " + tr(e.mk === "futures" ? "futures" : "spot") + " " + (e.tf || "") + " · " + tr("candle") + " " + pct(e.c)];
+      if (e.b) l.push(tr(e.b > 0 ? "brkUp" : "brkDn"));
+      return { title: pair + ": " + tr("spike", { r: (+e.r).toFixed(1) }), lines: l };
+    }
+    if (e.kind === "rule") {
+      var t = ruleText({ kind: e.rk, v: e.v, d: e.d, tf: e.tf, q: e.q }, true), ln = [(EXN[e.ex] || e.ex) + " · " + tr("now") + " " + fp(e.p) + (e.chg != null ? " · 24h " + pct(e.chg) : "") + (e.rsi != null ? " · RSI " + (+e.rsi).toFixed(1) : "")];
+      if (e.note) ln.push(e.note);
+      return { title: pair + ": " + t, lines: ln };
+    }
+    if (e.lines && e.lines.length) return { title: pair || e.title || "", lines: e.lines };
+    return { title: e.title || pair, lines: e.body ? [e.body] : [] };
+  }
+  function toolName(id) { return id === "alerts" ? [tr("alerts"), tr("alerts")] : (tr(id) || [id, id]); }
+  function toolIcon(id) { return id === "alerts" ? BELL : icon(id); }
+  function renderPanel() {
+    var p = panel(); p.querySelector("h2").textContent = tr("notif");
+    var x = p.querySelector(".ch-x"); x.textContent = "✕"; x.setAttribute("aria-label", tr("close"));
+    var nR = rules().filter(function (r) { return r.on; }).length;
+    p.querySelector(".ch-tabs").innerHTML = [["log", tr("tLog")], ["rules", tr("tRules") + (nR ? " · " + nR : "")], ["set", tr("tSet")]].map(function (t) {
+      return '<button type="button" role="tab" data-l="tab" data-v="' + t[0] + '" aria-selected="' + (tab === t[0]) + '">' + esc(t[1]) + "</button>";
+    }).join("");
+    var f = p.querySelector(".ch-lf"), L = p.querySelector(".ch-ll"), F = p.querySelector("footer");
+    if (tab === "log") renderLogTab(p, f, L, F); else if (tab === "rules") renderRulesTab(f, L, F); else renderSetTab(f, L, F);
+  }
+  function renderLogTab(p, f, L, F) {
+    var all = logRead().slice().reverse(), seen = +p.dataset.seen || 0;
+    var ids = TOOLS.map(function (t) { return t.id; }).concat(["alerts"]).filter(function (id) { return all.some(function (e) { return e.tool === id; }); });
+    if (logFilter !== "all" && ids.indexOf(logFilter) < 0) logFilter = "all";
+    f.innerHTML = ids.length > 1 ? ['<button type="button" data-l="f" data-v="all" aria-pressed="' + (logFilter === "all") + '">' + esc(tr("logAll")) + " · " + all.length + "</button>"].concat(ids.map(function (id) {
+      var n = all.filter(function (e) { return e.tool === id; }).length;
+      return '<button type="button" data-l="f" data-v="' + id + '" aria-pressed="' + (logFilter === id) + '">' + toolIcon(id) + esc(toolName(id)[1]) + " · " + n + "</button>";
+    })).join("") : "";
+    var list = all.filter(function (e) { return logFilter === "all" || e.tool === logFilter; });
+    L.innerHTML = list.length ? list.map(function (e) {
+      var x = entryText(e), chs = (e.ch || []).filter(function (c) { return CHN[c]; }), tgt = e.tool === "alerts" ? "lab" : e.tool;
+      var open = e.coin ? '<a href="' + esc(url(tgt, { coin: e.coin, q: e.q, ex: e.ex })) + '" target="ch_' + esc(tgt) + '" data-ch-href>' + esc(tr("logOpen")) + " ↗</a>" : "";
+      return '<article class="ch-le' + (e.at > seen ? " ch-new" : "") + '"><div class="ch-lm">' + toolIcon(e.tool) + "<span>" + esc(toolName(e.tool)[0]) + "</span>" + (e.at > seen ? "<em>" + esc(tr("logNew")) + "</em>" : "") + "<time>" + esc(when(e.at)) + "</time></div>" +
+        "<b>" + esc(x.title) + "</b>" + x.lines.map(function (l) { return "<p>" + esc(l) + "</p>"; }).join("") +
+        '<div class="ch-lc">' + (chs.length ? chs : ["log"]).map(function (c) { return "<span>" + esc(tr(c === "log" ? "chLog" : CHN[c])) + "</span>"; }).join("") + open + "</div></article>";
+    }).join("") : '<p class="ch-l0">' + esc(tr("logEmpty")) + "</p>";
+    F.innerHTML = '<span class="ch-lh">' + esc(tr("logHint")) + '</span><button type="button" data-l="csv">' + esc(tr("logCsv")) + '</button><button type="button" data-l="clear">' + esc(tr("logClear")) + "</button>";
+  }
+  function opt(v, label, cur) { return '<option value="' + esc(v) + '"' + (String(v) === String(cur) ? " selected" : "") + ">" + esc(label) + "</option>"; }
+  function renderRulesTab(f, L, F) {
+    f.innerHTML = "";
+    if (editing) { L.innerHTML = formHTML(editing); F.innerHTML = '<span class="ch-lh"></span><button type="button" data-l="cancel">' + esc(tr("cancel")) + '</button><button type="button" class="on" data-l="save">' + esc(tr("save2")) + "</button>"; livePrice(); return; }
+    var list = rules();
+    L.innerHTML = '<button type="button" class="ch-add" data-l="new">＋ ' + esc(tr("newRule")) + "</button>" + (list.length ? list.slice().reverse().map(function (r) {
+      var st = r.err ? '<span class="ch-err">' + esc(tr("errData")) + "</span>" : r.on ? '<span class="ch-ok">' + esc(tr("active")) + "</span>" : '<span>' + esc(r.count ? tr("firedOff") : tr("off")) + "</span>";
+      var lp = r.last ? tr("now") + " " + fp(r.last.p) + (r.kind === "rsiLo" || r.kind === "rsiHi" ? (r.last.rsi != null ? " · RSI " + r.last.rsi.toFixed(1) : "") : r.kind === "up24" || r.kind === "dn24" ? (r.last.chg != null ? " · 24h " + pct(r.last.chg) : "") : (+r.v ? " · " + tr("dist", { d: (Math.abs(r.last.p - r.v) / r.v * 100).toFixed(2) }) : "")) : tr("waiting");
+      return '<article class="ch-rule' + (r.on ? "" : " ch-offr") + '"><div class="ch-rt"><b>' + esc(r.coin + "/" + r.q) + "</b><span>" + esc(EXN[r.ex] || r.ex) + "</span>" +
+        '<label class="ch-sw" title="' + esc(tr("onoff")) + '"><input type="checkbox" data-l="toggle" data-id="' + esc(r.id) + '"' + (r.on ? " checked" : "") + '><i></i></label></div>' +
+        "<p>" + esc(ruleText(r, true)) + "</p>" + (r.note ? '<p class="ch-note">' + esc(r.note) + "</p>" : "") +
+        '<div class="ch-lc">' + st + "<span>" + esc(r.repeat === "once" ? tr("once") : tr("every", { m: r.cd || 0 })) + "</span>" + (r.fired ? "<span>" + esc(tr("lastFired", { t: when(r.fired) })) + "</span>" : "") + "</div>" +
+        '<div class="ch-rm"><small>' + esc(lp) + '</small><button type="button" data-l="edit" data-id="' + esc(r.id) + '">' + esc(tr("edit")) + '</button><button type="button" data-l="del" data-id="' + esc(r.id) + '">' + esc(tr("del")) + "</button></div></article>";
+    }).join("") : '<p class="ch-l0">' + esc(tr("rulesEmpty")) + "</p>");
+    var S = settings();
+    F.innerHTML = '<span class="ch-lh">' + esc(tr("rulesHint", { s: S.every })) + "</span>";
+  }
+  function formHTML(r) {
+    var k = r.kind, isP = ["reach", "above", "below", "near"].indexOf(k) >= 0, isR = k === "rsiLo" || k === "rsiHi";
+    var vl = isP ? tr("fPrice", { q: r.q }) : isR ? tr("fRsi") : tr("fPct");
+    return '<form class="ch-form" onsubmit="return false">' +
+      '<div class="ch-f3"><label>' + esc(tr("fCoin")) + '<input name="coin" value="' + esc(r.coin || "") + '" placeholder="BTC" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>' +
+      "<label>" + esc(tr("fQuote")) + '<select name="q">' + ["USDT", "USDC", "BTC"].map(function (q) { return opt(q, q, r.q); }).join("") + "</select></label>" +
+      "<label>" + esc(tr("fEx")) + '<select name="ex">' + ["binance", "bybit", "okx"].map(function (e) { return opt(e, EXN[e], r.ex); }).join("") + "</select></label></div>" +
+      '<div class="ch-now" id="chNow">' + esc(tr("loading")) + "</div>" +
+      "<label>" + esc(tr("fKind")) + '<select name="kind">' + KINDS.map(function (x) { return opt(x, tr("o_" + x), k); }).join("") + "</select></label>" +
+      '<div class="ch-f2"><label>' + esc(vl) + '<input name="v" type="number" inputmode="decimal" step="any" value="' + esc(r.v == null ? "" : r.v) + '"></label>' +
+      (k === "near" ? "<label>" + esc(tr("fNear")) + '<input name="d" type="number" inputmode="decimal" step="any" min="0.05" value="' + esc(r.d || 1) + '"></label>' : "") +
+      (isR ? "<label>" + esc(tr("fTf")) + '<select name="tf">' + ["15m", "1h", "4h", "1d"].map(function (t) { return opt(t, t, r.tf || "1h"); }).join("") + "</select></label>" : "") + "</div>" +
+      (isP ? '<div class="ch-quick">' + [-10, -5, -2, -1, 1, 2, 5, 10].map(function (d) { return '<button type="button" data-l="qp" data-v="' + d + '">' + (d > 0 ? "+" : "") + d + "%</button>"; }).join("") + "</div>" : "") +
+      '<p class="ch-fh">' + esc(tr("h_" + k)) + "</p>" +
+      '<div class="ch-f2"><label>' + esc(tr("fRepeat")) + '<select name="repeat">' + opt("once", tr("once"), r.repeat) + opt("every", tr("repeatEvery"), r.repeat) + "</select></label>" +
+      (r.repeat === "every" ? "<label>" + esc(tr("fCd")) + '<input name="cd" type="number" inputmode="numeric" min="1" step="1" value="' + esc(r.cd || 60) + '"></label>' : "") + "</div>" +
+      "<label>" + esc(tr("fNote")) + '<input name="note" maxlength="140" value="' + esc(r.note || "") + '" placeholder="' + esc(tr("fNoteP")) + '"></label>' +
+      '<p class="ch-ferr" id="chFErr" hidden></p></form>';
+  }
+  var nowT = null, nowP = null;
+  function livePrice() {
+    clearTimeout(nowT); nowT = setTimeout(async function () {
+      var el = document.getElementById("chNow"); if (!el || !editing) return; var r = editing;
+      if (!/^[A-Z0-9]{2,15}$/.test(r.coin || "")) { el.textContent = tr("fCoinNeed"); nowP = null; return; }
+      el.textContent = tr("loading");
+      try { var d = await ticker(r.ex, r.coin, r.q); nowP = d.p; var x = document.getElementById("chNow"); if (x && editing === r) x.textContent = tr("now") + " " + fp(d.p) + " " + r.q + " · 24h " + pct(d.chg); }
+      catch (e) { nowP = null; var y = document.getElementById("chNow"); if (y) y.textContent = tr("noPair", { p: r.coin + "/" + r.q, e: EXN[r.ex] }); }
+    }, 350);
+  }
+  function readForm() {
+    var fm = document.querySelector("#chLog .ch-form"); if (!fm || !editing) return;
+    var g = function (n) { var el = fm.elements[n]; return el ? el.value : undefined; };
+    var coin = (g("coin") || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    var ch = coin !== editing.coin || g("q") !== editing.q || g("ex") !== editing.ex;
+    editing.coin = coin; editing.q = g("q"); editing.ex = g("ex"); editing.kind = g("kind");
+    editing.v = g("v") === "" ? null : +g("v");
+    if (g("d") !== undefined) editing.d = +g("d"); if (g("tf") !== undefined) editing.tf = g("tf");
+    editing.repeat = g("repeat"); if (g("cd") !== undefined) editing.cd = Math.max(1, Math.round(+g("cd") || 60));
+    editing.note = (g("note") || "").trim();
+    return ch;
+  }
+  function onPanelInput(e) { if (e.target.closest(".ch-form")) { if (readForm()) livePrice(); } }
+  function onPanelChange(e) {
+    var t = e.target;
+    if (t.dataset.l === "toggle") { var a = rules(), r = a.filter(function (x) { return x.id === t.dataset.id; })[0]; if (r) { r.on = t.checked; r.state = false; r.err = null; saveRules(a); renderPanel(); if (r.on) tick(true); } return; }
+    if (t.closest(".ch-form") && !t.closest(".ch-set")) {
+      var prev = editing.kind, ch = readForm(), PK = ["reach", "above", "below", "near"];
+      if (t.name === "kind") {
+        var k = editing.kind;
+        if (k === "rsiLo" || k === "rsiHi") editing.v = k === "rsiLo" ? 30 : 70;
+        else if (k === "up24" || k === "dn24") editing.v = 5;
+        else if (PK.indexOf(prev) < 0) editing.v = nowP != null ? +nowP.toPrecision(6) : null;
+        renderPanel();
+      } else if (t.name === "repeat") renderPanel();
+      else if (ch) livePrice();
+      return;
+    }
+    if (t.closest(".ch-set")) {
+      var S = settings(), fm = t.closest(".ch-set");
+      S.sound = fm.elements.sound.checked; S.browser = fm.elements.browser.checked; S.tg = fm.elements.tg.checked;
+      S.tgToken = fm.elements.tgToken.value.trim(); S.tgChat = fm.elements.tgChat.value.trim(); S.every = +fm.elements.every.value || 30;
+      jset(SET_KEY, S); schedule();
+      if (t.name === "newsOn" || t.name === "newsSrv") { var NS = newsSet(); NS.on = fm.elements.newsOn.checked; NS.server = fm.elements.newsSrv.value.trim(); jset(NEWS_SET, NS); newsPaint(); if (NS.on) newsLoad(true).then(function () { if (panelOpen() && tab === "set") renderPanel(); }); }
+      if (t.name === "browser" && S.browser) askBrowser();
+      if (t.name === "sound" && S.sound) beep();
+      if (t.name === "tg") renderPanel();
+    }
+  }
+  function askBrowser() { try { if ("Notification" in window && Notification.permission === "default") Notification.requestPermission().then(function () { if (panelOpen()) renderPanel(); }); } catch (e) {} }
+  function validate(r) {
+    if (!/^[A-Z0-9]{2,15}$/.test(r.coin || "")) return tr("fCoinNeed");
+    if (r.v == null || !isFinite(r.v)) return tr("fValNeed");
+    if ((r.kind === "rsiLo" || r.kind === "rsiHi") && (r.v <= 0 || r.v >= 100)) return tr("fRsiNeed");
+    if (["reach", "above", "below", "near"].indexOf(r.kind) >= 0 && r.v <= 0) return tr("fValNeed");
+    if (r.kind === "near" && !(r.d > 0)) return tr("fValNeed");
+    return null;
+  }
+  async function saveForm() {
+    readForm(); var r = editing, err = validate(r), box = document.getElementById("chFErr");
+    if (err) { box.textContent = err; box.hidden = false; return; }
+    if (r.kind === "reach") {
+      var p = nowP; if (p == null) { try { p = (await ticker(r.ex, r.coin, r.q)).p; } catch (e) { box.textContent = tr("noPair", { p: r.coin + "/" + r.q, e: EXN[r.ex] }); box.hidden = false; return; } }
+      r.dir = r.v >= p ? "up" : "down";
+    }
+    var a = rules(), i = a.findIndex(function (x) { return x.id === r.id; });
+    var clean = { id: r.id, coin: r.coin, q: r.q, ex: r.ex, kind: r.kind, v: r.v, d: r.kind === "near" ? r.d : undefined, tf: r.kind === "rsiLo" || r.kind === "rsiHi" ? r.tf || "1h" : undefined, dir: r.dir, repeat: r.repeat, cd: r.repeat === "every" ? r.cd || 60 : undefined, note: r.note, on: true, state: false, created: r.created || Date.now(), count: r.count || 0, fired: r.fired };
+    if (i >= 0) a[i] = clean; else a.push(clean);
+    saveRules(a); editing = null; renderPanel(); askBrowser(); tick(true);
+  }
+  function renderSetTab(f, L, F) {
+    f.innerHTML = ""; var S = settings(), perm = "Notification" in window ? Notification.permission : "unsupported";
+    L.innerHTML = '<form class="ch-set ch-form" onsubmit="return false">' +
+      '<label class="ch-chk"><input type="checkbox" name="sound"' + (S.sound ? " checked" : "") + "><span>" + esc(tr("sSound")) + "</span></label>" +
+      '<label class="ch-chk"><input type="checkbox" name="browser"' + (S.browser ? " checked" : "") + "><span>" + esc(tr("sBrowser")) + "</span></label>" +
+      '<p class="ch-fh">' + esc(tr("perm_" + perm)) + (perm === "default" ? ' <button type="button" data-l="perm">' + esc(tr("allow")) + "</button>" : "") + "</p>" +
+      '<label class="ch-chk"><input type="checkbox" name="tg"' + (S.tg ? " checked" : "") + "><span>" + esc(tr("sTg")) + "</span></label>" +
+      (S.tg ? '<div class="ch-f2"><label>' + esc(tr("sToken")) + '<input name="tgToken" value="' + esc(S.tgToken) + '" autocomplete="off" spellcheck="false" placeholder="123456:ABC…"></label><label>' + esc(tr("sChat")) + '<input name="tgChat" value="' + esc(S.tgChat) + '" autocomplete="off" spellcheck="false" placeholder="@channel / -100…"></label></div><p class="ch-fh">' + esc(tr("sTgHint")) + ' <button type="button" data-l="tgtest">' + esc(tr("test")) + '</button> <span id="chTgSt"></span></p>' : '<input type="hidden" name="tgToken" value="' + esc(S.tgToken) + '"><input type="hidden" name="tgChat" value="' + esc(S.tgChat) + '">') +
+      "<label>" + esc(tr("sEvery")) + '<select name="every">' + [15, 30, 60, 120].map(function (s) { return opt(s, tr("sec", { s: s }), S.every); }).join("") + "</select></label>" +
+      '<p class="ch-fh">' + esc(tr("sNote")) + "</p>" +
+      '<h3 class="ch-sh">' + esc(tr("nwSet")) + "</h3>" +
+      '<label class="ch-chk"><input type="checkbox" name="newsOn"' + (newsSet().on ? " checked" : "") + "><span>" + esc(tr("nwOn")) + "</span></label>" +
+      "<label>" + esc(tr("nwSrv")) + '<input name="newsSrv" value="' + esc(newsSet().server) + '" placeholder="https://my-server.onrender.com" autocomplete="off" spellcheck="false"></label>' +
+      '<p class="ch-fh">' + esc(tr("nwSrvHint")) + " " + esc((function () { var c = newsCache(); return c.at ? tr("nwSrc", { s: c.src === "server" ? tr("nwSrvName") : "Free Crypto News", t: when(c.at) }) : c.err ? tr("nwErr", { e: c.err }) : ""; })()) + "</p></form>";
+    F.innerHTML = '<span class="ch-lh"></span><button type="button" data-l="testall">' + esc(tr("testAll")) + "</button>";
+  }
+  async function onPanelClick(e) {
+    var p = document.getElementById("chLog"), b = e.target.closest("[data-l]"), k = b && b.dataset.l;
+    if (e.target === p || k === "close") return closePanel();
+    if (!k) return;
+    if (k === "tab") { tab = b.dataset.v; editing = null; if (tab === "log") { p.dataset.seen = seenAt(); try { localStorage.setItem(SEEN_KEY, String(Date.now())); } catch (er) {} badge(); } renderPanel(); }
+    if (k === "f") { logFilter = b.dataset.v; renderPanel(); }
+    if (k === "clear" && confirm(tr("logClearQ"))) { logWrite([]); try { localStorage.setItem(SEEN_KEY, String(Date.now())); } catch (er) {} renderPanel(); badge(); }
+    if (k === "csv") csv();
+    if (k === "new") { startForm({}); }
+    if (k === "edit") { var r = rules().filter(function (x) { return x.id === b.dataset.id; })[0]; if (r) { editing = Object.assign({}, r); nowP = r.last ? r.last.p : null; renderPanel(); } }
+    if (k === "del" && confirm(tr("delQ"))) { saveRules(rules().filter(function (x) { return x.id !== b.dataset.id; })); renderPanel(); }
+    if (k === "cancel") { editing = null; renderPanel(); }
+    if (k === "save") saveForm();
+    if (k === "qp") { if (nowP == null) return; var d = +b.dataset.v, v = nowP * (1 + d / 100); var fm = p.querySelector(".ch-form"); fm.elements.v.value = +v.toPrecision(6); readForm(); }
+    if (k === "perm") askBrowser();
+    if (k === "tgtest") { var S = settings(), st = document.getElementById("chTgSt"); st.textContent = "…"; try { await tgSend("✅ " + BRAND + ": " + tr("tgTestMsg") + "\n" + CHANNEL_URL, S); st.textContent = tr("tgOk"); } catch (er) { st.textContent = tr("tgFail", { e: er.message }); } }
+    if (k === "testall") { var S2 = settings(); toast(BRAND, tr("tgTestMsg")); if (S2.sound) beep(); try { if (S2.browser && "Notification" in window && Notification.permission === "granted") new Notification(BRAND, { body: tr("tgTestMsg") }); } catch (er) {} if (S2.tg && S2.tgToken && S2.tgChat) { try { await tgSend("✅ " + BRAND + ": " + tr("tgTestMsg"), S2); } catch (er) { toast("Telegram", tr("tgFail", { e: er.message })); } } }
+  }
+  function startForm(o) {
+    tab = "rules"; nowP = o.p || null;
+    editing = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), coin: (o.coin || "").toUpperCase(), q: (o.q || "USDT").toUpperCase(), ex: normEx(o.ex), kind: o.kind || "reach", v: o.v != null ? o.v : null, d: 1, tf: "1h", repeat: "once", cd: 60, note: "" };
+    if (["USDT", "USDC", "BTC"].indexOf(editing.q) < 0) editing.q = "USDT";
+    renderPanel();
+    if (editing.coin && editing.v == null) { ticker(editing.ex, editing.coin, editing.q).then(function (d) { if (editing && editing.v == null) { nowP = d.p; editing.v = +d.p.toPrecision(6); renderPanel(); } }).catch(function () {}); }
+  }
+  var retFocus = null;
+  function openPanel(t, o) {
+    var p = panel(); retFocus = document.activeElement; tab = t || "log"; editing = null;
+    p.dataset.seen = seenAt(); p.hidden = false; document.documentElement.classList.add("ch-lock");
+    if (tab === "log") { try { localStorage.setItem(SEEN_KEY, String(Date.now())); } catch (e) {} badge(); }
+    if (o) startForm(o); else renderPanel();
+    var x = p.querySelector(".ch-x"); if (x) x.focus();
+  }
+  function closePanel() { var p = document.getElementById("chLog"); if (!p) return; p.hidden = true; editing = null; document.documentElement.classList.remove("ch-lock"); if (retFocus && retFocus.focus) retFocus.focus(); }
+  function csv() {
+    var rows = [["time", "tool", "coin", "quote", "exchange", "title", "details", "channels"]].concat(logRead().map(function (e) { var x = entryText(e); return [new Date(e.at).toISOString(), e.tool, e.coin || "", e.q || "", e.ex || "", x.title, x.lines.join(" | "), (e.ch || []).join(" ")]; }));
+    var text = "\ufeff" + rows.map(function (r) { return r.map(function (v) { v = String(v == null ? "" : v); return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }).join(","); }).join("\n");
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type: "text/csv" })); a.download = "crypto-hunters-notifications-" + stamp() + ".csv"; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+  // the bell opens the log; a bell on a coin card opens a new rule for that coin
+  addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-ch-log]"); if (b) { e.preventDefault(); openPanel("log"); return; }
+    var a = e.target.closest && e.target.closest("[data-ch-alert]");
+    if (a) { e.preventDefault(); e.stopPropagation(); openPanel("rules", { coin: a.dataset.coin, q: a.dataset.q, ex: a.dataset.ex }); }
+  }, true);
+  var BELL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5a2 2 0 0 0 4 0"/></svg>';
+
+
+  // ---------- news: a badge on every coin card, a list per coin, and a filter for the bot ----------
+  // Sources, in order: the person's own news server (server/news-proxy.js: CryptoPanic, Binance announcements, RSS),
+  // then the free Free Crypto News API (no key). Headlines are matched to coins by ticker and name and scored by
+  // keywords: "important negative" = hack, exploit, delisting, bankruptcy, halted withdrawals, charges, depeg...
+  // The cache lives in localStorage of the site, so every tool and tab shares one download (refreshed every 5 minutes).
+  var NEWS_KEY = "ch.news", NEWS_SET = "ch.newsSet", NEWS_TTL = 5 * 60e3, NEWS_FREE = "https://cryptocurrency.cv/api/news?limit=100";
+  var NAMES = { BTC: ["bitcoin"], ETH: ["ethereum", "ether"], SOL: ["solana"], XRP: ["ripple", "xrp"], BNB: ["bnb", "binance coin"], DOGE: ["dogecoin"], ADA: ["cardano"], TRX: ["tron"], TON: ["toncoin"],
+    AVAX: ["avalanche"], LINK: ["chainlink"], DOT: ["polkadot"], LTC: ["litecoin"], BCH: ["bitcoin cash"], SHIB: ["shiba inu"], NEAR: ["near protocol"], SUI: ["sui network"], APT: ["aptos"], ARB: ["arbitrum"],
+    OP: ["optimism"], UNI: ["uniswap"], AAVE: ["aave"], ATOM: ["cosmos hub", "cosmos"], XLM: ["stellar"], HBAR: ["hedera"], ICP: ["internet computer"], FIL: ["filecoin"], ETC: ["ethereum classic"],
+    INJ: ["injective"], PEPE: ["pepe"], WLD: ["worldcoin"], SEI: ["sei network"], TIA: ["celestia"], RENDER: ["render network"], FET: ["fetch.ai", "artificial superintelligence alliance"], JUP: ["jupiter"],
+    PYTH: ["pyth network"], ENA: ["ethena"], ONDO: ["ondo finance"], TAO: ["bittensor"], KAS: ["kaspa"], XMR: ["monero"], LDO: ["lido"], CRV: ["curve finance"], SAND: ["the sandbox"], MANA: ["decentraland"],
+    AXS: ["axie infinity"], STX: ["stacks"], IMX: ["immutable"], ALGO: ["algorand"], VET: ["vechain"], EGLD: ["multiversx"], HYPE: ["hyperliquid"], BONK: ["bonk"], WIF: ["dogwifhat"], FLOKI: ["floki"], TRUMP: ["official trump"] };
+  var NAME_RE = {}; Object.keys(NAMES).forEach(function (k) { NAME_RE[k] = new RegExp("(^|[^a-z0-9])(" + NAMES[k].map(function (n) { return n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).join("|") + ")([^a-z0-9]|$)"); });
+  // tickers that are also ordinary words or regions: they count only as $TICKER or by the project name
+  var AMBIG = { ONE: 1, GAS: 1, US: 1, ME: 1, AI: 1, IT: 1, ALL: 1, NOW: 1, NEW: 1, TOP: 1, BIG: 1, CAT: 1, DOG: 1, MOVE: 1, SUN: 1, ACE: 1, KEY: 1, LOW: 1, HIGH: 1, PEOPLE: 1, MASK: 1, GOAL: 1, FUN: 1, HOT: 1, SAFE: 1, REAL: 1, OPEN: 1, POWER: 1, STORJ: 0, LINK: 1, NEAR: 1, SUI: 1, OP: 1, UNI: 1, SEI: 1, ATOM: 1, SAND: 1 };
+  var KW = {
+    imp: [/\bhack(ed|ers?)?\b/, /\bexploit(ed)?\b/, /\bdrain(ed)?\b/, /\bstolen\b/, /\bbreach\b/, /\bdelist(s|ed|ing)?\b/, /\bbankrupt(cy)?\b/, /\binsolven(t|cy)\b/,
+      /\b(halts?|suspends?|freezes?|pauses?) (all )?withdrawals?\b/, /\brug ?pull\b/, /\b(sec|cftc|doj) (sues|charges|sued|charged)\b/, /\bcharged with\b/, /\bfraud\b/, /\barrest(ed)?\b/, /\bde-?peg(ged|s)?\b/,
+      /\bshut(s|ting)? down\b/, /\bcollapse[sd]?\b/, /\bseized?\b/, /\bvulnerabilit(y|ies)\b/, /\battack(ed)?\b/],
+    neg: [/\bplunge[sd]?\b/, /\bcrash(es|ed)?\b/, /\bdump(s|ed|ing)?\b/, /\bsell-?off\b/, /\bliquidat(ed|ions?)\b/, /\bban(s|ned)?\b/, /\bprobe\b/, /\binvestigat(ion|es|ed)\b/, /\bfined?\b/,
+      /\boutage\b/, /\bunlock(s)?\b/, /\blawsuit\b/, /\bwarns?\b/, /\bslump(s|ed)?\b/, /\b(falls?|drops?|tumbles?|sinks?|slips?|declines?|loses|slides?)\b/, /\bbearish\b/, /\boutflows?\b/, /\bdowngrade[sd]?\b/, /\blayoffs?\b/, /\bdelay(s|ed)?\b/],
+    pos: [/\bsurge[sd]?\b/, /\brall(y|ies|ied)\b/, /\bsoar(s|ed)?\b/, /\b(will )?list(s|ed|ing)? on\b/, /\bpartnership\b/, /\betf (approv|launch)/, /\binflows?\b/, /\bbullish\b/, /\bupgrade[sd]?\b/,
+      /\brecord high\b/, /\ball-time high\b/, /\bath\b/, /\badoption\b/, /\bjumps?\b/, /\bgains?\b/, /\bapprov(al|ed|es)\b/, /\bbuy(s|ing)? back\b/, /\baccumulat(es|ing|ion)\b/]
+  };
+  function newsSet() { return Object.assign({ on: true, server: "" }, jget(NEWS_SET, {})); }
+  function newsCache() { var c = jget(NEWS_KEY, null); return c && Array.isArray(c.items) ? c : { at: 0, items: [], src: "" }; }
+  function coinsOf(title) {
+    var out = {}, T0 = String(title || ""), low = " " + T0.toLowerCase() + " ";
+    var m, re = /\$([A-Z][A-Z0-9]{1,9})\b/g; while ((m = re.exec(T0))) out[m[1]] = 1;
+    re = /\b([A-Z][A-Z0-9]{2,9})\b/g; while ((m = re.exec(T0))) if (!AMBIG[m[1]] && m[1].length >= 3 && !/^(USD|USDT|USDC|ETF|SEC|CEO|CFTC|DOJ|NFT|DEX|CEX|API|FED|GDP|CPI|FOMC|IPO|AML|KYC|TVL|DAO|EU|UK|USA|ATH|AMA|DEFI|WEB3|NEWS|LIVE|BREAKING|LATEST|TODAY|NEW|JUST)$/.test(m[1])) out[m[1]] = 1;
+    for (var k in NAME_RE) if (NAME_RE[k].test(low)) out[k] = 1;
+    if (out.BTC && /bitcoin cash/i.test(T0) && !/\bbitcoin\b(?! cash)/i.test(T0)) delete out.BTC;
+    return Object.keys(out);
+  }
+  function classify(title, extra) {
+    var t = String(title || "").toLowerCase(), hit = function (a) { return a.some(function (r) { return r.test(t); }); };
+    var imp = hit(KW.imp), neg = imp || hit(KW.neg), pos = !neg && hit(KW.pos);
+    if (extra && extra.kind === "delisting") { imp = true; neg = true; pos = false; }
+    if (extra && extra.kind === "listing") { pos = true; }
+    if (extra && extra.votes) { var v = extra.votes; if ((v.negative || 0) + (v.disliked || 0) > (v.positive || 0) + (v.liked || 0) + 2) neg = true; if ((v.important || 0) >= 3 && neg) imp = true; }
+    return { imp: imp, tone: neg ? -1 : pos ? 1 : 0 };
+  }
+  function normItem(x) {
+    var title = x.title || x.headline || x.name || "", url = x.url || x.link || x.original_url || x.source_url || "";
+    var at = Date.parse(x.published || x.publishedAt || x.published_at || x.pubDate || x.date || x.created_at || x.time || "") || (typeof x.releaseDate === "number" ? x.releaseDate : 0);
+    if (!title || !at) return null;
+    var src = typeof x.source === "string" ? x.source : x.source && (x.source.title || x.source.name || x.source.domain) || x.sourceName || x.source_name || "";
+    var coins = Array.isArray(x.coins) && x.coins.length ? x.coins.map(function (c) { return String(c.code || c.symbol || c).toUpperCase(); }) : coinsOf(title);
+    var c = classify(title, x);
+    return { t: String(title).slice(0, 300), u: String(url), s: String(src).slice(0, 60), at: at, c: coins.slice(0, 8), imp: c.imp, tone: c.tone, k: x.kind || "" };
+  }
+  function listOf(j) { return Array.isArray(j) ? j : j && (j.articles || j.news || j.results || j.items || j.data && (Array.isArray(j.data) ? j.data : j.data.articles || j.data.items)) || []; }
+  var newsBusy = null;
+  async function newsLoad(force) {
+    var S0 = newsSet(), c = newsCache();
+    if (!S0.on) return c;
+    if (!force && Date.now() - c.at < NEWS_TTL && c.items.length) return c;
+    if (newsBusy) return newsBusy;
+    newsBusy = (async function () {
+      var tries = [], err = "";
+      if (S0.server) tries.push(["server", S0.server.replace(/\/+$/, "") + "/news"]);
+      tries.push(["free", NEWS_FREE]);
+      for (var i = 0; i < tries.length; i++) {
+        try {
+          var ctl = new AbortController(), to = setTimeout(function () { ctl.abort(); }, 12000);
+          var r = await fetch(tries[i][1], { signal: ctl.signal, cache: "no-store" }); clearTimeout(to);
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          var items = listOf(await r.json()).map(normItem).filter(Boolean);
+          if (!items.length) throw new Error("empty");
+          var seen = {}, uniq = items.filter(function (x) { var k = x.t.toLowerCase().replace(/\W+/g, "").slice(0, 80); if (seen[k]) return false; seen[k] = 1; return true; });
+          uniq.sort(function (a, b) { return b.at - a.at; });
+          c = { at: Date.now(), items: uniq.slice(0, 300), src: tries[i][0], err: "" };
+          jset(NEWS_KEY, c); newsPaint(); return c;
+        } catch (e) { err = (tries[i][0] + ": " + (e && e.name === "AbortError" ? "timeout" : (e && e.message) || e)); }
+      }
+      c = Object.assign({}, newsCache(), { err: err, tried: Date.now() }); jset(NEWS_KEY, c); return c;
+    })();
+    try { return await newsBusy; } finally { newsBusy = null; }
+  }
+  // the news of one coin in the last hours: count, tone, important negatives
+  function newsFor(coin, hours) {
+    coin = String(coin || "").toUpperCase(); var since = Date.now() - (hours || 24) * 3600e3;
+    var L = newsCache().items.filter(function (x) { return x.at >= since && x.c.indexOf(coin) >= 0; });
+    var neg = L.filter(function (x) { return x.tone < 0; }).length, pos = L.filter(function (x) { return x.tone > 0; }).length, imp = L.filter(function (x) { return x.imp && x.tone < 0; });
+    return { coin: coin, n: L.length, neg: neg, pos: pos, imp: imp.length, lastImp: imp[0] || null, items: L, tone: imp.length ? -2 : neg > pos ? -1 : pos > neg ? 1 : 0 };
+  }
+  function badgeHTML(coin) {
+    var S0 = newsSet(); if (!S0.on) return "";
+    var f = newsFor(coin, 24), cls = f.tone === -2 ? "imp" : f.tone < 0 ? "neg" : f.tone > 0 ? "pos" : "";
+    var lab = f.n ? (f.imp ? "⚠ " : "") + f.n : "0";
+    return '<button type="button" class="ch-nw ' + cls + (f.n ? "" : " zero") + '" data-ch-news data-coin="' + esc(coin) + '" title="' + esc(f.n ? tr("nwBadge", { n: f.n, i: f.imp, c: coin }) : tr("nwNone", { c: coin })) + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5h11v14H7a2 2 0 0 1-2-2zM16 9h3v8a2 2 0 0 1-2 2M8 9h5M8 13h5"/></svg><span>' + lab + "</span></button>";
+  }
+  // after a download, refresh every badge on the page
+  function newsPaint() { document.querySelectorAll(".ch-nw[data-coin]").forEach(function (b) { var w = document.createElement("div"); w.innerHTML = badgeHTML(b.dataset.coin); if (w.firstChild) b.replaceWith(w.firstChild); }); document.querySelectorAll(".ch-links").forEach(function (el) { el.__ch = null; }); }
+  addEventListener("storage", function (e) { if (e.key === NEWS_KEY) newsPaint(); });
+  function newsModal(coin) {
+    var m = document.getElementById("chNews");
+    if (!m) {
+      m = document.createElement("div"); m.id = "chNews"; m.className = "ch-log"; m.hidden = true; m.setAttribute("translate", "no"); m.setAttribute("data-html2canvas-ignore", "true");
+      m.innerHTML = '<section class="ch-lp" role="dialog" aria-modal="true" aria-labelledby="chNewsT"><header><h2 id="chNewsT"></h2><button type="button" class="ch-x" data-n="close"></button></header><div class="ch-ll"></div><footer><span class="ch-lh"></span><button type="button" data-n="reload"></button></footer></section>';
+      m.addEventListener("click", function (e) { var b = e.target.closest("[data-n]"); if (e.target === m || (b && b.dataset.n === "close")) { m.hidden = true; document.documentElement.classList.remove("ch-lock"); } if (b && b.dataset.n === "reload") { b.disabled = true; newsLoad(true).then(function () { b.disabled = false; newsModal(m.dataset.coin); }); } });
+      addEventListener("keydown", function (e) { if (e.key === "Escape" && !m.hidden) { m.hidden = true; document.documentElement.classList.remove("ch-lock"); } });
+      document.body.appendChild(m);
+    }
+    m.dataset.coin = coin; var f = newsFor(coin, 72), c = newsCache();
+    m.querySelector("h2").textContent = tr("nwTitle", { c: coin }); m.querySelector(".ch-x").textContent = "✕"; m.querySelector(".ch-x").setAttribute("aria-label", tr("close"));
+    m.querySelector('[data-n="reload"]').textContent = tr("nwReload");
+    m.querySelector(".ch-lh").textContent = c.at ? tr("nwSrc", { s: c.src === "server" ? tr("nwSrvName") : "Free Crypto News", t: when(c.at) }) : (c.err ? tr("nwErr", { e: c.err }) : tr("loading"));
+    var TONE = { "-1": "nwNeg", "1": "nwPos", "0": "nwNeu" };
+    m.querySelector(".ch-ll").innerHTML = f.items.length ? f.items.map(function (x) {
+      var tag = x.imp && x.tone < 0 ? '<span class="ch-ni">' + esc(tr("nwImp")) + "</span>" : '<span class="ch-nt t' + x.tone + '">' + esc(tr(TONE[String(x.tone)])) + "</span>";
+      return '<article class="ch-le ch-nwi' + (x.imp && x.tone < 0 ? " ch-new" : "") + '"><div class="ch-lm"><span>' + esc(x.s || "—") + "</span>" + tag + "<time>" + esc(when(x.at)) + "</time></div>" +
+        (x.u ? '<a class="ch-nh" href="' + esc(x.u) + '" target="_blank" rel="noopener">' + esc(x.t) + " ↗</a>" : "<b>" + esc(x.t) + "</b>") + "</article>";
+    }).join("") : '<p class="ch-l0">' + esc(c.at ? tr("nwEmpty", { c: coin }) : c.err ? tr("nwErr", { e: c.err }) + " " + tr("nwHint") : tr("loading")) + "</p>";
+    m.hidden = false; document.documentElement.classList.add("ch-lock"); var x0 = m.querySelector(".ch-x"); if (x0) x0.focus();
+    if (!c.at || Date.now() - c.at > NEWS_TTL) newsLoad().then(function () { if (!m.hidden && m.dataset.coin === coin && newsCache().at !== c.at) newsModal(coin); });
+  }
+  addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("[data-ch-news]"); if (b) { e.preventDefault(); e.stopPropagation(); newsModal(b.dataset.coin); } }, true);
+  setTimeout(function () { newsLoad(); setInterval(newsLoad, NEWS_TTL); }, 1500);
+
+  // ---------- one list of favorite coins for every tool ----------
+  // Each tool keeps its own favorites in its own storage key. This bridge keeps one shared list (ch.favs):
+  // before a tool's code runs, the shared list is copied into the tool's key, and every time the tool saves its key,
+  // the coins it added or removed are applied to the shared list. Coins are plain tickers (SOL, ETH).
+  var FAV_KEY = "ch.favs";
+  var uniqC = function (a) { var o = []; a.forEach(function (x) { x = String(x || "").toUpperCase(); if (x && o.indexOf(x) < 0) o.push(x); }); return o; };
+  var stripQ = function (s) { return String(s || "").toUpperCase().replace(/[-_/]?(USDT|USDC|FDUSD)(-SWAP)?$/, ""); };
+  var parse = function (v, d) { try { var x = JSON.parse(v); return x == null ? d : x; } catch (e) { return d; } };
+  var FAV_AD = {
+    heat: { key: "heat.v1", get: function (v) { return uniqC((parse(v, {}).pins || []).map(function (k) { return String(k).split(":")[1]; })); },
+      set: function (v, coins) { var o = parse(v, {}); if (!o || typeof o !== "object") o = {}; var pins = (o.pins || []).filter(function (k) { return coins.indexOf(String(k).split(":")[1]) >= 0; }), have = pins.map(function (k) { return String(k).split(":")[1]; });
+        coins.forEach(function (c) { if (have.indexOf(c) < 0) { if (c !== "BTC") pins.push("Binance:" + c); pins.push("Binance:" + c + ":USDT"); } }); o.pins = pins; return JSON.stringify(o); } },
+    lab: { key: "ch_coinlab_v1", get: function (v) { return uniqC(parse(v, {}).favs || []); }, set: function (v, coins) { var o = parse(v, {}); if (!o || typeof o !== "object") o = {}; o.favs = coins.slice(); return JSON.stringify(o); } },
+    liq: { key: "lr_fav", get: function (v) { return uniqC(parse(v, []).map(stripQ)); }, set: function (v, coins) { return JSON.stringify(coins.map(function (c) { return c + "USDT"; })); } },
+    volume: { key: "vs_favs", get: function (v) { return uniqC(parse(v, []).map(stripQ)); }, set: function (v, coins) { var old = parse(v, []), keep = old.filter(function (s) { return coins.indexOf(stripQ(s)) >= 0; }), have = keep.map(stripQ);
+      coins.forEach(function (c) { if (have.indexOf(c) < 0) keep.push(c + "USDT"); }); return JSON.stringify(keep); } }
+  };
+  var LS = window.localStorage, rawGet = null, rawSet = null;
+  try { rawGet = Storage.prototype.getItem; rawSet = Storage.prototype.setItem; } catch (e) {}
+  function favs() { try { return uniqC(parse(rawGet.call(LS, FAV_KEY), null) || []); } catch (e) { return []; } }
+  function setFavs(a) { try { rawSet.call(LS, FAV_KEY, JSON.stringify(uniqC(a))); } catch (e) {} favPaint(); }
+  (function initFavs() {
+    if (!rawGet) return;
+    try {
+      var g = parse(rawGet.call(LS, FAV_KEY), null);
+      if (!g) {   // the first time: the shared list starts as the union of every tool's favorites
+        var all = []; for (var k in FAV_AD) all = all.concat(FAV_AD[k].get(rawGet.call(LS, FAV_AD[k].key)));
+        g = uniqC(all); rawSet.call(LS, FAV_KEY, JSON.stringify(g));
+      }
+      var ad = FAV_AD[TOOL];
+      if (ad) { var cur = rawGet.call(LS, ad.key), nv = ad.set(cur, g); if (nv != null && nv !== cur) rawSet.call(LS, ad.key, nv); }
+      // every save of a tool's favorites key moves its additions and removals into the shared list
+      Storage.prototype.setItem = function (key, val) {
+        var A = null; for (var t in FAV_AD) if (FAV_AD[t].key === key) A = FAV_AD[t];
+        if (A && this === LS) {
+          var before = A.get(rawGet.call(LS, key)), after = A.get(val), sh = favs();
+          after.forEach(function (c) { if (before.indexOf(c) < 0 && sh.indexOf(c) < 0) sh.push(c); });
+          sh = sh.filter(function (c) { return !(before.indexOf(c) >= 0 && after.indexOf(c) < 0); });
+          rawSet.call(LS, FAV_KEY, JSON.stringify(sh)); setTimeout(favPaint, 0);
+        }
+        return rawSet.call(this, key, val);
+      };
+    } catch (e) {}
+  })();
+  function isFav(c) { return favs().indexOf(String(c || "").toUpperCase()) >= 0; }
+  function favBtn(coin) {
+    var on = isFav(coin);
+    return '<button type="button" class="ch-fv' + (on ? " on" : "") + '" data-ch-fav data-coin="' + esc(coin) + '" aria-pressed="' + on + '" title="' + esc(tr(on ? "favOff" : "favOn", { c: coin })) + '">' + (on ? "★" : "☆") + "</button>";
+  }
+  function favPaint() { document.querySelectorAll(".ch-fv[data-coin]").forEach(function (b) { var w = document.createElement("div"); w.innerHTML = favBtn(b.dataset.coin); b.replaceWith(w.firstChild); }); document.querySelectorAll(".ch-links").forEach(function (el) { el.__ch = null; }); }
+  addEventListener("storage", function (e) { if (e.key === FAV_KEY) favPaint(); });
+  addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-ch-fav]"); if (!b) return;
+    e.preventDefault(); e.stopPropagation(); var c = b.dataset.coin, a = favs(), i = a.indexOf(c);
+    if (i >= 0) a.splice(i, 1); else a.push(c); setFavs(a);
+  }, true);
+
+  // ---------- events calendar ----------
+  // Fed rate decisions (built in, from the Federal Reserve's published schedule), Binance listings and delistings
+  // from the news feed, and, with the news server, CoinMarketCal coin events. A coin with an event in the next
+  // 7 days gets a calendar badge on its card.
+  var MACRO = [   // FOMC decisions, 2:00 PM Eastern, in UTC
+    ["2026-12-09T19:00:00Z", "fomc"], ["2027-01-27T19:00:00Z", "fomc"], ["2027-03-17T18:00:00Z", "fomc"], ["2027-04-28T18:00:00Z", "fomc"], ["2027-06-09T18:00:00Z", "fomc"]
+  ].map(function (x) { return { at: Date.parse(x[0]), k: x[1], macro: true }; });
+  var EV_KEY = "ch.events";
+  function serverEvents() { var c = jget(EV_KEY, null); return c && Array.isArray(c.items) ? c : { at: 0, items: [] }; }
+  async function loadEvents() {
+    var S0 = newsSet(); if (!S0.server) return;
+    var c = serverEvents(); if (Date.now() - c.at < 30 * 60e3) return;
+    try { var r = await fetch(S0.server.replace(/\/+$/, "") + "/events", { cache: "no-store" }); if (!r.ok) throw 0; var j = await r.json();
+      var items = (j.events || []).map(function (e) { return { at: Date.parse(e.date), t: String(e.title || "").slice(0, 200), c: uniqC(e.coins || []), k: e.category || "event", u: e.url || "" }; }).filter(function (e) { return e.at && e.t; });
+      jset(EV_KEY, { at: Date.now(), items: items });
+    } catch (e) { jset(EV_KEY, { at: Date.now(), items: c.items }); }
+  }
+  function allEvents() {
+    var out = MACRO.slice();
+    newsCache().items.forEach(function (x) {
+      if (x.k !== "listing" && x.k !== "delisting") return;
+      var m = x.t.match(/(\d{4}-\d{2}-\d{2})(?:[ T](\d{2}:\d{2}))?/), at = m ? Date.parse(m[1] + "T" + (m[2] || "00:00") + ":00Z") : x.at;
+      out.push({ at: at, t: x.t, c: x.c, k: x.k, u: x.u, src: "Binance" });
+    });
+    serverEvents().items.forEach(function (e) { out.push(e); });
+    return out.sort(function (a, b) { return a.at - b.at; });
+  }
+  function eventsFor(coin, days) {
+    coin = String(coin || "").toUpperCase(); var now = Date.now(), to = now + (days || 7) * 864e5;
+    return allEvents().filter(function (e) { return !e.macro && e.c && e.c.indexOf(coin) >= 0 && e.at >= now - 864e5 && e.at <= to; });
+  }
+  function nextMacro(hoursBefore, hoursAfter) { var now = Date.now(); return MACRO.find(function (e) { return now >= e.at - hoursBefore * 3600e3 && now <= e.at + hoursAfter * 3600e3; }) || null; }
+  function evBadge(coin) {
+    var E = eventsFor(coin, 7); if (!E.length) return "";
+    var d = Math.max(0, Math.round((E[0].at - Date.now()) / 864e5)), bad = E.some(function (e) { return e.k === "delisting"; });
+    return '<button type="button" class="ch-ev' + (bad ? " bad" : "") + '" data-ch-cal data-coin="' + esc(coin) + '" title="' + esc(tr("evBadge", { c: coin, n: E.length, t: E[0].t })) + '">📅 <span>' + (d ? tr("evIn", { d: d }) : tr("evToday")) + "</span></button>";
+  }
+  function calModal(coin) {
+    var m = document.getElementById("chCal");
+    if (!m) {
+      m = document.createElement("div"); m.id = "chCal"; m.className = "ch-log"; m.hidden = true; m.setAttribute("translate", "no"); m.setAttribute("data-html2canvas-ignore", "true");
+      m.innerHTML = '<section class="ch-lp" role="dialog" aria-modal="true" aria-labelledby="chCalT"><header><h2 id="chCalT"></h2><button type="button" class="ch-x" data-c="close"></button></header><div class="ch-lf"></div><div class="ch-ll"></div><footer><span class="ch-lh"></span></footer></section>';
+      m.addEventListener("click", function (e) { var b = e.target.closest("[data-c]"); if (e.target === m || (b && b.dataset.c === "close")) { m.hidden = true; document.documentElement.classList.remove("ch-lock"); } if (b && b.dataset.c === "all") calModal(""); });
+      addEventListener("keydown", function (e) { if (e.key === "Escape" && !m.hidden) { m.hidden = true; document.documentElement.classList.remove("ch-lock"); } });
+      document.body.appendChild(m);
+    }
+    var now = Date.now(), L = allEvents().filter(function (e) { return e.at >= now - 864e5 && e.at <= now + 45 * 864e5 && (!coin || e.macro || (e.c || []).indexOf(coin) >= 0); });
+    m.querySelector("h2").textContent = coin ? tr("calTitleC", { c: coin }) : tr("calTitle");
+    m.querySelector(".ch-x").textContent = "✕"; m.querySelector(".ch-x").setAttribute("aria-label", tr("close"));
+    m.querySelector(".ch-lf").innerHTML = coin ? '<button type="button" data-c="all" aria-pressed="false">' + esc(tr("calAll")) + "</button>" : "";
+    m.querySelector(".ch-lh").textContent = tr(newsSet().server ? "calSrcSrv" : "calSrc");
+    var K = { fomc: "evFomc", listing: "evList", delisting: "evDelist" };
+    m.querySelector(".ch-ll").innerHTML = L.length ? L.map(function (e) {
+      var title = e.k === "fomc" ? tr("evFomcT") : e.t, kind = K[e.k] ? tr(K[e.k]) : e.k;
+      var dd = new Date(e.at).toLocaleString(document.documentElement.lang || undefined, { weekday: "short", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+      return '<article class="ch-le ch-evi' + (e.k === "delisting" ? " ch-new" : "") + '"><div class="ch-lm"><span class="ch-ek k-' + esc(e.k) + '">' + esc(kind) + "</span>" + (e.c && e.c.length ? "<span>" + esc(e.c.slice(0, 5).join(", ")) + "</span>" : "") + "<time>" + esc(dd) + "</time></div>" +
+        (e.u ? '<a class="ch-nh" href="' + esc(e.u) + '" target="_blank" rel="noopener">' + esc(title) + " ↗</a>" : "<b>" + esc(title) + "</b>") + (e.k === "fomc" ? "<p>" + esc(tr("evFomcWhy")) + "</p>" : "") + "</article>";
+    }).join("") : '<p class="ch-l0">' + esc(tr("calEmpty")) + "</p>";
+    m.hidden = false; document.documentElement.classList.add("ch-lock"); var x0 = m.querySelector(".ch-x"); if (x0) x0.focus();
+  }
+  addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("[data-ch-cal]"); if (b) { e.preventDefault(); e.stopPropagation(); calModal(b.dataset.coin || ""); } }, true);
+  setTimeout(loadEvents, 2500);
+
+  // ---------- correlation with Bitcoin ----------
+  // Pearson correlation of log returns over the last n candles (both series end at the same candle), and beta:
+  // how many percent the coin moves for a 1% move of Bitcoin.
+  function corr(a, b, n) {
+    n = Math.min(n || 120, a.length - 1, b.length - 1); if (n < 20) return null;
+    var ra = [], rb = []; for (var i = 0; i < n; i++) { var j = a.length - n + i, k = b.length - n + i; if (a[j - 1] > 0 && b[k - 1] > 0 && a[j] > 0 && b[k] > 0) { ra.push(Math.log(a[j] / a[j - 1])); rb.push(Math.log(b[k] / b[k - 1])); } }
+    var m = ra.length; if (m < 20) return null;
+    var ma = ra.reduce(function (s, v) { return s + v; }, 0) / m, mb = rb.reduce(function (s, v) { return s + v; }, 0) / m, sab = 0, saa = 0, sbb = 0;
+    for (var q = 0; q < m; q++) { sab += (ra[q] - ma) * (rb[q] - mb); saa += (ra[q] - ma) * (ra[q] - ma); sbb += (rb[q] - mb) * (rb[q] - mb); }
+    if (!saa || !sbb) return null;
+    return { r: sab / Math.sqrt(saa * sbb), beta: sab / sbb, n: m };
+  }
+  function corrText(c) { if (!c) return "—"; return "ρ " + c.r.toFixed(2) + " · β " + c.beta.toFixed(2); }
+
+  // ---------- install as an app (PWA) ----------
+  var installEv = null;
+  addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); installEv = e; document.querySelectorAll(".ch-inst").forEach(function (b) { b.hidden = false; }); });
+  addEventListener("appinstalled", function () { installEv = null; document.querySelectorAll(".ch-inst").forEach(function (b) { b.hidden = true; }); });
+  addEventListener("click", function (e) { var b = e.target.closest && e.target.closest(".ch-inst"); if (!b || !installEv) return; e.preventDefault(); installEv.prompt(); installEv.userChoice.finally(function () { installEv = null; b.hidden = true; }); });
+  if ("serviceWorker" in navigator && location.protocol === "https:") { addEventListener("load", function () { navigator.serviceWorker.register(ROOT + "sw.js", { scope: ROOT }).catch(function () {}); }); }
+
+  // ---------- per-coin calibration, shared by the Paper Bot and the Confluence Scanner ----------
+  // For a coin and timeframe the main indicator families are replayed on 1000 candles of its history with the same
+  // exits as the Coin Lab indicator test (stop 2 ATR, target 4 ATR, 48 candles, 0.1% fee). Only the last 30% of history
+  // (the check part) decides: a family that worked there gets more weight on this coin (up to ×1.6), one that failed
+  // less (down to ×0.4), separately for rising and falling signals, and less change when there were few trades.
+  // A calibration made by Coin Lab's full 16-indicator test (with Elliott waves) is preferred when it exists.
+  // Results live in localStorage (ch.cal) for 3 days; coins are calibrated one by one in the background.
+  var CAL_KEY2 = "ch.cal", CAL_TTL2 = 3 * 864e5;
+  function calAll2() { var a = jget(CAL_KEY2, {}); return a && typeof a === "object" ? a : {}; }
+  function calKey2(ex, mkt, base, tf) { return [normEx(ex), /^fut/.test(String(mkt)) ? "fut" : "spot", String(base).toUpperCase(), tf].join("|"); }
+  function calGet2(ex, mkt, base, tf) { var c = calAll2()[calKey2(ex, mkt, base, tf)]; return c && Date.now() - c.at < 3 * CAL_TTL2 ? c : null; }
+  function calPut2(ex, mkt, base, tf, c) { var a = calAll2(); a[calKey2(ex, mkt, base, tf)] = c; Object.keys(a).sort(function (x, y) { return a[y].at - a[x].at; }).slice(300).forEach(function (k) { delete a[k]; }); jset(CAL_KEY2, a); }
+  var BYIV2 = { "5m": "5", "15m": "15", "1h": "60", "4h": "240", "1d": "D", "1w": "W" };
+  async function calKlines(ex, mkt, sym, tf) {
+    var fut = /^fut/.test(String(mkt));
+    if (normEx(ex) === "bybit") { var r = await getJ("https://api.bybit.com/v5/market/kline?category=" + (fut ? "linear" : "spot") + "&symbol=" + sym + "&interval=" + BYIV2[tf] + "&limit=1000");
+      return ((r.result && r.result.list) || []).map(function (k) { return [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]; }).reverse(); }
+    var d = await getJ(fut ? "https://fapi.binance.com/fapi/v1/klines?symbol=" + sym + "&interval=" + tf + "&limit=1000" : "https://api.binance.com/api/v3/klines?symbol=" + sym + "&interval=" + tf + "&limit=1000");
+    return d.map(function (k) { return [+k[0], +k[1], +k[2], +k[3], +k[4], +k[5]]; });
+  }
+  function rsiArr(c, n) {
+    var o = Array(c.length).fill(null); if (c.length <= n) return o; var g = 0, l = 0, i;
+    for (i = 1; i <= n; i++) { var d = c[i] - c[i - 1]; if (d > 0) g += d; else l -= d; } g /= n; l /= n; o[n] = l === 0 ? 100 : 100 - 100 / (1 + g / l);
+    for (i = n + 1; i < c.length; i++) { var e = c[i] - c[i - 1]; g = (g * (n - 1) + Math.max(e, 0)) / n; l = (l * (n - 1) + Math.max(-e, 0)) / n; o[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l); }
+    return o;
+  }
+  function emaA(a, n) { var o = Array(a.length).fill(null), k = 2 / (n + 1), e = null; for (var i = 0; i < a.length; i++) { e = e == null ? a[i] : a[i] * k + e * (1 - k); if (i >= n - 1) o[i] = e; } return o; }
+  function calCompute(K) {
+    var n = K.length, o = K.map(function (k) { return k[1]; }), h = K.map(function (k) { return k[2]; }), l = K.map(function (k) { return k[3]; }), c = K.map(function (k) { return k[4]; }), v = K.map(function (k) { return k[5]; });
+    if (n < 400) return null;
+    var R = rsiArr(c, 14), E20 = emaA(c, 20), E50 = emaA(c, 50), E200 = emaA(c, 200), E12 = emaA(c, 12), E26 = emaA(c, 26);
+    var M = c.map(function (_, i) { return E12[i] != null && E26[i] != null ? E12[i] - E26[i] : null; }), MS = emaA(M.map(function (x) { return x == null ? 0 : x; }), 9), MH = M.map(function (x, i) { return x == null ? null : x - MS[i]; });
+    var TR = c.map(function (_, i) { return i ? Math.max(h[i] - l[i], Math.abs(h[i] - c[i - 1]), Math.abs(l[i] - c[i - 1])) : h[i] - l[i]; }), AT = emaA(TR, 14);
+    var HE = c.map(function (_, i) { if (i < 150 || R[i] == null) return null; var st = function (p) { var a = -Infinity, z = Infinity; for (var q = i - p + 1; q <= i; q++) { a = Math.max(a, h[q]); z = Math.min(z, l[q]); } return a > z ? (c[i] - z) / (a - z) * 100 : 50; };
+      return 0.6 * (0.4 * st(14) + 0.35 * st(50) + 0.25 * st(150)) + 0.4 * R[i]; });
+    var Z = Array(n).fill(null); for (var i0 = 250; i0 < n; i0 += 10) { var w = HE.slice(Math.max(0, i0 - 400), i0).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; }); if (w.length < 120) continue;
+      var q = function (p) { var k = (w.length - 1) * p / 100, f = Math.floor(k); return w[f] + (w[Math.min(w.length - 1, f + 1)] - w[f]) * (k - f); }; for (var j = i0; j < Math.min(n, i0 + 10); j++) Z[j] = [q(10), q(90)]; }
+    var VS = c.map(function (_, i) { if (i < 20) return null; var s = 0; for (var q2 = i - 20; q2 < i; q2++) s += v[q2]; return s / 20; });
+    var G = { fHeat: { L: [], S: [] }, fMom: { L: [], S: [] }, fTrend: { L: [], S: [] }, fVol: { L: [], S: [] } };
+    var sig = function (g, d, i) { G[g][d].push(i); };
+    var up = function (a, i, x) { return a[i] != null && a[i - 1] != null && a[i - 1] < x && a[i] >= x; }, dn = function (a, i, x) { return a[i] != null && a[i - 1] != null && a[i - 1] > x && a[i] <= x; };
+    for (var i = 1; i < n; i++) {
+      if (Z[i] && up(HE, i, Z[i][0])) sig("fHeat", "L", i); if (Z[i] && dn(HE, i, Z[i][1])) sig("fHeat", "S", i);
+      if (up(R, i, 30)) sig("fMom", "L", i); if (dn(R, i, 70)) sig("fMom", "S", i);
+      if (up(MH, i, 0)) sig("fMom", "L", i); if (dn(MH, i, 0)) sig("fMom", "S", i);
+      if (E20[i] != null && E50[i] != null && E20[i - 1] != null && E50[i - 1] != null) { if (E20[i - 1] <= E50[i - 1] && E20[i] > E50[i]) sig("fTrend", "L", i); if (E20[i - 1] >= E50[i - 1] && E20[i] < E50[i]) sig("fTrend", "S", i); }
+      if (E200[i] != null && E200[i - 1] != null) { if (c[i - 1] <= E200[i - 1] && c[i] > E200[i]) sig("fTrend", "L", i); if (c[i - 1] >= E200[i - 1] && c[i] < E200[i]) sig("fTrend", "S", i); }
+      if (VS[i] && v[i] > 2.5 * VS[i]) sig("fVol", c[i] > o[i] ? "L" : "S", i);
+    }
+    // trades: entry at the next open, stop 2 ATR, target 4 ATR, at most 48 candles, 0.1% fee each side; one at a time
+    var split = Math.floor(n * 0.7), out = {};
+    Object.keys(G).forEach(function (g) {
+      out[g] = {};
+      ["L", "S"].forEach(function (dd) {
+        var d = dd === "L" ? 1 : -1, list = G[g][dd].sort(function (a, b) { return a - b; }), busyTo = -1, T = [];
+        list.forEach(function (s) {
+          var i = s + 1; if (i >= n || i <= busyTo || !AT[s]) return;
+          var e = o[i], a = AT[s], sl = e - d * 2 * a, tp = e + d * 4 * a, x = null, end = Math.min(n - 1, i + 48), k;
+          for (k = i; k <= end; k++) { if (d > 0 ? l[k] <= sl : h[k] >= sl) { x = sl; break; } if (d > 0 ? h[k] >= tp : l[k] <= tp) { x = tp; break; } }
+          if (x == null) { k = end; x = c[end]; }
+          busyTo = k; if (s >= split) T.push(d * (x / e - 1) - 0.002);
+        });
+        var w2 = T.filter(function (r) { return r > 0; }), sw = w2.reduce(function (a, r) { return a + r; }, 0), sl2 = T.filter(function (r) { return r <= 0; }).reduce(function (a, r) { return a + r; }, 0);
+        out[g][dd] = { n: T.length, wr: T.length ? w2.length / T.length * 100 : null, pf: sl2 < 0 ? sw / -sl2 : sw > 0 ? 99 : null };
+      });
+    });
+    var grp = {}; Object.keys(out).forEach(function (g) { grp[g] = {}; ["L", "S"].forEach(function (d) { var s = out[g][d], q0 = !s || s.n < 5 || s.pf == null ? 0 : Math.max(-1, Math.min(1, (Math.min(3, s.pf) - 1) / 0.8)) * s.n / (s.n + 15); grp[g][d] = Math.max(0.4, Math.min(1.6, 1 + 0.6 * q0)); }); });
+    grp.fEw = { L: 1, S: 1 };
+    return { at: Date.now(), grp: grp, sig: out, bars: n, src: "auto" };
+  }
+  var calQ2 = [], calBusy2 = false;
+  function calEnsure2(ex, mkt, base, tf, quote) {
+    var c = calGet2(ex, mkt, base, tf); if (c && Date.now() - c.at < CAL_TTL2) return;
+    var key = calKey2(ex, mkt, base, tf); if (calQ2.some(function (x) { return x.key === key; }) || calQ2.length > 150) return;
+    calQ2.push({ key: key, ex: ex, mkt: mkt, base: String(base).toUpperCase(), tf: tf, sym: String(base).toUpperCase() + (quote || "USDT") }); calRun2();
+  }
+  async function calRun2() {
+    if (calBusy2) return; calBusy2 = true;
+    try {
+      while (calQ2.length) {
+        var job = calQ2.shift(), c0 = calGet2(job.ex, job.mkt, job.base, job.tf); if (c0 && Date.now() - c0.at < CAL_TTL2) continue;
+        try { var K = await calKlines(job.ex, job.mkt, job.sym, job.tf), r = calCompute(K); if (r) { calPut2(job.ex, job.mkt, job.base, job.tf, r); try { dispatchEvent(new CustomEvent("ch-cal", { detail: job })); } catch (e) {} } } catch (e) {}
+        await new Promise(function (res) { setTimeout(res, 2500); });
+      }
+    } finally { calBusy2 = false; }
+  }
+  function calMul2(c, group, v) { if (!c || !c.grp || !c.grp[group]) return 1; return c.grp[group][v >= 0 ? "L" : "S"] || 1; }
+
+  // ---------- hover hints for every tool ----------
+  // Sources, first found wins: an entry of assets/tips.js matching the element (or one of its parents), its title,
+  // the aria-label of an icon-only control, the full text of a cut-off label. Mouse hover and keyboard focus only;
+  // on touch screens the tools keep their own tap hints.
+  var TIPS = null, tipEl = null, tipFor = null, tipT = null, tipOff = false;
+  function loadTips() { if (window.CH_TIPS) { TIPS = window.CH_TIPS; return; } var s = document.createElement("script"); s.src = ROOT + "assets/tips.js?v=" + VERSION; s.onload = function () { TIPS = window.CH_TIPS || null; }; document.head.appendChild(s); }
+  function tipLang(e) { var l = lang(), i = l === "uk" ? 1 : l === "ru" ? 2 : 3; return e[i] || e[3] || e[1]; }
+  function fromDict(el) {
+    if (!TIPS) return null; var lists = [TIPS[TOOL] || [], TIPS.common || []];
+    for (var d = 0, n = el; n && n !== document.body && d < 5; d++, n = n.parentElement) {
+      for (var a = 0; a < lists.length; a++) for (var i = 0; i < lists[a].length; i++) { try { if (n.matches(lists[a][i][0])) return { el: n, text: tipLang(lists[a][i]) }; } catch (e) {} }
+    }
+    return null;
+  }
+  // Heat Index cards and Coin Lab info buttons show their own tap hints from title / data-tip; leave those alone.
+  function ownTips(el) { return (TOOL === "heat" && el.closest("#list .card, #v-table")) || (TOOL === "lab" && el.closest(".ib")); }
+  function tipSource(t) {
+    if (!t || !t.closest || t.closest(".ch-tip, #chShot")) return null;
+    var d = fromDict(t); if (d && !ownTips(d.el)) return d;
+    var ti = t.closest("[title], [data-ch-title]");
+    if (ti && !ownTips(ti)) { var tt = ti.getAttribute("title") || ti.getAttribute("data-ch-title"); if (tt && tt.trim()) return { el: ti, text: tt, title: true }; }
+    var c = t.closest("button, a, [role=button], summary, input, select");
+    if (c) { var al = c.getAttribute("aria-label"), vis = (c.innerText || "").trim(); if (al && (vis.length <= 2 || al.length > vis.length + 6)) return { el: c, text: al }; }
+    var x = t.closest("span, b, td, th, a, button, div, p, h3");
+    if (x && x.children.length === 0 && x.scrollWidth > x.clientWidth + 1 && getComputedStyle(x).textOverflow === "ellipsis") return { el: x, text: x.textContent.trim() };
+    return null;
+  }
+  function placeTip(target) {
+    var r = target.getBoundingClientRect(), b = tipEl.getBoundingClientRect(), vw = document.documentElement.clientWidth, m = 8;
+    var top = r.top - b.height - m, below = top < 6; if (below) top = r.bottom + m;
+    var left = Math.min(Math.max(6, r.left + r.width / 2 - b.width / 2), vw - b.width - 6);
+    tipEl.style.top = Math.round(top) + "px"; tipEl.style.left = Math.round(left) + "px"; tipEl.dataset.side = below ? "b" : "t";
+  }
+  function showTip(src) {
+    if (!tipEl) { tipEl = document.createElement("div"); tipEl.className = "ch-tip"; tipEl.id = "chTip"; tipEl.setAttribute("role", "tooltip"); tipEl.setAttribute("translate", "no"); tipEl.setAttribute("data-html2canvas-ignore", "true"); document.body.appendChild(tipEl); }
+    if (src.title && src.el.hasAttribute("title")) { src.el.setAttribute("data-ch-title", src.el.getAttribute("title")); src.el.removeAttribute("title"); }   // no second, native tooltip
+    tipFor = src.el; tipEl.textContent = src.text; tipEl.hidden = false; tipEl.style.top = "-999px"; tipEl.style.left = "0px";
+    src.el.setAttribute("aria-describedby", "chTip"); placeTip(src.el);
+  }
+  function hideTip() {
+    clearTimeout(tipT); if (!tipFor) return;
+    if (tipFor.hasAttribute("data-ch-title")) { tipFor.setAttribute("title", tipFor.getAttribute("data-ch-title")); tipFor.removeAttribute("data-ch-title"); }
+    if (tipFor.getAttribute("aria-describedby") === "chTip") tipFor.removeAttribute("aria-describedby");
+    tipFor = null; if (tipEl) tipEl.hidden = true;
+  }
+  addEventListener("pointerover", function (e) {
+    if (e.pointerType !== "mouse" || tipOff) return;
+    var src = tipSource(e.target);
+    if (!src) { if (tipFor && !tipFor.contains(e.target)) hideTip(); return; }
+    if (src.el === tipFor) return;
+    hideTip(); tipT = setTimeout(function () { if (src.el.isConnected && src.el.matches(":hover")) showTip(src); }, 350);
+  }, true);
+  addEventListener("pointerout", function (e) { if (tipFor && (!e.relatedTarget || !tipFor.contains(e.relatedTarget))) hideTip(); else if (!tipFor) clearTimeout(tipT); }, true);
+  addEventListener("pointerdown", hideTip, true);
+  addEventListener("scroll", hideTip, true);
+  addEventListener("keydown", function (e) { if (e.key === "Escape") hideTip(); }, true);
+  addEventListener("focusin", function (e) { var t = e.target; if (!t.matches || !t.matches(":focus-visible")) return; var src = tipSource(t); if (src && src.el === t) { hideTip(); showTip(src); } });
+  addEventListener("focusout", hideTip);
+  // An element under the pointer that is replaced by a re-render takes its hint with it.
+  setInterval(function () { if (tipFor && !tipFor.isConnected) hideTip(); }, 500);
+
+  // ---------- bar and footer ----------
+  function barHTML() {
+    var home = TOOL === "heat";
+    var nav = TOOLS.map(function (t) {
+      var nm = tr(t.id)[0];
+      return t.id === TOOL ? "<span aria-current=\"page\">" + icon(t.id) + esc(nm) + "</span>" : '<a href="' + esc(ROOT + t.path) + '" target="ch_' + t.id + '">' + icon(t.id) + esc(nm) + "</a>";
+    }).join("");
+    return '<div class="ch-in"><div class="ch-row"><a class="ch-brand" href="' + esc(ROOT) + '"' + (home ? "" : ' target="ch_heat"') + '><span class="ch-logo">' + LOGO + '</span><span>CRYPTO <b>HUNTERS</b></span></a>' + verHTML() + '<span class="ch-sp"></span>' +
+      '<button type="button" class="ch-inst" hidden title="' + esc(tr("install")) + '">⤓ <span>' + esc(tr("installS")) + '</span></button>' +
+      '<button type="button" class="ch-bell ch-calb" data-ch-cal aria-label="' + esc(tr("calTitle")) + '" title="' + esc(tr("calTitle")) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></button>' +
+      '<button type="button" class="ch-bell" data-ch-log aria-label="' + esc(tr("notif")) + '" title="' + esc(tr("notif")) + '">' + BELL + '<b hidden></b></button>' +
+      '<a class="ch-tg" href="' + CHANNEL_URL + '" target="_blank" rel="noopener" title="' + esc(tr("tg")) + '">' + TG_ICON + "<span>@" + CHANNEL + "</span></a></div>" +
+      '<nav class="ch-nav" aria-label="' + esc(tr("tools")) + '">' + nav + "</nav></div>";
+  }
+  function verHTML() {
+    var ok = PAGE_VER === VERSION;
+    return '<span class="ch-ver' + (ok ? "" : " ch-old") + '" title="' + esc(ok ? tr("verOk", { v: VERSION }) : tr("verOld", { p: PAGE_VER, v: VERSION })) + '">v' + esc(VERSION) + (ok ? "" : " ≠ " + esc(PAGE_VER)) + "</span>";
+  }
+  function footHTML() {
+    return '<div class="ch-in"><b>' + BRAND + '</b><span>v' + esc(VERSION) + '</span><a href="' + CHANNEL_URL + '" target="_blank" rel="noopener">@' + CHANNEL + '</a><a href="' + REPO + '" target="_blank" rel="noopener">GitHub</a><span>' + esc(tr("nfa")) + "</span></div>";
+  }
+  function favicon() {
+    try {
+      var l = document.querySelector('link[rel="icon"]') || document.createElement("link"); l.rel = "icon"; l.type = "image/svg+xml";
+      l.href = "data:image/svg+xml," + encodeURIComponent(LOGO.replace(' aria-hidden="true" focusable="false"', ''));
+      if (!l.parentNode) document.head.appendChild(l);
+    } catch (e) {}
+  }
+  function mount() {
+    favicon();
+    if (TOOL !== "heat") document.body.classList.add("ch-skin");
+    try { if (!window.name) window.name = "ch_" + TOOL; } catch (e) {}   // so a link to this tool from another one reuses this tab
+    var bar = document.createElement("header"); bar.className = "ch-top"; bar.setAttribute("translate", "no"); bar.setAttribute("data-ch", ""); bar.setAttribute("data-html2canvas-ignore", "true");
+    var foot = document.createElement("footer"); foot.className = "ch-foot"; foot.setAttribute("translate", "no"); foot.setAttribute("data-ch", ""); foot.setAttribute("data-html2canvas-ignore", "true");
+    var draw = function () { bar.innerHTML = barHTML(); foot.innerHTML = footHTML(); badge(); if (panelOpen()) renderPanel(); var on = bar.querySelector(".ch-nav span"); if (on && on.scrollIntoView) { var n = bar.querySelector(".ch-nav"); n.scrollLeft = on.offsetLeft - 40; } };
+    draw(); document.body.insertBefore(bar, document.body.firstChild); badge();
+    var host = document.querySelector("[data-ch-foot]") || document.body; host.appendChild(foot);
+    new MutationObserver(function () { draw(); document.querySelectorAll(".ch-links").forEach(function (el) { el.__ch = null; }); if (panelOpen()) renderPanel(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+  }
+  // A Telegram link t.me/<bot>?startapp=SOL (from the bot's inline cards) opens the app on that coin's chart
+  (function startParam() {
+    var m = /[#&?]tgWebAppStartParam=([A-Za-z0-9_-]{2,20})/.exec(location.href), p = m ? m[1] : null;
+    if (!p || TOOL !== "heat") return;
+    var coin = p.toUpperCase().replace(/[^A-Z0-9]/g, "").replace(/USDT$/, ""); if (!coin) return;
+    setTimeout(function () {
+      var tw = window.Telegram && window.Telegram.WebApp, sp = tw && tw.initDataUnsafe && tw.initDataUnsafe.start_param;
+      if (sp && sp.toUpperCase().replace(/[^A-Z0-9]/g, "") !== p.toUpperCase().replace(/[^A-Z0-9]/g, "")) return;
+      if (!/^#\/chart\//.test(location.hash)) location.hash = "#/chart/Binance/" + coin + "/USDT";
+    }, 1800);
+  })();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount); else mount();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", loadTips); else loadTips();
+
+  window.CH = {
+    tool: TOOL, root: ROOT, logo: LOGO, version: VERSION, channel: CHANNEL_URL, watermark: WATERMARK,
+    theme: function (fallback) { return saved() || fallback || null; },
+    url: url, links: links, linksInto: linksInto, param: param,
+    mark: mark, frame: frame, shot: shot, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
+    calib: { get: calGet2, put: calPut2, ensure: calEnsure2, mul: calMul2, key: calKey2, compute: calCompute, pending: function () { return calQ2.length + (calBusy2 ? 1 : 0); } }, favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
+  };
+})();
+
+</script>
+<title>Глобальний цикл BTC · Global Cycle · CRYPTO HUNTERS</title>
+<style>
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ch-bg);color:var(--ch-tx);font:14px/1.5 var(--ch-font)}
+.cy{max-width:1100px;margin:0 auto;padding:12px 14px 36px}
+.cy h1{font-size:20px;line-height:1.25;margin:6px 0 2px;font-weight:600}
+.cy h2{font-size:15px;margin:0 0 8px;font-weight:600}
+.cy .lead{color:var(--ch-t2);margin:0 0 10px;font-size:13px}
+.cy .bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:8px 0 12px}
+.cy .sp{flex:1}
+.cy .seg{display:inline-flex;border:0.5px solid var(--ch-bd2);border-radius:8px;overflow:hidden}
+.cy .seg button{border:0;background:none;color:var(--ch-t2);padding:5px 11px;min-height:32px;font:inherit;font-size:12px;cursor:pointer}
+.cy .seg button[aria-pressed=true]{background:var(--ch-acb);color:var(--ch-act);font-weight:600}
+.cy .btn{border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:8px;padding:5px 11px;min-height:32px;font:inherit;font-size:12px;cursor:pointer}
+.cy .btn:hover{border-color:var(--ch-acd);color:var(--ch-act)}
+.cy .upd{font-size:12px;color:var(--ch-t3)}
+.cy .card{background:var(--ch-s1);border:0.5px solid var(--ch-bd);border-radius:12px;padding:14px;margin-bottom:12px;position:relative}
+.cy .hero{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+@media(min-width:760px){.cy .hero{grid-template-columns:230px minmax(0,1fr);align-items:center}}
+.cy .clock{width:100%;max-width:230px;margin:0 auto;display:block}
+.cy .pname{display:inline-flex;align-items:center;gap:8px;font-size:19px;font-weight:600;margin:0 0 4px}
+.cy .dot{width:12px;height:12px;border-radius:50%;flex:0 0 auto}
+.cy .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.cy .chip{font-size:12px;border:0.5px solid var(--ch-bd2);border-radius:12px;padding:2px 9px;color:var(--ch-t2)}
+.cy .p{margin:6px 0;color:var(--ch-tx)}
+.cy .p.m{color:var(--ch-t2)}
+.cy .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:12px}
+.cy .m{background:var(--ch-s1);border:0.5px solid var(--ch-bd);border-radius:10px;padding:9px 11px}
+.cy .m small{display:block;color:var(--ch-t3);font-size:11.5px}
+.cy .m b{display:block;font-size:17px;font-weight:600;margin-top:1px}
+.cy .m i{display:block;font-style:normal;color:var(--ch-t2);font-size:11.5px}
+.cy .up{color:var(--ch-up)}.cy .dn{color:var(--ch-dn)}.cy .wn{color:var(--ch-warn)}
+.cy .lad{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:5px}
+.cy .lad li{display:flex;gap:8px;align-items:flex-start;font-size:13px}
+.cy .lad .k{flex:0 0 18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:1px}
+.cy .lad .y{background:var(--ch-upb);color:var(--ch-up)}.cy .lad .n{background:var(--ch-dnb);color:var(--ch-dn)}
+.cy .meter{height:8px;border-radius:4px;background:var(--ch-bd);overflow:hidden;margin:6px 0}
+.cy .meter i{display:block;height:100%;background:var(--ch-up)}
+.cy .cbox{position:relative}
+.cy canvas{display:block;width:100%;touch-action:pan-y}
+.cy .tip{position:absolute;pointer-events:none;background:var(--ch-bg);border:0.5px solid var(--ch-bd2);border-radius:8px;padding:6px 9px;font-size:12px;line-height:1.4;box-shadow:0 2px 10px rgba(0,0,0,.25);z-index:2;display:none;max-width:230px}
+.cy .leg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:11.5px;color:var(--ch-t2)}
+.cy .leg span{display:inline-flex;align-items:center;gap:5px}
+.cy .leg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.cy .leg i.ln{height:2px;width:16px;border-radius:1px}
+.cy .tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.cy table{border-collapse:collapse;width:100%;min-width:640px;font-size:12.5px}
+.cy th,.cy td{padding:6px 8px;text-align:left;border-bottom:0.5px solid var(--ch-bd);white-space:nowrap}
+.cy th{color:var(--ch-t3);font-weight:500;font-size:11.5px}
+.cy tr.cur td{background:var(--ch-acb)}
+.cy .steps{display:grid;gap:8px}
+.cy .st{border:0.5px solid var(--ch-bd);border-radius:10px;padding:10px 12px;background:var(--ch-bg);display:grid;gap:2px}
+.cy .st.now{border-color:var(--ch-acd)}
+.cy .st h3{margin:0;font-size:13.5px;font-weight:600;display:flex;gap:8px;align-items:center}
+.cy .st .dt{color:var(--ch-brand);font-size:12.5px;font-weight:600}
+.cy .st p{margin:0;color:var(--ch-t2);font-size:13px}
+.cy ul.cv{margin:6px 0 0;padding-left:18px;color:var(--ch-t2);font-size:13px}
+.cy ul.cv li{margin:3px 0}
+.cy .err{color:var(--ch-ert);background:var(--ch-erb);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:13px}
+.cy .sc{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:8px}
+.cy .sc div{border:0.5px solid var(--ch-bd);border-radius:10px;padding:8px 10px;background:var(--ch-bg);font-size:12.5px}
+.cy .sc b{display:block;font-size:13px;margin-bottom:2px}
+.cy .nfa{font-size:12px;color:var(--ch-t3);margin-top:10px}
+</style>
+</head>
+<body>
+<main class="cy" id="app"></main>
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), DAY=864e5, D=(y,m,d)=>Date.UTC(y,m-1,d);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let LANG=LS.get("cy_lang",null);
+if(!LANG){const h=LS.get("heat.v1",null);LANG=h&&h.lang||null}
+if(!LANG||!/^(uk|ru|en)$/.test(LANG)){const n=(navigator.language||"en").slice(0,2);LANG=/^(uk|ru)$/.test(n)?n:"en"}
+document.documentElement.lang=LANG;
+const L=(u,r,e)=>LANG==="uk"?u:LANG==="ru"?r:e;
+const LOC={uk:"uk-UA",ru:"ru-RU",en:"en-GB"};
+const fD=t=>new Date(t).toLocaleDateString(LOC[LANG],{day:"2-digit",month:"short",year:"numeric",timeZone:"UTC"});
+const fM=t=>new Date(t).toLocaleDateString(LOC[LANG],{month:"short",year:"numeric",timeZone:"UTC"});
+const fP=v=>"$"+Math.round(v).toLocaleString("en-US");
+const fK=v=>v>=1e6?"$"+(v/1e6).toFixed(1)+"M":v>=1e3?"$"+(v>=1e5?Math.round(v/1e3):+(v/1e3).toFixed(1))+"K":"$"+Math.round(v);
+const fPct=v=>(v>=0?"+":"")+v.toFixed(1)+"%";
+const dN=(n)=>Math.round(n).toLocaleString(LOC[LANG]);
+
+// ---- reference data (rounded; days of past tops/bottoms are well known, prices approximate) ----
+const HALV=[D(2012,11,28),D(2016,7,9),D(2020,5,11),D(2024,4,20)];
+const HALV_LEN=1458;                      // 210 000 blocks of about 10 minutes
+const PAST=[
+ {y:2013,h:HALV[0],top:D(2013,11,30),tp:1150,bot:D(2015,1,14),bp:170,pb:null},
+ {y:2017,h:HALV[1],top:D(2017,12,17),tp:19700,bot:D(2018,12,15),bp:3200,pb:170},
+ {y:2021,h:HALV[2],top:D(2021,11,10),tp:69000,bot:D(2022,11,21),bp:15500,pb:3200}];
+const PC={acc:"#378add",early:"#1d9e75",euph:"#f5a524",dist:"#e0587a",bear:"#7d8896",cap:"#8e63d9"};
+const ORDER=["acc","early","euph","dist","bear","cap"];
+const PN=()=>({acc:L("Накопичення","Накопление","Accumulation"),early:L("Раннє зростання","Ранний рост","Early bull"),euph:L("Параболічне зростання","Параболический рост","Parabolic run"),dist:L("Розподіл (пік)","Распределение (пик)","Distribution (top)"),bear:L("Ведмежий ринок","Медвежий рынок","Bear market"),cap:L("Капітуляція і дно","Капитуляция и дно","Capitulation & bottom")});
+const median=a=>{const s=a.slice().sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
+const ST={w:null,d:null,A:null,F:null,err:null,at:0,busy:false};
+
+// ---- data ----
+async function gj(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error(r.status);return r.json()}
+async function kl(iv,limit){
+  try{const a=await gj("https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval="+iv+"&limit="+limit);if(Array.isArray(a)&&a.length>20)return a.map(r=>({t:+r[0],o:+r[1],h:+r[2],l:+r[3],c:+r[4]}))}catch(e){}
+  try{const j=await gj("https://api.bybit.com/v5/market/kline?category=spot&symbol=BTCUSDT&interval="+(iv==="1w"?"W":"D")+"&limit="+Math.min(limit,1000));const a=j.result.list;if(a&&a.length>20)return a.map(r=>({t:+r[0],o:+r[1],h:+r[2],l:+r[3],c:+r[4]})).reverse()}catch(e){}
+  throw new Error("data");
+}
+const pack=a=>a.map(x=>[x.t,x.o,x.h,x.l,x.c]), unpack=a=>a.map(r=>({t:r[0],o:r[1],h:r[2],l:r[3],c:r[4]}));
+async function load(force){
+  if(ST.busy)return;ST.busy=true;ST.err=null;
+  const c=LS.get("cy_cache",null);
+  if(!force&&c&&Date.now()-c.at<3e5){ST.w=unpack(c.w);ST.d=unpack(c.d);ST.at=c.at}
+  else{
+    try{const [w,d]=await Promise.all([kl("1w",1000),kl("1d",1000)]);ST.w=w;ST.d=d;ST.at=Date.now();LS.set("cy_cache",{at:ST.at,w:pack(w),d:pack(d)})}
+    catch(e){ if(c){ST.w=unpack(c.w);ST.d=unpack(c.d);ST.at=c.at;ST.err=L("Не вдалося оновити дані, показано збережені.","Не удалось обновить данные, показаны сохранённые.","Could not refresh, showing saved data.")} else ST.err=L("Не вдалося завантажити свічки BTC (Binance і Bybit недоступні з цього мережевого з’єднання).","Не удалось загрузить свечи BTC (Binance и Bybit недоступны из этой сети).","Could not load BTC candles (Binance and Bybit are not reachable from this connection).") }
+  }
+  if(ST.w&&ST.d){ST.A=analyze(ST.w,ST.d);ST.F=forecast(ST.A)}
+  ST.busy=false;render();
+}
+
+// ---- analysis ----
+const sma=(a,n,k)=>{if(k<n-1)return null;let s=0;for(let i=k-n+1;i<=k;i++)s+=a[i].c;return s/n};
+function analyze(w,d){
+  const now=Date.now(),h4=HALV[3],last=d[d.length-1]||w[w.length-1],price=last.c;
+  const src=d.length&&d[0].t<=h4+20*DAY?d:w;
+  let top={t:0,p:0};for(const x of src)if(x.t>=h4&&x.h>top.p)top={t:x.t,p:x.h};
+  let low={t:top.t,p:top.p};for(const x of src)if(x.t>top.t&&x.l<low.p)low={t:x.t,p:x.l};
+  if(price<low.p)low={t:last.t,p:price};
+  const hx=src.find(x=>x.t>=h4);const hp=hx?hx.c:64000;
+  const dd=1-price/top.p,ddLow=1-low.p/top.p,sinceTop=(now-top.t)/DAY,lowAge=(now-low.t)/DAY,recov=price/low.p-1,sinceH=(now-h4)/DAY;
+  // 200-week average at each week and the lowest ratio of the low to it since the top
+  let w200=null,w50=null,minRatio=null;
+  const wc=w.map(x=>x.c);
+  for(let i=0;i<w.length;i++){const m=sma(w,200,i);if(i===w.length-1)w200=m;if(m&&w[i].t>=top.t){const r=w[i].l/m;if(minRatio==null||r<minRatio)minRatio=r}}
+  w50=sma(w,50,w.length-1);
+  const d200=d.length>=200?sma(d,200,d.length-1):null,mayer=d200?price/d200:null;
+  const checks=[
+    {ok:sinceTop>=330,t:L("Минуло 330+ днів після піку (минулі дна — 363–410 днів)","Прошло 330+ дней после пика (прошлые дна — 363–410 дней)","330+ days since the top (past bottoms came 363–410 days after)"),v:dN(sinceTop)+" "+L("дн.","дн.","d")},
+    {ok:ddLow>=0.5,t:L("Просадка від піку 50 % або більше","Просадка от пика 50 % и более","Drawdown from the top of 50% or more"),v:"-"+(ddLow*100).toFixed(0)+"%"},
+    {ok:minRatio!=null&&minRatio<=1.15,t:L("Мінімум торкався 200-тижневої MA (до +15 %)","Минимум касался 200-недельной MA (до +15 %)","The low reached the 200-week MA (within +15%)"),v:minRatio==null?"n/a":"×"+minRatio.toFixed(2)},
+    {ok:lowAge>=60,t:L("Новий мінімум не оновлювався 60+ днів","Новый минимум не обновлялся 60+ дней","No new low for 60+ days"),v:dN(lowAge)+" "+L("дн.","дн.","d")},
+    {ok:recov>=0.25,t:L("Відскок від мінімуму щонайменше +25 %","Отскок от минимума не менее +25 %","Bounce of at least +25% off the low"),v:fPct(recov*100)},
+    {ok:mayer!=null&&mayer>1,t:L("Ціна вище 200-денної MA","Цена выше 200-дневной MA","Price above the 200-day MA"),v:mayer==null?"n/a":"×"+mayer.toFixed(2)},
+    {ok:w50!=null&&price>w50,t:L("Ціна вище 50-тижневої MA","Цена выше 50-недельной MA","Price above the 50-week MA"),v:w50?fK(w50):"n/a"}];
+  const score=checks.filter(c=>c.ok).length,conf=score>=5;
+  const nextH=h4+HALV_LEN*DAY;
+  let ph;
+  if(dd<0.15)ph=sinceH<365?"early":"euph";
+  else if(sinceTop<=120)ph="dist";
+  else if(!conf)ph=sinceTop<=330?"bear":"cap";
+  else ph=now<nextH?"acc":"early";
+  // phase by the clock only (days after the last halving)
+  const cl=[["early",0,365],["euph",365,530],["dist",530,630],["bear",630,830],["cap",830,985],["acc",985,HALV_LEN]];
+  const dm=sinceH%HALV_LEN;let tph="acc";for(const c of cl)if(dm>=c[1]&&dm<c[2])tph=c[0];
+  return {now,price,top,low,hp,dd,ddLow,sinceTop,lowAge,recov,sinceH,w200,w50,d200,mayer,minRatio,checks,score,conf,ph,tph,nextH,toH:(nextH-now)/DAY,dm,
+    gains:PAST.map(p=>p.tp/p.pb).filter(x=>isFinite(x)),
+    hTop:[...PAST.map(p=>(p.top-p.h)/DAY),(top.t-h4)/DAY],tB:PAST.map(p=>(p.bot-p.top)/DAY),dds:PAST.map(p=>1-p.bp/p.tp)};
+}
+function forecast(A){
+  const medHT=median(A.hTop),medTB=median(A.tB);
+  const nextTop=A.nextH+medHT*DAY,nextBot=nextTop+medTB*DAY;
+  const bt0=A.top.t+363*DAY,bt1=A.top.t+410*DAY,btM=A.top.t+medTB*DAY;
+  const sc=[
+   {id:"bear",c:"#e0587a",depth:0.77,mult:3,hm:1.8,bd:bt1},
+   {id:"base",c:"#f5a524",depth:0.70,mult:4.5,hm:2.5,bd:btM},
+   {id:"bull",c:"#1d9e75",depth:0.62,mult:6.5,hm:3.5,bd:bt0}];
+  const paths=[];
+  for(const s of sc){
+    let bT,bP;
+    if(A.conf||A.ph==="acc"||A.ph==="early"){bT=A.low.t;bP=A.low.p}
+    else{bT=Math.max(s.bd,A.now+14*DAY);bP=Math.min(A.top.p*(1-s.depth),A.low.p)}
+    s.bT=bT;s.bP=bP;s.hP=bP*s.hm;s.tP=bP*s.mult;s.tT=nextTop;s.nP=s.tP*0.4;s.nT=nextBot;
+    const pts=[{t:A.now,p:A.price}];
+    if(bT>A.now+DAY)pts.push({t:bT,p:bP});
+    pts.push({t:A.nextH,p:s.hP},{t:s.tT,p:s.tP},{t:s.nT,p:s.nP});
+    s.pts=pts;paths.push(pts);
+  }
+  return {sc,paths,nextTop,nextBot,medHT,medTB,bt0,bt1,btM};
+}
+function cycles(A,F){
+  const base=F.sc[1];
+  const c3b=A.conf||A.ph==="acc"||A.ph==="early"?A.low.t:Math.max(base.bT,A.now);
+  const cy=PAST.map(p=>({h:p.h,T:p.top,b:p.bot}));
+  cy.push({h:HALV[3],T:A.top.t,b:c3b});
+  cy.push({h:A.nextH,T:F.nextTop,b:F.nextBot});
+  return cy;
+}
+function bands(A,F){
+  const cy=cycles(A,F),out=[];
+  for(let i=0;i<cy.length;i++){
+    const c=cy[i],pb=i>0?cy[i-1].b:c.h-420*DAY;
+    out.push({a:pb,b:c.h,ph:"acc"},{a:c.h,b:c.h+365*DAY,ph:"early"},{a:c.h+365*DAY,b:c.T,ph:"euph"},{a:c.T,b:c.T+100*DAY,ph:"dist"},{a:c.T+100*DAY,b:c.T+300*DAY,ph:"bear"},{a:c.T+300*DAY,b:c.b,ph:"cap"});
+  }
+  return out.filter(x=>x.b>x.a);
+}
+
+// ---- texts ----
+function PD(ph){return {
+ acc:L("Ринок відновлюється після дна: волатильність спадає, ціна тримається в діапазоні, великі гравці поступово набирають позицію. Настрій — апатія й недовіра.","Рынок восстанавливается после дна: волатильность падает, цена держится в диапазоне, крупные игроки постепенно набирают позицию. Настроение — апатия и недоверие.","The market recovers from the bottom: volatility fades, price holds a range and large players slowly build positions. Sentiment is apathy and distrust."),
+ early:L("Після халвінгу нова емісія вдвічі менша. Ціна поступово повертається до попереднього максимуму, зростання стабільне, але ще без ейфорії.","После халвинга новая эмиссия вдвое меньше. Цена постепенно возвращается к прошлому максимуму, рост стабильный, но ещё без эйфории.","After the halving new supply is cut in half. Price steadily returns to the previous high; the rise is steady but not yet euphoric."),
+ euph:L("Найшвидша й найемоційніша фаза: ціна прискорюється, оновлює історичні максимуми, приходить масовий інтерес. Ризик різкого розвороту максимальний.","Самая быстрая и эмоциональная фаза: цена ускоряется, обновляет исторические максимумы, приходит массовый интерес. Риск резкого разворота максимальный.","The fastest and most emotional phase: price accelerates, makes new all-time highs and the crowd arrives. The risk of a sharp reversal is at its highest."),
+ dist:L("Пік пройдено: різке падіння від максимуму, далі відскоки, що не повертають до піку. Багато хто ще вірить у «продовження зростання».","Пик пройден: резкое падение от максимума, затем отскоки, не возвращающие к пику. Многие ещё верят в «продолжение роста».","The top is behind us: a sharp drop from the high, then rallies that fail to reach it. Many still believe in 'one more leg up'."),
+ bear:L("Тривала фаза спаду: нижчі максимуми й мінімуми, ціна під 50- і 200-тижневими MA, обсяги в’януть, настрій — страх.","Длительная фаза спада: более низкие максимумы и минимумы, цена под 50- и 200-недельными MA, объёмы вянут, настроение — страх.","A long decline: lower highs and lower lows, price under the 50- and 200-week MAs, fading volume, fear in the air."),
+ cap:L("Фінальна фаза падіння: капітуляція, мінімуми обсягів та інтересу, ціна біля 200-тижневої MA. Дно зазвичай видно лише заднім числом.","Финальная фаза падения: капитуляция, минимумы объёмов и интереса, цена около 200-недельной MA. Дно обычно видно лишь задним числом.","The final leg down: capitulation, lows in volume and interest, price near the 200-week MA. The bottom is usually only clear in hindsight.")}[ph]}
+function PX(ph,A,F){
+  const x={halv:fM(A.nextH),top:fM(F.nextTop-20*DAY)+" – "+fM(F.nextTop+20*DAY),bot:fM(F.bt0)+" – "+fM(F.bt1)};
+  return {
+ acc:L(`Далі: до халвінгу (≈ ${x.halv}) ціна зазвичай росте повільно й нерівно, з відкатами. Хороше підтвердження — стійкий рух вище 200-тижневої MA.`,`Дальше: до халвинга (≈ ${x.halv}) цена обычно растёт медленно и неровно, с откатами. Хорошее подтверждение — устойчивое движение выше 200-недельной MA.`,`Next: until the halving (≈ ${x.halv}) price usually climbs slowly and unevenly with pullbacks. A good confirmation is a sustained move above the 200-week MA.`),
+ early:L(`Далі: приблизно через 12 місяців після халвінгу зазвичай стартує параболічна фаза.`,`Дальше: примерно через 12 месяцев после халвинга обычно стартует параболическая фаза.`,`Next: about 12 months after the halving the parabolic phase usually starts.`),
+ euph:L(`Далі: у минулих циклах пік припадав на ≈ ${dN(F.medHT/30.4)} міс. після халвінгу (тут ≈ ${x.top}); потім зазвичай падіння на 75–85 %.`,`Дальше: в прошлых циклах пик приходился на ≈ ${dN(F.medHT/30.4)} мес. после халвинга (здесь ≈ ${x.top}); затем обычно падение на 75–85 %.`,`Next: in past cycles the top came ≈ ${dN(F.medHT/30.4)} months after the halving (here ≈ ${x.top}); a 75–85% drop usually follows.`),
+ dist:L(`Далі: ведмежий ринок із відскоками-пастками; дно в минулих циклах формувалось через 363–410 днів після піку (${x.bot}).`,`Дальше: медвежий рынок с отскоками-ловушками; дно в прошлых циклах формировалось через 363–410 дней после пика (${x.bot}).`,`Next: a bear market with bull traps; past bottoms formed 363–410 days after the top (${x.bot}).`),
+ bear:L(`Далі: дно в минулих циклах формувалось через 363–410 днів після піку (${x.bot}), зазвичай біля 200-тижневої MA, після капітуляції з піком обсягів.`,`Дальше: дно в прошлых циклах формировалось через 363–410 дней после пика (${x.bot}), обычно около 200-недельной MA, после капитуляции с пиком объёмов.`,`Next: past bottoms formed 363–410 days after the top (${x.bot}), usually near the 200-week MA after a capitulation on peak volume.`),
+ cap:L(`Далі: якщо мінімум не оновлюється 2+ місяці, а ціна повертається вище 200-денної MA — це перехід до накопичення. Нові мінімуми скасовують це.`,`Дальше: если минимум не обновляется 2+ месяца, а цена возвращается выше 200-дневной MA — это переход к накоплению. Новые минимумы это отменяют.`,`Next: if the low holds for 2+ months and price returns above the 200-day MA, that is the shift to accumulation. A new low cancels it.`)}[ph]}
+
+// ---- rendering ----
+function arc(cx,cy,r0,r1,a0,a1){
+  const P=(r,a)=>[cx+r*Math.cos(a),cy+r*Math.sin(a)],f=n=>n.toFixed(2),A0=a0*Math.PI/180,A1=a1*Math.PI/180,lg=a1-a0>180?1:0;
+  const p1=P(r1,A0),p2=P(r1,A1),p3=P(r0,A1),p4=P(r0,A0);
+  return `M${f(p1[0])} ${f(p1[1])}A${r1} ${r1} 0 ${lg} 1 ${f(p2[0])} ${f(p2[1])}L${f(p3[0])} ${f(p3[1])}A${r0} ${r0} 0 ${lg} 0 ${f(p4[0])} ${f(p4[1])}Z`;
+}
+function clockSVG(A){
+  const cl=[["early",0,365],["euph",365,530],["dist",530,630],["bear",630,830],["cap",830,985],["acc",985,HALV_LEN]];
+  const ang=d=>d/HALV_LEN*360-90;
+  let s=`<svg class="clock" viewBox="0 0 200 200" role="img" aria-label="${esc(L("Годинник циклу","Часы цикла","Cycle clock"))}">`;
+  for(const c of cl)s+=`<path d="${arc(100,100,66,88,ang(c[1])+.6,ang(c[2])-.6)}" fill="${PC[c[0]]}" opacity="${c[0]===A.tph?1:.38}"/>`;
+  const pa=ang(A.dm%HALV_LEN)*Math.PI/180,mx=100+77*Math.cos(pa),my=100+77*Math.sin(pa);
+  s+=`<circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="8" fill="var(--ch-bg)" stroke="var(--ch-tx)" stroke-width="2.5"/><circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="2.6" fill="var(--ch-tx)"/>`;
+  s+=`<text x="100" y="22" text-anchor="middle" font-size="9" fill="var(--ch-t3)">${L("халвінг","халвинг","halving")}</text>`;
+  s+=`<text x="100" y="92" text-anchor="middle" font-size="22" font-weight="700" fill="var(--ch-tx)">${dN(A.sinceH)}</text><text x="100" y="108" text-anchor="middle" font-size="10" fill="var(--ch-t2)">${L("днів після халвінгу","дней после халвинга","days after halving")}</text>`;
+  s+=`<text x="100" y="128" text-anchor="middle" font-size="10.5" font-weight="600" fill="${PC[A.tph]}">${esc(PN()[A.tph])}</text></svg>`;
+  return s;
+}
+function metric(k,v,sub,cls){return `<div class="m"><small>${esc(k)}</small><b class="${cls||""}">${v}</b>${sub?`<i>${sub}</i>`:""}</div>`}
+function render(){
+  const app=$("#app");if(!app)return;
+  document.documentElement.lang=LANG;
+  let h=`<h1>${L("Глобальний цикл Bitcoin","Глобальный цикл Bitcoin","Bitcoin global cycle")}</h1><p class="lead">${L("Фази чотирирічного циклу BTC (халвінг → пік → ведмежий ринок → дно), де ми зараз і які сценарії далі. Історія — лише 4 цикли: це орієнтир, а не гарантія.","Фазы четырёхлетнего цикла BTC (халвинг → пик → медвежий рынок → дно), где мы сейчас и какие сценарии дальше. В истории всего 4 цикла: это ориентир, а не гарантия.","Phases of the four-year BTC cycle (halving → top → bear market → bottom), where we are now and which scenarios come next. History has only 4 cycles: a guide, not a guarantee.")}</p>`;
+  h+=`<div class="bar"><div class="seg" id="lg" role="group" aria-label="Language">${["uk","ru","en"].map(l=>`<button data-l="${l}" aria-pressed="${l===LANG}">${l.toUpperCase()}</button>`).join("")}</div><button class="btn" id="rf">⟳ ${L("Оновити","Обновить","Refresh")}</button><span class="upd">${ST.at?L("Дані","Данные","Data")+": "+new Date(ST.at).toLocaleTimeString(LOC[LANG],{hour:"2-digit",minute:"2-digit"}):""}</span><span class="sp"></span><span id="camHost"></span></div>`;
+  if(ST.err)h+=`<div class="err">${esc(ST.err)}</div>`;
+  const A=ST.A,F=ST.F;
+  if(!A){h+=`<div class="card">${ST.busy||!ST.err?L("Завантажую дані…","Загружаю данные…","Loading data…"):""}</div>`;app.innerHTML=h;wire();return}
+  const pn=PN(),names=pn;
+  h+=`<div id="shotArea"><div class="card hero"><div>${clockSVG(A)}</div><div><div class="pname"><span class="dot" style="background:${PC[A.ph]}"></span>${esc(names[A.ph])}</div>
+   <div class="chips"><span class="chip">${L("За ціною","По цене","By price")}: ${esc(names[A.ph])}</span><span class="chip">${L("За часом","По времени","By time")}: ${esc(names[A.tph])}</span><span class="chip">${L("Підтвердження дна","Подтверждение дна","Bottom confirmation")}: ${A.score}/7</span></div>
+   <p class="p">${esc(PD(A.ph))}</p><p class="p m">${esc(PX(A.ph,A,F))}</p>
+   ${A.ph!==A.tph?`<p class="p m">${L("Ціна й календар не збігаються: ціна важливіша за дату — цикл може зсуватися.","Цена и календарь не совпадают: цена важнее даты — цикл может смещаться.","Price and calendar disagree: price matters more than the date, and the cycle can drift.")}</p>`:""}</div></div>`;
+  h+=`<div class="grid">`+
+   metric(L("Ціна BTC","Цена BTC","BTC price"),fP(A.price),L("зараз","сейчас","now"))+
+   metric(L("Максимум циклу","Максимум цикла","Cycle high"),fP(A.top.p),fD(A.top.t))+
+   metric(L("Просадка від піку","Просадка от пика","Drawdown from top"),"-"+(A.dd*100).toFixed(1)+"%",L("мінімум ","минимум ","low ")+fP(A.low.p)+" (-"+(A.ddLow*100).toFixed(0)+"%)","dn")+
+   metric(L("Днів від піку","Дней от пика","Days since top"),dN(A.sinceTop),L("норма до дна: 363–410","норма до дна: 363–410","bottom came at 363–410"))+
+   metric(L("Мінімум після піку","Минимум после пика","Low since the top"),fD(A.low.t),dN(A.lowAge)+" "+L("дн. тому","дн. назад","days ago"))+
+   metric(L("Відскок від мінімуму","Отскок от минимума","Bounce off the low"),fPct(A.recov*100),"",A.recov>=0?"up":"dn")+
+   metric(L("200-тижнева MA","200-недельная MA","200-week MA"),A.w200?fP(A.w200):"n/a",A.w200?L("ціна ","цена ","price ")+"×"+(A.price/A.w200).toFixed(2):"")+
+   metric("Mayer Multiple",A.mayer?"×"+A.mayer.toFixed(2):"n/a",L("ціна / 200-денна MA","цена / 200-дневная MA","price / 200-day MA"))+
+   metric(L("До халвінгу","До халвинга","To the halving"),"≈ "+dN(A.toH/30.4)+" "+L("міс.","мес.","mo."),fM(A.nextH))+
+  `</div>`;
+  h+=`<div class="card"><h2>${L("Підтвердження дна","Подтверждение дна","Bottom confirmation")}: ${A.score} ${L("із","из","of")} 7</h2><div class="meter"><i style="width:${A.score/7*100}%"></i></div>
+   <div class="p m">${A.score>=5?L("Більшість ознак дна на місці: ринок, схоже, у переході до накопичення.","Большинство признаков дна на месте: рынок, похоже, переходит к накоплению.","Most bottom signs are in place: the market looks to be shifting into accumulation."):A.score>=3?L("Частина ознак є, але підтвердження ще неповне.","Часть признаков есть, но подтверждение пока неполное.","Some signs are present but the confirmation is incomplete."):L("Ознак дна поки мало: ринок ще у фазі спаду або пік поруч.","Признаков дна пока мало: рынок ещё в фазе спада или пик рядом.","Few bottom signs so far: the market is still declining or near a top.")}</div>
+   <ul class="lad">${A.checks.map(c=>`<li><span class="k ${c.ok?"y":"n"}">${c.ok?"✓":"✗"}</span><span>${esc(c.t)} <b>· ${esc(c.v)}</b></span></li>`).join("")}</ul></div>`;
+  h+=`<div class="card"><h2>${L("Ціна BTC (лог. шкала), фази й сценарії","Цена BTC (лог. шкала), фазы и сценарии","BTC price (log scale), phases and scenarios")}</h2><div class="cbox"><canvas id="c1"></canvas><div class="tip" id="t1"></div></div>
+   <div class="leg">${ORDER.map(k=>`<span><i style="background:${PC[k]}"></i>${esc(pn[k])}</span>`).join("")}</div>
+   <div class="leg"><span><i class="ln" style="background:var(--ch-ac)"></i>${L("Ціна","Цена","Price")}</span><span><i class="ln" style="background:var(--ch-warn)"></i>${L("200-тижнева MA","200-недельная MA","200-week MA")}</span><span><i class="ln" style="background:#e0587a"></i>${L("Сценарій: слабкий","Сценарий: слабый","Scenario: weak")}</span><span><i class="ln" style="background:#f5a524"></i>${L("базовий","базовый","base")}</span><span><i class="ln" style="background:#1d9e75"></i>${L("сильний","сильный","strong")}</span></div></div>`;
+  h+=`<div class="card"><h2>${L("Падіння після піку: цикли поруч","Падение после пика: циклы рядом","After the top: cycles side by side")}</h2><div class="cbox"><canvas id="c2"></canvas><div class="tip" id="t2"></div></div>
+   <div class="leg"><span><i class="ln" style="background:#f5a524"></i>2017</span><span><i class="ln" style="background:#378add"></i>2021</span><span><i class="ln" style="background:var(--ch-tx)"></i>${new Date(A.top.t).getUTCFullYear()} (${L("зараз","сейчас","now")})</span><span><i style="background:rgba(142,99,217,.25)"></i>${L("вікно дна: день 363–410","окно дна: день 363–410","bottom window: day 363–410")}</span></div>
+   <div class="p m" style="margin-top:8px">${L("По осі X — дні після піку, по осі Y — ціна відносно піку (лог.). Лінії минулих циклів показують, наскільки глибоким і довгим було падіння.","По оси X — дни после пика, по оси Y — цена относительно пика (лог.). Линии прошлых циклов показывают, насколько глубоким и долгим было падение.","X is days after the top, Y is price relative to the top (log). The past-cycle lines show how deep and how long the decline was.")}</div></div>`;
+  h+=cycleTable(A,F);
+  h+=forecastHTML(A,F);
+  h+=`<div class="card"><h2>${L("Що враховувати","Что учитывать","Keep in mind")}</h2><ul class="cv">
+   <li>${L("Вибірка мала: лише 4 цикли, тож статистика груба, а кожен наступний цикл відрізнявся від попереднього.","Выборка мала: всего 4 цикла, статистика грубая, а каждый следующий цикл отличался от предыдущего.","The sample is tiny: only 4 cycles, so the statistics are rough, and each cycle differed from the last.")}</li>
+   <li>${L("Із кожним циклом зростання від дна до піку слабшає (≈ "+A.gains.map(x=>"×"+Math.round(x)).join(" → ")+"), а просадки дещо мілкішають: ринок дорослішає й стає масивнішим.","С каждым циклом рост от дна до пика слабеет (≈ "+A.gains.map(x=>"×"+Math.round(x)).join(" → ")+"), а просадки немного мельчают: рынок взрослеет и становится крупнее.","Each cycle the rise from bottom to top weakens (≈ "+A.gains.map(x=>"×"+Math.round(x)).join(" → ")+") and drawdowns get slightly shallower: the market is maturing and getting bigger.")}</li>
+   <li>${L("На ціну впливають ліквідність, ставки, ETF-потоки, регуляція й геополітика; календар халвінгу — лише один із факторів, і цикл може зсунутися або зламатися.","На цену влияют ликвидность, ставки, ETF-потоки, регуляция и геополитика; календарь халвинга — лишь один из факторов, и цикл может сместиться или сломаться.","Liquidity, rates, ETF flows, regulation and geopolitics all matter; the halving calendar is one factor and the cycle can shift or break.")}</li>
+   <li>${L("Сценарії — це розрахунок за аналогією з минулими циклами, а не прогноз ціни.","Сценарии — это расчёт по аналогии с прошлыми циклами, а не прогноз цены.","Scenarios are an analog calculation from past cycles, not a price prediction.")}</li></ul>
+   <div class="nfa">${L("Не фінансова порада. Дані: свічки BTC/USDT з Binance (резерв — Bybit). Дати й ціни піків та днищ у циклах 2013–2022 округлені.","Не финансовый совет. Данные: свечи BTC/USDT с Binance (резерв — Bybit). Даты и цены пиков и днищ в циклах 2013–2022 округлены.","Not financial advice. Data: BTC/USDT candles from Binance (Bybit as a fallback). Dates and prices of the 2013–2022 tops and bottoms are rounded.")}</div></div>`;
+  app.innerHTML=h;wire();drawAll();
+  if(window.CH&&$("#camHost"))CH.cam($("#camHost"),()=>$("#shotArea"),{opts:()=>({name:"btc-global-cycle",title:"CRYPTO HUNTERS · "+L("Глобальний цикл BTC","Глобальный цикл BTC","BTC global cycle")})});
+}
+function cycleTable(A,F){
+  const rows=PAST.map(p=>({y:p.y,h:p.h,hp:null,T:p.top,tp:p.tp,b:p.bot,bp:p.bp,g:p.pb?p.tp/p.pb:null,cur:false}));
+  rows.push({y:new Date(A.top.t).getUTCFullYear(),h:HALV[3],T:A.top.t,tp:A.top.p,b:A.low.t,bp:A.low.p,g:A.top.p/15500,cur:true});
+  let h=`<div class="card"><h2>${L("Цикли в цифрах","Циклы в цифрах","Cycles in numbers")}</h2><div class="tw"><table><thead><tr><th>${L("Цикл (пік)","Цикл (пик)","Cycle (top)")}</th><th>${L("Халвінг","Халвинг","Halving")}</th><th>${L("Пік","Пик","Top")}</th><th>${L("Днів від халвінгу до піку","Дней от халвинга до пика","Days halving → top")}</th><th>${L("Дно","Дно","Bottom")}</th><th>${L("Просадка","Просадка","Drawdown")}</th><th>${L("Днів від піку до дна","Дней от пика до дна","Days top → bottom")}</th><th>${L("Зростання від попереднього дна","Рост от предыдущего дна","Rise from previous bottom")}</th></tr></thead><tbody>`;
+  for(const r of rows)h+=`<tr class="${r.cur?"cur":""}"><td><b>${r.y}</b>${r.cur?" · "+L("поточний","текущий","current"):""}</td><td>${fD(r.h)}</td><td>${fK(r.tp)}<br><small>${fD(r.T)}</small></td><td>${dN((r.T-r.h)/DAY)}</td><td>${fK(r.bp)}<br><small>${fD(r.b)}${r.cur?" · "+L("мін. поки що","мин. пока","low so far"):""}</small></td><td class="dn">-${((1-r.bp/r.tp)*100).toFixed(0)}%</td><td>${dN((r.b-r.T)/DAY)}${r.cur?" ↗":""}</td><td>${r.g?"×"+(r.g>=10?Math.round(r.g):r.g.toFixed(1)):"—"}</td></tr>`;
+  return h+`</tbody></table></div></div>`;
+}
+function forecastHTML(A,F){
+  const base=F.sc[1],tops=F.sc.map(s=>s.tP),bots=F.sc.map(s=>s.bP);
+  const tsc=L("слабкий","слабый","weak"),b2=L("базовий","базовый","base"),b3=L("сильний","сильный","strong");
+  const nm=[tsc,b2,b3],conf=A.conf||A.ph==="acc"||A.ph==="early";
+  let h=`<div class="card"><h2>${L("Прогноз і що очікувати далі","Прогноз и что ждать дальше","Outlook and what to expect")}</h2>`;
+  h+=`<p class="p m">${L("Три сценарії побудовані за аналогією з минулими циклами: час дна ≈ 363–410 днів після піку, пік ≈ "+dN(F.medHT)+" днів після халвінгу, а зростання від дна до піку слабшає (×3, ×4.5, ×6.5).","Три сценария построены по аналогии с прошлыми циклами: время дна ≈ 363–410 дней после пика, пик ≈ "+dN(F.medHT)+" дней после халвинга, а рост от дна до пика слабеет (×3, ×4.5, ×6.5).","Three scenarios built by analogy with past cycles: bottom ≈ 363–410 days after the top, top ≈ "+dN(F.medHT)+" days after the halving, and the bottom-to-top rise keeps shrinking (×3, ×4.5, ×6.5).")}</p>`;
+  h+=`<div class="steps">`;
+  // 1: bottom
+  const bNow=conf;
+  h+=`<div class="st ${bNow?"":"now"}"><h3><span class="dot" style="background:${PC.cap}"></span>${bNow?L("Дно цикла (вже сформоване)","Дно цикла (уже сформировано)","Cycle bottom (already formed)"):L("Дно ведмежого ринку","Дно медвежьего рынка","Bear market bottom")}</h3><div class="dt">${bNow?fD(A.low.t)+" · "+fP(A.low.p)+" (-"+(A.ddLow*100).toFixed(0)+"%)":fM(F.bt0)+" – "+fM(F.bt1)}</div><p>${bNow?L("Мінімум зафіксовано; він скасується, якщо ціна піде нижче.","Минимум зафиксирован; он отменится, если цена уйдёт ниже.","The low is in; it is cancelled if price drops below it."):L("Орієнтири глибини: слабкий "+fP(bots[0])+", базовий "+fP(bots[1])+", сильний "+fP(bots[2])+" (минулі просадки: "+A.dds.map(x=>"-"+(x*100).toFixed(0)+"%").join(", ")+"). Фактичний мінімум зараз "+fP(A.low.p)+".","Ориентиры глубины: слабый "+fP(bots[0])+", базовый "+fP(bots[1])+", сильный "+fP(bots[2])+" (прошлые просадки: "+A.dds.map(x=>"-"+(x*100).toFixed(0)+"%").join(", ")+"). Фактический минимум сейчас "+fP(A.low.p)+".","Depth guide: weak "+fP(bots[0])+", base "+fP(bots[1])+", strong "+fP(bots[2])+" (past drawdowns: "+A.dds.map(x=>"-"+(x*100).toFixed(0)+"%").join(", ")+"). The actual low so far is "+fP(A.low.p)+".")}${!bNow&&A.sinceTop>410?" "+L("Типове вікно дна вже минуло: ймовірна затяжна фаза або цикл зсунувся.","Типичное окно дна уже прошло: вероятна затяжная фаза или цикл сместился.","The typical bottom window has passed: either a drawn-out phase or the cycle has drifted."):""}</p></div>`;
+  h+=`<div class="st"><h3><span class="dot" style="background:${PC.acc}"></span>${L("Накопичення до халвінгу","Накопление до халвинга","Accumulation before the halving")}</h3><div class="dt">${fM(Math.max(A.low.t,A.now))} – ${fM(A.nextH)}</div><p>${L("Повільне відновлення, діапазони й відкати. Минулі цикли: від дна до халвінгу ціна зростала у ×2.7–×4.","Медленное восстановление, диапазоны и откаты. Прошлые циклы: от дна до халвинга цена росла в ×2.7–×4.","Slow recovery, ranges and pullbacks. In past cycles price rose ×2.7–×4 from the bottom to the halving.")}</p></div>`;
+  h+=`<div class="st"><h3><span class="dot" style="background:${PC.early}"></span>${L("Халвінг","Халвинг","Halving")}</h3><div class="dt">≈ ${fM(A.nextH)}</div><p>${L("Блокова нагорода впаде з 3,125 до ≈ 1,56 BTC. Орієнтовна дата — за 210 000 блоків.","Блоковая награда упадёт с 3,125 до ≈ 1,56 BTC. Ориентировочная дата — по 210 000 блоков.","The block reward drops from 3.125 to ≈ 1.56 BTC. The date is estimated from 210,000 blocks.")}</p></div>`;
+  h+=`<div class="st"><h3><span class="dot" style="background:${PC.euph}"></span>${L("Параболічна фаза","Параболическая фаза","Parabolic phase")}</h3><div class="dt">${fM(A.nextH+365*DAY)} – ${fM(F.nextTop)}</div><p>${L("Зазвичай стартує через ≈ 12 місяців після халвінгу й закінчується піком.","Обычно стартует через ≈ 12 месяцев после халвинга и заканчивается пиком.","Usually starts ≈ 12 months after the halving and ends with the top.")}</p></div>`;
+  h+=`<div class="st"><h3><span class="dot" style="background:${PC.dist}"></span>${L("Наступний пік циклу","Следующий пик цикла","Next cycle top")}</h3><div class="dt">${fM(F.nextTop-20*DAY)} – ${fM(F.nextTop+20*DAY)}</div><p>${L("Орієнтири ціни: слабкий "+fP(tops[0])+", базовий "+fP(tops[1])+", сильний "+fP(tops[2])+" (від прогнозного дна ×3 / ×4.5 / ×6.5).","Ориентиры цены: слабый "+fP(tops[0])+", базовый "+fP(tops[1])+", сильный "+fP(tops[2])+" (от прогнозного дна ×3 / ×4.5 / ×6.5).","Price guide: weak "+fP(tops[0])+", base "+fP(tops[1])+", strong "+fP(tops[2])+" (×3 / ×4.5 / ×6.5 off the projected bottom).")}</p></div>`;
+  h+=`<div class="st"><h3><span class="dot" style="background:${PC.bear}"></span>${L("Наступний ведмежий ринок","Следующий медвежий рынок","Next bear market")}</h3><div class="dt">${fM(F.nextTop)} → ${fM(F.nextBot)}</div><p>${L("Орієнтовне дно ≈ 60 % нижче піку (у моделі).","Ориентировочное дно ≈ 60 % ниже пика (в модели).","The model's rough bottom is ≈ 60% below the top.")}</p></div>`;
+  h+=`</div><div class="sc">${F.sc.map((s,i)=>`<div style="border-color:${s.c}"><b style="color:${s.c}">${esc(nm[i])}</b>${L("Дно","Дно","Bottom")}: ${fP(s.bP)}<br>${L("Халвінг","Халвинг","Halving")}: ${fP(s.hP)}<br>${L("Пік","Пик","Top")}: ${fP(s.tP)}</div>`).join("")}</div></div>`;
+  return h;
+}
+function wire(){
+  document.querySelectorAll("#lg button").forEach(b=>b.addEventListener("click",()=>{LANG=b.dataset.l;LS.set("cy_lang",LANG);render()}));
+  const r=$("#rf");if(r)r.addEventListener("click",()=>load(true));
+}
+
+// ---- charts ----
+function setup(cv,H){const dpr=Math.min(3,window.devicePixelRatio||1),w=Math.max(260,cv.clientWidth||300);cv.style.height=H+"px";cv.width=Math.round(w*dpr);cv.height=Math.round(H*dpr);const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);return {g,w,H}}
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function ticksLog(lo,hi){const o=[];for(let e=Math.floor(Math.log10(lo));e<=Math.ceil(Math.log10(hi));e++)for(const m of [1,2,5]){const v=m*Math.pow(10,e);if(v>=lo&&v<=hi)o.push(v)}return o}
+function interp(pts,t){if(!pts.length||t<pts[0].t||t>pts[pts.length-1].t)return null;for(let i=1;i<pts.length;i++)if(t<=pts[i].t){const a=pts[i-1],b=pts[i],k=(t-a.t)/(b.t-a.t||1);return Math.exp(Math.log(a.p)+(Math.log(b.p)-Math.log(a.p))*k)}return pts[pts.length-1].p}
+let C1=null,C2=null;
+function drawAll(){drawC1();drawC2()}
+function drawC1(){
+  const cv=$("#c1"),A=ST.A,F=ST.F;if(!cv||!A||!F)return;
+  const {g,w,H}=setup(cv,window.innerWidth<600?300:380),M={l:44,r:8,t:10,b:22},pw=w-M.l-M.r,ph=H-M.t-M.b,W=ST.w;
+  const t0=W[0].t,t1=D(2031,3,1),tx=css("--ch-tx"),t3=css("--ch-t3"),bd=css("--ch-bd"),ac=css("--ch-ac"),wn=css("--ch-warn");
+  let lo=Infinity,hi=0;W.forEach(p=>{lo=Math.min(lo,p.l);hi=Math.max(hi,p.h)});F.paths.forEach(a=>a.forEach(p=>{lo=Math.min(lo,p.p);hi=Math.max(hi,p.p)}));
+  lo/=1.25;hi*=1.2;const l0=Math.log(lo),l1=Math.log(hi),X=t=>M.l+(t-t0)/(t1-t0)*pw,Y=v=>M.t+(1-(Math.log(v)-l0)/(l1-l0))*ph;
+  g.clearRect(0,0,w,H);g.font="10.5px system-ui,sans-serif";
+  for(const b of bands(A,F)){const a=Math.max(b.a,t0),e=Math.min(b.b,t1);if(e<=a)continue;g.globalAlpha=.11;g.fillStyle=PC[b.ph];g.fillRect(X(a),M.t,X(e)-X(a),ph);g.globalAlpha=.9;g.fillRect(X(a),M.t+ph-4,X(e)-X(a),4)}
+  g.globalAlpha=1;
+  g.strokeStyle=bd;g.fillStyle=t3;g.lineWidth=.5;g.textAlign="right";
+  for(const v of ticksLog(lo,hi)){const y=Y(v);g.beginPath();g.moveTo(M.l,y);g.lineTo(w-M.r,y);g.stroke();g.fillText(fK(v),M.l-5,y+3.5)}
+  g.textAlign="center";for(let y=new Date(t0).getUTCFullYear()+1;y<=2031;y++){const x=X(D(y,1,1));if(x<M.l||x>w-M.r)continue;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();if(w>480||y%2===0)g.fillText(y,x,H-6)}
+  // 200-week MA
+  g.strokeStyle=wn;g.lineWidth=1.2;g.beginPath();let st=false;for(let i=0;i<W.length;i++){const m=sma(W,200,i);if(m==null)continue;const x=X(W[i].t),y=Y(m);if(!st){g.moveTo(x,y);st=true}else g.lineTo(x,y)}g.stroke();
+  // price
+  g.strokeStyle=ac;g.lineWidth=1.6;g.beginPath();W.forEach((p,i)=>{const x=X(p.t),y=Y(p.c);i?g.lineTo(x,y):g.moveTo(x,y)});g.lineTo(X(A.now),Y(A.price));g.stroke();
+  // scenarios
+  g.setLineDash([5,4]);g.lineWidth=1.6;F.sc.forEach(s=>{g.strokeStyle=s.c;g.beginPath();s.pts.forEach((p,i)=>{const x=X(p.t),y=Y(p.p);i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()});g.setLineDash([]);
+  // halvings, tops and bottoms
+  const cy=cycles(A,F);g.textAlign="center";
+  [...HALV,A.nextH].forEach((t,i)=>{if(t<t0||t>t1)return;const x=X(t);g.strokeStyle=t3;g.setLineDash([2,3]);g.lineWidth=.8;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();g.setLineDash([]);g.fillStyle=tx;g.fillText(i===4?"H*":"H",x,M.t+10)});
+  g.fillStyle=css("--ch-dn");PAST.forEach(p=>{if(p.top>=t0){const x=X(p.top),y=Y(p.tp);g.beginPath();g.moveTo(x,y-8);g.lineTo(x-4,y-14);g.lineTo(x+4,y-14);g.fill();g.fillStyle=tx;g.fillText(fK(p.tp),x,y-17);g.fillStyle=css("--ch-dn")}});
+  {const x=X(A.top.t),y=Y(A.top.p);g.beginPath();g.moveTo(x,y-8);g.lineTo(x-4,y-14);g.lineTo(x+4,y-14);g.fill();g.fillStyle=tx;g.fillText(fK(A.top.p),x,y-17)}
+  g.fillStyle=css("--ch-up");const bots=[...PAST.filter(p=>p.bot>=t0).map(p=>({t:p.bot,p:p.bp})),{t:A.low.t,p:A.low.p}];
+  bots.forEach(b=>{const x=X(b.t),y=Y(b.p);g.fillStyle=css("--ch-up");g.beginPath();g.moveTo(x,y+8);g.lineTo(x-4,y+14);g.lineTo(x+4,y+14);g.fill();g.fillStyle=tx;g.fillText(fK(b.p),x,y+25)});
+  // today
+  const xn=X(A.now);g.strokeStyle=tx;g.lineWidth=1;g.setLineDash([1,3]);g.beginPath();g.moveTo(xn,M.t);g.lineTo(xn,M.t+ph);g.stroke();g.setLineDash([]);g.fillStyle=tx;g.fillText(L("зараз","сейчас","now"),Math.min(w-M.r-14,xn),M.t+22);
+  C1={X,Y,t0,t1,M,pw,W,A,F,H};
+  hover(cv,$("#t1"),x=>{
+    const t=t0+(x-M.l)/pw*(t1-t0);if(t<t0||t>t1)return null;
+    const bs=bands(A,F),b=bs.find(q=>t>=q.a&&t<q.b),pn=PN();
+    let s=`<b>${fM(t)}</b>`;if(b)s+=`<br><span style="color:${PC[b.ph]}">●</span> ${esc(pn[b.ph])}`;
+    if(t<=A.now){let bi=0,bd2=1e18;W.forEach((p,i)=>{const dd=Math.abs(p.t-t);if(dd<bd2){bd2=dd;bi=i}});s+=`<br>${fP(W[bi].c)}`;const m=sma(W,200,bi);if(m)s+=`<br>200W: ${fP(m)}`}
+    else F.sc.forEach(sc=>{const v=interp(sc.pts,t);if(v)s+=`<br><span style="color:${sc.c}">●</span> ${fP(v)}`});
+    return s});
+}
+function drawC2(){
+  const cv=$("#c2"),A=ST.A;if(!cv||!A)return;
+  const {g,w,H}=setup(cv,window.innerWidth<600?260:320),M={l:44,r:8,t:10,b:22},pw=w-M.l-M.r,ph=H-M.t-M.b,W=ST.w;
+  const tx=css("--ch-tx"),t3=css("--ch-t3"),bd=css("--ch-bd"),XM=760,lo=0.1,hi=1.08,l0=Math.log(lo),l1=Math.log(hi);
+  const X=d=>M.l+d/XM*pw,Y=v=>M.t+(1-(Math.log(v)-l0)/(l1-l0))*ph;
+  g.clearRect(0,0,w,H);g.font="10.5px system-ui,sans-serif";
+  g.fillStyle="rgba(142,99,217,.18)";g.fillRect(X(363),M.t,X(410)-X(363),ph);
+  g.strokeStyle=bd;g.fillStyle=t3;g.lineWidth=.5;g.textAlign="right";
+  for(const v of [0.1,0.2,0.3,0.5,0.7,1]){const y=Y(v);g.beginPath();g.moveTo(M.l,y);g.lineTo(w-M.r,y);g.stroke();g.fillText(v===1?L("пік","пик","top"):"-"+Math.round((1-v)*100)+"%",M.l-5,y+3.5)}
+  g.textAlign="center";for(let d=0;d<=XM;d+=100){const x=X(d);g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();g.fillText(d,x,H-6)}
+  const series=[];
+  for(const [p,c] of [[PAST[1],"#f5a524"],[PAST[2],"#378add"]]){
+    const win=W.filter(x=>Math.abs(x.t-p.top)<=10*DAY),tp=win.length?Math.max(...win.map(x=>x.h)):p.tp,pts=[];
+    W.forEach(x=>{const d=(x.t-p.top)/DAY;if(d>=-3&&d<=XM)pts.push({d:Math.max(0,d),v:Math.min(1,x.c/tp)})});
+    if(pts.length)series.push({n:""+p.y,c,pts})}
+  const cur=[{d:0,v:1}];W.forEach(x=>{const d=(x.t-A.top.t)/DAY;if(d>0)cur.push({d,v:x.c/A.top.p})});cur.push({d:A.sinceTop,v:A.price/A.top.p});
+  series.push({n:""+new Date(A.top.t).getUTCFullYear(),c:tx,pts:cur,thick:true});
+  series.forEach(s=>{g.strokeStyle=s.c;g.lineWidth=s.thick?2.4:1.5;g.beginPath();s.pts.forEach((p,i)=>{const x=X(p.d),y=Y(Math.max(lo,p.v));i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()});
+  const last=cur[cur.length-1];g.fillStyle=tx;g.beginPath();g.arc(X(last.d),Y(Math.max(lo,last.v)),4,0,7);g.fill();
+  g.fillStyle=t3;g.textAlign="right";g.fillText(L("дні після піку","дни после пика","days after the top"),w-M.r,M.t+ph-6);
+  C2={series};
+  hover(cv,$("#t2"),x=>{
+    const d=(x-M.l)/pw*XM;if(d<0||d>XM)return null;let s=`<b>${L("День","День","Day")} ${Math.round(d)}</b>`;
+    series.forEach(sr=>{let bp=null,bd2=1e9;sr.pts.forEach(p=>{const dd=Math.abs(p.d-d);if(dd<bd2){bd2=dd;bp=p}});if(bp&&bd2<=9)s+=`<br><span style="color:${sr.c==="#f5a524"||sr.c==="#378add"?sr.c:"inherit"}">●</span> ${sr.n}: -${((1-bp.v)*100).toFixed(0)}%`});
+    return s});
+}
+function hover(cv,tip,fn){
+  const mv=e=>{const r=cv.getBoundingClientRect(),x=(e.clientX||0)-r.left,html=fn(x);if(!html){tip.style.display="none";return}tip.innerHTML=html;tip.style.display="block";const tw=tip.offsetWidth;tip.style.left=Math.max(0,Math.min(r.width-tw,x+10))+"px";tip.style.top="8px"};
+  cv.onpointermove=mv;cv.onpointerdown=mv;cv.onpointerleave=()=>{tip.style.display="none"};
+}
+let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{if(ST.A)drawAll()},120)});
+new MutationObserver(()=>{if(ST.A)drawAll()}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+matchMedia("(prefers-color-scheme: dark)").addEventListener&&matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(ST.A)drawAll()});
+render();load(false);
+setInterval(()=>{if(!document.hidden)load(true)},5*60e3);
+})();
+</script>
+</body>
+</html>
