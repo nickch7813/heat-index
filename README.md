@@ -2,9 +2,17 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **2.1**
+Version: **2.12**
 
-## What is new in 2.1
+## What is new in 2.12
+
+- Global Cycle now loads BTC history back to 2011 (Bitstamp daily, CryptoCompare as a backup; cached for 30 days): range switch (All / 2013+ / 2017+), the 2013 cycle in the comparison chart, tops and bottoms taken from the data, and scenario multipliers updated for four cycles.
+
+## What was new in 2.11
+
+- One language switch (UA / RU / EN) in the shared top bar, identical in every tool and remembered across all of them (`ch.lang`). Each tool's own language control is hidden and driven by the shared one.
+
+## What was new in 2.1
 
 - New tab **Global Cycle** (`cycle/`): where Bitcoin is in its four-year cycle (halving, top, bear market, bottom), cycle clock, bottom-confirmation ladder, phase chart with 200-week MA and weak/base/strong scenarios, post-top comparison of cycles, table of past cycles and a timeline of what to expect.
 

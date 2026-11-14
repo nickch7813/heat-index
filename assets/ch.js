@@ -6,7 +6,7 @@
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "2.1";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "2.12";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -1024,7 +1024,7 @@
       return t.id === TOOL ? "<span aria-current=\"page\">" + icon(t.id) + esc(nm) + "</span>" : '<a href="' + esc(ROOT + t.path) + '" target="ch_' + t.id + '">' + icon(t.id) + esc(nm) + "</a>";
     }).join("");
     return '<div class="ch-in"><div class="ch-row"><a class="ch-brand" href="' + esc(ROOT) + '"' + (home ? "" : ' target="ch_heat"') + '><span class="ch-logo">' + LOGO + '</span><span>CRYPTO <b>HUNTERS</b></span></a>' + verHTML() + '<span class="ch-sp"></span>' +
-      '<button type="button" class="ch-inst" hidden title="' + esc(tr("install")) + '">⤓ <span>' + esc(tr("installS")) + '</span></button>' +
+      langHTML() + '<button type="button" class="ch-inst" hidden title="' + esc(tr("install")) + '">⤓ <span>' + esc(tr("installS")) + '</span></button>' +
       '<button type="button" class="ch-bell ch-calb" data-ch-cal aria-label="' + esc(tr("calTitle")) + '" title="' + esc(tr("calTitle")) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></button>' +
       '<button type="button" class="ch-bell" data-ch-log aria-label="' + esc(tr("notif")) + '" title="' + esc(tr("notif")) + '">' + BELL + '<b hidden></b></button>' +
       '<a class="ch-tg" href="' + CHANNEL_URL + '" target="_blank" rel="noopener" title="' + esc(tr("tg")) + '">' + TG_ICON + "<span>@" + CHANNEL + "</span></a></div>" +
@@ -1044,6 +1044,28 @@
       if (!l.parentNode) document.head.appendChild(l);
     } catch (e) {}
   }
+  // ---------- one language switcher for every tool ----------
+  // The switch lives in the shared bar and drives the tool's own (hidden) language control, so all tools look and behave the same.
+  var LANG_KEY = "ch.lang";
+  function langGet() { try { var v = localStorage.getItem(LANG_KEY); return /^(uk|ru|en)$/.test(v) ? v : null; } catch (e) { return null; } }
+  function langCur() { var l = (document.documentElement.lang || "en").slice(0, 2).toLowerCase(); return /^(uk|ru|en)$/.test(l) ? l : "en"; }
+  function langDrive(l) {
+    var q = function (s) { return document.querySelector(s); }, el;
+    if ((el = q('#langs .langmenu button[data-l="' + l + '"]'))) return el.click();
+    if ((el = q('.group button[data-g="lang"][data-v="' + l + '"]'))) return el.click();
+    if ((el = q('#langSeg button[data-lang="' + l + '"]') || q('div#langs button[data-lang="' + l + '"]'))) return el.click();
+    if ((el = q("select#lang, select#langSel"))) { el.value = l; el.dispatchEvent(new Event("input", { bubbles: true })); el.dispatchEvent(new Event("change", { bubbles: true })); return; }
+    document.documentElement.lang = l;
+    try { document.dispatchEvent(new CustomEvent("ch-lang", { detail: l })); } catch (e) {}
+  }
+  function langSet(l) { try { localStorage.setItem(LANG_KEY, l); } catch (e) {} if (l !== langCur()) langDrive(l); }
+  function langSync() { var s = langGet(); if (s && s !== langCur()) langDrive(s); else if (!s) { try { localStorage.setItem(LANG_KEY, langCur()); } catch (e) {} } }
+  document.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("[data-chl]"); if (b) { e.preventDefault(); langSet(b.getAttribute("data-chl")); } });
+  addEventListener("storage", function (e) { if (e.key === LANG_KEY && /^(uk|ru|en)$/.test(e.newValue || "") && e.newValue !== langCur()) langDrive(e.newValue); });
+  function langHTML() {
+    var c = langCur();
+    return '<div class="ch-lang" role="group" aria-label="Language" translate="no">' + [["uk", "UA"], ["ru", "RU"], ["en", "EN"]].map(function (x) { return '<button type="button" data-chl="' + x[0] + '" aria-pressed="' + (x[0] === c) + '">' + x[1] + "</button>"; }).join("") + "</div>";
+  }
   function mount() {
     favicon();
     if (TOOL !== "heat") document.body.classList.add("ch-skin");
@@ -1053,6 +1075,7 @@
     var draw = function () { bar.innerHTML = barHTML(); foot.innerHTML = footHTML(); badge(); if (panelOpen()) renderPanel(); var on = bar.querySelector(".ch-nav span"); if (on && on.scrollIntoView) { var n = bar.querySelector(".ch-nav"); n.scrollLeft = on.offsetLeft - 40; } };
     draw(); document.body.insertBefore(bar, document.body.firstChild); badge();
     var host = document.querySelector("[data-ch-foot]") || document.body; host.appendChild(foot);
+    setTimeout(langSync, 0); addEventListener("load", function () { setTimeout(langSync, 250); });
     new MutationObserver(function () { draw(); document.querySelectorAll(".ch-links").forEach(function (el) { el.__ch = null; }); if (panelOpen()) renderPanel(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   }
   // A Telegram link t.me/<bot>?startapp=SOL (from the bot's inline cards) opens the app on that coin's chart

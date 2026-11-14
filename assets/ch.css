@@ -40,6 +40,15 @@
 .ch-top a:focus-visible,.ch-links a:focus-visible,.ch-foot a:focus-visible,.ch-cam:focus-visible,.ch-shot button:focus-visible,.ch-shot a:focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px}
 @media (max-width:420px){.ch-brand{font-size:13px}.ch-tg span{display:none}.ch-tg{padding:4px 8px}}
 
+/* ---- the language switch, the same in every tool; the tool's own control is hidden ---- */
+.ch-top .ch-lang{display:inline-flex;flex:0 0 auto;border:0.5px solid var(--ch-bd2);border-radius:8px;overflow:hidden;margin:0;padding:0;background:none;gap:0}
+.ch-top .ch-lang button{box-sizing:border-box;border:0;border-radius:0;margin:0;width:auto;height:auto;flex:0 0 auto;background:none;color:var(--ch-t2);font:600 11px/1 var(--ch-font);padding:0 7px;min-height:30px;min-width:28px;cursor:pointer;letter-spacing:.02em;text-transform:none;box-shadow:none}
+.ch-top .ch-lang button:hover{color:var(--ch-tx);background:var(--ch-s1)}
+.ch-top .ch-lang button[aria-pressed=true]{background:var(--ch-acb);color:var(--ch-act)}
+.ch-top .ch-lang button:focus-visible{outline:2px solid var(--ch-acd);outline-offset:-2px}
+details.langsp,div#langs,#langSeg,#langSel,select#lang,label:has(>select#lang),.group:has(button[data-g=lang]){display:none!important}
+@media (max-width:420px){.ch-row{gap:3px}.ch-sp{display:none}.ch-top .ch-lang{margin-left:auto}.ch-brand{font-size:11.5px;letter-spacing:0;gap:6px}.ch-top .ch-lang button{padding:0 3px;min-width:23px}.ch-ver{font-size:10.5px}}
+
 /* ---- links from a coin card to the other tools ---- */
 .ch-links{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px;font:12px/1.3 var(--ch-font)}
 .ch-links>em{font-style:normal;color:var(--ch-t3);margin-right:2px}

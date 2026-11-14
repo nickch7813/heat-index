@@ -48,6 +48,15 @@
 .ch-top a:focus-visible,.ch-links a:focus-visible,.ch-foot a:focus-visible,.ch-cam:focus-visible,.ch-shot button:focus-visible,.ch-shot a:focus-visible{outline:2px solid var(--ch-acd);outline-offset:2px}
 @media (max-width:420px){.ch-brand{font-size:13px}.ch-tg span{display:none}.ch-tg{padding:4px 8px}}
 
+/* ---- the language switch, the same in every tool; the tool's own control is hidden ---- */
+.ch-top .ch-lang{display:inline-flex;flex:0 0 auto;border:0.5px solid var(--ch-bd2);border-radius:8px;overflow:hidden;margin:0;padding:0;background:none;gap:0}
+.ch-top .ch-lang button{box-sizing:border-box;border:0;border-radius:0;margin:0;width:auto;height:auto;flex:0 0 auto;background:none;color:var(--ch-t2);font:600 11px/1 var(--ch-font);padding:0 7px;min-height:30px;min-width:28px;cursor:pointer;letter-spacing:.02em;text-transform:none;box-shadow:none}
+.ch-top .ch-lang button:hover{color:var(--ch-tx);background:var(--ch-s1)}
+.ch-top .ch-lang button[aria-pressed=true]{background:var(--ch-acb);color:var(--ch-act)}
+.ch-top .ch-lang button:focus-visible{outline:2px solid var(--ch-acd);outline-offset:-2px}
+details.langsp,div#langs,#langSeg,#langSel,select#lang,label:has(>select#lang),.group:has(button[data-g=lang]){display:none!important}
+@media (max-width:420px){.ch-row{gap:3px}.ch-sp{display:none}.ch-top .ch-lang{margin-left:auto}.ch-brand{font-size:11.5px;letter-spacing:0;gap:6px}.ch-top .ch-lang button{padding:0 3px;min-width:23px}.ch-ver{font-size:10.5px}}
+
 /* ---- links from a coin card to the other tools ---- */
 .ch-links{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:8px;font:12px/1.3 var(--ch-font)}
 .ch-links>em{font-style:normal;color:var(--ch-t3);margin-right:2px}
@@ -234,7 +243,7 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
 @media (min-width:700px){.ch-nav{flex-wrap:wrap;overflow:visible;row-gap:2px}}
 
 </style>
-<script id="ch-js" data-tool="cycle" data-ver="2.1" data-root="../">
+<script id="ch-js" data-tool="cycle" data-ver="2.12" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -243,7 +252,7 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "2.1";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "2.12";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -1261,7 +1270,7 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
       return t.id === TOOL ? "<span aria-current=\"page\">" + icon(t.id) + esc(nm) + "</span>" : '<a href="' + esc(ROOT + t.path) + '" target="ch_' + t.id + '">' + icon(t.id) + esc(nm) + "</a>";
     }).join("");
     return '<div class="ch-in"><div class="ch-row"><a class="ch-brand" href="' + esc(ROOT) + '"' + (home ? "" : ' target="ch_heat"') + '><span class="ch-logo">' + LOGO + '</span><span>CRYPTO <b>HUNTERS</b></span></a>' + verHTML() + '<span class="ch-sp"></span>' +
-      '<button type="button" class="ch-inst" hidden title="' + esc(tr("install")) + '">⤓ <span>' + esc(tr("installS")) + '</span></button>' +
+      langHTML() + '<button type="button" class="ch-inst" hidden title="' + esc(tr("install")) + '">⤓ <span>' + esc(tr("installS")) + '</span></button>' +
       '<button type="button" class="ch-bell ch-calb" data-ch-cal aria-label="' + esc(tr("calTitle")) + '" title="' + esc(tr("calTitle")) + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></button>' +
       '<button type="button" class="ch-bell" data-ch-log aria-label="' + esc(tr("notif")) + '" title="' + esc(tr("notif")) + '">' + BELL + '<b hidden></b></button>' +
       '<a class="ch-tg" href="' + CHANNEL_URL + '" target="_blank" rel="noopener" title="' + esc(tr("tg")) + '">' + TG_ICON + "<span>@" + CHANNEL + "</span></a></div>" +
@@ -1281,6 +1290,28 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
       if (!l.parentNode) document.head.appendChild(l);
     } catch (e) {}
   }
+  // ---------- one language switcher for every tool ----------
+  // The switch lives in the shared bar and drives the tool's own (hidden) language control, so all tools look and behave the same.
+  var LANG_KEY = "ch.lang";
+  function langGet() { try { var v = localStorage.getItem(LANG_KEY); return /^(uk|ru|en)$/.test(v) ? v : null; } catch (e) { return null; } }
+  function langCur() { var l = (document.documentElement.lang || "en").slice(0, 2).toLowerCase(); return /^(uk|ru|en)$/.test(l) ? l : "en"; }
+  function langDrive(l) {
+    var q = function (s) { return document.querySelector(s); }, el;
+    if ((el = q('#langs .langmenu button[data-l="' + l + '"]'))) return el.click();
+    if ((el = q('.group button[data-g="lang"][data-v="' + l + '"]'))) return el.click();
+    if ((el = q('#langSeg button[data-lang="' + l + '"]') || q('div#langs button[data-lang="' + l + '"]'))) return el.click();
+    if ((el = q("select#lang, select#langSel"))) { el.value = l; el.dispatchEvent(new Event("input", { bubbles: true })); el.dispatchEvent(new Event("change", { bubbles: true })); return; }
+    document.documentElement.lang = l;
+    try { document.dispatchEvent(new CustomEvent("ch-lang", { detail: l })); } catch (e) {}
+  }
+  function langSet(l) { try { localStorage.setItem(LANG_KEY, l); } catch (e) {} if (l !== langCur()) langDrive(l); }
+  function langSync() { var s = langGet(); if (s && s !== langCur()) langDrive(s); else if (!s) { try { localStorage.setItem(LANG_KEY, langCur()); } catch (e) {} } }
+  document.addEventListener("click", function (e) { var b = e.target.closest && e.target.closest("[data-chl]"); if (b) { e.preventDefault(); langSet(b.getAttribute("data-chl")); } });
+  addEventListener("storage", function (e) { if (e.key === LANG_KEY && /^(uk|ru|en)$/.test(e.newValue || "") && e.newValue !== langCur()) langDrive(e.newValue); });
+  function langHTML() {
+    var c = langCur();
+    return '<div class="ch-lang" role="group" aria-label="Language" translate="no">' + [["uk", "UA"], ["ru", "RU"], ["en", "EN"]].map(function (x) { return '<button type="button" data-chl="' + x[0] + '" aria-pressed="' + (x[0] === c) + '">' + x[1] + "</button>"; }).join("") + "</div>";
+  }
   function mount() {
     favicon();
     if (TOOL !== "heat") document.body.classList.add("ch-skin");
@@ -1290,6 +1321,7 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
     var draw = function () { bar.innerHTML = barHTML(); foot.innerHTML = footHTML(); badge(); if (panelOpen()) renderPanel(); var on = bar.querySelector(".ch-nav span"); if (on && on.scrollIntoView) { var n = bar.querySelector(".ch-nav"); n.scrollLeft = on.offsetLeft - 40; } };
     draw(); document.body.insertBefore(bar, document.body.firstChild); badge();
     var host = document.querySelector("[data-ch-foot]") || document.body; host.appendChild(foot);
+    setTimeout(langSync, 0); addEventListener("load", function () { setTimeout(langSync, 250); });
     new MutationObserver(function () { draw(); document.querySelectorAll(".ch-links").forEach(function (el) { el.__ch = null; }); if (panelOpen()) renderPanel(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   }
   // A Telegram link t.me/<bot>?startapp=SOL (from the bot's inline cards) opens the app on that coin's chart
@@ -1389,7 +1421,7 @@ body{margin:0;background:var(--ch-bg);color:var(--ch-tx);font:14px/1.5 var(--ch-
 const $=s=>document.querySelector(s), DAY=864e5, D=(y,m,d)=>Date.UTC(y,m-1,d);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-let LANG=LS.get("cy_lang",null);
+let LANG=null;try{LANG=localStorage.getItem("ch.lang")}catch(e){}
 if(!LANG){const h=LS.get("heat.v1",null);LANG=h&&h.lang||null}
 if(!LANG||!/^(uk|ru|en)$/.test(LANG)){const n=(navigator.language||"en").slice(0,2);LANG=/^(uk|ru)$/.test(n)?n:"en"}
 document.documentElement.lang=LANG;
@@ -1406,14 +1438,16 @@ const dN=(n)=>Math.round(n).toLocaleString(LOC[LANG]);
 const HALV=[D(2012,11,28),D(2016,7,9),D(2020,5,11),D(2024,4,20)];
 const HALV_LEN=1458;                      // 210 000 blocks of about 10 minutes
 const PAST=[
- {y:2013,h:HALV[0],top:D(2013,11,30),tp:1150,bot:D(2015,1,14),bp:170,pb:null},
+ {y:2013,h:HALV[0],top:D(2013,11,30),tp:1150,bot:D(2015,1,14),bp:170,pb:2.1,pbT:D(2011,11,18)},
  {y:2017,h:HALV[1],top:D(2017,12,17),tp:19700,bot:D(2018,12,15),bp:3200,pb:170},
  {y:2021,h:HALV[2],top:D(2021,11,10),tp:69000,bot:D(2022,11,21),bp:15500,pb:3200}];
 const PC={acc:"#378add",early:"#1d9e75",euph:"#f5a524",dist:"#e0587a",bear:"#7d8896",cap:"#8e63d9"};
 const ORDER=["acc","early","euph","dist","bear","cap"];
 const PN=()=>({acc:L("Накопичення","Накопление","Accumulation"),early:L("Раннє зростання","Ранний рост","Early bull"),euph:L("Параболічне зростання","Параболический рост","Parabolic run"),dist:L("Розподіл (пік)","Распределение (пик)","Distribution (top)"),bear:L("Ведмежий ринок","Медвежий рынок","Bear market"),cap:L("Капітуляція і дно","Капитуляция и дно","Capitulation & bottom")});
 const median=a=>{const s=a.slice().sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
-const ST={w:null,d:null,A:null,F:null,err:null,at:0,busy:false};
+const MULT={bear:2.5,base:3.5,bull:5.5};
+const MX=()=>"×"+MULT.bear+", ×"+MULT.base+", ×"+MULT.bull;
+const ST={w:null,d:null,A:null,F:null,err:null,at:0,busy:false,oldErr:false,range:LS.get("cy_range","all")};
 
 // ---- data ----
 async function gj(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error(r.status);return r.json()}
@@ -1431,12 +1465,59 @@ async function load(force){
     try{const [w,d]=await Promise.all([kl("1w",1000),kl("1d",1000)]);ST.w=w;ST.d=d;ST.at=Date.now();LS.set("cy_cache",{at:ST.at,w:pack(w),d:pack(d)})}
     catch(e){ if(c){ST.w=unpack(c.w);ST.d=unpack(c.d);ST.at=c.at;ST.err=L("Не вдалося оновити дані, показано збережені.","Не удалось обновить данные, показаны сохранённые.","Could not refresh, showing saved data.")} else ST.err=L("Не вдалося завантажити свічки BTC (Binance і Bybit недоступні з цього мережевого з’єднання).","Не удалось загрузить свечи BTC (Binance и Bybit недоступны из этой сети).","Could not load BTC candles (Binance and Bybit are not reachable from this connection).") }
   }
-  if(ST.w&&ST.d){ST.A=analyze(ST.w,ST.d);ST.F=forecast(ST.A)}
+  if(ST.w&&ST.d){
+    ST.oldErr=false;
+    if(ST.w[0].t>D(2012,1,1)){try{const old=await histOld(ST.w[0].t);if(old.length)ST.w=old.concat(ST.w);else ST.oldErr=true}catch(e){ST.oldErr=true}}
+    refine(ST.w);ST.A=analyze(ST.w,ST.d);ST.F=forecast(ST.A);
+  }
   ST.busy=false;render();
+}
+
+// ---- history before Binance (BTC/USD daily from Bitstamp, CryptoCompare as a backup) -> weekly candles ----
+const START_2011=1313625600;
+async function dailyOld(firstT){
+  let days=[];
+  try{
+    let end=Math.floor(firstT/1000)-1;
+    for(let i=0;i<8;i++){
+      const j=await gj("https://www.bitstamp.net/api/v2/ohlc/btcusd/?step=86400&limit=1000&end="+end);
+      const a=((j.data&&j.data.ohlc)||[]).map(r=>({t:+r.timestamp*1000,o:+r.open,h:+r.high,l:+r.low,c:+r.close}));
+      if(!a.length)break;days=a.concat(days);const f=a[0].t/1000;if(a.length<900||f<=START_2011+864e2)break;end=f-1;
+    }
+  }catch(e){}
+  if(days.length<500){
+    days=[];
+    try{
+      let to=Math.floor(firstT/1000)-1;
+      for(let i=0;i<4;i++){
+        const j=await gj("https://min-api.cryptocompare.com/data/v2/histoday?fsym=BTC&tsym=USD&limit=2000&toTs="+to);
+        const a=((j.Data&&j.Data.Data)||[]).filter(r=>r.close>0&&r.high>0).map(r=>({t:r.time*1000,o:r.open||r.close,h:r.high,l:r.low||r.close,c:r.close}));
+        if(!a.length)break;days=a.concat(days);if(a[0].t/1000<=START_2011+864e2*30)break;to=a[0].t/1000-1;
+      }
+    }catch(e){}
+  }
+  return days;
+}
+function weekly(days){
+  days=days.slice().sort((x,y)=>x.t-y.t);const m=new Map();
+  for(const x of days){const dow=new Date(x.t).getUTCDay(),k=Math.floor(x.t/DAY)*DAY-((dow+6)%7)*DAY,w=m.get(k);if(!w)m.set(k,{t:k,o:x.o,h:x.h,l:x.l,c:x.c});else{w.h=Math.max(w.h,x.h);w.l=Math.min(w.l,x.l);w.c=x.c}}
+  return [...m.values()].sort((a,b)=>a.t-b.t);
+}
+async function histOld(firstT){
+  const c=LS.get("cy_hist",null);
+  if(c&&c.w&&c.w.length>100&&Date.now()-c.at<30*864e5)return unpack(c.w).filter(x=>x.t<firstT);
+  const wk=weekly(await dailyOld(firstT)).filter(x=>x.t<firstT);
+  if(wk.length>100)LS.set("cy_hist",{at:Date.now(),w:pack(wk)});
+  return wk;
 }
 
 // ---- analysis ----
 const sma=(a,n,k)=>{if(k<n-1)return null;let s=0;for(let i=k-n+1;i<=k;i++)s+=a[i].c;return s/n};
+function refine(w){
+  const lo=(t,a)=>{const r=w.filter(x=>Math.abs(x.t-t)<=10*DAY);return r.length>=2?Math.min(...r.map(x=>x.l)):a};
+  const hi=(t,a)=>{const r=w.filter(x=>Math.abs(x.t-t)<=10*DAY);return r.length>=2?Math.max(...r.map(x=>x.h)):a};
+  PAST.forEach((p,i)=>{p.tp=hi(p.top,p.tp);p.bp=lo(p.bot,p.bp);if(i===0)p.pb=lo(p.pbT,p.pb);else p.pb=PAST[i-1].bp});
+}
 function analyze(w,d){
   const now=Date.now(),h4=HALV[3],last=d[d.length-1]||w[w.length-1],price=last.c;
   const src=d.length&&d[0].t<=h4+20*DAY?d:w;
@@ -1470,7 +1551,7 @@ function analyze(w,d){
   const cl=[["early",0,365],["euph",365,530],["dist",530,630],["bear",630,830],["cap",830,985],["acc",985,HALV_LEN]];
   const dm=sinceH%HALV_LEN;let tph="acc";for(const c of cl)if(dm>=c[1]&&dm<c[2])tph=c[0];
   return {now,price,top,low,hp,dd,ddLow,sinceTop,lowAge,recov,sinceH,w200,w50,d200,mayer,minRatio,checks,score,conf,ph,tph,nextH,toH:(nextH-now)/DAY,dm,
-    gains:PAST.map(p=>p.tp/p.pb).filter(x=>isFinite(x)),
+    gains:[...PAST.map(p=>p.tp/p.pb),top.p/PAST[2].bp].filter(x=>isFinite(x)),
     hTop:[...PAST.map(p=>(p.top-p.h)/DAY),(top.t-h4)/DAY],tB:PAST.map(p=>(p.bot-p.top)/DAY),dds:PAST.map(p=>1-p.bp/p.tp)};
 }
 function forecast(A){
@@ -1478,9 +1559,9 @@ function forecast(A){
   const nextTop=A.nextH+medHT*DAY,nextBot=nextTop+medTB*DAY;
   const bt0=A.top.t+363*DAY,bt1=A.top.t+410*DAY,btM=A.top.t+medTB*DAY;
   const sc=[
-   {id:"bear",c:"#e0587a",depth:0.77,mult:3,hm:1.8,bd:bt1},
-   {id:"base",c:"#f5a524",depth:0.70,mult:4.5,hm:2.5,bd:btM},
-   {id:"bull",c:"#1d9e75",depth:0.62,mult:6.5,hm:3.5,bd:bt0}];
+   {id:"bear",c:"#e0587a",depth:0.77,mult:MULT.bear,hm:1.8,bd:bt1},
+   {id:"base",c:"#f5a524",depth:0.70,mult:MULT.base,hm:2.5,bd:btM},
+   {id:"bull",c:"#1d9e75",depth:0.62,mult:MULT.bull,hm:3.5,bd:bt0}];
   const paths=[];
   for(const s of sc){
     let bT,bP;
@@ -1552,7 +1633,7 @@ function render(){
   const app=$("#app");if(!app)return;
   document.documentElement.lang=LANG;
   let h=`<h1>${L("Глобальний цикл Bitcoin","Глобальный цикл Bitcoin","Bitcoin global cycle")}</h1><p class="lead">${L("Фази чотирирічного циклу BTC (халвінг → пік → ведмежий ринок → дно), де ми зараз і які сценарії далі. Історія — лише 4 цикли: це орієнтир, а не гарантія.","Фазы четырёхлетнего цикла BTC (халвинг → пик → медвежий рынок → дно), где мы сейчас и какие сценарии дальше. В истории всего 4 цикла: это ориентир, а не гарантия.","Phases of the four-year BTC cycle (halving → top → bear market → bottom), where we are now and which scenarios come next. History has only 4 cycles: a guide, not a guarantee.")}</p>`;
-  h+=`<div class="bar"><div class="seg" id="lg" role="group" aria-label="Language">${["uk","ru","en"].map(l=>`<button data-l="${l}" aria-pressed="${l===LANG}">${l.toUpperCase()}</button>`).join("")}</div><button class="btn" id="rf">⟳ ${L("Оновити","Обновить","Refresh")}</button><span class="upd">${ST.at?L("Дані","Данные","Data")+": "+new Date(ST.at).toLocaleTimeString(LOC[LANG],{hour:"2-digit",minute:"2-digit"}):""}</span><span class="sp"></span><span id="camHost"></span></div>`;
+  h+=`<div class="bar"><button class="btn" id="rf">⟳ ${L("Оновити","Обновить","Refresh")}</button><span class="upd">${ST.at?L("Дані","Данные","Data")+": "+new Date(ST.at).toLocaleTimeString(LOC[LANG],{hour:"2-digit",minute:"2-digit"}):""}</span><span class="sp"></span><span id="camHost"></span></div>`;
   if(ST.err)h+=`<div class="err">${esc(ST.err)}</div>`;
   const A=ST.A,F=ST.F;
   if(!A){h+=`<div class="card">${ST.busy||!ST.err?L("Завантажую дані…","Загружаю данные…","Loading data…"):""}</div>`;app.innerHTML=h;wire();return}
@@ -1575,11 +1656,11 @@ function render(){
   h+=`<div class="card"><h2>${L("Підтвердження дна","Подтверждение дна","Bottom confirmation")}: ${A.score} ${L("із","из","of")} 7</h2><div class="meter"><i style="width:${A.score/7*100}%"></i></div>
    <div class="p m">${A.score>=5?L("Більшість ознак дна на місці: ринок, схоже, у переході до накопичення.","Большинство признаков дна на месте: рынок, похоже, переходит к накоплению.","Most bottom signs are in place: the market looks to be shifting into accumulation."):A.score>=3?L("Частина ознак є, але підтвердження ще неповне.","Часть признаков есть, но подтверждение пока неполное.","Some signs are present but the confirmation is incomplete."):L("Ознак дна поки мало: ринок ще у фазі спаду або пік поруч.","Признаков дна пока мало: рынок ещё в фазе спада или пик рядом.","Few bottom signs so far: the market is still declining or near a top.")}</div>
    <ul class="lad">${A.checks.map(c=>`<li><span class="k ${c.ok?"y":"n"}">${c.ok?"✓":"✗"}</span><span>${esc(c.t)} <b>· ${esc(c.v)}</b></span></li>`).join("")}</ul></div>`;
-  h+=`<div class="card"><h2>${L("Ціна BTC (лог. шкала), фази й сценарії","Цена BTC (лог. шкала), фазы и сценарии","BTC price (log scale), phases and scenarios")}</h2><div class="cbox"><canvas id="c1"></canvas><div class="tip" id="t1"></div></div>
+  h+=`<div class="card"><h2>${L("Ціна BTC (лог. шкала), фази й сценарії","Цена BTC (лог. шкала), фазы и сценарии","BTC price (log scale), phases and scenarios")}</h2><div class="bar" style="margin:0 0 8px"><div class="seg" id="rg" role="group" aria-label="${L("Період","Период","Range")}">${[["all",L("Вся історія","Вся история","All history")],["2013","2013+"],["2017","2017+"]].map(x=>`<button data-r="${x[0]}" aria-pressed="${x[0]===ST.range}">${x[1]}</button>`).join("")}</div>${ST.oldErr?`<span class="upd">${L("Історія до 2017 не завантажилась","История до 2017 не загрузилась","Pre-2017 history failed to load")}</span>`:""}</div><div class="cbox"><canvas id="c1"></canvas><div class="tip" id="t1"></div></div>
    <div class="leg">${ORDER.map(k=>`<span><i style="background:${PC[k]}"></i>${esc(pn[k])}</span>`).join("")}</div>
    <div class="leg"><span><i class="ln" style="background:var(--ch-ac)"></i>${L("Ціна","Цена","Price")}</span><span><i class="ln" style="background:var(--ch-warn)"></i>${L("200-тижнева MA","200-недельная MA","200-week MA")}</span><span><i class="ln" style="background:#e0587a"></i>${L("Сценарій: слабкий","Сценарий: слабый","Scenario: weak")}</span><span><i class="ln" style="background:#f5a524"></i>${L("базовий","базовый","base")}</span><span><i class="ln" style="background:#1d9e75"></i>${L("сильний","сильный","strong")}</span></div></div>`;
   h+=`<div class="card"><h2>${L("Падіння після піку: цикли поруч","Падение после пика: циклы рядом","After the top: cycles side by side")}</h2><div class="cbox"><canvas id="c2"></canvas><div class="tip" id="t2"></div></div>
-   <div class="leg"><span><i class="ln" style="background:#f5a524"></i>2017</span><span><i class="ln" style="background:#378add"></i>2021</span><span><i class="ln" style="background:var(--ch-tx)"></i>${new Date(A.top.t).getUTCFullYear()} (${L("зараз","сейчас","now")})</span><span><i style="background:rgba(142,99,217,.25)"></i>${L("вікно дна: день 363–410","окно дна: день 363–410","bottom window: day 363–410")}</span></div>
+   <div class="leg"><span><i class="ln" style="background:#e0587a"></i>2013</span><span><i class="ln" style="background:#f5a524"></i>2017</span><span><i class="ln" style="background:#378add"></i>2021</span><span><i class="ln" style="background:var(--ch-tx)"></i>${new Date(A.top.t).getUTCFullYear()} (${L("зараз","сейчас","now")})</span><span><i style="background:rgba(142,99,217,.25)"></i>${L("вікно дна: день 363–410","окно дна: день 363–410","bottom window: day 363–410")}</span></div>
    <div class="p m" style="margin-top:8px">${L("По осі X — дні після піку, по осі Y — ціна відносно піку (лог.). Лінії минулих циклів показують, наскільки глибоким і довгим було падіння.","По оси X — дни после пика, по оси Y — цена относительно пика (лог.). Линии прошлых циклов показывают, насколько глубоким и долгим было падение.","X is days after the top, Y is price relative to the top (log). The past-cycle lines show how deep and how long the decline was.")}</div></div>`;
   h+=cycleTable(A,F);
   h+=forecastHTML(A,F);
@@ -1588,13 +1669,13 @@ function render(){
    <li>${L("Із кожним циклом зростання від дна до піку слабшає (≈ "+A.gains.map(x=>"×"+Math.round(x)).join(" → ")+"), а просадки дещо мілкішають: ринок дорослішає й стає масивнішим.","С каждым циклом рост от дна до пика слабеет (≈ "+A.gains.map(x=>"×"+Math.round(x)).join(" → ")+"), а просадки немного мельчают: рынок взрослеет и становится крупнее.","Each cycle the rise from bottom to top weakens (≈ "+A.gains.map(x=>"×"+Math.round(x)).join(" → ")+") and drawdowns get slightly shallower: the market is maturing and getting bigger.")}</li>
    <li>${L("На ціну впливають ліквідність, ставки, ETF-потоки, регуляція й геополітика; календар халвінгу — лише один із факторів, і цикл може зсунутися або зламатися.","На цену влияют ликвидность, ставки, ETF-потоки, регуляция и геополитика; календарь халвинга — лишь один из факторов, и цикл может сместиться или сломаться.","Liquidity, rates, ETF flows, regulation and geopolitics all matter; the halving calendar is one factor and the cycle can shift or break.")}</li>
    <li>${L("Сценарії — це розрахунок за аналогією з минулими циклами, а не прогноз ціни.","Сценарии — это расчёт по аналогии с прошлыми циклами, а не прогноз цены.","Scenarios are an analog calculation from past cycles, not a price prediction.")}</li></ul>
-   <div class="nfa">${L("Не фінансова порада. Дані: свічки BTC/USDT з Binance (резерв — Bybit). Дати й ціни піків та днищ у циклах 2013–2022 округлені.","Не финансовый совет. Данные: свечи BTC/USDT с Binance (резерв — Bybit). Даты и цены пиков и днищ в циклах 2013–2022 округлены.","Not financial advice. Data: BTC/USDT candles from Binance (Bybit as a fallback). Dates and prices of the 2013–2022 tops and bottoms are rounded.")}</div></div>`;
+   <div class="nfa">${L("Не фінансова порада. Дані: свічки BTC/USDT з Binance (резерв — Bybit); до 2017 року — BTC/USD з Bitstamp (резерв — CryptoCompare). Дати й ціни піків та днищ у циклах 2013–2022 округлені.","Не финансовый совет. Данные: свечи BTC/USDT с Binance (резерв — Bybit); до 2017 года — BTC/USD с Bitstamp (резерв — CryptoCompare). Даты и цены пиков и днищ в циклах 2013–2022 округлены.","Not financial advice. Data: BTC/USDT candles from Binance (Bybit as a fallback); before 2017 BTC/USD from Bitstamp (CryptoCompare as a fallback). Dates and prices of the 2013–2022 tops and bottoms are rounded.")}</div></div>`;
   app.innerHTML=h;wire();drawAll();
   if(window.CH&&$("#camHost"))CH.cam($("#camHost"),()=>$("#shotArea"),{opts:()=>({name:"btc-global-cycle",title:"CRYPTO HUNTERS · "+L("Глобальний цикл BTC","Глобальный цикл BTC","BTC global cycle")})});
 }
 function cycleTable(A,F){
   const rows=PAST.map(p=>({y:p.y,h:p.h,hp:null,T:p.top,tp:p.tp,b:p.bot,bp:p.bp,g:p.pb?p.tp/p.pb:null,cur:false}));
-  rows.push({y:new Date(A.top.t).getUTCFullYear(),h:HALV[3],T:A.top.t,tp:A.top.p,b:A.low.t,bp:A.low.p,g:A.top.p/15500,cur:true});
+  rows.push({y:new Date(A.top.t).getUTCFullYear(),h:HALV[3],T:A.top.t,tp:A.top.p,b:A.low.t,bp:A.low.p,g:A.top.p/PAST[2].bp,cur:true});
   let h=`<div class="card"><h2>${L("Цикли в цифрах","Циклы в цифрах","Cycles in numbers")}</h2><div class="tw"><table><thead><tr><th>${L("Цикл (пік)","Цикл (пик)","Cycle (top)")}</th><th>${L("Халвінг","Халвинг","Halving")}</th><th>${L("Пік","Пик","Top")}</th><th>${L("Днів від халвінгу до піку","Дней от халвинга до пика","Days halving → top")}</th><th>${L("Дно","Дно","Bottom")}</th><th>${L("Просадка","Просадка","Drawdown")}</th><th>${L("Днів від піку до дна","Дней от пика до дна","Days top → bottom")}</th><th>${L("Зростання від попереднього дна","Рост от предыдущего дна","Rise from previous bottom")}</th></tr></thead><tbody>`;
   for(const r of rows)h+=`<tr class="${r.cur?"cur":""}"><td><b>${r.y}</b>${r.cur?" · "+L("поточний","текущий","current"):""}</td><td>${fD(r.h)}</td><td>${fK(r.tp)}<br><small>${fD(r.T)}</small></td><td>${dN((r.T-r.h)/DAY)}</td><td>${fK(r.bp)}<br><small>${fD(r.b)}${r.cur?" · "+L("мін. поки що","мин. пока","low so far"):""}</small></td><td class="dn">-${((1-r.bp/r.tp)*100).toFixed(0)}%</td><td>${dN((r.b-r.T)/DAY)}${r.cur?" ↗":""}</td><td>${r.g?"×"+(r.g>=10?Math.round(r.g):r.g.toFixed(1)):"—"}</td></tr>`;
   return h+`</tbody></table></div></div>`;
@@ -1604,7 +1685,7 @@ function forecastHTML(A,F){
   const tsc=L("слабкий","слабый","weak"),b2=L("базовий","базовый","base"),b3=L("сильний","сильный","strong");
   const nm=[tsc,b2,b3],conf=A.conf||A.ph==="acc"||A.ph==="early";
   let h=`<div class="card"><h2>${L("Прогноз і що очікувати далі","Прогноз и что ждать дальше","Outlook and what to expect")}</h2>`;
-  h+=`<p class="p m">${L("Три сценарії побудовані за аналогією з минулими циклами: час дна ≈ 363–410 днів після піку, пік ≈ "+dN(F.medHT)+" днів після халвінгу, а зростання від дна до піку слабшає (×3, ×4.5, ×6.5).","Три сценария построены по аналогии с прошлыми циклами: время дна ≈ 363–410 дней после пика, пик ≈ "+dN(F.medHT)+" дней после халвинга, а рост от дна до пика слабеет (×3, ×4.5, ×6.5).","Three scenarios built by analogy with past cycles: bottom ≈ 363–410 days after the top, top ≈ "+dN(F.medHT)+" days after the halving, and the bottom-to-top rise keeps shrinking (×3, ×4.5, ×6.5).")}</p>`;
+  h+=`<p class="p m">${L("Три сценарії побудовані за аналогією з минулими циклами: час дна ≈ 363–410 днів після піку, пік ≈ "+dN(F.medHT)+" днів після халвінгу, а зростання від дна до піку слабшає ("+MX()+").","Три сценария построены по аналогии с прошлыми циклами: время дна ≈ 363–410 дней после пика, пик ≈ "+dN(F.medHT)+" дней после халвинга, а рост от дна до пика слабеет ("+MX()+").","Three scenarios built by analogy with past cycles: bottom ≈ 363–410 days after the top, top ≈ "+dN(F.medHT)+" days after the halving, and the bottom-to-top rise keeps shrinking ("+MX()+").")}</p>`;
   h+=`<div class="steps">`;
   // 1: bottom
   const bNow=conf;
@@ -1612,14 +1693,14 @@ function forecastHTML(A,F){
   h+=`<div class="st"><h3><span class="dot" style="background:${PC.acc}"></span>${L("Накопичення до халвінгу","Накопление до халвинга","Accumulation before the halving")}</h3><div class="dt">${fM(Math.max(A.low.t,A.now))} – ${fM(A.nextH)}</div><p>${L("Повільне відновлення, діапазони й відкати. Минулі цикли: від дна до халвінгу ціна зростала у ×2.7–×4.","Медленное восстановление, диапазоны и откаты. Прошлые циклы: от дна до халвинга цена росла в ×2.7–×4.","Slow recovery, ranges and pullbacks. In past cycles price rose ×2.7–×4 from the bottom to the halving.")}</p></div>`;
   h+=`<div class="st"><h3><span class="dot" style="background:${PC.early}"></span>${L("Халвінг","Халвинг","Halving")}</h3><div class="dt">≈ ${fM(A.nextH)}</div><p>${L("Блокова нагорода впаде з 3,125 до ≈ 1,56 BTC. Орієнтовна дата — за 210 000 блоків.","Блоковая награда упадёт с 3,125 до ≈ 1,56 BTC. Ориентировочная дата — по 210 000 блоков.","The block reward drops from 3.125 to ≈ 1.56 BTC. The date is estimated from 210,000 blocks.")}</p></div>`;
   h+=`<div class="st"><h3><span class="dot" style="background:${PC.euph}"></span>${L("Параболічна фаза","Параболическая фаза","Parabolic phase")}</h3><div class="dt">${fM(A.nextH+365*DAY)} – ${fM(F.nextTop)}</div><p>${L("Зазвичай стартує через ≈ 12 місяців після халвінгу й закінчується піком.","Обычно стартует через ≈ 12 месяцев после халвинга и заканчивается пиком.","Usually starts ≈ 12 months after the halving and ends with the top.")}</p></div>`;
-  h+=`<div class="st"><h3><span class="dot" style="background:${PC.dist}"></span>${L("Наступний пік циклу","Следующий пик цикла","Next cycle top")}</h3><div class="dt">${fM(F.nextTop-20*DAY)} – ${fM(F.nextTop+20*DAY)}</div><p>${L("Орієнтири ціни: слабкий "+fP(tops[0])+", базовий "+fP(tops[1])+", сильний "+fP(tops[2])+" (від прогнозного дна ×3 / ×4.5 / ×6.5).","Ориентиры цены: слабый "+fP(tops[0])+", базовый "+fP(tops[1])+", сильный "+fP(tops[2])+" (от прогнозного дна ×3 / ×4.5 / ×6.5).","Price guide: weak "+fP(tops[0])+", base "+fP(tops[1])+", strong "+fP(tops[2])+" (×3 / ×4.5 / ×6.5 off the projected bottom).")}</p></div>`;
+  h+=`<div class="st"><h3><span class="dot" style="background:${PC.dist}"></span>${L("Наступний пік циклу","Следующий пик цикла","Next cycle top")}</h3><div class="dt">${fM(F.nextTop-20*DAY)} – ${fM(F.nextTop+20*DAY)}</div><p>${L("Орієнтири ціни: слабкий "+fP(tops[0])+", базовий "+fP(tops[1])+", сильний "+fP(tops[2])+" (від прогнозного дна "+MX().replace(/, /g," / ")+").","Ориентиры цены: слабый "+fP(tops[0])+", базовый "+fP(tops[1])+", сильный "+fP(tops[2])+" (от прогнозного дна "+MX().replace(/, /g," / ")+").","Price guide: weak "+fP(tops[0])+", base "+fP(tops[1])+", strong "+fP(tops[2])+" ("+MX().replace(/, /g," / ")+" off the projected bottom).")}</p></div>`;
   h+=`<div class="st"><h3><span class="dot" style="background:${PC.bear}"></span>${L("Наступний ведмежий ринок","Следующий медвежий рынок","Next bear market")}</h3><div class="dt">${fM(F.nextTop)} → ${fM(F.nextBot)}</div><p>${L("Орієнтовне дно ≈ 60 % нижче піку (у моделі).","Ориентировочное дно ≈ 60 % ниже пика (в модели).","The model's rough bottom is ≈ 60% below the top.")}</p></div>`;
   h+=`</div><div class="sc">${F.sc.map((s,i)=>`<div style="border-color:${s.c}"><b style="color:${s.c}">${esc(nm[i])}</b>${L("Дно","Дно","Bottom")}: ${fP(s.bP)}<br>${L("Халвінг","Халвинг","Halving")}: ${fP(s.hP)}<br>${L("Пік","Пик","Top")}: ${fP(s.tP)}</div>`).join("")}</div></div>`;
   return h;
 }
 function wire(){
-  document.querySelectorAll("#lg button").forEach(b=>b.addEventListener("click",()=>{LANG=b.dataset.l;LS.set("cy_lang",LANG);render()}));
   const r=$("#rf");if(r)r.addEventListener("click",()=>load(true));
+  document.querySelectorAll("#rg button").forEach(b=>b.addEventListener("click",()=>{ST.range=b.dataset.r;LS.set("cy_range",ST.range);render()}));
 }
 
 // ---- charts ----
@@ -1632,27 +1713,29 @@ function drawAll(){drawC1();drawC2()}
 function drawC1(){
   const cv=$("#c1"),A=ST.A,F=ST.F;if(!cv||!A||!F)return;
   const {g,w,H}=setup(cv,window.innerWidth<600?300:380),M={l:44,r:8,t:10,b:22},pw=w-M.l-M.r,ph=H-M.t-M.b,W=ST.w;
-  const t0=W[0].t,t1=D(2031,3,1),tx=css("--ch-tx"),t3=css("--ch-t3"),bd=css("--ch-bd"),ac=css("--ch-ac"),wn=css("--ch-warn");
-  let lo=Infinity,hi=0;W.forEach(p=>{lo=Math.min(lo,p.l);hi=Math.max(hi,p.h)});F.paths.forEach(a=>a.forEach(p=>{lo=Math.min(lo,p.p);hi=Math.max(hi,p.p)}));
+  const view=ST.range==="all"?W:W.filter(x=>x.t>=D(+ST.range,1,1)),t0=(view[0]||W[0]).t,t1=D(2031,3,1),tx=css("--ch-tx"),t3=css("--ch-t3"),bd=css("--ch-bd"),ac=css("--ch-ac"),wn=css("--ch-warn");
+  let lo=Infinity,hi=0;view.forEach(p=>{lo=Math.min(lo,p.l);hi=Math.max(hi,p.h)});F.paths.forEach(a=>a.forEach(p=>{lo=Math.min(lo,p.p);hi=Math.max(hi,p.p)}));
   lo/=1.25;hi*=1.2;const l0=Math.log(lo),l1=Math.log(hi),X=t=>M.l+(t-t0)/(t1-t0)*pw,Y=v=>M.t+(1-(Math.log(v)-l0)/(l1-l0))*ph;
   g.clearRect(0,0,w,H);g.font="10.5px system-ui,sans-serif";
   for(const b of bands(A,F)){const a=Math.max(b.a,t0),e=Math.min(b.b,t1);if(e<=a)continue;g.globalAlpha=.11;g.fillStyle=PC[b.ph];g.fillRect(X(a),M.t,X(e)-X(a),ph);g.globalAlpha=.9;g.fillRect(X(a),M.t+ph-4,X(e)-X(a),4)}
   g.globalAlpha=1;
   g.strokeStyle=bd;g.fillStyle=t3;g.lineWidth=.5;g.textAlign="right";
   for(const v of ticksLog(lo,hi)){const y=Y(v);g.beginPath();g.moveTo(M.l,y);g.lineTo(w-M.r,y);g.stroke();g.fillText(fK(v),M.l-5,y+3.5)}
-  g.textAlign="center";for(let y=new Date(t0).getUTCFullYear()+1;y<=2031;y++){const x=X(D(y,1,1));if(x<M.l||x>w-M.r)continue;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();if(w>480||y%2===0)g.fillText(y,x,H-6)}
+  g.textAlign="center";const ys=(t1-t0)/(365*DAY),yst=ys>14?4:ys>9?2:1;for(let y=new Date(t0).getUTCFullYear()+1;y<=2031;y++){const x=X(D(y,1,1));if(x<M.l||x>w-M.r)continue;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();if(y%yst===0&&(w>480||yst>1||y%2===0))g.fillText(y,x,H-6)}
+  g.save();g.beginPath();g.rect(M.l,M.t-2,pw,ph+4);g.clip();
   // 200-week MA
   g.strokeStyle=wn;g.lineWidth=1.2;g.beginPath();let st=false;for(let i=0;i<W.length;i++){const m=sma(W,200,i);if(m==null)continue;const x=X(W[i].t),y=Y(m);if(!st){g.moveTo(x,y);st=true}else g.lineTo(x,y)}g.stroke();
   // price
   g.strokeStyle=ac;g.lineWidth=1.6;g.beginPath();W.forEach((p,i)=>{const x=X(p.t),y=Y(p.c);i?g.lineTo(x,y):g.moveTo(x,y)});g.lineTo(X(A.now),Y(A.price));g.stroke();
   // scenarios
   g.setLineDash([5,4]);g.lineWidth=1.6;F.sc.forEach(s=>{g.strokeStyle=s.c;g.beginPath();s.pts.forEach((p,i)=>{const x=X(p.t),y=Y(p.p);i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()});g.setLineDash([]);
+  g.restore();
   // halvings, tops and bottoms
   const cy=cycles(A,F);g.textAlign="center";
-  [...HALV,A.nextH].forEach((t,i)=>{if(t<t0||t>t1)return;const x=X(t);g.strokeStyle=t3;g.setLineDash([2,3]);g.lineWidth=.8;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();g.setLineDash([]);g.fillStyle=tx;g.fillText(i===4?"H*":"H",x,M.t+10)});
-  g.fillStyle=css("--ch-dn");PAST.forEach(p=>{if(p.top>=t0){const x=X(p.top),y=Y(p.tp);g.beginPath();g.moveTo(x,y-8);g.lineTo(x-4,y-14);g.lineTo(x+4,y-14);g.fill();g.fillStyle=tx;g.fillText(fK(p.tp),x,y-17);g.fillStyle=css("--ch-dn")}});
+  [...HALV,A.nextH].forEach((t,i)=>{if(t<t0+20*DAY||t>t1)return;const x=X(t);g.strokeStyle=t3;g.setLineDash([2,3]);g.lineWidth=.8;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();g.setLineDash([]);g.fillStyle=tx;g.fillText(i===4?"H*":"H",x,M.t+10)});
+  g.fillStyle=css("--ch-dn");PAST.forEach(p=>{if(p.top>=t0+20*DAY){const x=X(p.top),y=Y(p.tp);g.beginPath();g.moveTo(x,y-8);g.lineTo(x-4,y-14);g.lineTo(x+4,y-14);g.fill();g.fillStyle=tx;g.fillText(fK(p.tp),x,y-17);g.fillStyle=css("--ch-dn")}});
   {const x=X(A.top.t),y=Y(A.top.p);g.beginPath();g.moveTo(x,y-8);g.lineTo(x-4,y-14);g.lineTo(x+4,y-14);g.fill();g.fillStyle=tx;g.fillText(fK(A.top.p),x,y-17)}
-  g.fillStyle=css("--ch-up");const bots=[...PAST.filter(p=>p.bot>=t0).map(p=>({t:p.bot,p:p.bp})),{t:A.low.t,p:A.low.p}];
+  g.fillStyle=css("--ch-up");const bots=[...PAST.filter(p=>p.bot>=t0+20*DAY).map(p=>({t:p.bot,p:p.bp})),{t:A.low.t,p:A.low.p}];
   bots.forEach(b=>{const x=X(b.t),y=Y(b.p);g.fillStyle=css("--ch-up");g.beginPath();g.moveTo(x,y+8);g.lineTo(x-4,y+14);g.lineTo(x+4,y+14);g.fill();g.fillStyle=tx;g.fillText(fK(b.p),x,y+25)});
   // today
   const xn=X(A.now);g.strokeStyle=tx;g.lineWidth=1;g.setLineDash([1,3]);g.beginPath();g.moveTo(xn,M.t);g.lineTo(xn,M.t+ph);g.stroke();g.setLineDash([]);g.fillStyle=tx;g.fillText(L("зараз","сейчас","now"),Math.min(w-M.r-14,xn),M.t+22);
@@ -1668,15 +1751,15 @@ function drawC1(){
 function drawC2(){
   const cv=$("#c2"),A=ST.A;if(!cv||!A)return;
   const {g,w,H}=setup(cv,window.innerWidth<600?260:320),M={l:44,r:8,t:10,b:22},pw=w-M.l-M.r,ph=H-M.t-M.b,W=ST.w;
-  const tx=css("--ch-tx"),t3=css("--ch-t3"),bd=css("--ch-bd"),XM=760,lo=0.1,hi=1.08,l0=Math.log(lo),l1=Math.log(hi);
+  const tx=css("--ch-tx"),t3=css("--ch-t3"),bd=css("--ch-bd"),XM=1000,lo=0.1,hi=1.08,l0=Math.log(lo),l1=Math.log(hi);
   const X=d=>M.l+d/XM*pw,Y=v=>M.t+(1-(Math.log(v)-l0)/(l1-l0))*ph;
   g.clearRect(0,0,w,H);g.font="10.5px system-ui,sans-serif";
   g.fillStyle="rgba(142,99,217,.18)";g.fillRect(X(363),M.t,X(410)-X(363),ph);
   g.strokeStyle=bd;g.fillStyle=t3;g.lineWidth=.5;g.textAlign="right";
   for(const v of [0.1,0.2,0.3,0.5,0.7,1]){const y=Y(v);g.beginPath();g.moveTo(M.l,y);g.lineTo(w-M.r,y);g.stroke();g.fillText(v===1?L("пік","пик","top"):"-"+Math.round((1-v)*100)+"%",M.l-5,y+3.5)}
-  g.textAlign="center";for(let d=0;d<=XM;d+=100){const x=X(d);g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();g.fillText(d,x,H-6)}
+  g.textAlign="center";for(let d=0;d<=XM;d+=200){const x=X(d);g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();g.fillText(d,x,H-6)}
   const series=[];
-  for(const [p,c] of [[PAST[1],"#f5a524"],[PAST[2],"#378add"]]){
+  for(const [p,c] of [[PAST[0],"#e0587a"],[PAST[1],"#f5a524"],[PAST[2],"#378add"]]){
     const win=W.filter(x=>Math.abs(x.t-p.top)<=10*DAY),tp=win.length?Math.max(...win.map(x=>x.h)):p.tp,pts=[];
     W.forEach(x=>{const d=(x.t-p.top)/DAY;if(d>=-3&&d<=XM)pts.push({d:Math.max(0,d),v:Math.min(1,x.c/tp)})});
     if(pts.length)series.push({n:""+p.y,c,pts})}
@@ -1688,13 +1771,14 @@ function drawC2(){
   C2={series};
   hover(cv,$("#t2"),x=>{
     const d=(x-M.l)/pw*XM;if(d<0||d>XM)return null;let s=`<b>${L("День","День","Day")} ${Math.round(d)}</b>`;
-    series.forEach(sr=>{let bp=null,bd2=1e9;sr.pts.forEach(p=>{const dd=Math.abs(p.d-d);if(dd<bd2){bd2=dd;bp=p}});if(bp&&bd2<=9)s+=`<br><span style="color:${sr.c==="#f5a524"||sr.c==="#378add"?sr.c:"inherit"}">●</span> ${sr.n}: -${((1-bp.v)*100).toFixed(0)}%`});
+    series.forEach(sr=>{let bp=null,bd2=1e9;sr.pts.forEach(p=>{const dd=Math.abs(p.d-d);if(dd<bd2){bd2=dd;bp=p}});if(bp&&bd2<=9)s+=`<br><span style="color:${sr.c==="#f5a524"||sr.c==="#378add"||sr.c==="#e0587a"?sr.c:"inherit"}">●</span> ${sr.n}: -${((1-bp.v)*100).toFixed(0)}%`});
     return s});
 }
 function hover(cv,tip,fn){
   const mv=e=>{const r=cv.getBoundingClientRect(),x=(e.clientX||0)-r.left,html=fn(x);if(!html){tip.style.display="none";return}tip.innerHTML=html;tip.style.display="block";const tw=tip.offsetWidth;tip.style.left=Math.max(0,Math.min(r.width-tw,x+10))+"px";tip.style.top="8px"};
   cv.onpointermove=mv;cv.onpointerdown=mv;cv.onpointerleave=()=>{tip.style.display="none"};
 }
+document.addEventListener("ch-lang",e=>{if(/^(uk|ru|en)$/.test(e.detail)){LANG=e.detail;render()}});
 let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{if(ST.A)drawAll()},120)});
 new MutationObserver(()=>{if(ST.A)drawAll()}).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
 matchMedia("(prefers-color-scheme: dark)").addEventListener&&matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(ST.A)drawAll()});
