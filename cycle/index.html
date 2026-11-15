@@ -86,6 +86,8 @@ details.langsp,div#langs,#langSeg,#langSel,select#lang,label:has(>select#lang),.
 .ch-shot .ch-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 :root .ch-shot .ch-acts>*{flex:1 1 auto;text-align:center;border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;padding:6px 12px;font:13px/1.2 var(--ch-font);cursor:pointer;text-decoration:none;min-height:32px;display:inline-flex;align-items:center;justify-content:center}
 :root .ch-shot .ch-acts>.on{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+:root .ch-shot .ch-acts>[aria-pressed=true]{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+.ch-shot img{transition:opacity .15s}
 .ch-shot p{margin:8px 2px 0;font-size:12px;color:var(--ch-t3)}
 
 /* ---- footer ---- */
@@ -249,9 +251,8 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
 
 /* ---- on a wide screen every tool is visible in the bar (two rows if needed) instead of a hidden sideways scroll ---- */
 @media (min-width:700px){.ch-nav{flex-wrap:wrap;overflow:visible;row-gap:2px}}
-
 </style>
-<script id="ch-js" data-tool="cycle" data-ver="2.17" data-root="../">
+<script id="ch-js" data-tool="cycle" data-ver="2.18" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -260,7 +261,7 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "2.17";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "2.18";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -307,6 +308,14 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
   L.ar = {"an":"تحليل:","open":"افتح {c} في «{t}» (تبويب جديد)","tools":"الأدوات","tg":"قناة Telegram","cam":"لقطة شاشة","wait":"جارٍ تجهيز الصورة…","save":"حفظ","share":"مشاركة","copy":"نسخ","copied":"تم النسخ","close":"إغلاق","fail":"تعذّر إنشاء الصورة: {e}","nfa":"ليست نصيحة مالية","src":"الشيفرة","log":"سجل الإشعارات","logAll":"الكل","notif":"الإشعارات","tLog":"السجل","tRules":"القواعد","tSet":"الإعدادات","alerts":"تنبيهات السعر","alAdd":"تنبيه","alAddT":"اضبط تنبيهًا لـ {c}","now":"الآن","dist":"{d}% إلى الهدف","waiting":"في انتظار أول فحص","active":"نشط","off":"متوقف","firedOff":"تم التفعيل","once":"مرة واحدة","every":"كل مرة، توقف {m} د","repeatEvery":"كل مرة، مع توقف","lastFired":"التفعيل: {t}","edit":"تعديل","del":"حذف","delQ":"حذف هذا التنبيه؟","newRule":"تنبيه جديد","cancel":"إلغاء","save2":"حفظ","k_reach":"السعر يصل إلى {v}","k_above":"السعر فوق {v}","k_below":"السعر تحت {v}","k_near":"السعر ضمن {d}% من {v}","k_up24":"ارتفاع 24 ساعة بمقدار {v} أو أكثر","k_dn24":"هبوط 24 ساعة بمقدار {v} أو أكثر","k_rsiLo":"RSI {tf} تحت {v}","k_rsiHi":"RSI {tf} فوق {v}","o_reach":"السعر يصل إلى مستوى","o_above":"السعر فوق مستوى","o_below":"السعر تحت مستوى","o_near":"السعر يقترب من مستوى","o_up24":"ارتفاع 24 ساعة، %","o_dn24":"هبوط 24 ساعة، %","o_rsiLo":"RSI تحت مستوى (تشبّع بيعي)","o_rsiHi":"RSI فوق مستوى (تشبّع شرائي)","fCoin":"العملة","fQuote":"عملة التسعير","fEx":"المنصة","fKind":"الشرط","fPrice":"السعر، {q}","fRsi":"مستوى RSI","fPct":"النسبة","fNear":"المسافة، %","fTf":"الإطار الزمني","fRepeat":"التكرار","fCd":"التوقف، دقائق","fNote":"ملاحظة (اختياري)","fNoteP":"مثلًا: خطة الدخول","fCoinNeed":"أدخل رمز العملة، مثل BTC","fValNeed":"أدخل قيمة أكبر من صفر","fRsiNeed":"يجب أن يكون RSI بين 1 و99","loading":"جارٍ تحميل السعر…","noPair":"لم يُعثر على {p} في {e}","errData":"لا بيانات","onoff":"تشغيل أو إيقاف","sSound":"الصوت","sBrowser":"إشعارات المتصفح","perm_granted":"المتصفح يسمح بالإشعارات.","allow":"سماح","sTg":"إرسال إلى Telegram عبر البوت الخاص بي","sToken":"رمز البوت","sChat":"معرّف المحادثة أو @القناة","test":"اختبار","tgTestMsg":"إشعار اختبار","tgOk":"أُرسل","tgFail":"خطأ: {e}","sEvery":"عدد مرات الفحص","sec":"كل {s} ث","testAll":"إشعار اختبار","nwNone":"لا أخبار عن {c} خلال 24 ساعة","nwTitle":"الأخبار: {c}","nwReload":"تحديث","nwSrc":"المصدر: {s}، حُدّث عند {t}","nwSrvName":"خادم أخبارك","nwErr":"الأخبار غير متاحة ({e})","nwEmpty":"لا أخبار عن {c} في آخر 3 أيام.","nwImp":"سلبي مهم","nwNeg":"سلبي","nwPos":"إيجابي","nwNeu":"محايد","nwSet":"الأخبار","nwOn":"عرض الأخبار على بطاقات العملات","nwSrv":"خادم أخبار خاص (اختياري)","favOn":"أضف {c} إلى المفضلة (في كل الأدوات)","favOff":"أزل {c} من المفضلة","installS":"تثبيت","calTitle":"تقويم الأحداث","calTitleC":"الأحداث: {c}","calAll":"كل الأحداث","calEmpty":"لا أحداث قادمة.","evBadge":"أحداث {c} خلال 7 أيام: {n}. التالي: {t}","evIn":"{d} ي","evToday":"اليوم","evFomc":"الفيدرالي","evList":"إدراج","evDelist":"إلغاء إدراج","evFomcT":"قرار الفائدة الفيدرالي (FOMC)","corrL":"الارتباط مع BTC","logClear":"مسح","logClearQ":"حذف كل إدخالات السجل؟","logCsv":"CSV","logOpen":"فتح","logNew":"جديد","buy":"منطقة شراء","sell":"منطقة بيع","spike":"طفرة حجم ×{r}","candle":"شمعة","brkUp":"اختراق للأعلى","brkDn":"كسر للأسفل","spot":"فوري","futures":"عقود آجلة","chScreen":"على الشاشة","chBrowser":"المتصفح","chTelegram":"Telegram","chSound":"الصوت","chLog":"السجل فقط","today":"اليوم","yesterday":"أمس","cycle":["الدورة العالمية","الدورة"],"scan":["ماسح التوافق","التوافق"],"heat":["Heat Index","Heat"],"lab":["Coin Lab","Coin Lab"],"elliott":["موجات إليوت","الموجات"],"whales":["سونار الحيتان","الحيتان"],"liq":["رادار التصفية","التصفيات"],"volume":["طفرات الحجم","الحجم"],"bot":["بوت تجريبي","البوت"]};
   L.ja = {"an":"分析：","open":"{c}を「{t}」で開く（新しいタブ）","tools":"ツール","tg":"Telegramチャンネル","cam":"スクリーンショット","wait":"画像を準備中…","save":"保存","share":"共有","copy":"コピー","copied":"コピーしました","close":"閉じる","fail":"画像を作成できませんでした：{e}","nfa":"投資助言ではありません","src":"コード","log":"通知ログ","logAll":"すべて","notif":"通知","tLog":"ログ","tRules":"ルール","tSet":"設定","alerts":"価格アラート","alAdd":"アラート","alAddT":"{c}のアラートを設定","now":"現在","dist":"目標まで{d}%","waiting":"最初のチェックを待機中","active":"有効","off":"オフ","firedOff":"発動済み","once":"1回","every":"毎回、{m}分間隔","repeatEvery":"毎回、間隔あり","lastFired":"発動：{t}","edit":"編集","del":"削除","delQ":"このアラートを削除しますか？","newRule":"新しいアラート","cancel":"キャンセル","save2":"保存","k_reach":"価格が{v}に到達","k_above":"価格が{v}より上","k_below":"価格が{v}より下","k_near":"価格が{v}の{d}%以内","k_up24":"24時間で{v}以上上昇","k_dn24":"24時間で{v}以上下落","k_rsiLo":"RSI {tf}が{v}未満","k_rsiHi":"RSI {tf}が{v}超","o_reach":"価格が水準に到達","o_above":"価格が水準より上","o_below":"価格が水準より下","o_near":"価格が水準に接近","o_up24":"24時間上昇、%","o_dn24":"24時間下落、%","o_rsiLo":"RSIが水準未満（売られ過ぎ）","o_rsiHi":"RSIが水準超（買われ過ぎ）","fCoin":"銘柄","fQuote":"決済通貨","fEx":"取引所","fKind":"条件","fPrice":"価格、{q}","fRsi":"RSI水準","fPct":"パーセント","fNear":"距離、%","fTf":"時間足","fRepeat":"繰り返し","fCd":"間隔、分","fNote":"メモ（任意）","fNoteP":"例：エントリー計画","fCoinNeed":"銘柄ティッカーを入力してください（例：BTC）","fValNeed":"0より大きい値を入力してください","fRsiNeed":"RSIは1〜99の間で指定してください","loading":"価格を読み込み中…","noPair":"{e}に{p}が見つかりません","errData":"データなし","onoff":"オン／オフ","sSound":"サウンド","sBrowser":"ブラウザ通知","perm_granted":"ブラウザは通知を許可しています。","allow":"許可","sTg":"自分のボット経由でTelegramに送信","sToken":"ボットトークン","sChat":"チャットIDまたは@チャンネル","test":"テスト","tgTestMsg":"テスト通知","tgOk":"送信しました","tgFail":"エラー：{e}","sEvery":"チェック頻度","sec":"{s}秒ごと","testAll":"テスト通知","nwNone":"24時間で{c}のニュースはありません","nwTitle":"ニュース：{c}","nwReload":"更新","nwSrc":"ソース：{s}、{t}に更新","nwSrvName":"あなたのニュースサーバー","nwErr":"ニュースを取得できません（{e}）","nwEmpty":"過去3日間に{c}のニュースはありません。","nwImp":"重要なネガティブ","nwNeg":"ネガティブ","nwPos":"ポジティブ","nwNeu":"中立","nwSet":"ニュース","nwOn":"銘柄カードにニュースを表示","nwSrv":"独自のニュースサーバー（任意）","favOn":"{c}をお気に入りに追加（全ツール共通）","favOff":"{c}をお気に入りから削除","installS":"インストール","calTitle":"イベントカレンダー","calTitleC":"イベント：{c}","calAll":"すべてのイベント","calEmpty":"予定されているイベントはありません。","evBadge":"{c}の7日間のイベント：{n}。次：{t}","evIn":"{d}日","evToday":"今日","evFomc":"FRB","evList":"上場","evDelist":"上場廃止","evFomcT":"FRBの金利決定（FOMC）","corrL":"BTCとの相関","logClear":"消去","logClearQ":"ログのすべての項目を削除しますか？","logCsv":"CSV","logOpen":"開く","logNew":"新着","buy":"買いゾーン","sell":"売りゾーン","spike":"出来高スパイク ×{r}","candle":"ローソク足","brkUp":"上抜け","brkDn":"下抜け","spot":"現物","futures":"先物","chScreen":"画面","chBrowser":"ブラウザ","chTelegram":"Telegram","chSound":"サウンド","chLog":"ログのみ","today":"今日","yesterday":"昨日","cycle":["グローバルサイクル","サイクル"],"scan":["コンフルエンススキャナー","一致"],"heat":["Heat Index","Heat"],"lab":["Coin Lab","Coin Lab"],"elliott":["エリオット波動","波動"],"whales":["ホエールソナー","ホエール"],"liq":["清算レーダー","清算"],"volume":["出来高スパイク","出来高"],"bot":["ペーパーボット","ボット"]};
   L.ko = {"an":"분석:","open":"{c}을(를) “{t}”에서 열기 (새 탭)","tools":"도구","tg":"Telegram 채널","cam":"스크린샷","wait":"이미지 준비 중…","save":"저장","share":"공유","copy":"복사","copied":"복사됨","close":"닫기","fail":"이미지를 만들지 못했습니다: {e}","nfa":"재정 조언이 아닙니다","src":"코드","log":"알림 로그","logAll":"전체","notif":"알림","tLog":"로그","tRules":"규칙","tSet":"설정","alerts":"가격 알림","alAdd":"알림","alAddT":"{c} 알림 설정","now":"현재","dist":"목표까지 {d}%","waiting":"첫 확인 대기 중","active":"활성","off":"꺼짐","firedOff":"발동됨","once":"1회","every":"매번, {m}분 간격","repeatEvery":"매번, 간격 있음","lastFired":"발동: {t}","edit":"편집","del":"삭제","delQ":"이 알림을 삭제할까요?","newRule":"새 알림","cancel":"취소","save2":"저장","k_reach":"가격이 {v}에 도달","k_above":"가격이 {v} 위","k_below":"가격이 {v} 아래","k_near":"가격이 {v}의 {d}% 이내","k_up24":"24시간 {v} 이상 상승","k_dn24":"24시간 {v} 이상 하락","k_rsiLo":"RSI {tf}이(가) {v} 미만","k_rsiHi":"RSI {tf}이(가) {v} 초과","o_reach":"가격이 레벨에 도달","o_above":"가격이 레벨 위","o_below":"가격이 레벨 아래","o_near":"가격이 레벨에 근접","o_up24":"24시간 상승, %","o_dn24":"24시간 하락, %","o_rsiLo":"RSI가 레벨 미만 (과매도)","o_rsiHi":"RSI가 레벨 초과 (과매수)","fCoin":"코인","fQuote":"호가 통화","fEx":"거래소","fKind":"조건","fPrice":"가격, {q}","fRsi":"RSI 레벨","fPct":"퍼센트","fNear":"거리, %","fTf":"타임프레임","fRepeat":"반복","fCd":"간격, 분","fNote":"메모 (선택)","fNoteP":"예: 진입 계획","fCoinNeed":"코인 티커를 입력하세요 (예: BTC)","fValNeed":"0보다 큰 값을 입력하세요","fRsiNeed":"RSI는 1~99 사이여야 합니다","loading":"가격 불러오는 중…","noPair":"{e}에서 {p}을(를) 찾을 수 없습니다","errData":"데이터 없음","onoff":"켜기/끄기","sSound":"소리","sBrowser":"브라우저 알림","perm_granted":"브라우저가 알림을 허용합니다.","allow":"허용","sTg":"내 봇으로 Telegram에 전송","sToken":"봇 토큰","sChat":"채팅 ID 또는 @채널","test":"테스트","tgTestMsg":"테스트 알림","tgOk":"전송됨","tgFail":"오류: {e}","sEvery":"확인 빈도","sec":"{s}초마다","testAll":"테스트 알림","nwNone":"24시간 동안 {c} 뉴스가 없습니다","nwTitle":"뉴스: {c}","nwReload":"새로고침","nwSrc":"출처: {s}, {t} 갱신","nwSrvName":"내 뉴스 서버","nwErr":"뉴스를 사용할 수 없습니다 ({e})","nwEmpty":"최근 3일간 {c} 뉴스가 없습니다.","nwImp":"중요한 부정","nwNeg":"부정","nwPos":"긍정","nwNeu":"중립","nwSet":"뉴스","nwOn":"코인 카드에 뉴스 표시","nwSrv":"자체 뉴스 서버 (선택)","favOn":"{c}을(를) 즐겨찾기에 추가 (모든 도구)","favOff":"{c}을(를) 즐겨찾기에서 제거","installS":"설치","calTitle":"이벤트 캘린더","calTitleC":"이벤트: {c}","calAll":"모든 이벤트","calEmpty":"예정된 이벤트가 없습니다.","evBadge":"{c}의 7일간 이벤트: {n}. 다음: {t}","evIn":"{d}일","evToday":"오늘","evFomc":"연준","evList":"상장","evDelist":"상장폐지","evFomcT":"연준 금리 결정 (FOMC)","corrL":"BTC와의 상관관계","logClear":"지우기","logClearQ":"로그의 모든 항목을 삭제할까요?","logCsv":"CSV","logOpen":"열기","logNew":"새 항목","buy":"매수 구간","sell":"매도 구간","spike":"거래량 급증 ×{r}","candle":"캔들","brkUp":"상향 돌파","brkDn":"하향 이탈","spot":"현물","futures":"선물","chScreen":"화면","chBrowser":"브라우저","chTelegram":"Telegram","chSound":"소리","chLog":"로그만","today":"오늘","yesterday":"어제","cycle":["글로벌 사이클","사이클"],"scan":["컨플루언스 스캐너","컨플루언스"],"heat":["Heat Index","Heat"],"lab":["Coin Lab","Coin Lab"],"elliott":["엘리엇 파동","파동"],"whales":["고래 소나","고래"],"liq":["청산 레이더","청산"],"volume":["거래량 급증","거래량"],"bot":["페이퍼 봇","봇"]};
+  L.uk.sq = "Квадрат 1:1";
+  L.ru.sq = "Квадрат 1:1";
+  L.en.sq = "Square 1:1";
+  L.zh.sq = "正方形 1:1";
+  L.hi.sq = "वर्ग 1:1";
+  L.ar.sq = "مربع 1:1";
+  L.ja.sq = "正方形 1:1";
+  L.ko.sq = "정사각형 1:1";
   function lang() { var l = (document.documentElement.lang || "en").slice(0, 2).toLowerCase(); return L[l] ? l : "en"; }
   function tr(k, p) { var s = L[lang()][k]; if (s == null) s = L.en[k]; if (Array.isArray(s)) return s; s = String(s); if (p) s = s.replace(/\{(\w+)\}/g, function (_, x) { return p[x] == null ? "" : p[x]; }); return s; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -390,7 +399,19 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
     return { bg: g("--ch-bg", "#16181d"), tx: g("--ch-tx", "#e8eaed"), mu: g("--ch-t2", "#a0a4ab"), line: g("--ch-bd", "#2c3038"), ac: g("--ch-brand", "#f5a524") };
   }
   // The same mark as in Heat Index: a strip with the channel under the picture and a faint pattern across all of it, so cropping does not remove it.
+  // Square mode (1:1) for social networks: the finished picture is centred on a square canvas, scaled down only when it is much taller than wide.
+  var SQ = false; try { SQ = localStorage.getItem("ch.sq") === "1"; } catch (e) {}
+  function stripH(S) { return Math.round(64 * S / 1080); }
+  function squareFit(cv, bg) {
+    var W0 = cv.width, H0 = cv.height, S = W0, cap = Math.round(W0 * 1.35);
+    while (S - stripH(S) < H0 && S < cap) S += 2;
+    var AH = S - stripH(S); if (S === W0 && AH === H0) return cv;
+    var sc = Math.min(1, AH / H0), w = Math.round(W0 * sc), h = Math.round(H0 * sc), P = palette(), out = document.createElement("canvas");
+    out.width = S; out.height = AH; var g = out.getContext("2d"); g.fillStyle = bg || P.bg; g.fillRect(0, 0, S, AH);
+    g.imageSmoothingQuality = "high"; g.drawImage(cv, Math.round((S - w) / 2), Math.round((AH - h) / 2), w, h); return out;
+  }
   function mark(cv) {
+    if (SQ) cv = squareFit(cv);
     var P = palette(), dark = document.documentElement.dataset.theme === "dark" || (!document.documentElement.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
     var W = cv.width, H = cv.height, k = W / 1080, strip = Math.round(64 * k), out = document.createElement("canvas");
     out.width = W; out.height = H + strip; var g = out.getContext("2d"); g.drawImage(cv, 0, 0);
@@ -422,14 +443,19 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
     if (!h2c) h2c = new Promise(function (res, rej) { var s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"; s.onload = res; s.onerror = function () { h2c = null; rej(new Error("html2canvas")); }; document.head.appendChild(s); });
     return h2c;
   }
-  var SH = { blob: null, url: null, name: "" };
+  var SH = { blob: null, url: null, name: "", re: null, nm: "" };
   function modal() {
     var m = document.getElementById("chShot"); if (m) return m;
     m = document.createElement("div"); m.id = "chShot"; m.className = "ch-shot"; m.hidden = true; m.setAttribute("translate", "no"); m.setAttribute("data-html2canvas-ignore", "true");
-    m.innerHTML = '<div class="ch-pn" role="dialog" aria-modal="true"><div class="ch-wait"></div><img alt=""><div class="ch-acts"><a class="on" data-a="save" download></a><button data-a="share" hidden></button><button data-a="copy" hidden></button><button data-a="close"></button></div><p></p></div>';
+    m.innerHTML = '<div class="ch-pn" role="dialog" aria-modal="true"><div class="ch-wait"></div><img alt=""><div class="ch-acts"><a class="on" data-a="save" download></a><button data-a="share" hidden></button><button data-a="copy" hidden></button><button data-a="sq" aria-pressed="false" hidden></button><button data-a="close"></button></div><p></p></div>';
     m.addEventListener("click", async function (e) {
       var a = e.target.closest("[data-a]"), k = a && a.dataset.a;
       if (e.target === m || k === "close") { m.hidden = true; return; }
+      if (k === "sq" && SH.re) {
+        SQ = !SQ; try { localStorage.setItem("ch.sq", SQ ? "1" : "0"); } catch (er) {}
+        a.setAttribute("aria-pressed", SQ ? "true" : "false"); m.querySelector("img").style.opacity = ".45";
+        try { await showCanvas(await SH.re(), SH.nm, true); } catch (er) {} m.querySelector("img").style.opacity = ""; return;
+      }
       if (k === "share" && SH.blob) { try { await navigator.share({ files: [new File([SH.blob], SH.name, { type: "image/png" })], text: CHANNEL_URL }); } catch (er) {} }
       if (k === "copy" && SH.blob) { try { await navigator.clipboard.write([new ClipboardItem({ "image/png": SH.blob })]); a.textContent = tr("copied"); } catch (er) {} }
     });
@@ -437,29 +463,35 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
     document.body.appendChild(m); return m;
   }
   function stamp() { var d = new Date(), z = function (n) { return String(n).padStart(2, "0"); }; return d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()) + "-" + z(d.getHours()) + z(d.getMinutes()); }
-  async function showCanvas(cv, name) {
-    var m = modal(), img = m.querySelector("img");
+  async function showCanvas(cv, name, keep) {
+    var m = modal(), img = m.querySelector("img"); if (!keep) SH.re = null;
     SH.blob = await new Promise(function (r) { cv.toBlob(r, "image/png"); }); if (!SH.blob) throw new Error("toBlob");
     if (SH.url) URL.revokeObjectURL(SH.url); SH.url = URL.createObjectURL(SH.blob); SH.name = (name || "crypto-hunters") + "-" + stamp() + ".png";
     img.src = SH.url; img.style.display = "block"; m.querySelector(".ch-wait").style.display = "none";
     var sv = m.querySelector('[data-a="save"]'); sv.href = SH.url; sv.download = SH.name;
     m.querySelector('[data-a="share"]').hidden = !(navigator.canShare && navigator.canShare({ files: [new File([SH.blob], SH.name, { type: "image/png" })] }));
     m.querySelector('[data-a="copy"]').hidden = !(navigator.clipboard && window.ClipboardItem);
+    var sq = m.querySelector('[data-a="sq"]'); sq.hidden = !SH.re; sq.setAttribute("aria-pressed", SQ ? "true" : "false");
   }
   function openWait() {
     var m = modal(); m.querySelector(".ch-wait").textContent = tr("wait"); m.querySelector(".ch-wait").style.display = "block"; m.querySelector("img").style.display = "none";
-    m.querySelector('[data-a="save"]').textContent = tr("save"); m.querySelector('[data-a="share"]').textContent = tr("share"); m.querySelector('[data-a="copy"]').textContent = tr("copy"); m.querySelector('[data-a="close"]').textContent = tr("close");
+    m.querySelector('[data-a="save"]').textContent = tr("save"); m.querySelector('[data-a="share"]').textContent = tr("share"); m.querySelector('[data-a="copy"]').textContent = tr("copy"); m.querySelector('[data-a="close"]').textContent = tr("close"); m.querySelector('[data-a="sq"]').textContent = tr("sq"); m.querySelector('[data-a="sq"]').hidden = true;
     m.querySelector("p").textContent = tr("hint"); m.querySelector('[data-a="save"]').removeAttribute("href"); m.hidden = false; return m;
   }
   // Screenshot of a block of the page: header with the brand, the block, then the watermark.
   async function shot(el, o) {
-    o = o || {}; if (!el) return; var m = openWait();
+    o = o || {}; if (!el && !o.render) return; var m = openWait();
     try {
-      await loadH2C();
-      var bg = getComputedStyle(document.body).backgroundColor;
-      var src = await window.html2canvas(el, { backgroundColor: bg, scale: Math.max(2, Math.min(3, 1080 / Math.max(320, el.offsetWidth))), useCORS: true, logging: false,
-        ignoreElements: function (n) { return n.classList && (n.classList.contains("ch-cam") || n.classList.contains("ch-links")); } });
-      await showCanvas(mark(frame(src, o.title)), o.name || TOOL);
+      var title = o.title;
+      if (o.render) SH.re = async function () { return mark(frame(await o.render(SQ), title)); };
+      else {
+        await loadH2C();
+        var bg = getComputedStyle(document.body).backgroundColor;
+        var src = await window.html2canvas(el, { backgroundColor: bg, scale: Math.max(2, Math.min(3, 1080 / Math.max(320, el.offsetWidth))), useCORS: true, logging: false,
+          ignoreElements: function (n) { return n.classList && (n.classList.contains("ch-cam") || n.classList.contains("ch-links")); } });
+        SH.re = async function () { return mark(frame(src, title)); };
+      }
+      SH.nm = o.name || TOOL; await showCanvas(await SH.re(), SH.nm, true);
     } catch (e) { m.querySelector(".ch-wait").textContent = tr("fail", { e: (e && e.message) || e }); }
   }
   // A camera button; host gets it as the last child (float: true puts it in the top-right corner of host).
@@ -1377,11 +1409,10 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
     tool: TOOL, root: ROOT, logo: LOGO, version: VERSION, channel: CHANNEL_URL, watermark: WATERMARK,
     theme: function (fallback) { return saved() || fallback || null; },
     url: url, links: links, linksInto: linksInto, param: param,
-    mark: mark, frame: frame, shot: shot, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
+    mark: mark, frame: frame, shot: shot, sq: function () { return SQ; }, setSq: function (v) { SQ = !!v; try { localStorage.setItem("ch.sq", SQ ? "1" : "0"); } catch (e) {} }, squareFit: squareFit, palette: palette, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
     calib: { get: calGet2, put: calPut2, ensure: calEnsure2, mul: calMul2, key: calKey2, compute: calCompute, pending: function () { return calQ2.length + (calBusy2 ? 1 : 0); } }, favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
   };
 })();
-
 </script>
 <title>Глобальний цикл BTC · Global Cycle · CRYPTO HUNTERS</title>
 <style>
@@ -1422,7 +1453,10 @@ body{margin:0;background:var(--ch-bg);color:var(--ch-tx);font:14px/1.5 var(--ch-
 .cy .meter{height:8px;border-radius:4px;background:var(--ch-bd);overflow:hidden;margin:6px 0}
 .cy .meter i{display:block;height:100%;background:var(--ch-up)}
 .cy .cbox{position:relative}
-.cy canvas{display:block;width:100%;touch-action:pan-y}
+.cy canvas{display:block;width:100%;touch-action:pan-y;cursor:crosshair;user-select:none;-webkit-user-select:none}
+.cy .zb{display:inline-flex;gap:4px;margin-inline-start:auto}
+.cy .zb .btn{min-width:34px;padding:4px 9px;font-size:15px;line-height:1}
+.cy .zh{margin-top:6px}
 .cy .tip{position:absolute;pointer-events:none;background:var(--ch-bg);border:0.5px solid var(--ch-bd2);border-radius:8px;padding:6px 9px;font-size:12px;line-height:1.4;box-shadow:0 2px 10px rgba(0,0,0,.25);z-index:2;display:none;max-width:230px}
 .cy .leg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:8px;font-size:11.5px;color:var(--ch-t2)}
 .cy .leg span{display:inline-flex;align-items:center;gap:5px}
@@ -1483,7 +1517,7 @@ const PN=()=>({acc:L("Накопичення","Накопление","Accumulati
 const median=a=>{const s=a.slice().sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
 const MULT={bear:2.5,base:3.5,bull:5.5};
 const MX=()=>"×"+MULT.bear+", ×"+MULT.base+", ×"+MULT.bull;
-const ST={w:null,d:null,A:null,F:null,err:null,at:0,busy:false,oldErr:false,range:LS.get("cy_range","all")};
+const ST={w:null,d:null,A:null,F:null,err:null,at:0,busy:false,oldErr:false,range:LS.get("cy_range","all"),v1:null,v2:null};
 
 // ---- data ----
 async function gj(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw new Error(r.status);return r.json()}
@@ -1665,6 +1699,7 @@ function clockSVG(A){
   return s;
 }
 function metric(k,v,sub,cls){return `<div class="m"><small>${esc(k)}</small><b class="${cls||""}">${v}</b>${sub?`<i>${sub}</i>`:""}</div>`}
+const zb=k=>`<span class="zb"><button class="btn" data-zc="${k}" data-z="out" title="${L("Зменшити","Уменьшить","Zoom out",["缩小", "ज़ूम आउट", "تصغير", "縮小", "축소"])}" aria-label="${L("Зменшити","Уменьшить","Zoom out",["缩小", "ज़ूम आउट", "تصغير", "縮小", "축소"])}">−</button><button class="btn" data-zc="${k}" data-z="in" title="${L("Збільшити","Увеличить","Zoom in",["放大", "ज़ूम इन", "تكبير", "拡大", "확대"])}" aria-label="${L("Збільшити","Увеличить","Zoom in",["放大", "ज़ूम इन", "تكبير", "拡大", "확대"])}">+</button><button class="btn" data-zc="${k}" data-z="reset" title="${L("Скинути масштаб","Сбросить масштаб","Reset zoom",["重置缩放", "ज़ूम रीसेट", "إعادة ضبط التكبير", "ズームをリセット", "확대/축소 초기화"])}" aria-label="${L("Скинути масштаб","Сбросить масштаб","Reset zoom",["重置缩放", "ज़ूम रीसेट", "إعادة ضبط التكبير", "ズームをリセット", "확대/축소 초기화"])}">⟲</button></span>`,zh=`<div class="upd zh">${L("Масштаб: колесо миші або щипок двома пальцями; перетягніть, щоб зсунути; подвійний клік — скинути.","Масштаб: колесо мыши или щипок двумя пальцами; перетащите, чтобы сдвинуть; двойной клик — сброс.","Zoom: mouse wheel or pinch; drag to pan; double-click to reset.",["缩放：鼠标滚轮或双指捏合；拖动平移；双击重置。", "ज़ूम: माउस व्हील या दो उंगलियों से पिंच; खिसकाने के लिए खींचें; रीसेट के लिए डबल-क्लिक करें।", "التكبير: عجلة الفأرة أو القرص بإصبعين؛ اسحب للتحريك؛ انقر مرتين لإعادة الضبط.", "ズーム：マウスホイールまたはピンチ、ドラッグで移動、ダブルクリックでリセット。", "확대/축소: 마우스 휠 또는 핀치, 드래그로 이동, 더블클릭으로 초기화."])}</div>`;
 function render(){
   const app=$("#app");if(!app)return;
   document.documentElement.lang=LANG;
@@ -1692,10 +1727,10 @@ function render(){
   h+=`<div class="card"><h2>${L("Підтвердження дна","Подтверждение дна","Bottom confirmation")}: ${A.score} ${L("із","из","of")} 7</h2><div class="meter"><i style="width:${A.score/7*100}%"></i></div>
    <div class="p m">${A.score>=5?L("Більшість ознак дна на місці: ринок, схоже, у переході до накопичення.","Большинство признаков дна на месте: рынок, похоже, переходит к накоплению.","Most bottom signs are in place: the market looks to be shifting into accumulation."):A.score>=3?L("Частина ознак є, але підтвердження ще неповне.","Часть признаков есть, но подтверждение пока неполное.","Some signs are present but the confirmation is incomplete."):L("Ознак дна поки мало: ринок ще у фазі спаду або пік поруч.","Признаков дна пока мало: рынок ещё в фазе спада или пик рядом.","Few bottom signs so far: the market is still declining or near a top.")}</div>
    <ul class="lad">${A.checks.map(c=>`<li><span class="k ${c.ok?"y":"n"}">${c.ok?"✓":"✗"}</span><span>${esc(c.t)} <b>· ${esc(c.v)}</b></span></li>`).join("")}</ul></div>`;
-  h+=`<div class="card"><h2>${L("Ціна BTC (лог. шкала), фази й сценарії","Цена BTC (лог. шкала), фазы и сценарии","BTC price (log scale), phases and scenarios")}</h2><div class="bar" style="margin:0 0 8px"><div class="seg" id="rg" role="group" aria-label="${L("Період","Период","Range")}">${[["all",L("Вся історія","Вся история","All history")],["2013","2013+"],["2017","2017+"]].map(x=>`<button data-r="${x[0]}" aria-pressed="${x[0]===ST.range}">${x[1]}</button>`).join("")}</div>${ST.oldErr?`<span class="upd">${L("Історія до 2017 не завантажилась","История до 2017 не загрузилась","Pre-2017 history failed to load")}</span>`:""}</div><div class="cbox"><canvas id="c1"></canvas><div class="tip" id="t1"></div></div>
+  h+=`<div class="card"><h2>${L("Ціна BTC (лог. шкала), фази й сценарії","Цена BTC (лог. шкала), фазы и сценарии","BTC price (log scale), phases and scenarios")}</h2><div class="bar" style="margin:0 0 8px"><div class="seg" id="rg" role="group" aria-label="${L("Період","Период","Range")}">${[["all",L("Вся історія","Вся история","All history")],["2013","2013+"],["2017","2017+"]].map(x=>`<button data-r="${x[0]}" aria-pressed="${x[0]===ST.range}">${x[1]}</button>`).join("")}</div>${zb(1)}${ST.oldErr?`<span class="upd">${L("Історія до 2017 не завантажилась","История до 2017 не загрузилась","Pre-2017 history failed to load")}</span>`:""}</div><div class="cbox"><canvas id="c1"></canvas><div class="tip" id="t1"></div></div>${zh}
    <div class="leg">${ORDER.map(k=>`<span><i style="background:${PC[k]}"></i>${esc(pn[k])}</span>`).join("")}</div>
    <div class="leg"><span><i class="ln" style="background:var(--ch-ac)"></i>${L("Ціна","Цена","Price")}</span><span><i class="ln" style="background:var(--ch-warn)"></i>${L("200-тижнева MA","200-недельная MA","200-week MA")}</span><span><i class="ln" style="background:#e0587a"></i>${L("Сценарій: слабкий","Сценарий: слабый","Scenario: weak")}</span><span><i class="ln" style="background:#f5a524"></i>${L("базовий","базовый","base")}</span><span><i class="ln" style="background:#1d9e75"></i>${L("сильний","сильный","strong")}</span></div></div>`;
-  h+=`<div class="card"><h2>${L("Падіння після піку: цикли поруч","Падение после пика: циклы рядом","After the top: cycles side by side")}</h2><div class="cbox"><canvas id="c2"></canvas><div class="tip" id="t2"></div></div>
+  h+=`<div class="card"><h2>${L("Падіння після піку: цикли поруч","Падение после пика: циклы рядом","After the top: cycles side by side")}</h2><div class="bar" style="margin:0 0 8px"><span class="sp"></span>${zb(2)}</div><div class="cbox"><canvas id="c2"></canvas><div class="tip" id="t2"></div></div>${zh}
    <div class="leg"><span><i class="ln" style="background:#e0587a"></i>2013</span><span><i class="ln" style="background:#f5a524"></i>2017</span><span><i class="ln" style="background:#378add"></i>2021</span><span><i class="ln" style="background:var(--ch-tx)"></i>${new Date(A.top.t).getUTCFullYear()} (${L("зараз","сейчас","now")})</span><span><i style="background:rgba(142,99,217,.25)"></i>${L("вікно дна: день 363–410","окно дна: день 363–410","bottom window: day 363–410")}</span></div>
    <div class="p m" style="margin-top:8px">${L("По осі X — дні після піку, по осі Y — ціна відносно піку (лог.). Лінії минулих циклів показують, наскільки глибоким і довгим було падіння.","По оси X — дни после пика, по оси Y — цена относительно пика (лог.). Линии прошлых циклов показывают, насколько глубоким и долгим было падение.","X is days after the top, Y is price relative to the top (log). The past-cycle lines show how deep and how long the decline was.")}</div></div>`;
   h+=cycleTable(A,F);
@@ -1707,7 +1742,7 @@ function render(){
    <li>${L("Сценарії — це розрахунок за аналогією з минулими циклами, а не прогноз ціни.","Сценарии — это расчёт по аналогии с прошлыми циклами, а не прогноз цены.","Scenarios are an analog calculation from past cycles, not a price prediction.")}</li></ul>
    <div class="nfa">${L("Не фінансова порада. Дані: свічки BTC/USDT з Binance (резерв — Bybit); до 2017 року — BTC/USD з Bitstamp (резерв — CryptoCompare). Дати й ціни піків та днищ у циклах 2013–2022 округлені.","Не финансовый совет. Данные: свечи BTC/USDT с Binance (резерв — Bybit); до 2017 года — BTC/USD с Bitstamp (резерв — CryptoCompare). Даты и цены пиков и днищ в циклах 2013–2022 округлены.","Not financial advice. Data: BTC/USDT candles from Binance (Bybit as a fallback); before 2017 BTC/USD from Bitstamp (CryptoCompare as a fallback). Dates and prices of the 2013–2022 tops and bottoms are rounded.")}</div></div>`;
   app.innerHTML=h;wire();drawAll();
-  if(window.CH&&$("#camHost"))CH.cam($("#camHost"),()=>$("#shotArea"),{opts:()=>({name:"btc-global-cycle",title:"CRYPTO HUNTERS · "+L("Глобальний цикл BTC","Глобальный цикл BTC","BTC global cycle")})});
+  if(window.CH&&$("#camHost"))CH.cam($("#camHost"),()=>null,{opts:()=>({render:cycRender,name:"btc-global-cycle",title:"CRYPTO HUNTERS · "+L("Глобальний цикл BTC","Глобальный цикл BTC","BTC global cycle")})});
 }
 function cycleTable(A,F){
   const rows=PAST.map(p=>({y:p.y,h:p.h,hp:null,T:p.top,tp:p.tp,b:p.bot,bp:p.bp,g:p.pb?p.tp/p.pb:null,cur:false}));
@@ -1736,64 +1771,114 @@ function forecastHTML(A,F){
 }
 function wire(){
   const r=$("#rf");if(r)r.addEventListener("click",()=>load(true));
-  document.querySelectorAll("#rg button").forEach(b=>b.addEventListener("click",()=>{ST.range=b.dataset.r;LS.set("cy_range",ST.range);render()}));
+  document.querySelectorAll("[data-zc]").forEach(b=>b.addEventListener("click",()=>{const k=+b.dataset.zc,a=b.dataset.z;if(!Z[k])return;if(a==="reset")resetZ(k);else zoomTo(k,Z[k].get(),.5,a==="in"?.6:1/.6)}));
+  document.querySelectorAll("#rg button").forEach(b=>b.addEventListener("click",()=>{ST.range=b.dataset.r;ST.v1=null;LS.set("cy_range",ST.range);render()}));
 }
 
 // ---- charts ----
-function setup(cv,H){const dpr=Math.min(3,window.devicePixelRatio||1),w=Math.max(260,cv.clientWidth||300);cv.style.height=H+"px";cv.width=Math.round(w*dpr);cv.height=Math.round(H*dpr);const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);return {g,w,H}}
+function setup(cv,H,wo,dpro){const dpr=dpro||Math.min(3,window.devicePixelRatio||1),w=wo||Math.max(260,cv.clientWidth||300);if(!wo)cv.style.height=H+"px";cv.width=Math.round(w*dpr);cv.height=Math.round(H*dpr);const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);return {g,w,H}}
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 function ticksLog(lo,hi){const o=[];for(let e=Math.floor(Math.log10(lo));e<=Math.ceil(Math.log10(hi));e++)for(const m of [1,2,5]){const v=m*Math.pow(10,e);if(v>=lo&&v<=hi)o.push(v)}return o}
+// a narrow price window gets even steps instead of 1-2-5 on a log scale
+function ticksY(lo,hi){if(hi/lo>=4)return ticksLog(lo,hi);const raw=(hi-lo)/5,p=Math.pow(10,Math.floor(Math.log10(raw))),st=[1,2,2.5,5,10].map(m=>m*p).find(s=>s>=raw)||10*p,o=[];for(let v=Math.ceil(lo/st)*st;v<=hi;v+=st)o.push(v);return o}
 function interp(pts,t){if(!pts.length||t<pts[0].t||t>pts[pts.length-1].t)return null;for(let i=1;i<pts.length;i++)if(t<=pts[i].t){const a=pts[i-1],b=pts[i],k=(t-a.t)/(b.t-a.t||1);return Math.exp(Math.log(a.p)+(Math.log(b.p)-Math.log(a.p))*k)}return pts[pts.length-1].p}
 let C1=null,C2=null;
-function drawAll(){drawC1();drawC2()}
-function drawC1(){
-  const cv=$("#c1"),A=ST.A,F=ST.F;if(!cv||!A||!F)return;
-  const {g,w,H}=setup(cv,window.innerWidth<600?300:380),M={l:44,r:8,t:10,b:22},pw=w-M.l-M.r,ph=H-M.t-M.b,W=ST.w;
-  const view=ST.range==="all"?W:W.filter(x=>x.t>=D(+ST.range,1,1)),t0=(view[0]||W[0]).t,t1=D(2031,3,1),tx=css("--ch-tx"),t3=css("--ch-t3"),bd=css("--ch-bd"),ac=css("--ch-ac"),wn=css("--ch-warn");
-  let lo=Infinity,hi=0;view.forEach(p=>{lo=Math.min(lo,p.l);hi=Math.max(hi,p.h)});F.paths.forEach(a=>a.forEach(p=>{lo=Math.min(lo,p.p);hi=Math.max(hi,p.p)}));
-  lo/=1.25;hi*=1.2;const l0=Math.log(lo),l1=Math.log(hi),X=t=>M.l+(t-t0)/(t1-t0)*pw,Y=v=>M.t+(1-(Math.log(v)-l0)/(l1-l0))*ph;
-  g.clearRect(0,0,w,H);g.font="10.5px system-ui,sans-serif";
+const Z={};   // zoom of each chart: Z[k]={get,full,set,min}
+function drawAll(){drawC1($("#c1"));drawC2($("#c2"))}
+function dom1(){const W=ST.w,view=ST.range==="all"?W:W.filter(x=>x.t>=D(+ST.range,1,1));return [(view[0]||W[0]).t,D(2031,3,1)]}
+function isZoomed(k){const z=Z[k];if(!z)return false;const a=z.get(),f=z.full;return a[1]-a[0]<(f[1]-f[0])*.999}
+function redraw(k){k===1?drawC1($("#c1")):drawC2($("#c2"))}
+function setView(k,a,b){const z=Z[k],f0=z.full[0],f1=z.full[1],full=f1-f0,sp=Math.min(full,Math.max(z.min,b-a));if(a<f0)a=f0;if(a+sp>f1)a=f1-sp;b=a+sp;z.set(sp>=full*.999?null:{a,b});redraw(k)}
+function zoomTo(k,v,f,kk){const sp=v[1]-v[0],anchor=v[0]+f*sp,ns=sp*kk,na=anchor-f*ns;setView(k,na,na+ns)}
+function resetZ(k){const z=Z[k];if(!z)return;z.set(null);redraw(k)}
+// pointer handlers are attached once per canvas and read the current geometry from cv._c
+function bindCh(cv,tip,k,ctx){
+  cv._c=ctx;if(cv._b)return;cv._b=1;
+  const P=new Map();let g0=null,moved=false,lastTap=0;
+  const left=()=>cv.getBoundingClientRect().left,fr=x=>{const c=cv._c;return Math.min(1,Math.max(0,(x-left()-c.M.l)/c.pw))};
+  const show=e=>{const c=cv._c,r=cv.getBoundingClientRect(),x=(e.clientX||0)-r.left,html=c.fn(x);if(!html){tip.style.display="none";return}tip.innerHTML=html;tip.style.display="block";const tw=tip.offsetWidth;tip.style.left=Math.max(0,Math.min(r.width-tw,x+10))+"px";tip.style.top="8px"};
+  cv.onpointerdown=e=>{P.set(e.pointerId,e.clientX);try{cv.setPointerCapture(e.pointerId)}catch(_){}
+    if(P.size===1){g0={x:e.clientX,v:Z[k].get()};moved=false;if(e.pointerType!=="mouse")show(e)}
+    else if(P.size===2){const xs=[...P.values()];g0={d:Math.abs(xs[0]-xs[1])||1,v:Z[k].get(),f:fr((xs[0]+xs[1])/2),pin:true};tip.style.display="none"}};
+  cv.onpointermove=e=>{
+    if(!P.has(e.pointerId)){if(e.pointerType==="mouse")show(e);return}
+    P.set(e.pointerId,e.clientX);
+    if(g0&&g0.pin&&P.size>=2){const xs=[...P.values()],d=Math.abs(xs[0]-xs[1])||1;zoomTo(k,g0.v,g0.f,g0.d/d);return}
+    if(!g0||g0.pin)return;
+    if(!isZoomed(k)){show(e);return}
+    const dx=e.clientX-g0.x;if(Math.abs(dx)>4)moved=true;
+    if(moved){const v=g0.v,sp=v[1]-v[0],sh=-dx/cv._c.pw*sp;tip.style.display="none";setView(k,v[0]+sh,v[1]+sh)}
+    else if(e.pointerType!=="mouse")show(e)};
+  const end=e=>{
+    if(g0&&!g0.pin&&!moved&&e.pointerType!=="mouse"){const n=Date.now();if(n-lastTap<320){lastTap=0;resetZ(k)}else{lastTap=n;if(isZoomed(k))show(e)}}
+    P.delete(e.pointerId);
+    if(P.size===0)g0=null;else if(P.size===1){g0={x:[...P.values()][0],v:Z[k].get()};moved=true}};
+  cv.onpointerup=end;cv.onpointercancel=end;
+  cv.onpointerleave=e=>{if(e.pointerType==="mouse")tip.style.display="none"};
+  cv.ondblclick=()=>resetZ(k);
+  cv.onwheel=e=>{e.preventDefault();const dy=Math.max(-300,Math.min(300,e.deltaY));zoomTo(k,Z[k].get(),fr(e.clientX),Math.exp(dy*.0022))};
+}
+function drawC1(cv,o){
+  const A=ST.A,F=ST.F;if(!cv||!A||!F)return;o=o||{};
+  const {g,w,H}=setup(cv,o.H||(window.innerWidth<600?300:380),o.w,o.dpr),M={l:o.w?40:44,r:8,t:10,b:22},pw=w-M.l-M.r,ph=H-M.t-M.b,W=ST.w,fs=o.fs||10.5;
+  const [f0,f1]=dom1();let t0=f0,t1=f1;if(ST.v1){t0=Math.max(f0,ST.v1.a);t1=Math.min(f1,ST.v1.b)}
+  const zoomed=t1-t0<(f1-f0)*.999,PW=zoomed&&(t1-t0)<1200*DAY&&ST.d&&ST.d.length?W.filter(x=>x.t<ST.d[0].t).concat(ST.d):W;
+  const tx=css("--ch-tx"),t3=css("--ch-t3"),bd=css("--ch-bd"),ac=css("--ch-ac"),wn=css("--ch-warn");
+  let lo=Infinity,hi=0;const inw=t=>t>=t0-40*DAY&&t<=t1+40*DAY;
+  PW.forEach(p=>{if(inw(p.t)){lo=Math.min(lo,p.l);hi=Math.max(hi,p.h)}});F.paths.forEach(a=>a.forEach(p=>{if(inw(p.t)){lo=Math.min(lo,p.p);hi=Math.max(hi,p.p)}}));
+  if(!(lo<hi)){lo=Infinity;hi=0;W.forEach(p=>{lo=Math.min(lo,p.l);hi=Math.max(hi,p.h)})}
+  lo/=zoomed?1.18:1.25;hi*=zoomed?1.22:1.2;const l0=Math.log(lo),l1=Math.log(hi),X=t=>M.l+(t-t0)/(t1-t0)*pw,Y=v=>M.t+(1-(Math.log(v)-l0)/(l1-l0))*ph;
+  g.clearRect(0,0,w,H);g.font=fs+"px system-ui,sans-serif";
   for(const b of bands(A,F)){const a=Math.max(b.a,t0),e=Math.min(b.b,t1);if(e<=a)continue;g.globalAlpha=.11;g.fillStyle=PC[b.ph];g.fillRect(X(a),M.t,X(e)-X(a),ph);g.globalAlpha=.9;g.fillRect(X(a),M.t+ph-4,X(e)-X(a),4)}
   g.globalAlpha=1;
   g.strokeStyle=bd;g.fillStyle=t3;g.lineWidth=.5;g.textAlign="right";
-  for(const v of ticksLog(lo,hi)){const y=Y(v);g.beginPath();g.moveTo(M.l,y);g.lineTo(w-M.r,y);g.stroke();g.fillText(fK(v),M.l-5,y+3.5)}
-  g.textAlign="center";const ys=(t1-t0)/(365*DAY),yst=ys>14?4:ys>9?2:1;for(let y=new Date(t0).getUTCFullYear()+1;y<=2031;y++){const x=X(D(y,1,1));if(x<M.l||x>w-M.r)continue;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();if(y%yst===0&&(w>480||yst>1||y%2===0))g.fillText(y,x,H-6)}
+  for(const v of ticksY(lo,hi)){const y=Y(v);if(y<M.t||y>M.t+ph)continue;g.beginPath();g.moveTo(M.l,y);g.lineTo(w-M.r,y);g.stroke();g.fillText(fK(v),M.l-5,y+3.5)}
+  g.textAlign="center";const ys=(t1-t0)/(365*DAY);
+  if(ys<=2.6){const sm=ys<=.7?1:ys<=1.4?2:3;let y=new Date(t0).getUTCFullYear(),m=new Date(t0).getUTCMonth()+1;
+    for(let n=0;n<48;n++,m++){if(m>11){m=0;y++}const tt=Date.UTC(y,m,1);if(tt>t1)break;const x=X(tt);if(x<M.l)continue;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();if(m%sm===0&&x<w-M.r-12)g.fillText(m===0?""+y:new Date(tt).toLocaleDateString(LOC[LANG],{month:"short",timeZone:"UTC"}),x,H-6)}}
+  else{const yst=ys>14?4:ys>9?2:1;for(let y=new Date(t0).getUTCFullYear()+1;y<=2031;y++){const x=X(D(y,1,1));if(x<M.l||x>w-M.r)continue;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();if(y%yst===0&&(w>480||yst>1||y%2===0))g.fillText(y,x,H-6)}}
   g.save();g.beginPath();g.rect(M.l,M.t-2,pw,ph+4);g.clip();
   // 200-week MA
   g.strokeStyle=wn;g.lineWidth=1.2;g.beginPath();let st=false;for(let i=0;i<W.length;i++){const m=sma(W,200,i);if(m==null)continue;const x=X(W[i].t),y=Y(m);if(!st){g.moveTo(x,y);st=true}else g.lineTo(x,y)}g.stroke();
   // price
-  g.strokeStyle=ac;g.lineWidth=1.6;g.beginPath();W.forEach((p,i)=>{const x=X(p.t),y=Y(p.c);i?g.lineTo(x,y):g.moveTo(x,y)});g.lineTo(X(A.now),Y(A.price));g.stroke();
+  g.strokeStyle=ac;g.lineWidth=1.6;g.beginPath();PW.forEach((p,i)=>{const x=X(p.t),y=Y(p.c);i?g.lineTo(x,y):g.moveTo(x,y)});g.lineTo(X(A.now),Y(A.price));g.stroke();
   // scenarios
   g.setLineDash([5,4]);g.lineWidth=1.6;F.sc.forEach(s=>{g.strokeStyle=s.c;g.beginPath();s.pts.forEach((p,i)=>{const x=X(p.t),y=Y(p.p);i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()});g.setLineDash([]);
   g.restore();
   // halvings, tops and bottoms
   const cy=cycles(A,F);g.textAlign="center";
-  [...HALV,A.nextH].forEach((t,i)=>{if(t<t0+20*DAY||t>t1)return;const x=X(t);g.strokeStyle=t3;g.setLineDash([2,3]);g.lineWidth=.8;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();g.setLineDash([]);g.fillStyle=tx;g.fillText(i===4?"H*":"H",x,M.t+10)});
-  g.fillStyle=css("--ch-dn");PAST.forEach(p=>{if(p.top>=t0+20*DAY){const x=X(p.top),y=Y(p.tp);g.beginPath();g.moveTo(x,y-8);g.lineTo(x-4,y-14);g.lineTo(x+4,y-14);g.fill();g.fillStyle=tx;g.fillText(fK(p.tp),x,y-17);g.fillStyle=css("--ch-dn")}});
-  {const x=X(A.top.t),y=Y(A.top.p);g.beginPath();g.moveTo(x,y-8);g.lineTo(x-4,y-14);g.lineTo(x+4,y-14);g.fill();g.fillStyle=tx;g.fillText(fK(A.top.p),x,y-17)}
-  g.fillStyle=css("--ch-up");const bots=[...PAST.filter(p=>p.bot>=t0+20*DAY).map(p=>({t:p.bot,p:p.bp})),{t:A.low.t,p:A.low.p}];
+  const inX=t=>t>=t0&&t<=t1;
+  [...HALV,A.nextH].forEach((t,i)=>{if(!inX(t))return;const x=X(t);g.strokeStyle=t3;g.setLineDash([2,3]);g.lineWidth=.8;g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();g.setLineDash([]);g.fillStyle=tx;g.fillText(i===4?"H*":"H",x,M.t+10)});
+  g.fillStyle=css("--ch-dn");PAST.forEach(p=>{if(inX(p.top)){const x=X(p.top),y=Y(p.tp);g.beginPath();g.moveTo(x,y-8);g.lineTo(x-4,y-14);g.lineTo(x+4,y-14);g.fill();g.fillStyle=tx;g.fillText(fK(p.tp),x,y-17);g.fillStyle=css("--ch-dn")}});
+  if(inX(A.top.t)){const x=X(A.top.t),y=Y(A.top.p);g.beginPath();g.moveTo(x,y-8);g.lineTo(x-4,y-14);g.lineTo(x+4,y-14);g.fill();g.fillStyle=tx;g.fillText(fK(A.top.p),x,y-17)}
+  const bots=[...PAST.filter(p=>inX(p.bot)).map(p=>({t:p.bot,p:p.bp})),...(inX(A.low.t)?[{t:A.low.t,p:A.low.p}]:[])];
   bots.forEach(b=>{const x=X(b.t),y=Y(b.p);g.fillStyle=css("--ch-up");g.beginPath();g.moveTo(x,y+8);g.lineTo(x-4,y+14);g.lineTo(x+4,y+14);g.fill();g.fillStyle=tx;g.fillText(fK(b.p),x,y+25)});
   // today
-  const xn=X(A.now);g.strokeStyle=tx;g.lineWidth=1;g.setLineDash([1,3]);g.beginPath();g.moveTo(xn,M.t);g.lineTo(xn,M.t+ph);g.stroke();g.setLineDash([]);g.fillStyle=tx;g.fillText(L("зараз","сейчас","now"),Math.min(w-M.r-14,xn),M.t+22);
+  if(inX(A.now)){const xn=X(A.now);g.strokeStyle=tx;g.lineWidth=1;g.setLineDash([1,3]);g.beginPath();g.moveTo(xn,M.t);g.lineTo(xn,M.t+ph);g.stroke();g.setLineDash([]);g.fillStyle=tx;g.fillText(L("зараз","сейчас","now"),Math.min(w-M.r-14,xn),M.t+22)}
+  if(o.w)return;
+  Z[1]={get:()=>[t0,t1],full:[f0,f1],set:v=>{ST.v1=v},min:21*DAY};
+  cv.style.cursor=zoomed?"grab":"crosshair";
   C1={X,Y,t0,t1,M,pw,W,A,F,H};
-  hover(cv,$("#t1"),x=>{
+  bindCh(cv,$("#t1"),1,{M,pw,fn:x=>{
     const t=t0+(x-M.l)/pw*(t1-t0);if(t<t0||t>t1)return null;
     const bs=bands(A,F),b=bs.find(q=>t>=q.a&&t<q.b),pn=PN();
     let s=`<b>${fM(t)}</b>`;if(b)s+=`<br><span style="color:${PC[b.ph]}">●</span> ${esc(pn[b.ph])}`;
-    if(t<=A.now){let bi=0,bd2=1e18;W.forEach((p,i)=>{const dd=Math.abs(p.t-t);if(dd<bd2){bd2=dd;bi=i}});s+=`<br>${fP(W[bi].c)}`;const m=sma(W,200,bi);if(m)s+=`<br>200W: ${fP(m)}`}
+    if(t<=A.now){let bi=0,bd2=1e18;PW.forEach((p,i)=>{const dd=Math.abs(p.t-t);if(dd<bd2){bd2=dd;bi=i}});s+=`<br>${fP(PW[bi].c)}`;if(zoomed&&ST.d&&ST.d.length&&PW[bi].t>=ST.d[0].t)s=s.replace(fM(t),fD(PW[bi].t));let wi=0,wd=1e18;W.forEach((p,i)=>{const dd=Math.abs(p.t-t);if(dd<wd){wd=dd;wi=i}});const m=sma(W,200,wi);if(m)s+=`<br>200W: ${fP(m)}`}
     else F.sc.forEach(sc=>{const v=interp(sc.pts,t);if(v)s+=`<br><span style="color:${sc.c}">●</span> ${fP(v)}`});
-    return s});
+    return s}});
 }
-function drawC2(){
-  const cv=$("#c2"),A=ST.A;if(!cv||!A)return;
-  const {g,w,H}=setup(cv,window.innerWidth<600?260:320),M={l:44,r:8,t:10,b:22},pw=w-M.l-M.r,ph=H-M.t-M.b,W=ST.w;
+function drawC2(cv,o){
+  const A=ST.A;if(!cv||!A)return;o=o||{};
+  const {g,w,H}=setup(cv,o.H||(window.innerWidth<600?260:320),o.w,o.dpr),M={l:o.w?40:44,r:8,t:10,b:22},pw=w-M.l-M.r,ph=H-M.t-M.b,W=ST.w;
   const tx=css("--ch-tx"),t3=css("--ch-t3"),bd=css("--ch-bd"),XM=1000,lo=0.1,hi=1.08,l0=Math.log(lo),l1=Math.log(hi);
-  const X=d=>M.l+d/XM*pw,Y=v=>M.t+(1-(Math.log(v)-l0)/(l1-l0))*ph;
-  g.clearRect(0,0,w,H);g.font="10.5px system-ui,sans-serif";
-  g.fillStyle="rgba(142,99,217,.18)";g.fillRect(X(363),M.t,X(410)-X(363),ph);
+  let d0=0,d1=XM;if(ST.v2){d0=Math.max(0,ST.v2.a);d1=Math.min(XM,ST.v2.b)}
+  const zoomed=d1-d0<XM*.999,X=d=>M.l+(d-d0)/(d1-d0)*pw,Y=v=>M.t+(1-(Math.log(v)-l0)/(l1-l0))*ph;
+  g.clearRect(0,0,w,H);g.font=(o.fs||10.5)+"px system-ui,sans-serif";
+  g.save();g.beginPath();g.rect(M.l,M.t,pw,ph);g.clip();g.fillStyle="rgba(142,99,217,.18)";g.fillRect(X(363),M.t,X(410)-X(363),ph);g.restore();
   g.strokeStyle=bd;g.fillStyle=t3;g.lineWidth=.5;g.textAlign="right";
   for(const v of [0.1,0.2,0.3,0.5,0.7,1]){const y=Y(v);g.beginPath();g.moveTo(M.l,y);g.lineTo(w-M.r,y);g.stroke();g.fillText(v===1?L("пік","пик","top"):"-"+Math.round((1-v)*100)+"%",M.l-5,y+3.5)}
-  g.textAlign="center";for(let d=0;d<=XM;d+=200){const x=X(d);g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();g.fillText(d,x,H-6)}
+  const sp=d1-d0,stp=sp>600?200:sp>300?100:sp>150?50:sp>70?20:10;
+  g.textAlign="center";for(let d=Math.ceil(d0/stp)*stp;d<=d1+1e-6;d+=stp){const x=X(d);g.beginPath();g.moveTo(x,M.t);g.lineTo(x,M.t+ph);g.stroke();g.fillText(d,x,H-6)}
   const series=[];
   for(const [p,c] of [[PAST[0],"#e0587a"],[PAST[1],"#f5a524"],[PAST[2],"#378add"]]){
     const win=W.filter(x=>Math.abs(x.t-p.top)<=10*DAY),tp=win.length?Math.max(...win.map(x=>x.h)):p.tp,pts=[];
@@ -1801,18 +1886,57 @@ function drawC2(){
     if(pts.length)series.push({n:""+p.y,c,pts})}
   const cur=[{d:0,v:1}];W.forEach(x=>{const d=(x.t-A.top.t)/DAY;if(d>0)cur.push({d,v:x.c/A.top.p})});cur.push({d:A.sinceTop,v:A.price/A.top.p});
   series.push({n:""+new Date(A.top.t).getUTCFullYear(),c:tx,pts:cur,thick:true});
+  g.save();g.beginPath();g.rect(M.l,M.t-2,pw,ph+4);g.clip();
   series.forEach(s=>{g.strokeStyle=s.c;g.lineWidth=s.thick?2.4:1.5;g.beginPath();s.pts.forEach((p,i)=>{const x=X(p.d),y=Y(Math.max(lo,p.v));i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke()});
-  const last=cur[cur.length-1];g.fillStyle=tx;g.beginPath();g.arc(X(last.d),Y(Math.max(lo,last.v)),4,0,7);g.fill();
+  g.restore();
+  const last=cur[cur.length-1];if(last.d>=d0&&last.d<=d1){g.fillStyle=tx;g.beginPath();g.arc(X(last.d),Y(Math.max(lo,last.v)),4,0,7);g.fill()}
   g.fillStyle=t3;g.textAlign="right";g.fillText(L("дні після піку","дни после пика","days after the top"),w-M.r,M.t+ph-6);
+  if(o.w)return;
+  Z[2]={get:()=>[d0,d1],full:[0,XM],set:v=>{ST.v2=v},min:40};
+  cv.style.cursor=zoomed?"grab":"crosshair";
   C2={series};
-  hover(cv,$("#t2"),x=>{
-    const d=(x-M.l)/pw*XM;if(d<0||d>XM)return null;let s=`<b>${L("День","День","Day")} ${Math.round(d)}</b>`;
-    series.forEach(sr=>{let bp=null,bd2=1e9;sr.pts.forEach(p=>{const dd=Math.abs(p.d-d);if(dd<bd2){bd2=dd;bp=p}});if(bp&&bd2<=9)s+=`<br><span style="color:${sr.c==="#f5a524"||sr.c==="#378add"||sr.c==="#e0587a"?sr.c:"inherit"}">●</span> ${sr.n}: -${((1-bp.v)*100).toFixed(0)}%`});
-    return s});
+  bindCh(cv,$("#t2"),2,{M,pw,fn:x=>{
+    const d=d0+(x-M.l)/pw*(d1-d0);if(d<d0||d>d1)return null;let s=`<b>${L("День","День","Day")} ${Math.round(d)}</b>`;const tol=Math.max(9,(d1-d0)/110);
+    series.forEach(sr=>{let bp=null,bd2=1e9;sr.pts.forEach(p=>{const dd=Math.abs(p.d-d);if(dd<bd2){bd2=dd;bp=p}});if(bp&&bd2<=tol)s+=`<br><span style="color:${sr.c==="#f5a524"||sr.c==="#378add"||sr.c==="#e0587a"?sr.c:"inherit"}">●</span> ${sr.n}: -${((1-bp.v)*100).toFixed(0)}%`});
+    return s}});
 }
-function hover(cv,tip,fn){
-  const mv=e=>{const r=cv.getBoundingClientRect(),x=(e.clientX||0)-r.left,html=fn(x);if(!html){tip.style.display="none";return}tip.innerHTML=html;tip.style.display="block";const tw=tip.offsetWidth;tip.style.left=Math.max(0,Math.min(r.width-tw,x+10))+"px";tip.style.top="8px"};
-  cv.onpointermove=mv;cv.onpointerdown=mv;cv.onpointerleave=()=>{tip.style.display="none"};
+// ---- compact picture for sharing: header, key figures and the main chart (as zoomed on screen) ----
+async function cycRender(sq){
+  const A=ST.A,F=ST.F;if(!A||!F)throw new Error("no data");
+  const LW=540,dpr=2,M=16,bg=css("--ch-bg"),tx=css("--ch-tx"),t2=css("--ch-t2"),t3=css("--ch-t3"),bd=css("--ch-bd"),s1=css("--ch-s1"),pn=PN();
+  const top=12,headH=46,metH=80,gap=8,tail=6,CH_=38;
+  // legend: as many rows as needed; the font shrinks a little before a row wraps
+  const L1=ORDER.map(k=>[PC[k],pn[k]]),L2=[[css("--ch-ac"),L("Ціна","Цена","Price")],[css("--ch-warn"),L("200-тижнева MA","200-недельная MA","200-week MA")],["#e0587a",L("Сценарій: слабкий","Сценарий: слабый","Scenario: weak")],["#f5a524",L("базовий","базовый","base")],["#1d9e75",L("сильний","сильный","strong")]];
+  const mg=document.createElement("canvas").getContext("2d");
+  const lay=(items,line,fz)=>{mg.font="500 "+fz+"px system-ui,sans-serif";const rows=[[]];let x=0;for(const it of items){const wd=mg.measureText(it[1]).width+(line?20:14)+8;if(x+wd>LW-2*M+8&&rows[rows.length-1].length){rows.push([]);x=0}rows[rows.length-1].push([it,x,wd]);x+=wd}return rows};
+  const pick=(items,line)=>{let fz=9.5,r=lay(items,line,fz);while(r.length>1&&fz>8){fz-=.5;r=lay(items,line,fz)}return {fz,r}};
+  const g1=pick(L1,false),g2=pick(L2,true),legH=(g1.r.length+g2.r.length)*13+3,
+    chH=sq?460-top-headH-metH-gap*2-legH-tail:300,total=top+headH+metH+gap+chH+gap+legH+tail;
+  const out=document.createElement("canvas");out.width=LW*dpr;out.height=Math.round(total*dpr);
+  const g=out.getContext("2d");g.scale(dpr,dpr);g.fillStyle=bg;g.fillRect(0,0,LW,total);g.textBaseline="alphabetic";
+  const fit=(t,x,y,maxW,size,wt,col,al)=>{let s=size;g.font=wt+" "+s+"px system-ui,sans-serif";while(g.measureText(t).width>maxW&&s>7.5){s-=.5;g.font=wt+" "+s+"px system-ui,sans-serif"}g.fillStyle=col;g.textAlign=al||"left";g.fillText(t,x,y)};
+  let y=top;
+  g.fillStyle=PC[A.ph];g.beginPath();g.arc(M+6,y+13,6,0,7);g.fill();
+  fit(pn[A.ph],M+18,y+19,300,18,"700",tx);fit(fP(A.price),LW-M,y+19,170,18,"700",tx,"right");
+  fit(L("За часом","По времени","By time")+": "+pn[A.tph]+"  ·  "+L("Підтвердження дна","Подтверждение дна","Bottom confirmation")+": "+A.score+"/7",M,y+39,LW-2*M,11,"500",t2);
+  y+=headH;
+  const cw=(LW-2*M-3*6)/4,cells=[
+   [L("Максимум циклу","Максимум цикла","Cycle high"),fP(A.top.p),fD(A.top.t),tx],
+   [L("Просадка від піку","Просадка от пика","Drawdown from top"),"-"+(A.dd*100).toFixed(1)+"%",L("мінімум ","минимум ","low ")+fP(A.low.p),css("--ch-dn")],
+   [L("Днів від піку","Дней от пика","Days since top"),dN(A.sinceTop),L("норма до дна: 363–410","норма до дна: 363–410","bottom came at 363–410"),tx],
+   [L("Мінімум після піку","Минимум после пика","Low since the top"),fD(A.low.t),dN(A.lowAge)+" "+L("дн. тому","дн. назад","days ago"),tx],
+   [L("Відскок від мінімуму","Отскок от минимума","Bounce off the low"),fPct(A.recov*100),"",A.recov>=0?css("--ch-up"):css("--ch-dn")],
+   [L("200-тижнева MA","200-недельная MA","200-week MA"),A.w200?fP(A.w200):"n/a",A.w200?L("ціна ","цена ","price ")+"×"+(A.price/A.w200).toFixed(2):"",tx],
+   ["Mayer Multiple",A.mayer?"×"+A.mayer.toFixed(2):"n/a","",tx],
+   [L("До халвінгу","До халвинга","To the halving"),"≈ "+dN(A.toH/30.4)+" "+L("міс.","мес.","mo."),fM(A.nextH),tx]];
+  cells.forEach((c,i)=>{const cx=M+(i%4)*(cw+6),cy=y+Math.floor(i/4)*(CH_+4);
+    g.fillStyle=s1;g.strokeStyle=bd;g.lineWidth=.5;g.beginPath();g.roundRect?g.roundRect(cx,cy,cw,CH_,6):g.rect(cx,cy,cw,CH_);g.fill();g.stroke();
+    fit(c[0],cx+7,cy+12,cw-12,9,"500",t3);fit(c[1],cx+7,cy+26,cw-12,13.5,"700",c[3]);if(c[2])fit(c[2],cx+7,cy+35,cw-12,8,"400",t2)});
+  y+=metH+gap;
+  const cv=document.createElement("canvas");drawC1(cv,{w:LW,H:chH,dpr,fs:11});g.drawImage(cv,0,y,LW,chH);y+=chH+gap;
+  const drawLg=(G,yy,line)=>{G.r.forEach((row,ri)=>{const ly=yy+ri*13;g.font="500 "+G.fz+"px system-ui,sans-serif";g.textAlign="left";row.forEach(([it,x,wd])=>{const px=M+x;g.fillStyle=it[0];g.strokeStyle=it[0];if(line){g.lineWidth=2;g.beginPath();g.moveTo(px,ly-3);g.lineTo(px+12,ly-3);g.stroke()}else g.fillRect(px,ly-8,8,8);g.fillStyle=t2;g.fillText(it[1],px+(line?16:12),ly)})});return G.r.length*13};
+  const used=drawLg(g1,y+9,false);drawLg(g2,y+9+used,true);
+  return out;
 }
 document.addEventListener("ch-lang",e=>{if(/^(uk|ru|en|zh|hi|ar|ja|ko)$/.test(e.detail)){LANG=e.detail;render()}});
 let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{if(ST.A)drawAll()},120)});

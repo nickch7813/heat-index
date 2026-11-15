@@ -78,6 +78,8 @@ details.langsp,div#langs,#langSeg,#langSel,select#lang,label:has(>select#lang),.
 .ch-shot .ch-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 :root .ch-shot .ch-acts>*{flex:1 1 auto;text-align:center;border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;padding:6px 12px;font:13px/1.2 var(--ch-font);cursor:pointer;text-decoration:none;min-height:32px;display:inline-flex;align-items:center;justify-content:center}
 :root .ch-shot .ch-acts>.on{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+:root .ch-shot .ch-acts>[aria-pressed=true]{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+.ch-shot img{transition:opacity .15s}
 .ch-shot p{margin:8px 2px 0;font-size:12px;color:var(--ch-t3)}
 
 /* ---- footer ---- */

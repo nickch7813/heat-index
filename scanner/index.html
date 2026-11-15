@@ -86,6 +86,8 @@ details.langsp,div#langs,#langSeg,#langSel,select#lang,label:has(>select#lang),.
 .ch-shot .ch-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 :root .ch-shot .ch-acts>*{flex:1 1 auto;text-align:center;border:0.5px solid var(--ch-bd2);background:none;color:var(--ch-t2);border-radius:14px;padding:6px 12px;font:13px/1.2 var(--ch-font);cursor:pointer;text-decoration:none;min-height:32px;display:inline-flex;align-items:center;justify-content:center}
 :root .ch-shot .ch-acts>.on{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+:root .ch-shot .ch-acts>[aria-pressed=true]{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
+.ch-shot img{transition:opacity .15s}
 .ch-shot p{margin:8px 2px 0;font-size:12px;color:var(--ch-t3)}
 
 /* ---- footer ---- */
@@ -249,9 +251,8 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
 
 /* ---- on a wide screen every tool is visible in the bar (two rows if needed) instead of a hidden sideways scroll ---- */
 @media (min-width:700px){.ch-nav{flex-wrap:wrap;overflow:visible;row-gap:2px}}
-
 </style>
-<script id="ch-js" data-tool="scan" data-ver="2.17" data-root="../">
+<script id="ch-js" data-tool="scan" data-ver="2.18" data-root="../">
 /* CRYPTO HUNTERS: the glue between the tools.
    build.py copies this script (with assets/ch.css and assets/tips.js) into every page, so a page never depends
    on a separate file that might be missing or cached: the page tag carries data-tool, data-ver and data-root.
@@ -260,7 +261,7 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "2.17";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "2.18";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -307,6 +308,14 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
   L.ar = {"an":"تحليل:","open":"افتح {c} في «{t}» (تبويب جديد)","tools":"الأدوات","tg":"قناة Telegram","cam":"لقطة شاشة","wait":"جارٍ تجهيز الصورة…","save":"حفظ","share":"مشاركة","copy":"نسخ","copied":"تم النسخ","close":"إغلاق","fail":"تعذّر إنشاء الصورة: {e}","nfa":"ليست نصيحة مالية","src":"الشيفرة","log":"سجل الإشعارات","logAll":"الكل","notif":"الإشعارات","tLog":"السجل","tRules":"القواعد","tSet":"الإعدادات","alerts":"تنبيهات السعر","alAdd":"تنبيه","alAddT":"اضبط تنبيهًا لـ {c}","now":"الآن","dist":"{d}% إلى الهدف","waiting":"في انتظار أول فحص","active":"نشط","off":"متوقف","firedOff":"تم التفعيل","once":"مرة واحدة","every":"كل مرة، توقف {m} د","repeatEvery":"كل مرة، مع توقف","lastFired":"التفعيل: {t}","edit":"تعديل","del":"حذف","delQ":"حذف هذا التنبيه؟","newRule":"تنبيه جديد","cancel":"إلغاء","save2":"حفظ","k_reach":"السعر يصل إلى {v}","k_above":"السعر فوق {v}","k_below":"السعر تحت {v}","k_near":"السعر ضمن {d}% من {v}","k_up24":"ارتفاع 24 ساعة بمقدار {v} أو أكثر","k_dn24":"هبوط 24 ساعة بمقدار {v} أو أكثر","k_rsiLo":"RSI {tf} تحت {v}","k_rsiHi":"RSI {tf} فوق {v}","o_reach":"السعر يصل إلى مستوى","o_above":"السعر فوق مستوى","o_below":"السعر تحت مستوى","o_near":"السعر يقترب من مستوى","o_up24":"ارتفاع 24 ساعة، %","o_dn24":"هبوط 24 ساعة، %","o_rsiLo":"RSI تحت مستوى (تشبّع بيعي)","o_rsiHi":"RSI فوق مستوى (تشبّع شرائي)","fCoin":"العملة","fQuote":"عملة التسعير","fEx":"المنصة","fKind":"الشرط","fPrice":"السعر، {q}","fRsi":"مستوى RSI","fPct":"النسبة","fNear":"المسافة، %","fTf":"الإطار الزمني","fRepeat":"التكرار","fCd":"التوقف، دقائق","fNote":"ملاحظة (اختياري)","fNoteP":"مثلًا: خطة الدخول","fCoinNeed":"أدخل رمز العملة، مثل BTC","fValNeed":"أدخل قيمة أكبر من صفر","fRsiNeed":"يجب أن يكون RSI بين 1 و99","loading":"جارٍ تحميل السعر…","noPair":"لم يُعثر على {p} في {e}","errData":"لا بيانات","onoff":"تشغيل أو إيقاف","sSound":"الصوت","sBrowser":"إشعارات المتصفح","perm_granted":"المتصفح يسمح بالإشعارات.","allow":"سماح","sTg":"إرسال إلى Telegram عبر البوت الخاص بي","sToken":"رمز البوت","sChat":"معرّف المحادثة أو @القناة","test":"اختبار","tgTestMsg":"إشعار اختبار","tgOk":"أُرسل","tgFail":"خطأ: {e}","sEvery":"عدد مرات الفحص","sec":"كل {s} ث","testAll":"إشعار اختبار","nwNone":"لا أخبار عن {c} خلال 24 ساعة","nwTitle":"الأخبار: {c}","nwReload":"تحديث","nwSrc":"المصدر: {s}، حُدّث عند {t}","nwSrvName":"خادم أخبارك","nwErr":"الأخبار غير متاحة ({e})","nwEmpty":"لا أخبار عن {c} في آخر 3 أيام.","nwImp":"سلبي مهم","nwNeg":"سلبي","nwPos":"إيجابي","nwNeu":"محايد","nwSet":"الأخبار","nwOn":"عرض الأخبار على بطاقات العملات","nwSrv":"خادم أخبار خاص (اختياري)","favOn":"أضف {c} إلى المفضلة (في كل الأدوات)","favOff":"أزل {c} من المفضلة","installS":"تثبيت","calTitle":"تقويم الأحداث","calTitleC":"الأحداث: {c}","calAll":"كل الأحداث","calEmpty":"لا أحداث قادمة.","evBadge":"أحداث {c} خلال 7 أيام: {n}. التالي: {t}","evIn":"{d} ي","evToday":"اليوم","evFomc":"الفيدرالي","evList":"إدراج","evDelist":"إلغاء إدراج","evFomcT":"قرار الفائدة الفيدرالي (FOMC)","corrL":"الارتباط مع BTC","logClear":"مسح","logClearQ":"حذف كل إدخالات السجل؟","logCsv":"CSV","logOpen":"فتح","logNew":"جديد","buy":"منطقة شراء","sell":"منطقة بيع","spike":"طفرة حجم ×{r}","candle":"شمعة","brkUp":"اختراق للأعلى","brkDn":"كسر للأسفل","spot":"فوري","futures":"عقود آجلة","chScreen":"على الشاشة","chBrowser":"المتصفح","chTelegram":"Telegram","chSound":"الصوت","chLog":"السجل فقط","today":"اليوم","yesterday":"أمس","cycle":["الدورة العالمية","الدورة"],"scan":["ماسح التوافق","التوافق"],"heat":["Heat Index","Heat"],"lab":["Coin Lab","Coin Lab"],"elliott":["موجات إليوت","الموجات"],"whales":["سونار الحيتان","الحيتان"],"liq":["رادار التصفية","التصفيات"],"volume":["طفرات الحجم","الحجم"],"bot":["بوت تجريبي","البوت"]};
   L.ja = {"an":"分析：","open":"{c}を「{t}」で開く（新しいタブ）","tools":"ツール","tg":"Telegramチャンネル","cam":"スクリーンショット","wait":"画像を準備中…","save":"保存","share":"共有","copy":"コピー","copied":"コピーしました","close":"閉じる","fail":"画像を作成できませんでした：{e}","nfa":"投資助言ではありません","src":"コード","log":"通知ログ","logAll":"すべて","notif":"通知","tLog":"ログ","tRules":"ルール","tSet":"設定","alerts":"価格アラート","alAdd":"アラート","alAddT":"{c}のアラートを設定","now":"現在","dist":"目標まで{d}%","waiting":"最初のチェックを待機中","active":"有効","off":"オフ","firedOff":"発動済み","once":"1回","every":"毎回、{m}分間隔","repeatEvery":"毎回、間隔あり","lastFired":"発動：{t}","edit":"編集","del":"削除","delQ":"このアラートを削除しますか？","newRule":"新しいアラート","cancel":"キャンセル","save2":"保存","k_reach":"価格が{v}に到達","k_above":"価格が{v}より上","k_below":"価格が{v}より下","k_near":"価格が{v}の{d}%以内","k_up24":"24時間で{v}以上上昇","k_dn24":"24時間で{v}以上下落","k_rsiLo":"RSI {tf}が{v}未満","k_rsiHi":"RSI {tf}が{v}超","o_reach":"価格が水準に到達","o_above":"価格が水準より上","o_below":"価格が水準より下","o_near":"価格が水準に接近","o_up24":"24時間上昇、%","o_dn24":"24時間下落、%","o_rsiLo":"RSIが水準未満（売られ過ぎ）","o_rsiHi":"RSIが水準超（買われ過ぎ）","fCoin":"銘柄","fQuote":"決済通貨","fEx":"取引所","fKind":"条件","fPrice":"価格、{q}","fRsi":"RSI水準","fPct":"パーセント","fNear":"距離、%","fTf":"時間足","fRepeat":"繰り返し","fCd":"間隔、分","fNote":"メモ（任意）","fNoteP":"例：エントリー計画","fCoinNeed":"銘柄ティッカーを入力してください（例：BTC）","fValNeed":"0より大きい値を入力してください","fRsiNeed":"RSIは1〜99の間で指定してください","loading":"価格を読み込み中…","noPair":"{e}に{p}が見つかりません","errData":"データなし","onoff":"オン／オフ","sSound":"サウンド","sBrowser":"ブラウザ通知","perm_granted":"ブラウザは通知を許可しています。","allow":"許可","sTg":"自分のボット経由でTelegramに送信","sToken":"ボットトークン","sChat":"チャットIDまたは@チャンネル","test":"テスト","tgTestMsg":"テスト通知","tgOk":"送信しました","tgFail":"エラー：{e}","sEvery":"チェック頻度","sec":"{s}秒ごと","testAll":"テスト通知","nwNone":"24時間で{c}のニュースはありません","nwTitle":"ニュース：{c}","nwReload":"更新","nwSrc":"ソース：{s}、{t}に更新","nwSrvName":"あなたのニュースサーバー","nwErr":"ニュースを取得できません（{e}）","nwEmpty":"過去3日間に{c}のニュースはありません。","nwImp":"重要なネガティブ","nwNeg":"ネガティブ","nwPos":"ポジティブ","nwNeu":"中立","nwSet":"ニュース","nwOn":"銘柄カードにニュースを表示","nwSrv":"独自のニュースサーバー（任意）","favOn":"{c}をお気に入りに追加（全ツール共通）","favOff":"{c}をお気に入りから削除","installS":"インストール","calTitle":"イベントカレンダー","calTitleC":"イベント：{c}","calAll":"すべてのイベント","calEmpty":"予定されているイベントはありません。","evBadge":"{c}の7日間のイベント：{n}。次：{t}","evIn":"{d}日","evToday":"今日","evFomc":"FRB","evList":"上場","evDelist":"上場廃止","evFomcT":"FRBの金利決定（FOMC）","corrL":"BTCとの相関","logClear":"消去","logClearQ":"ログのすべての項目を削除しますか？","logCsv":"CSV","logOpen":"開く","logNew":"新着","buy":"買いゾーン","sell":"売りゾーン","spike":"出来高スパイク ×{r}","candle":"ローソク足","brkUp":"上抜け","brkDn":"下抜け","spot":"現物","futures":"先物","chScreen":"画面","chBrowser":"ブラウザ","chTelegram":"Telegram","chSound":"サウンド","chLog":"ログのみ","today":"今日","yesterday":"昨日","cycle":["グローバルサイクル","サイクル"],"scan":["コンフルエンススキャナー","一致"],"heat":["Heat Index","Heat"],"lab":["Coin Lab","Coin Lab"],"elliott":["エリオット波動","波動"],"whales":["ホエールソナー","ホエール"],"liq":["清算レーダー","清算"],"volume":["出来高スパイク","出来高"],"bot":["ペーパーボット","ボット"]};
   L.ko = {"an":"분석:","open":"{c}을(를) “{t}”에서 열기 (새 탭)","tools":"도구","tg":"Telegram 채널","cam":"스크린샷","wait":"이미지 준비 중…","save":"저장","share":"공유","copy":"복사","copied":"복사됨","close":"닫기","fail":"이미지를 만들지 못했습니다: {e}","nfa":"재정 조언이 아닙니다","src":"코드","log":"알림 로그","logAll":"전체","notif":"알림","tLog":"로그","tRules":"규칙","tSet":"설정","alerts":"가격 알림","alAdd":"알림","alAddT":"{c} 알림 설정","now":"현재","dist":"목표까지 {d}%","waiting":"첫 확인 대기 중","active":"활성","off":"꺼짐","firedOff":"발동됨","once":"1회","every":"매번, {m}분 간격","repeatEvery":"매번, 간격 있음","lastFired":"발동: {t}","edit":"편집","del":"삭제","delQ":"이 알림을 삭제할까요?","newRule":"새 알림","cancel":"취소","save2":"저장","k_reach":"가격이 {v}에 도달","k_above":"가격이 {v} 위","k_below":"가격이 {v} 아래","k_near":"가격이 {v}의 {d}% 이내","k_up24":"24시간 {v} 이상 상승","k_dn24":"24시간 {v} 이상 하락","k_rsiLo":"RSI {tf}이(가) {v} 미만","k_rsiHi":"RSI {tf}이(가) {v} 초과","o_reach":"가격이 레벨에 도달","o_above":"가격이 레벨 위","o_below":"가격이 레벨 아래","o_near":"가격이 레벨에 근접","o_up24":"24시간 상승, %","o_dn24":"24시간 하락, %","o_rsiLo":"RSI가 레벨 미만 (과매도)","o_rsiHi":"RSI가 레벨 초과 (과매수)","fCoin":"코인","fQuote":"호가 통화","fEx":"거래소","fKind":"조건","fPrice":"가격, {q}","fRsi":"RSI 레벨","fPct":"퍼센트","fNear":"거리, %","fTf":"타임프레임","fRepeat":"반복","fCd":"간격, 분","fNote":"메모 (선택)","fNoteP":"예: 진입 계획","fCoinNeed":"코인 티커를 입력하세요 (예: BTC)","fValNeed":"0보다 큰 값을 입력하세요","fRsiNeed":"RSI는 1~99 사이여야 합니다","loading":"가격 불러오는 중…","noPair":"{e}에서 {p}을(를) 찾을 수 없습니다","errData":"데이터 없음","onoff":"켜기/끄기","sSound":"소리","sBrowser":"브라우저 알림","perm_granted":"브라우저가 알림을 허용합니다.","allow":"허용","sTg":"내 봇으로 Telegram에 전송","sToken":"봇 토큰","sChat":"채팅 ID 또는 @채널","test":"테스트","tgTestMsg":"테스트 알림","tgOk":"전송됨","tgFail":"오류: {e}","sEvery":"확인 빈도","sec":"{s}초마다","testAll":"테스트 알림","nwNone":"24시간 동안 {c} 뉴스가 없습니다","nwTitle":"뉴스: {c}","nwReload":"새로고침","nwSrc":"출처: {s}, {t} 갱신","nwSrvName":"내 뉴스 서버","nwErr":"뉴스를 사용할 수 없습니다 ({e})","nwEmpty":"최근 3일간 {c} 뉴스가 없습니다.","nwImp":"중요한 부정","nwNeg":"부정","nwPos":"긍정","nwNeu":"중립","nwSet":"뉴스","nwOn":"코인 카드에 뉴스 표시","nwSrv":"자체 뉴스 서버 (선택)","favOn":"{c}을(를) 즐겨찾기에 추가 (모든 도구)","favOff":"{c}을(를) 즐겨찾기에서 제거","installS":"설치","calTitle":"이벤트 캘린더","calTitleC":"이벤트: {c}","calAll":"모든 이벤트","calEmpty":"예정된 이벤트가 없습니다.","evBadge":"{c}의 7일간 이벤트: {n}. 다음: {t}","evIn":"{d}일","evToday":"오늘","evFomc":"연준","evList":"상장","evDelist":"상장폐지","evFomcT":"연준 금리 결정 (FOMC)","corrL":"BTC와의 상관관계","logClear":"지우기","logClearQ":"로그의 모든 항목을 삭제할까요?","logCsv":"CSV","logOpen":"열기","logNew":"새 항목","buy":"매수 구간","sell":"매도 구간","spike":"거래량 급증 ×{r}","candle":"캔들","brkUp":"상향 돌파","brkDn":"하향 이탈","spot":"현물","futures":"선물","chScreen":"화면","chBrowser":"브라우저","chTelegram":"Telegram","chSound":"소리","chLog":"로그만","today":"오늘","yesterday":"어제","cycle":["글로벌 사이클","사이클"],"scan":["컨플루언스 스캐너","컨플루언스"],"heat":["Heat Index","Heat"],"lab":["Coin Lab","Coin Lab"],"elliott":["엘리엇 파동","파동"],"whales":["고래 소나","고래"],"liq":["청산 레이더","청산"],"volume":["거래량 급증","거래량"],"bot":["페이퍼 봇","봇"]};
+  L.uk.sq = "Квадрат 1:1";
+  L.ru.sq = "Квадрат 1:1";
+  L.en.sq = "Square 1:1";
+  L.zh.sq = "正方形 1:1";
+  L.hi.sq = "वर्ग 1:1";
+  L.ar.sq = "مربع 1:1";
+  L.ja.sq = "正方形 1:1";
+  L.ko.sq = "정사각형 1:1";
   function lang() { var l = (document.documentElement.lang || "en").slice(0, 2).toLowerCase(); return L[l] ? l : "en"; }
   function tr(k, p) { var s = L[lang()][k]; if (s == null) s = L.en[k]; if (Array.isArray(s)) return s; s = String(s); if (p) s = s.replace(/\{(\w+)\}/g, function (_, x) { return p[x] == null ? "" : p[x]; }); return s; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -390,7 +399,19 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
     return { bg: g("--ch-bg", "#16181d"), tx: g("--ch-tx", "#e8eaed"), mu: g("--ch-t2", "#a0a4ab"), line: g("--ch-bd", "#2c3038"), ac: g("--ch-brand", "#f5a524") };
   }
   // The same mark as in Heat Index: a strip with the channel under the picture and a faint pattern across all of it, so cropping does not remove it.
+  // Square mode (1:1) for social networks: the finished picture is centred on a square canvas, scaled down only when it is much taller than wide.
+  var SQ = false; try { SQ = localStorage.getItem("ch.sq") === "1"; } catch (e) {}
+  function stripH(S) { return Math.round(64 * S / 1080); }
+  function squareFit(cv, bg) {
+    var W0 = cv.width, H0 = cv.height, S = W0, cap = Math.round(W0 * 1.35);
+    while (S - stripH(S) < H0 && S < cap) S += 2;
+    var AH = S - stripH(S); if (S === W0 && AH === H0) return cv;
+    var sc = Math.min(1, AH / H0), w = Math.round(W0 * sc), h = Math.round(H0 * sc), P = palette(), out = document.createElement("canvas");
+    out.width = S; out.height = AH; var g = out.getContext("2d"); g.fillStyle = bg || P.bg; g.fillRect(0, 0, S, AH);
+    g.imageSmoothingQuality = "high"; g.drawImage(cv, Math.round((S - w) / 2), Math.round((AH - h) / 2), w, h); return out;
+  }
   function mark(cv) {
+    if (SQ) cv = squareFit(cv);
     var P = palette(), dark = document.documentElement.dataset.theme === "dark" || (!document.documentElement.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
     var W = cv.width, H = cv.height, k = W / 1080, strip = Math.round(64 * k), out = document.createElement("canvas");
     out.width = W; out.height = H + strip; var g = out.getContext("2d"); g.drawImage(cv, 0, 0);
@@ -422,14 +443,19 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
     if (!h2c) h2c = new Promise(function (res, rej) { var s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"; s.onload = res; s.onerror = function () { h2c = null; rej(new Error("html2canvas")); }; document.head.appendChild(s); });
     return h2c;
   }
-  var SH = { blob: null, url: null, name: "" };
+  var SH = { blob: null, url: null, name: "", re: null, nm: "" };
   function modal() {
     var m = document.getElementById("chShot"); if (m) return m;
     m = document.createElement("div"); m.id = "chShot"; m.className = "ch-shot"; m.hidden = true; m.setAttribute("translate", "no"); m.setAttribute("data-html2canvas-ignore", "true");
-    m.innerHTML = '<div class="ch-pn" role="dialog" aria-modal="true"><div class="ch-wait"></div><img alt=""><div class="ch-acts"><a class="on" data-a="save" download></a><button data-a="share" hidden></button><button data-a="copy" hidden></button><button data-a="close"></button></div><p></p></div>';
+    m.innerHTML = '<div class="ch-pn" role="dialog" aria-modal="true"><div class="ch-wait"></div><img alt=""><div class="ch-acts"><a class="on" data-a="save" download></a><button data-a="share" hidden></button><button data-a="copy" hidden></button><button data-a="sq" aria-pressed="false" hidden></button><button data-a="close"></button></div><p></p></div>';
     m.addEventListener("click", async function (e) {
       var a = e.target.closest("[data-a]"), k = a && a.dataset.a;
       if (e.target === m || k === "close") { m.hidden = true; return; }
+      if (k === "sq" && SH.re) {
+        SQ = !SQ; try { localStorage.setItem("ch.sq", SQ ? "1" : "0"); } catch (er) {}
+        a.setAttribute("aria-pressed", SQ ? "true" : "false"); m.querySelector("img").style.opacity = ".45";
+        try { await showCanvas(await SH.re(), SH.nm, true); } catch (er) {} m.querySelector("img").style.opacity = ""; return;
+      }
       if (k === "share" && SH.blob) { try { await navigator.share({ files: [new File([SH.blob], SH.name, { type: "image/png" })], text: CHANNEL_URL }); } catch (er) {} }
       if (k === "copy" && SH.blob) { try { await navigator.clipboard.write([new ClipboardItem({ "image/png": SH.blob })]); a.textContent = tr("copied"); } catch (er) {} }
     });
@@ -437,29 +463,35 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
     document.body.appendChild(m); return m;
   }
   function stamp() { var d = new Date(), z = function (n) { return String(n).padStart(2, "0"); }; return d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()) + "-" + z(d.getHours()) + z(d.getMinutes()); }
-  async function showCanvas(cv, name) {
-    var m = modal(), img = m.querySelector("img");
+  async function showCanvas(cv, name, keep) {
+    var m = modal(), img = m.querySelector("img"); if (!keep) SH.re = null;
     SH.blob = await new Promise(function (r) { cv.toBlob(r, "image/png"); }); if (!SH.blob) throw new Error("toBlob");
     if (SH.url) URL.revokeObjectURL(SH.url); SH.url = URL.createObjectURL(SH.blob); SH.name = (name || "crypto-hunters") + "-" + stamp() + ".png";
     img.src = SH.url; img.style.display = "block"; m.querySelector(".ch-wait").style.display = "none";
     var sv = m.querySelector('[data-a="save"]'); sv.href = SH.url; sv.download = SH.name;
     m.querySelector('[data-a="share"]').hidden = !(navigator.canShare && navigator.canShare({ files: [new File([SH.blob], SH.name, { type: "image/png" })] }));
     m.querySelector('[data-a="copy"]').hidden = !(navigator.clipboard && window.ClipboardItem);
+    var sq = m.querySelector('[data-a="sq"]'); sq.hidden = !SH.re; sq.setAttribute("aria-pressed", SQ ? "true" : "false");
   }
   function openWait() {
     var m = modal(); m.querySelector(".ch-wait").textContent = tr("wait"); m.querySelector(".ch-wait").style.display = "block"; m.querySelector("img").style.display = "none";
-    m.querySelector('[data-a="save"]').textContent = tr("save"); m.querySelector('[data-a="share"]').textContent = tr("share"); m.querySelector('[data-a="copy"]').textContent = tr("copy"); m.querySelector('[data-a="close"]').textContent = tr("close");
+    m.querySelector('[data-a="save"]').textContent = tr("save"); m.querySelector('[data-a="share"]').textContent = tr("share"); m.querySelector('[data-a="copy"]').textContent = tr("copy"); m.querySelector('[data-a="close"]').textContent = tr("close"); m.querySelector('[data-a="sq"]').textContent = tr("sq"); m.querySelector('[data-a="sq"]').hidden = true;
     m.querySelector("p").textContent = tr("hint"); m.querySelector('[data-a="save"]').removeAttribute("href"); m.hidden = false; return m;
   }
   // Screenshot of a block of the page: header with the brand, the block, then the watermark.
   async function shot(el, o) {
-    o = o || {}; if (!el) return; var m = openWait();
+    o = o || {}; if (!el && !o.render) return; var m = openWait();
     try {
-      await loadH2C();
-      var bg = getComputedStyle(document.body).backgroundColor;
-      var src = await window.html2canvas(el, { backgroundColor: bg, scale: Math.max(2, Math.min(3, 1080 / Math.max(320, el.offsetWidth))), useCORS: true, logging: false,
-        ignoreElements: function (n) { return n.classList && (n.classList.contains("ch-cam") || n.classList.contains("ch-links")); } });
-      await showCanvas(mark(frame(src, o.title)), o.name || TOOL);
+      var title = o.title;
+      if (o.render) SH.re = async function () { return mark(frame(await o.render(SQ), title)); };
+      else {
+        await loadH2C();
+        var bg = getComputedStyle(document.body).backgroundColor;
+        var src = await window.html2canvas(el, { backgroundColor: bg, scale: Math.max(2, Math.min(3, 1080 / Math.max(320, el.offsetWidth))), useCORS: true, logging: false,
+          ignoreElements: function (n) { return n.classList && (n.classList.contains("ch-cam") || n.classList.contains("ch-links")); } });
+        SH.re = async function () { return mark(frame(src, title)); };
+      }
+      SH.nm = o.name || TOOL; await showCanvas(await SH.re(), SH.nm, true);
     } catch (e) { m.querySelector(".ch-wait").textContent = tr("fail", { e: (e && e.message) || e }); }
   }
   // A camera button; host gets it as the last child (float: true puts it in the top-right corner of host).
@@ -1377,11 +1409,10 @@ body.ch-skin ::selection{background:var(--ch-acb);color:var(--ch-act)}
     tool: TOOL, root: ROOT, logo: LOGO, version: VERSION, channel: CHANNEL_URL, watermark: WATERMARK,
     theme: function (fallback) { return saved() || fallback || null; },
     url: url, links: links, linksInto: linksInto, param: param,
-    mark: mark, frame: frame, shot: shot, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
+    mark: mark, frame: frame, shot: shot, sq: function () { return SQ; }, setSq: function (v) { SQ = !!v; try { localStorage.setItem("ch.sq", SQ ? "1" : "0"); } catch (e) {} }, squareFit: squareFit, palette: palette, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
     calib: { get: calGet2, put: calPut2, ensure: calEnsure2, mul: calMul2, key: calKey2, compute: calCompute, pending: function () { return calQ2.length + (calBusy2 ? 1 : 0); } }, favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
   };
 })();
-
 </script>
 <title>Сканер збігів · CRYPTO HUNTERS</title>
 <meta name="description" content="Binance і Bybit. Монети, де одночасно сходяться сигнали Heat Index, хвиль Елліотта, тренду, імпульсу, обсягу, стакану, фандингу й новин.">

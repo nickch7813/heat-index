@@ -2,9 +2,15 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **2.17**
+Version: **2.18**
 
-## What is new in 2.17
+## What is new in 2.18
+
+- Global Cycle: both charts can be zoomed. Mouse wheel or pinch zooms, dragging pans, double-click (double-tap) resets; the buttons − / + / ⟲ above each chart do the same. The price axis refits to the visible window, month ticks appear when zoomed in, and when zoomed to under about three years the price line switches to daily candles.
+- Global Cycle: the screenshot is now drawn directly (header with the phase and price, eight key figures, the main chart exactly as zoomed on screen, legend) instead of capturing the whole page. It is about 1080×1160 instead of several thousand pixels tall, and the charts and the clock no longer come out broken.
+- Square screenshots for social networks: every screenshot preview (all tools and Heat Index) has a "Square 1:1" button. It puts the picture on a 1080×1080-style square with the watermark kept; the choice is remembered. In Global Cycle the layout is built natively for the square.
+
+## What was new in 2.17
 
 - Two more languages in every tool: Japanese (日本語) and Korean (한국어). The language menu now has eight languages.
 - Same scope as 2.16: short interface texts are translated, long explanations fall back to English; the translations were written by the assistant and are worth a native-speaker check.
