@@ -2,9 +2,18 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **2.18**
+Version: **2.20**
 
-## What is new in 2.18
+## What is new in 2.20
+
+- Minimalist square screenshots. The "Square 1:1" button in every screenshot preview (all tools and Heat Index) now makes a clean 1080×1080 picture: a thin brand line with the title on top, the content centred and scaled to fit, and a quiet footer (t.me/Cr_hunters, date, "Not financial advice"). The dense watermark pattern is not used in this mode. The choice is remembered; Global Cycle builds its content natively for the square.
+
+## What was new in 2.19
+
+- Mobile layout fix: on phones about 400–540 px wide the top bar (with the "@Cr_hunters" label) was wider than the screen, which made the whole page wider and shifted. The compact header now applies up to 540 px.
+- Coin Lab: on phones the controls no longer stack in one tall column; the title and icon buttons sit on one row, the coin, quote, exchange, market, timeframe and Analyze controls wrap below.
+
+## What was new in 2.18
 
 - Global Cycle: both charts can be zoomed. Mouse wheel or pinch zooms, dragging pans, double-click (double-tap) resets; the buttons − / + / ⟲ above each chart do the same. The price axis refits to the visible window, month ticks appear when zoomed in, and when zoomed to under about three years the price line switches to daily candles.
 - Global Cycle: the screenshot is now drawn directly (header with the phase and price, eight key figures, the main chart exactly as zoomed on screen, legend) instead of capturing the whole page. It is about 1080×1160 instead of several thousand pixels tall, and the charts and the clock no longer come out broken.

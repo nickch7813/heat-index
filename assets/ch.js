@@ -6,7 +6,7 @@
    and screenshots with the watermark. */
 (function () {
   "use strict";
-  var VERSION = "2.18";   // the site version, set by build.py on every update and shown in the header
+  var VERSION = "2.20";   // the site version, set by build.py on every update and shown in the header
   var me = document.currentScript, TOOL = (me && me.dataset.tool) || "heat";
   var PAGE_VER = (me && me.dataset.ver) || VERSION;   // the version the page itself was built with
   var ROOT = me && me.dataset.root != null ? new URL(me.dataset.root || "./", location.href).href.replace(/[?#].*$/, "")
@@ -155,8 +155,21 @@
     out.width = S; out.height = AH; var g = out.getContext("2d"); g.fillStyle = bg || P.bg; g.fillRect(0, 0, S, AH);
     g.imageSmoothingQuality = "high"; g.drawImage(cv, Math.round((S - w) / 2), Math.round((AH - h) / 2), w, h); return out;
   }
+  // Minimalist square (1080x1080): thin brand line, the content scaled to fit, quiet footer; no pattern watermark.
+  function minimalSquare(cv, o) {
+    o = o || {}; var P = o.pal || palette(), S = 1080, out = document.createElement("canvas"); out.width = out.height = S;
+    var g = out.getContext("2d"), side = 44, top = o.noHead ? 44 : 112, bot = 100;
+    function fit(t, x, y, maxW, size, wt, col, al) { var z = size; g.font = wt + " " + z + "px system-ui,sans-serif"; while (g.measureText(t).width > maxW && z > 12) { z -= 1; g.font = wt + " " + z + "px system-ui,sans-serif"; } g.fillStyle = col; g.textAlign = al; g.textBaseline = "alphabetic"; g.fillText(t, x, y); }
+    g.fillStyle = P.bg; g.fillRect(0, 0, S, S);
+    if (!o.noHead) { fit(BRAND, side + 8, 72, 420, 28, "700", P.ac, "left"); if (o.title) fit(String(o.title).replace(/^CRYPTO HUNTERS\s*[·\-]\s*/, ""), S - side - 8, 72, S - 2 * side - 16 - 440, 24, "500", P.mu, "right"); }
+    var bw = S - 2 * side, bh = S - top - bot, sc = Math.min(bw / cv.width, bh / cv.height, 1.25), w = Math.round(cv.width * sc), h = Math.round(cv.height * sc);
+    g.imageSmoothingQuality = "high"; g.drawImage(cv, Math.round((S - w) / 2), Math.round(top + (bh - h) / 2), w, h);
+    fit(WATERMARK, side + 8, S - 46, 420, 28, "700", P.ac, "left");
+    var d = new Date().toLocaleString(document.documentElement.lang || undefined, { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+    fit(d + "  ·  " + tr("nfa"), S - side - 8, S - 46, S - 2 * side - 16 - 440, 22, "500", P.mu, "right");
+    return out;
+  }
   function mark(cv) {
-    if (SQ) cv = squareFit(cv);
     var P = palette(), dark = document.documentElement.dataset.theme === "dark" || (!document.documentElement.dataset.theme && matchMedia("(prefers-color-scheme: dark)").matches);
     var W = cv.width, H = cv.height, k = W / 1080, strip = Math.round(64 * k), out = document.createElement("canvas");
     out.width = W; out.height = H + strip; var g = out.getContext("2d"); g.drawImage(cv, 0, 0);
@@ -228,13 +241,13 @@
     o = o || {}; if (!el && !o.render) return; var m = openWait();
     try {
       var title = o.title;
-      if (o.render) SH.re = async function () { return mark(frame(await o.render(SQ), title)); };
+      if (o.render) SH.re = async function () { var c = await o.render(SQ); return SQ ? minimalSquare(c, { title: title }) : mark(frame(c, title)); };
       else {
         await loadH2C();
         var bg = getComputedStyle(document.body).backgroundColor;
         var src = await window.html2canvas(el, { backgroundColor: bg, scale: Math.max(2, Math.min(3, 1080 / Math.max(320, el.offsetWidth))), useCORS: true, logging: false,
           ignoreElements: function (n) { return n.classList && (n.classList.contains("ch-cam") || n.classList.contains("ch-links")); } });
-        SH.re = async function () { return mark(frame(src, title)); };
+        SH.re = async function () { return SQ ? minimalSquare(src, { title: title }) : mark(frame(src, title)); };
       }
       SH.nm = o.name || TOOL; await showCanvas(await SH.re(), SH.nm, true);
     } catch (e) { m.querySelector(".ch-wait").textContent = tr("fail", { e: (e && e.message) || e }); }
@@ -1154,7 +1167,7 @@
     tool: TOOL, root: ROOT, logo: LOGO, version: VERSION, channel: CHANNEL_URL, watermark: WATERMARK,
     theme: function (fallback) { return saved() || fallback || null; },
     url: url, links: links, linksInto: linksInto, param: param,
-    mark: mark, frame: frame, shot: shot, sq: function () { return SQ; }, setSq: function (v) { SQ = !!v; try { localStorage.setItem("ch.sq", SQ ? "1" : "0"); } catch (e) {} }, squareFit: squareFit, palette: palette, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
+    mark: mark, frame: frame, shot: shot, sq: function () { return SQ; }, setSq: function (v) { SQ = !!v; try { localStorage.setItem("ch.sq", SQ ? "1" : "0"); } catch (e) {} }, squareFit: squareFit, minimalSquare: minimalSquare, palette: palette, cam: cam, showCanvas: async function (cv, name) { openWait(); await showCanvas(cv, name); }, t: tr,
     calib: { get: calGet2, put: calPut2, ensure: calEnsure2, mul: calMul2, key: calKey2, compute: calCompute, pending: function () { return calQ2.length + (calBusy2 ? 1 : 0); } }, favs: favs, isFav: isFav, setFavs: setFavs, corr: corr, corrText: corrText, events: { all: allEvents, for: eventsFor, macro: nextMacro, open: calModal }, news: { for: newsFor, load: newsLoad, settings: newsSet, open: newsModal, cache: newsCache }, log: log, openLog: function () { openPanel("log"); }, openAlerts: function (o) { openPanel("rules", o || null); }, logEntries: logRead, rules: rules
   };
 })();
