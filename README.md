@@ -2,7 +2,14 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **2.20**
+Version: **2.21**
+
+## What is new in 2.21
+
+- **Ready post text** under every screenshot: a "Copy text" button gives a caption with the numbers, link and hashtags (all 8 languages).
+- **Cycle alerts**: a bell on the Global Cycle page notifies about a phase change and a growing bottom confirmation (sound, browser, Telegram — as set in Alerts).
+- **Daily Card** (`daily/`): one square 1080×1080 "market state" picture — BTC, cycle phase, Heat Index, top Scanner matches — plus post text. Cycle, Heat and Scanner publish their summaries; the page collects them.
+- PWA (manifest, service worker, install button) was already in place.
 
 ## What is new in 2.20
 

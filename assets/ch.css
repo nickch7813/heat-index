@@ -80,6 +80,9 @@ details.langsp,div#langs,#langSeg,#langSel,select#lang,label:has(>select#lang),.
 :root .ch-shot .ch-acts>.on{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
 :root .ch-shot .ch-acts>[aria-pressed=true]{background:var(--ch-acb);color:var(--ch-act);border-color:var(--ch-acd);font-weight:500}
 .ch-shot img{transition:opacity .15s}
+.ch-shot .ch-cap{margin-top:10px}
+.ch-shot .ch-cap textarea{display:block;width:100%;box-sizing:border-box;min-height:104px;resize:vertical;background:none;color:var(--ch-tx);border:0.5px solid var(--ch-bd2);border-radius:10px;padding:8px 10px;font:13px/1.45 var(--ch-font)}
+.ch-shot .ch-cap .ch-acts{margin-top:6px}
 .ch-shot p{margin:8px 2px 0;font-size:12px;color:var(--ch-t3)}
 
 /* ---- footer ---- */
