@@ -2,7 +2,15 @@
 
 Telegram channel: [@Cr_hunters](https://t.me/Cr_hunters)
 
-Version: **2.21**
+Version: **2.23**
+
+## What is new in 2.23
+
+- **BTC Mining**: a history chart of the BTC price against the estimated mining cost (3 months / 1 year / all available), built from mempool.space hashrate history and Binance daily prices, using the efficiency and power price you set.
+
+## What is new in 2.22
+
+- **BTC Mining** (`mining/`): estimated electricity cost of mining 1 BTC, price/cost ratio, hashprice, network hashrate, difficulty change, block reward with fees, time to halving, plus a calculator for your own miner (profit per day/month, break-even BTC price and power price, payback). Data from mempool.space and Binance; square 1080×1080 picture and post text included.
 
 ## What is new in 2.21
 
